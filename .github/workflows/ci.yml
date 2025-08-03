@@ -1,0 +1,48 @@
+name: CI
+
+env:
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.1
+
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: added logs folder
+        run: mkdir logs
+
+      - name: Build the Stack
+        run: docker compose -f docker-compose.local.yml build
+
+      - name: Run Django Tests
+        run: docker compose -f docker-compose.local.yml run --rm backend pytest
+
+      - name: Tear down the Stack
+        run: docker compose -f docker-compose.local.yml down
