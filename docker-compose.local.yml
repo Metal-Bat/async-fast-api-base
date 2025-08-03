@@ -1,0 +1,38 @@
+volumes:
+  local_postgres_data: {}
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./compose/local/backend/Dockerfile
+    image: backend
+    container_name: backend
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - .:/app:z
+    env_file:
+      - ./.envs/.local/.backend
+      - ./.envs/.local/.postgres
+    ports:
+      - "8000:8000"
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/local/postgres/Dockerfile
+    image: postgres
+    container_name: postgres
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.envs/.local/.postgres
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: docker.io/redis:6
+    container_name: local_redis

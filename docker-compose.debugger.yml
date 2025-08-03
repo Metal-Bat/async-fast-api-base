@@ -1,0 +1,6 @@
+services:
+  backend:
+    environment:
+      DEBUGPY: "true"
+    stdin_open: true
+    tty: true

@@ -1,0 +1,30 @@
+cells:
+  - kind: 1
+    languageId: markdown
+    value: "# Some sql commands to test code"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: |-
+      SELECT
+          *
+      FROM
+          public.news_providers;
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: |-
+      INSERT INTO
+          public.news_providers (title, description, priority)
+      VALUES
+          ('some_title_1', 'some_description', 1),
+          ('some_title_2', 'some_description', 1),
+          ('some_title_3', 'some_description', 1),
+          ('some_title_4', 'some_description', 1);
+    metadata: {}
+metadata:
+  conn:
+    id: T0Bxlj43aaB3TiU8MtVK5
+    name: crawler
+  database: db
+  schema: public

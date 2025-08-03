@@ -1,0 +1,24 @@
+# General
+# ------------------------------------------------------------------------------
+PROJECT_NAME=crawler
+
+# Redis
+# ------------------------------------------------------------------------------
+REDIS_URL=redis://redis:6379/0
+
+# MINIO
+# ------------------------------------------------------------------------------
+MINIO_URL=minio:9000
+MINIO_ACCESS_KEY=MINIO_ACCESS_KEY
+MINIO_SECRET_KEY=MINIO_SECRET_KEY
+
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=db
+POSTGRES_USER=POSTGRES_USER
+POSTGRES_PASSWORD=POSTGRES_PASSWORD
+
+# Allowed Origins
+ALLOWED_ORIGINS=
