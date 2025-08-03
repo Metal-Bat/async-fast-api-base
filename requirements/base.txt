@@ -29,7 +29,7 @@ structlog==25.4.0  # https://github.com/hynek/structlog
 
 # Minio
 # ------------------------------------------------------------------------------
-minio==7.2.15  # https://github.com/minio/minio-py
+minio==7.2.16  # https://github.com/minio/minio-py
 
 # Utils
 # ------------------------------------------------------------------------------
