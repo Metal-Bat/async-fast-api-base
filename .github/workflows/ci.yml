@@ -41,7 +41,7 @@ jobs:
       - name: Build the Stack
         run: docker compose -f docker-compose.local.yml build
 
-      - name: Run Django Tests
+      - name: Run Tests
         run: docker compose -f docker-compose.local.yml run --rm backend pytest
 
       - name: Tear down the Stack
