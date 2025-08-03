@@ -18,7 +18,7 @@ debugpy==1.8.13  # https://github.com/microsoft/debugpy
 
 # Code quality
 # ------------------------------------------------------------------------------
-flake8==7.2.0  # https://github.com/PyCQA/flake8
+flake8==7.3.0  # https://github.com/PyCQA/flake8
 flake8-isort==6.1.2  # https://github.com/gforcada/flake8-isort
 black==25.1.0  # https://github.com/psf/black
 pre-commit==4.2.0  # https://github.com/pre-commit/pre-commit
