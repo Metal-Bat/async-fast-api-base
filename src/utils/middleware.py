@@ -20,6 +20,8 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
 
         try:
             response: Response = await call_next(request)
+            await logger.ainfo("RESPONSE")
+
         except Exception as e:
             await logger.acritical("UNHANDLED_ERROR", error=e)
             raise
