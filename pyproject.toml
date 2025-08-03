@@ -97,7 +97,7 @@ target-version = ['py313']
 
 # ==== flake8 ====
 [tool.flake8]
-ignore = "B008"
+ignore = "B008,E501"
 
 # ==== isort ====
 [tool.isort]
