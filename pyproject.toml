@@ -31,7 +31,7 @@ dependencies = [
     "ipdb==0.13.13",
     "watchfiles==1.0.4",
     "mypy==1.15.0",
-    "pytest==8.3.5",
+    "pytest==8.4.2",
     "pytest-sugar==1.0.0",
     "factory-boy==3.3.3",
     "coverage==7.6.12",
