@@ -21,7 +21,7 @@ dependencies = [
   "pydantic-core==2.33.2",
   "pydantic-settings==2.10.1",
   "structlog==25.4.0",
-  "minio==7.2.15",
+  "minio==7.2.17",
   "ipython==9.2.0",
   "httpx==0.28.1",
 ]
