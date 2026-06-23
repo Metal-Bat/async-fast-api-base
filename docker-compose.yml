@@ -1,0 +1,88 @@
+volumes:
+  sample_postgres_data: {}
+  sample_pgadmin_data: {}
+  sample_dragonfly_data: {}
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./compose/backend/Dockerfile
+    image: sample_backend
+    container_name: sample_backend
+    depends_on:
+      - postgres
+    volumes:
+      - ./src:/app/src/:z
+      - ./logs:/app/logs:z
+    env_file:
+      - ./.envs/backend.env
+    ports:
+      - "8000:8000"
+      - "5678:5678"
+    stdin_open: true
+    tty: true
+
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/postgres/Dockerfile
+    image: sample_postgres
+    container_name: sample_postgres
+    volumes:
+      - sample_postgres_data:/var/lib/postgresql
+    env_file:
+      - ./.envs/postgres.env
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    build:
+      context: .
+      dockerfile: ./compose/pgadmin/Dockerfile
+    image: sample_pgadmin
+    container_name: sample_pgadmin
+    ports:
+      - 5050:80
+    volumes:
+      - sample_pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    env_file:
+      - ./.envs/pgadmin.env
+    attach: false
+
+  dragonfly:
+    build:
+      context: .
+      dockerfile: ./compose/dragonfly/Dockerfile
+    image: sample_dragonfly
+    container_name: sample_dragonfly
+    volumes:
+      - sample_dragonfly_data:/data
+    env_file:
+      - ./.envs/dragonfly.env
+    attach: false
+
+  jaeger:
+    build:
+      context: .
+      dockerfile: ./compose/jaeger/Dockerfile
+    image: sample_jaeger
+    container_name: sample_jaeger
+    ports:
+      - "16686:16686"
+    attach: false
+
+  otel-collector:
+    build:
+      context: .
+      dockerfile: ./compose/collector/Dockerfile
+    image: sample_collector
+    container_name: sample_collector
+    depends_on:
+      - jaeger
+    command: ["--config", "/etc/otel-collector-config.yaml"]
+    attach: false

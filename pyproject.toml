@@ -1,0 +1,135 @@
+[project]
+name = "fast-api-sample"
+version = "0.1.0"
+description = "A sample FastAPI project"
+readme = "README.md"
+requires-python = ">=3.14.4"
+license = { file = "LICENSE" }
+authors = [{ name = "erfan ehsany" }]
+dependencies = [
+    "alembic>=1.18.4",
+    "asyncpg>=0.31.0",
+    "fastapi[standard]>=0.136.1",
+    "fastapi-admin>=1.0.4",
+    "jwt>=1.4.0",
+    "opentelemetry-api>=1.41.1",
+    "opentelemetry-instrumentation-fastapi>=0.62b1",
+    "opentelemetry-sdk>=1.41.1",
+    "pydantic>=2.13.4",
+    "pydantic-extra-types>=2.11.1",
+    "pydantic-settings>=2.14.0",
+    "pyjwt>=2.12.1",
+    "sqlalchemy>=2.0.49",
+    "sqlmodel>=0.0.38",
+    "structlog>=25.5.0",
+    "types-pyjwt>=1.7.1",
+    "uvicorn[standard]>=0.46.0",
+]
+
+[dependency-groups]
+dev = [
+    "bandit>=1.9.4",
+    "commitizen>=4.16.2",
+    "coverage>=7.13.5",
+    "debugpy>=1.8.20",
+    "detect-secrets>=1.5.0",
+    "factory-boy>=3.3.3",
+    "pre-commit>=4.6.0",
+    "pytest>=9.0.3",
+    "pytest-benchmark>=5.2.3",
+    "pytest-cov>=7.1.0",
+    "pytest-sugar>=1.1.1",
+    "ruff>=0.15.12",
+    "ty>=0.0.34",
+]
+
+
+# ==== alembic ====
+[tool.alembic]
+script_location = "%(here)s/src/migrations"
+prepend_sys_path = [".", "src"]
+timezone = "UTC"
+
+[tool.alembic.loggers]
+keys = "root,sqlalchemy,alembic"
+
+[tool.alembic.handlers]
+keys = "console"
+
+[tool.alembic.formatters]
+keys = "generic"
+
+[tool.alembic.logger_root]
+level = "WARN"
+handlers = "console"
+
+[tool.alembic.logger_sqlalchemy]
+level = "WARN"
+handlers = "console,generic"
+qualname = "sqlalchemy.engine"
+
+[tool.alembic.logger_alembic]
+level = "INFO"
+handlers = "console,generic"
+qualname = "alembic"
+
+[tool.alembic.handler_console]
+class = "StreamHandler"
+args = "(sys.stderr,)"
+level = "NOTSET"
+formatter = "generic"
+
+[tool.alembic.formatter_generic]
+format = "%(levelname)-5.5s [%(name)s] %(message)s"
+datefmt = "%H:%M:%S"
+
+# ==== ruff ====
+[tool.ruff]
+src = ["src"]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint.per-file-ignores]
+"**/api/**/*.py" = ["B008"]
+
+[tool.ruff.format]
+docstring-code-format = true
+quote-style = "double"
+
+# ==== ty ====
+[tool.ty.environment]
+root = ["./src"]
+
+[tool.ty.rules]
+all = "warn"
+
+[[tool.ty.overrides]]
+include = ["src/**"]
+
+[tool.ty.overrides.rules]
+possibly-unresolved-reference = "error"
+
+[tool.ty.terminal]
+error-on-warning = false
+output-format = "full"
+
+# ==== pytest ====
+[tool.pytest.ini_options]
+pythonpath = "src"
+minversion = "6.0"
+python_files = ["tests.py", "test_*.py"]
+filterwarnings = []
+
+# ==== Coverage ====
+[tool.coverage.run]
+include = ["app/**"]
+omit = ["*/tests/*"]
+
+# ==== commitizen ====
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_scheme = "pep440"
+version_provider = "pep621"
+update_changelog_on_bump = true
+major_version_zero = true

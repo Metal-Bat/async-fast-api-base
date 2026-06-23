@@ -1,0 +1,137 @@
+[tools]
+python = "3.14.4"
+uv = "0.11.7"
+ruff = "0.15.11"
+ty = "0.0.32"
+pre-commit = "4.6.0"
+
+[tasks.setup]
+description = "Initial project setup"
+run = """
+uv sync
+pre-commit install
+pre-commit install --hook-type commit-msg
+"""
+
+[tasks.fmt]
+description = "Format source code with Ruff"
+run = "uv run ruff format ."
+
+[tasks.lint]
+description = "Run Ruff linter"
+run = "uv run ruff check ."
+
+[tasks.lint-fix]
+description = "Run Ruff linter and auto-fix issues"
+run = "uv run ruff check . --fix"
+
+[tasks.typecheck]
+description = "Run static type checking"
+run = "uv run ty check"
+
+[tasks.test]
+description = "Run test suite"
+run = "uv run pytest"
+
+[tasks.coverage]
+description = "Run tests with coverage report"
+run = """
+uv run pytest \
+  --cov=. \
+  --cov-report=term-missing \
+  --cov-report=html
+"""
+
+[tasks.benchmark]
+description = "Run benchmark suite"
+run = "uv run pytest benchmarks/ --benchmark-only"
+
+[tasks.security]
+description = "Run security scanners"
+run = """
+uv run bandit -r .
+uv run detect-secrets scan
+"""
+
+[tasks.check]
+description = "Run all quality checks"
+depends = ["fmt", "lint", "typecheck", "security", "test"]
+
+[tasks.commit]
+description = "Create conventional commit interactively"
+run = "uv run cz commit"
+
+[tasks.bump]
+description = "Bump semantic version and generate changelog"
+run = "uv run cz bump"
+
+[tasks.migrate]
+description = "Apply latest database migrations"
+run = "docker compose run --rm backend alembic upgrade head"
+
+[tasks.makemigrations]
+description = "Generate new Alembic migration"
+run = "docker compose run --rm backend alembic revision --autogenerate -m"
+
+[tasks.db-current]
+description = "Show current Alembic revision"
+run = "docker compose run --rm backend alembic current"
+
+[tasks.db-history]
+description = "Show Alembic migration history"
+run = "docker compose run --rm backend alembic history"
+
+[tasks.up]
+description = "Start all local containers"
+run = "docker compose up"
+
+[tasks.down]
+description = "Stop all local containers"
+run = "docker compose down"
+
+[tasks.restart]
+description = "Restart all local containers"
+run = """
+docker compose down
+docker compose up -d
+"""
+
+[tasks.build]
+description = "Build Docker containers"
+run = "docker compose build"
+
+[tasks.rebuild]
+description = "Rebuild Docker containers without cache"
+run = "docker compose build --no-cache"
+
+[tasks.logs]
+description = "Show Docker compose logs"
+run = "docker compose logs -f"
+
+[tasks.ps]
+description = "List running Docker compose services"
+run = "docker compose ps"
+
+[tasks.shell]
+description = "Open shell inside backend container"
+run = "docker compose exec backend bash"
+
+[tasks.backend]
+description = "Run backend container interactively"
+run = "docker compose run --rm backend bash"
+
+[tasks.clean]
+description = "Remove caches and temporary files"
+run = """
+find . -type d -name '__pycache__' -exec rm -rf {} +
+find . -type d -name '.pytest_cache' -exec rm -rf {} +
+find . -type d -name '.ruff_cache' -exec rm -rf {} +
+find . -type d -name '.mypy_cache' -exec rm -rf {} +
+"""
+
+[tasks.reset]
+description = "Full local environment reset"
+run = """
+docker compose down -v
+docker compose up -d
+"""
