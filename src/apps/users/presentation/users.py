@@ -21,7 +21,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 )
 async def users_list(
     request: Request,
-    query: UserQuery,
+    query: UserQuery,  # type: ignore
     headers: BaseHeaders = Depends(get_base_headers),
     service: UserService = Depends(get_user_service),
 ):

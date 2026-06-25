@@ -16,7 +16,7 @@ PlatformTypes = Literal[
 ]
 
 
-LanguagesTypes = Literal[
+AcceptLanguage = Literal[
     "ENGLISH",
     "PERSIAN",
     None,

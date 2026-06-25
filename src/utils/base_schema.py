@@ -1,7 +1,7 @@
 from fastapi import Header
 from pydantic import BaseModel, ConfigDict
 
-from core.types import LanguagesTypes, PlatformTypes
+from core.types import AcceptLanguage, PlatformTypes
 
 ERROR_CODES = frozenset([400, 401, 403, 404, 422, 429])
 
@@ -47,9 +47,9 @@ class BaseHeaders(BaseModel):
         alias="Package-Name",
     )
 
-    language: LanguagesTypes = Header(
+    language: AcceptLanguage = Header(
         default=None,
-        alias="Language",
+        alias="Accept-Language",
     )
 
 
@@ -74,9 +74,9 @@ async def get_base_headers(
         default=None,
         alias="Platform",
     ),
-    language: LanguagesTypes = Header(
+    accept_language: AcceptLanguage = Header(
         default=None,
-        alias="Language",
+        alias="Accept-Language",
     ),
 ) -> BaseHeaders:
     headers: BaseHeaders = BaseHeaders(
@@ -85,7 +85,7 @@ async def get_base_headers(
         version_name=version_name,
         package_name=package_name,
         platform=platform,
-        language=language,
+        language=accept_language,
     )
     return headers
 
