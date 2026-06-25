@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
-from jwt import decode
+import jwt
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -52,7 +52,7 @@ TokenDep = Annotated[str, Depends(reusable_oauth2)]
 
 async def get_current_user(session: SessionDep, token: TokenDep) -> UserEntity:
     try:
-        payload = decode(
+        payload = jwt.decode(
             token,
             settings.SECRET_KEY,
             algorithms=[settings.ALGORITHM],
