@@ -23,7 +23,7 @@ dependencies = [
     "sqlmodel>=0.0.38",
     "structlog>=25.5.0",
     "types-pyjwt>=1.7.1",
-    "uvicorn[standard]>=0.46.0",
+    "uvicorn[standard]>=0.50.0",
 ]
 
 [dependency-groups]
