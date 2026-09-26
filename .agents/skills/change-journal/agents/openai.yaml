@@ -1,0 +1,4 @@
+interface:
+  display_name: "Change Journal"
+  short_description: "Document durable engineering changes and backlog impact"
+  default_prompt: "Use $change-journal to document the completed engineering change from repository evidence."

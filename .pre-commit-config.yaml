@@ -1,4 +1,4 @@
-exclude: "^docs/|/migrations/|devcontainer.json"
+exclude: "^docs/|^.agents/|^.codex/|^graphify-out/|/migrations/|devcontainer.json"
 default_stages: [pre-commit]
 
 default_language_version:
@@ -20,15 +20,16 @@ repos:
       - id: check-docstring-first
       - id: detect-private-key
       - id: name-tests-test
+        args: [--pytest-test-first]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.18
+    rev: v0.16.6
     hooks:
       - id: ruff-check
       - id: ruff-format
 
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.16.4
+    rev: v4.18.0
     hooks:
       - id: commitizen
         stages: [commit-msg]

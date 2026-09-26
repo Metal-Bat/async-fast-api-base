@@ -151,7 +151,7 @@ typings/
 
 ### VisualStudioCode template
 .vscode/*
-.vscode/settings.json
+!.vscode/settings.json
 
 # Local History for devcontainer
 .devcontainer/bash_history
@@ -270,10 +270,15 @@ app/media/
 .env
 .envs/*
 
-!.envs/backend.env
-!.envs/dragonfly.env
-!.envs/pgadmin.env
-!.envs/postgres.env
+!.envs/.backend
+!.envs/.cache
+!.envs/.s3
+!.envs/.broker
+!.envs/.pgadmin
+!.envs/.postgres
 
 # backup folder
 .backup*/
+
+# graphify history files
+graphify-out/

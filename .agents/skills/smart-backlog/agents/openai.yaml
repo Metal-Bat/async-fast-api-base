@@ -1,0 +1,4 @@
+interface:
+  display_name: "Smart Backlog"
+  short_description: "Maintain a repository-aware Python engineering backlog"
+  default_prompt: "Use $smart-backlog to inspect the repository and maintain or select work from BACKLOG.md."
