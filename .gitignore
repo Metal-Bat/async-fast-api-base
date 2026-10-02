@@ -283,3 +283,6 @@ graphify-out/
 .obsidian/
 .trash/
 /raw/
+
+# Private local Codex hooks
+/.codex/hooks.json
