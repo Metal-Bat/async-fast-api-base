@@ -1,0 +1,3 @@
+# Local development example. Replace credentials before deployment.
+PGADMIN_DEFAULT_EMAIL=admin@example.test
+PGADMIN_DEFAULT_PASSWORD=local-only-pgadmin

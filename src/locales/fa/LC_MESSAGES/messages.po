@@ -1,0 +1,1124 @@
+# Persian translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-09-09 23:18+0330\n"
+"PO-Revision-Date: 2026-09-09 18:39+0330\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fa\n"
+"Language-Team: fa <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: src/apps/media/domain/dto.py:12
+msgid "Opaque versioned upload reference."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:15
+msgid "User that owns the upload."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:26
+msgid "Either file or image."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:30
+msgid "Private S3 object key."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:40
+msgid "Client-provided filename."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:46
+msgid "Validated stored media type."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:52
+msgid "Stored object size in bytes."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:58
+msgid "SHA-256 digest of the stored bytes."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:69
+msgid "Image width in pixels."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:74
+msgid "Image height in pixels."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:14 src/apps/tasks/domain/entity.py:19
+msgid "Unique schedule name."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:15 src/apps/tasks/domain/entity.py:25
+msgid "Registered Celery task name."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:16 src/apps/tasks/domain/entity.py:29
+msgid "Destination queue."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:47
+msgid "Opaque versioned schedule reference."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:100
+msgid "Opaque versioned execution reference."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:35
+msgid "Schedule type."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:40
+msgid "Interval in seconds."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:288
+msgid "Unique scheduler lease name."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:299
+msgid "UUIDv7 of the scheduler process holding the lease."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:309
+msgid "UTC deadline after which another scheduler may claim the lease."
+msgstr ""
+
+#: src/apps/users/domain/auth_dto.py:46
+msgid "Opaque versioned session reference."
+msgstr ""
+
+#: src/apps/users/domain/auth_dto.py:74
+msgid "Opaque versioned permission reference."
+msgstr ""
+
+#: src/apps/users/domain/auth_dto.py:120
+msgid "Opaque versioned audit-event reference."
+msgstr ""
+
+#: src/apps/users/domain/auth_dto.py:152
+msgid "Opaque versioned role reference."
+msgstr ""
+
+#: src/apps/users/domain/auth_entity.py:27
+msgid "User that owns this device session."
+msgstr ""
+
+#: src/apps/users/domain/auth_entity.py:38
+msgid "Refresh-token rotation family identifier."
+msgstr ""
+
+#: src/apps/users/domain/auth_entity.py:48
+msgid "SHA-256 digest of the opaque refresh token."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:14 src/apps/users/domain/dto.py:28
+#: src/apps/users/domain/dto.py:54
+msgid "Unique username."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:15
+msgid "Plaintext password accepted only as input."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:16
+msgid "Grant administrative privileges."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:17 src/apps/users/domain/dto.py:29
+#: src/apps/users/domain/dto.py:55
+msgid "Unique email address."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:18 src/apps/users/domain/dto.py:34
+#: src/apps/users/domain/dto.py:61
+msgid "Given name."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:19 src/apps/users/domain/dto.py:35
+#: src/apps/users/domain/dto.py:62
+msgid "Family name."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:26 src/apps/users/domain/dto.py:52
+msgid "Opaque versioned user reference."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:31 src/apps/users/domain/dto.py:42
+msgid "Replacement plaintext password."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:33 src/apps/users/domain/dto.py:64
+msgid "Administrative privilege flag."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:41
+msgid "Current plaintext password."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:57 src/core/common_dto.py:14
+msgid "UTC creation timestamp."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:58 src/core/base_entity.py:55
+#: src/core/common_dto.py:15
+msgid "UTC timestamp of the most recent update."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:59 src/core/common_dto.py:16
+msgid "UTC soft-deletion timestamp."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:65
+msgid "Whether the user is not soft-deleted."
+msgstr ""
+
+#: src/apps/users/domain/entity.py:14
+msgid "Unique username used to identify the user."
+msgstr ""
+
+#: src/apps/users/domain/entity.py:26
+msgid "Unique email address for the user."
+msgstr ""
+
+#: src/apps/users/domain/entity.py:37
+msgid "Whether the user has administrative privileges."
+msgstr ""
+
+#: src/apps/users/domain/entity.py:48
+msgid "User's given name."
+msgstr ""
+
+#: src/apps/users/domain/entity.py:53
+msgid "User's family name."
+msgstr ""
+
+#: src/apps/users/domain/entity.py:57
+msgid "One-way password hash; a plaintext password is never stored."
+msgstr ""
+
+#: src/core/base_entity.py:20 src/core/common_dto.py:12
+msgid "Time-sortable UUIDv7 primary key."
+msgstr ""
+
+#: src/core/base_entity.py:32 src/core/common_dto.py:13
+msgid "Optimistic-lock version number."
+msgstr ""
+
+#: src/core/base_entity.py:44
+msgid "UTC timestamp at which the row was created."
+msgstr ""
+
+#: src/core/base_entity.py:66
+msgid "UTC soft-deletion timestamp; null means the row is active."
+msgstr ""
+
+#: src/core/common_dto.py:22 src/core/common_dto.py:30
+#: src/core/common_dto.py:43 src/core/common_dto.py:51
+#: src/core/common_entity.py:12 src/core/common_entity.py:46
+msgid "Human-readable title."
+msgstr ""
+
+#: src/core/common_dto.py:23 src/core/common_dto.py:31
+msgid "URL-safe identifier."
+msgstr ""
+
+#: src/core/common_dto.py:24 src/core/common_dto.py:32
+#: src/core/common_dto.py:44 src/core/common_dto.py:52
+#: src/core/common_entity.py:26 src/core/common_entity.py:51
+msgid "Optional long-form description."
+msgstr ""
+
+#: src/core/common_dto.py:33 src/core/common_dto.py:54
+msgid "Version expected by the caller."
+msgstr ""
+
+#: src/core/common_dto.py:45 src/core/common_dto.py:53
+msgid "User-controlled ordering position."
+msgstr ""
+
+#: src/core/common_entity.py:16
+msgid "URL-safe identifier, unique among rows that are not soft-deleted."
+msgstr ""
+
+#: src/core/common_entity.py:57
+msgid "User-controlled position used as the primary default sort key."
+msgstr ""
+
+#: src/core/settings.py:25
+msgid ""
+"Async API with versioned references, background tasks, private media, and"
+" observability."
+msgstr ""
+"رابط برنامه‌نویسی ناهمگام با شناسه‌های نسخه‌دار، وظایف پس‌زمینه، رسانه "
+"خصوصی و مشاهده‌پذیری."
+
+#: src/core/settings.py:37
+#, fuzzy
+msgid "File and WebP image upload and download operations."
+msgstr "بارگذاری و دریافت فایل‌ها و تصاویر خصوصی."
+
+#: src/core/settings.py:39
+msgid "Administrative background-task scheduling."
+msgstr "زمان‌بندی و مدیریت وظایف پس‌زمینه."
+
+#: src/core/settings.py:42
+msgid "Administrative user and authorization operations."
+msgstr "مدیریت کاربران، نقش‌ها و مجوزها."
+
+#: src/core/settings.py:44
+msgid "Authentication and device-session operations."
+msgstr "ورود، نشست‌ها و بازیابی گذرواژه."
+
+#: src/core/settings.py:45
+msgid "Liveness and dependency readiness probes."
+msgstr "وضعیت برنامه و سرویس‌های داخلی."
+
+#: src/utils/base_schema.py:61
+msgid "UUIDv7 request correlation identifier."
+msgstr ""
+
+#: src/utils/base_schema.py:106
+msgid "Optional UUIDv7 correlation ID; generated when omitted."
+msgstr ""
+
+#: src/utils/errors/auth.py:8
+msgid "Invalid authentication credentials."
+msgstr "اطلاعات ورود نامعتبر است."
+
+#: src/utils/errors/auth.py:9
+msgid "You do not have permission to perform this action."
+msgstr "شما اجازه انجام این عملیات را ندارید."
+
+#: src/utils/errors/auth.py:10
+msgid "The account is temporarily locked."
+msgstr "حساب کاربری موقتاً قفل شده است."
+
+#: src/utils/errors/auth.py:11
+msgid "The token is invalid or expired."
+msgstr "توکن نامعتبر است یا منقضی شده است."
+
+#: src/utils/errors/auth.py:12
+msgid "User not found."
+msgstr "کاربر یافت نشد."
+
+#: src/utils/errors/auth.py:13
+msgid "The user account is inactive."
+msgstr "حساب کاربری غیرفعال است."
+
+#: src/utils/errors/common.py:8
+msgid "Resource not found."
+msgstr "مورد درخواستی یافت نشد."
+
+#: src/utils/errors/common.py:9
+msgid "The request is invalid."
+msgstr "درخواست نامعتبر است."
+
+#: src/utils/errors/common.py:10
+msgid "Request validation failed."
+msgstr "اعتبارسنجی درخواست ناموفق بود."
+
+#: src/utils/errors/common.py:11
+msgid "The resource was modified. Refresh and try again."
+msgstr "اطلاعات تغییر کرده است. صفحه را تازه کنید و دوباره تلاش کنید."
+
+#: src/utils/errors/common.py:12
+msgid "The resource reference is invalid."
+msgstr "شناسه مرجع نامعتبر است."
+
+#: src/utils/errors/common.py:13
+msgid "An unexpected error occurred."
+msgstr "خطای غیرمنتظره‌ای رخ داد."
+
+#: src/utils/errors/common.py:14
+msgid "The service is temporarily unavailable."
+msgstr "سرویس موقتاً در دسترس نیست."
+
+#: src/utils/errors/common.py:15
+msgid "Too many requests. Try again later."
+msgstr "تعداد درخواست‌ها بیش از حد مجاز است. بعداً دوباره تلاش کنید."
+
+#: src/utils/errors/infrastructure.py:8
+msgid "The database is temporarily unavailable."
+msgstr "پایگاه داده موقتاً در دسترس نیست."
+
+#: src/utils/errors/infrastructure.py:9
+msgid "The operation conflicts with existing data."
+msgstr "این عملیات با داده‌های موجود تداخل دارد."
+
+#: src/utils/errors/infrastructure.py:10
+msgid "The cache service is temporarily unavailable."
+msgstr "سرویس حافظه موقت در دسترس نیست."
+
+#: src/utils/errors/infrastructure.py:11
+msgid "The file storage service is temporarily unavailable."
+msgstr "سرویس ذخیره‌سازی فایل موقتاً در دسترس نیست."
+
+#: src/utils/errors/infrastructure.py:12
+msgid "The task broker is temporarily unavailable."
+msgstr "سرویس صف وظایف موقتاً در دسترس نیست."
+
+#: src/utils/errors/media.py:8
+msgid "The upload exceeds the size limit."
+msgstr "حجم فایل بیش از حد مجاز است."
+
+#: src/utils/errors/media.py:9
+msgid "The uploaded content is not a valid image."
+msgstr "محتوای بارگذاری‌شده تصویر معتبری نیست."
+
+#: src/utils/errors/media.py:10
+msgid "The upload limit was exceeded. Try again later."
+msgstr "تعداد بارگذاری‌ها بیش از حد مجاز است. بعداً دوباره تلاش کنید."
+
+#: src/utils/errors/media.py:11
+msgid "The uploaded content is not a supported file."
+msgstr "محتوای بارگذاری‌شده یک فایل پشتیبانی‌شده نیست."
+
+#~ msgid "Authentication and user account operations."
+#~ msgstr "عملیات حساب‌های کاربری."
+
+
+msgid "Form definition operations."
+msgstr "عملیات تعریف فرم."
+
+msgid "Versioned form authoring operations."
+msgstr "عملیات طراحی نسخه‌های فرم."
+
+msgid "Governed integration connection operations."
+msgstr "عملیات مدیریت اتصال‌های یکپارچه‌سازی."
+
+#: src/apps/designer/application/service.py:110
+msgid "Draft"
+msgstr "پیش‌نویس"
+
+#: src/apps/designer/application/service.py:110
+msgid "Published"
+msgstr "منتشرشده"
+
+#: src/apps/designer/application/service.py:110
+msgid "Retired"
+msgstr "بازنشسته"
+
+#: src/apps/designer/application/service.py:111
+msgid "Submitted"
+msgstr "ارسال‌شده"
+
+#: src/apps/designer/application/service.py:111
+msgid "Running"
+msgstr "در حال اجرا"
+
+#: src/apps/designer/application/service.py:111
+msgid "Waiting"
+msgstr "در انتظار"
+
+#: src/apps/designer/application/service.py:112
+msgid "Paused"
+msgstr "متوقف‌شده"
+
+#: src/apps/designer/application/service.py:112
+msgid "Completed"
+msgstr "تکمیل‌شده"
+
+#: src/apps/designer/application/service.py:112
+msgid "Failed"
+msgstr "ناموفق"
+
+#: src/apps/designer/application/service.py:113
+msgid "Cancelled"
+msgstr "لغوشده"
+
+#: src/apps/designer/application/service.py:113
+msgid "Approve"
+msgstr "تأیید"
+
+#: src/apps/designer/application/service.py:113
+msgid "Reject"
+msgstr "رد"
+
+#: src/apps/designer/application/service.py:114
+msgid "Next"
+msgstr "بعدی"
+
+#: src/apps/designer/application/service.py:114
+msgid "Success"
+msgstr "موفقیت"
+
+#: src/apps/designer/application/service.py:114
+msgid "Failure"
+msgstr "شکست"
+
+msgid "Optional client Date reading: available, unavailable, or invalid. No request is rejected for this diagnostic."
+msgstr "وضعیت تاریخ اختیاری کلاینت: معتبر، موجود نیست یا نامعتبر. این بررسی باعث رد درخواست نمی‌شود."
+
+msgid "Signed server receipt minus client Date in seconds; includes transit and generation delay, so it is not exact clock skew."
+msgstr "اختلاف زمان دریافت سرور و تاریخ کلاینت بر حسب ثانیه با علامت؛ شامل تأخیر شبکه و تولید درخواست است و اختلاف دقیق ساعت‌ها نیست."
+
+msgid "Present as check-device-time only when the configured apparent difference threshold is reached."
+msgstr "فقط وقتی اختلاف ظاهری به آستانه تنظیم‌شده برسد، با مقدار check-device-time ارائه می‌شود."
+
+msgid "Server UTC receipt timestamp. Response Date, when present, is generated by the HTTP server or proxy."
+msgstr "زمان دریافت سرور به UTC. سرور HTTP یا پراکسی، هدر Date پاسخ را در صورت وجود تولید می‌کند."
+
+msgid "Optional RFC 9110 HTTP-date generated by native clients for advisory diagnostics. Browser JavaScript cannot set Date. Missing or invalid values do not reject the request."
+msgstr "تاریخ اختیاری طبق RFC 9110 که کلاینت‌های بومی برای راهنمایی تشخیصی تولید می‌کنند. جاوااسکریپت مرورگر نمی‌تواند Date را تنظیم کند. مقدار ناموجود یا نامعتبر باعث رد درخواست نمی‌شود."
+
+msgid "Optional preferred response language. English and Farsi are supported; regional tags use their base language and unsupported values fall back to English."
+msgstr "زبان ترجیحی اختیاری پاسخ. انگلیسی و فارسی پشتیبانی می‌شوند؛ برچسب‌های منطقه‌ای از زبان پایه استفاده می‌کنند و مقدارهای پشتیبانی‌نشده به انگلیسی برمی‌گردند."
+
+msgid "Optional UUIDv7 correlation identifier. Missing or invalid values are replaced with a generated UUIDv7; the effective value is returned in X-Request-ID."
+msgstr "شناسه اختیاری همبستگی UUIDv7. مقدار ناموجود یا نامعتبر با UUIDv7 تازه جایگزین می‌شود و مقدار مؤثر در X-Request-ID پاسخ برمی‌گردد."
+
+msgid "Optional caller-supplied reason recorded in audit history. It is not an authorization credential."
+msgstr "دلیل اختیاری ارائه‌شده توسط فرستنده که در تاریخچه ممیزی ثبت می‌شود. این مقدار اعتبارنامه مجوزدهی نیست."
+
+msgid "Optional caller-controlled client software identifier. Captured for diagnostics and audit, truncated to 1024 characters; never used for authorization or trusted client identity. Browsers supply their own value and may ignore manual overrides."
+msgstr "شناسه اختیاری نرم‌افزار کلاینت که فرستنده کنترل می‌کند. برای عیب‌یابی و ممیزی ثبت و به ۱۰۲۴ نویسه محدود می‌شود؛ برای مجوزدهی یا هویت معتبر کلاینت استفاده نمی‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی را نادیده بگیرند."
+
+msgid "Optional caller-controlled client software identifier for audit and diagnostics; captured up to 1024 characters. Browsers supply their own value and may ignore manual Swagger overrides. Not trusted client identity or authorization."
+msgstr "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست."
+
+msgid "step.request_priority.name"
+msgstr "اولویت درخواست"
+
+msgid "step.request_priority.help"
+msgstr "اولویت درخواست جاری را می‌خواند."
+
+msgid "step.permission_check.name"
+msgstr "بررسی مجوز"
+
+msgid "step.permission_check.help"
+msgstr "مجوز عامل اجرای جاری را بدون اعطای دسترسی بررسی می‌کند."
+
+msgid "step.connection_status.name"
+msgstr "وضعیت اتصال"
+
+msgid "step.connection_status.help"
+msgstr "اتصال تأییدشده را در پس‌زمینه فراخوانی می‌کند و وضعیت آن را برمی‌گرداند."
+
+msgid "Trusted workflow step type versions."
+msgstr "نسخه‌های معتبر نوع گام گردش‌کار."
+
+msgid "Search deployed step type versions"
+msgstr "جست‌وجوی نسخه‌های نوع گام مستقرشده"
+
+msgid "Requires workflows.manage. Includes draft and historical versions; is_available is false when the exact deployed handler is missing or changed."
+msgstr "نیازمند مجوز workflows.manage است. نسخه‌های پیش‌نویس و تاریخی را نیز نشان می‌دهد؛ اگر پیاده‌سازی دقیق مستقرشده موجود نباشد یا تغییر کرده باشد، is_available برابر false است."
+
+msgid "Inspect one pinned step type version"
+msgstr "مشاهده یک نسخه ثابت نوع گام"
+
+msgid "Requires workflows.manage. Historical metadata remains readable if its code extension is no longer deployed."
+msgstr "نیازمند مجوز workflows.manage است. فراداده تاریخی حتی پس از حذف افزونه کد قابل مشاهده می‌ماند."
+
+msgid "Publish a reconciled step type draft"
+msgstr "انتشار پیش‌نویس نوع گام همگام‌شده"
+
+msgid "Requires workflows.manage. Only a draft whose persisted schema exactly matches deployed trusted code can be published. Published contracts are immutable."
+msgstr "نیازمند مجوز workflows.manage است. فقط پیش‌نویسی که طرحواره ذخیره‌شده آن دقیقاً با کد معتبر مستقرشده یکسان باشد قابل انتشار است. قراردادهای منتشرشده تغییرناپذیرند."
+
+msgid "Select executable published step types"
+msgstr "انتخاب نوع گام منتشرشده و قابل اجرا"
+
+msgid "Requires workflows.manage. Returns only currently registered, matching published versions as key/value choices. response_format=items returns the same bounded page without its envelope."
+msgstr "نیازمند مجوز workflows.manage است. فقط نسخه‌های منتشرشده‌ای را که با ثبت فعلی یکسان‌اند به شکل گزینه‌های key/value برمی‌گرداند. response_format=items همان صفحه محدود را بدون پوشش پاسخ ارائه می‌کند."
+
+msgid "Versioned AI agents and governed model choices."
+msgstr "عامل‌های نسخه‌دار هوش مصنوعی و گزینه‌های مدل کنترل‌شده."
+
+msgid "step.ai_decision.name"
+msgstr "تصمیم هوش مصنوعی"
+
+msgid "step.ai_decision.help"
+msgstr "طبقه‌بندی محدود با مدل مجاز و مسیر بازبینی انسانی."
+
+msgid "Search owned AI agent versions"
+msgstr "جست‌وجوی نسخه‌های عامل هوش مصنوعی"
+
+msgid "Requires workflows.manage. Returns versions owned by the actor, or all versions for a superuser. Search accepts bounded filters, sorting and pagination. Specs include the author's prompt and are visible only to authorized owners."
+msgstr "به مجوز workflows.manage نیاز دارد. نسخه‌های متعلق به کاربر یا همه نسخه‌ها را برای مدیر کل برمی‌گرداند. جست‌وجو از فیلتر، مرتب‌سازی و صفحه‌بندی محدود پشتیبانی می‌کند. متن دستور عامل فقط برای مالک مجاز نمایش داده می‌شود."
+
+msgid "Report owned AI agent versions"
+msgstr "گزارش نسخه‌های عامل هوش مصنوعی"
+
+msgid "Requires workflows.manage. Uses the same bounded query and authorization as search."
+msgstr "به مجوز workflows.manage نیاز دارد و از همان فیلتر و کنترل دسترسی جست‌وجو استفاده می‌کند."
+
+msgid "Create an AI agent draft"
+msgstr "ایجاد پیش‌نویس عامل هوش مصنوعی"
+
+msgid "Requires workflows.manage. Creates a new numbered draft for the code. The agent spec pins a model and approved connection reference, a versioned prompt, a static or input-bound decision contract, permitted fields and classifications, and user task limits. No model call occurs."
+msgstr "به مجوز workflows.manage نیاز دارد. برای شناسه عامل یک پیش‌نویس شماره‌دار ایجاد می‌کند. مشخصات شامل مدل، اتصال مجاز، نسخه دستور، قرارداد تصمیم، داده‌های مجاز و محدودیت‌های کاربر است. هیچ فراخوانی مدل انجام نمی‌شود."
+
+msgid "Select executable AI agent versions"
+msgstr "انتخاب نسخه‌های قابل اجرای عامل هوش مصنوعی"
+
+msgid "Requires workflows.manage. Returns only published agent versions whose configured connection and model are currently authorized and usable. response_format=items returns the same bounded slice as plain key/value objects."
+msgstr "به مجوز workflows.manage نیاز دارد. تنها نسخه‌های منتشرشده با اتصال و مدل مجاز و فعال را برمی‌گرداند. با response_format=items همان صفحه محدود به صورت آرایه کلید و مقدار ارائه می‌شود."
+
+msgid "Select installed AI provider adapters"
+msgstr "انتخاب رابط‌های نصب‌شده ارائه‌دهنده هوش مصنوعی"
+
+msgid "Requires workflows.manage. Lists currently importable trusted provider adapters, including registered custom adapters. Installed adapters still require an authorized verified connection."
+msgstr "به مجوز workflows.manage نیاز دارد. رابط‌های مورد اعتماد قابل بارگذاری، از جمله رابط‌های سفارشی ثبت‌شده را فهرست می‌کند. نصب بودن رابط به معنی داشتن اتصال مجاز نیست."
+
+msgid "Inspect one trusted provider adapter"
+msgstr "مشاهده قابلیت‌های یک رابط مورد اعتماد"
+
+msgid "Requires workflows.manage. Reports installed adapter capability and missing optional SDK state; this is not a credential or live model probe."
+msgstr "به مجوز workflows.manage نیاز دارد. قابلیت رابط و نبود کتابخانه اختیاری را گزارش می‌کند؛ اعتبارنامه یا مدل زنده بررسی نمی‌شود."
+
+msgid "Select authorized verified AI connections"
+msgstr "انتخاب اتصال‌های تأییدشده و مجاز هوش مصنوعی"
+
+msgid "Requires workflows.manage and per-connection access. Lists active verified AI connections with an installed adapter; never returns credentials. response_format=items returns a bounded plain array."
+msgstr "به مجوز workflows.manage و دسترسی همان اتصال نیاز دارد. اتصال‌های فعال و تأییدشده را بدون اعتبارنامه برمی‌گرداند. response_format=items یک آرایه محدود می‌دهد."
+
+msgid "Select configured models for one authorized AI connection"
+msgstr "انتخاب مدل‌های پیکربندی‌شده یک اتصال مجاز"
+
+msgid "Requires workflows.manage and use access to the active verified connection. Models are administrator allowlisted per connection; no arbitrary URL or live provider discovery occurs. Model IDs absent from PydanticAI's known-name list remain valid when configured."
+msgstr "به مجوز workflows.manage و حق استفاده از اتصال تأییدشده نیاز دارد. مدل‌ها در هر اتصال از فهرست مجاز مدیر انتخاب می‌شوند؛ نشانی دلخواه یا کشف زنده پذیرفته نیست. مدل‌های ثبت‌شده حتی اگر در فهرست کتابخانه نباشند مجازند."
+
+msgid "Browse library and configured model suggestions"
+msgstr "مشاهده پیشنهادهای مدل کتابخانه و اتصال‌ها"
+
+msgid "Requires workflows.manage. Merges public PydanticAI known model names with models from authorized verified AI connections. Library names are non-executable suggestions; configured entries have a connection-scoped identity and source. Duplicate configured IDs are deduplicated within each connection. This endpoint does not probe provider networks."
+msgstr "به مجوز workflows.manage نیاز دارد. نام‌های شناخته‌شده کتابخانه را با مدل‌های اتصال‌های مجاز ترکیب می‌کند. نام کتابخانه فقط پیشنهاد است و اجراشدنی نیست؛ مدل پیکربندی‌شده به اتصال و منبع مشخص وابسته است. این مسیر به شبکه ارائه‌دهنده درخواست نمی‌فرستد."
+
+msgid "Inspect one connection-scoped model capability"
+msgstr "مشاهده قابلیت‌های مدل در یک اتصال"
+
+msgid "Requires workflows.manage and use access to the verified AI connection. Reports configured model, region, retention declaration and adapter capabilities without resolving or returning its secret."
+msgstr "به مجوز workflows.manage و حق استفاده از اتصال تأییدشده نیاز دارد. مدل، ناحیه، اعلامیه نگه‌داری داده و قابلیت‌ها را بدون برگرداندن راز اتصال نشان می‌دهد."
+
+msgid "Inspect one AI step task budget"
+msgstr "مشاهده بودجه یک گام هوش مصنوعی"
+
+msgid "Requires requests.start and authorization to view the process request. The execution must belong to that process and have an AI task budget. Returns pinned effective limits, used, reserved and remaining amounts in USD with the price source/version. Unknown provider completion keeps a hold and sets unknown_usage; it never appears as zero cost."
+msgstr "به مجوز requests.start و حق مشاهده درخواست فرایند نیاز دارد. اجرا باید متعلق به همان فرایند باشد. سقف ثبت‌شده، مصرف، رزرو و باقیمانده دلار را همراه نسخه قیمت نشان می‌دهد. مصرف نامعلوم رزرو را نگه می‌دارد و صفر فرض نمی‌شود."
+
+msgid "Inspect one AI agent version"
+msgstr "مشاهده یک نسخه عامل هوش مصنوعی"
+
+msgid "Requires workflows.manage and ownership or superuser status. The spec includes the versioned prompt and budget policy; published definitions are immutable. A ref_id carries an optimistic-lock version."
+msgstr "به مجوز workflows.manage و مالکیت یا دسترسی مدیر کل نیاز دارد. مشخصات شامل نسخه دستور و سیاست بودجه است؛ نسخه منتشرشده تغییرناپذیر است. ref_id نسخه قفل خوش‌بینانه را در خود دارد."
+
+msgid "Inspect one AI agent version history"
+msgstr "مشاهده تاریخچه یک نسخه عامل هوش مصنوعی"
+
+msgid "Requires workflows.manage and ownership or superuser status. History may include prior authored prompt text; use the same authorization as agent detail."
+msgstr "به مجوز workflows.manage و مالکیت یا دسترسی مدیر کل نیاز دارد. تاریخچه ممکن است متن دستورهای پیشین را داشته باشد و همان کنترل دسترسی جزئیات عامل اعمال می‌شود."
+
+msgid "Replace an AI agent draft"
+msgstr "جایگزینی پیش‌نویس عامل هوش مصنوعی"
+
+msgid "Requires workflows.manage and ownership or superuser status. Only a current draft ref_id can be replaced; stale revisions and published definitions are rejected."
+msgstr "به مجوز workflows.manage و مالکیت یا دسترسی مدیر کل نیاز دارد. فقط پیش‌نویس با ref_id جاری جایگزین می‌شود؛ نسخه قدیمی یا منتشرشده رد می‌شود."
+
+msgid "Delete an AI agent draft"
+msgstr "حذف پیش‌نویس عامل هوش مصنوعی"
+
+msgid "Requires workflows.manage and ownership or superuser status. Only an unpublished draft may be soft deleted; published versions stay available for pinned executions."
+msgstr "به مجوز workflows.manage و مالکیت یا دسترسی مدیر کل نیاز دارد. فقط پیش‌نویس منتشرنشده حذف نرم می‌شود؛ نسخه منتشرشده برای اجراهای ثبت‌شده باقی می‌ماند."
+
+msgid "Publish a priced, authorized AI agent version"
+msgstr "انتشار نسخه مجاز و قیمت‌گذاری‌شده عامل هوش مصنوعی"
+
+msgid "Requires workflows.manage and ownership or superuser status. Publication pins the effective user/admin limits and price version, and checks the installed adapter, verified connection, model allowlist and retention declaration. No provider call occurs. Unsupported tool calls or hidden transport retries fail closed."
+msgstr "به مجوز workflows.manage و مالکیت یا دسترسی مدیر کل نیاز دارد. انتشار سقف مؤثر کاربر و مدیر و نسخه قیمت را ثبت می‌کند و رابط، اتصال، فهرست مدل‌ها و اعلامیه نگه‌داری داده را بررسی می‌کند. مدل فراخوانی نمی‌شود و ابزار یا تلاش پنهان نامجاز رد می‌شود."
+
+msgid "Select pinned static decision choices"
+msgstr "انتخاب گزینه‌های ثابت تصمیم ثبت‌شده"
+
+msgid "Requires workflows.manage and ownership or superuser status. Returns stable keys and localized display labels from the published decision schema. Input-bound choice sets are resolved per attempt and have no definition-time select."
+msgstr "به مجوز workflows.manage و مالکیت یا دسترسی مدیر کل نیاز دارد. کلیدهای ثابت و برچسب‌های محلی قرارداد منتشرشده را برمی‌گرداند. گزینه‌های وابسته به ورودی در هر تلاش حل می‌شوند و انتخاب زمان تعریف ندارند."
+
+msgid "Inspect a claimed AI tool approval"
+msgstr "مشاهده تأیید ابزار هوش مصنوعی واگذارشده"
+
+msgid "Requires requests.start and the current eligible work-item claimant. Claim the form-less work item through /work-items/{ref_id}/claim first. Returns the exact registered read-only tool and validated arguments; never returns prompts, message history or ciphertext. Arguments become null after expiry or payload deletion. Unauthorized claimants receive 403; missing approval receives 404. Responses are not cacheable."
+msgstr "به مجوز requests.start و کاربر فعلی و واجد شرایطِ مدعی کار نیاز دارد. ابتدا کار بدون فرم را از مسیر claim دریافت کنید. فقط ابزار ثبت‌شده و آرگومان‌های دقیق و اعتبارسنجی‌شده برگردانده می‌شود؛ متن دستور، تاریخچه پیام و داده رمز‌شده نمایش داده نمی‌شود. پس از انقضا یا حذف داده، آرگومان‌ها null هستند. دسترسی نامجاز خطای 403 و نبود تأیید خطای 404 می‌دهد. پاسخ قابل ذخیره در کش نیست."
+
+msgid "Approve or deny a claimed AI tool call"
+msgstr "تأیید یا رد فراخوانی ابزار هوش مصنوعی"
+
+msgid "Requires requests.start and the current eligible claimant. Only a PENDING approval on a current CLAIMED/IN_PROGRESS work-item reference may change. approved=true atomically completes the work item and stages one worker resume in the existing outbox; it does not execute the tool in the HTTP request. approved=false rejects the item, deletes its encrypted payload and fails the AI attempt. A repeated identical command before process advancement is a no-op; a changed command payload, stale reference, terminal execution or expired approval returns 409. Approval uses the task's existing elapsed/token/USD budget. The worker rechecks execution state, connection and query permissions; unknown dispatch is fenced against replay. Tool approvals cannot be forwarded."
+msgstr "به مجوز requests.start و کاربر فعلی و واجد شرایطِ مدعی کار نیاز دارد. فقط تأیید PENDING با مرجع جاری کار CLAIMED یا IN_PROGRESS قابل تغییر است. approved=true کار را تکمیل و یک پیام ادامه اجرا در outbox ثبت می‌کند؛ ابزار در درخواست HTTP اجرا نمی‌شود. approved=false کار را رد، داده رمز‌شده را حذف و تلاش هوش مصنوعی را ناموفق می‌کند. تکرار فرمان یکسان پیش از پیشرفت فرایند بی‌اثر است. تغییر محتوای فرمان، مرجع قدیمی، اجرای پایان‌یافته یا تأیید منقضی خطای 409 دارد. بودجه زمانی، توکن و دلار همان کار حفظ می‌شود؛ worker وضعیت اجرا، اتصال و مجوز پرس‌وجو را دوباره بررسی می‌کند. اجرای نامعلوم دوباره ارسال نمی‌شود و این کار قابل ارجاع نیست."
+
+
+msgid "Descending branch order; the first matching variant wins. Shared design is the final fallback."
+msgstr "ترتیب شاخه‌ها بر اساس اولویت نزولی است؛ نخستین گونه منطبق انتخاب می‌شود و طراحی مشترک حالت نهایی جایگزین است."
+
+
+msgid "Optional boolean expression over the declared client namespace, combined with client/range targets. Uses version_in_range(client.release, minimum, maximum_exclusive) for numeric releases; bounds are literal versions or null. Missing releases do not match. Errors fail selection. No request data, scripts or authorization grants. Null preserves legacy targeting."
+msgstr "عبارت بولی اختیاری بر پایه فضای نام client که همراه محدودیت‌های کلاینت و بازه نسخه بررسی می‌شود. برای ترتیب عددی نسخه از version_in_range(client.release, minimum, maximum_exclusive) با کران ثابت یا null استفاده کنید. نسخه نامشخص منطبق نیست و خطا انتخاب را متوقف می‌کند. عبارت به داده درخواست، اسکریپت یا اعطای مجوز دسترسی ندارد. مقدار null هدف‌گیری قبلی را حفظ می‌کند."
+
+
+msgid "One-based source line for an expression issue; null for document-only issues."
+msgstr "شماره خط عبارت از یک آغاز می‌شود؛ برای خطای غیرعبارتی مقدار null است."
+
+
+msgid "Zero-based source column for an expression issue; null when unavailable."
+msgstr "شماره ستون عبارت از صفر آغاز می‌شود؛ اگر موجود نباشد مقدار null است."
+
+
+msgid "Requires forms.manage. Validates all render variants and bounded client predicates, then selects the first matching variant in descending priority using authenticated session context. Conditions combine with client/range targets; version_in_range uses numeric release ordering. Shared design is the final fallback, including legacy clients unless a condition explicitly matches their null identity. Caller headers cannot replace the bound context or grant access. Returns page JSON, variant key and design revision. Expression issues include document pointer, one-based line and zero-based column. Evaluation errors or missing required renderer capabilities fail selection; they do not silently choose another branch. Preview does not publish or modify an interaction."
+msgstr "نیازمند forms.manage است. همه گونه‌های نمایش و شرط‌های محدود کلاینت را اعتبارسنجی می‌کند؛ سپس با هویت متصل به نشست، نخستین گونه منطبق را به ترتیب اولویت نزولی انتخاب می‌کند. شرط‌ها با هدف‌گیری کلاینت و بازه نسخه ترکیب می‌شوند و version_in_range ترتیب عددی را به کار می‌برد. طراحی مشترک جایگزین نهایی است، مگر شرطی صریح با هویت تهی کلاینت قدیمی منطبق شود. سرآیند ورودی نمی‌تواند هویت نشست را عوض کند یا مجوز بدهد. پاسخ شامل تنظیمات صفحه، کلید گونه و شناسه ویرایش طراحی است. خطای عبارت شامل اشاره‌گر سند، خط از یک و ستون از صفر است. خطای ارزیابی یا نبود قابلیت نمایش، انتخاب را متوقف می‌کند و باعث انتخاب خودکار شاخه دیگر نمی‌شود. پیش‌نمایش چیزی را منتشر یا تعامل ذخیره‌شده را تغییر نمی‌دهد."
+
+
+msgid "Boolean expression over declared request/process/reachable outputs and saved origin client. Use version_in_range(client.release, literal_minimum, literal_maximum_exclusive) for releases. Null is unconditional; errors stop progression."
+msgstr "عبارت بولی بر پایه داده‌های تعریف‌شده درخواست، فرایند، خروجی‌های قابل دسترس و کلاینت مبدا ذخیره‌شده. برای نسخه‌ها از version_in_range با کران ثابت یا null استفاده کنید. شرط null بدون قید است؛ خطا پیشروی را متوقف می‌کند."
+
+
+msgid "Final else for this source/outcome, used only when no non-default matches. At most one; client-aware groups require an unconditional default below all branch priorities."
+msgstr "شاخه else نهایی برای این مبدا و نتیجه؛ فقط وقتی هیچ شاخه عادی منطبق نباشد انتخاب می‌شود. حداکثر یک شاخه پیش‌فرض مجاز است؛ در گروه دارای شرط کلاینت باید بدون شرط و با اولویت کمتر از همه شاخه‌ها باشد."
+
+
+msgid "Descending if/elif order within a source/outcome. Duplicate priorities are invalid. First matching non-default wins outside explicit parallel split policy."
+msgstr "ترتیب if/elif نزولی در هر مبدا و نتیجه است. اولویت تکراری نامعتبر است و بیرون از سیاست انشعاب موازی، نخستین شاخه عادی منطبق انتخاب می‌شود."
+
+msgid "Optional bpms.messages/1 catalog pinned with this exact version. Null preserves legacy reads and checksums. Draft gaps are warnings; required translations and matching parameters are mandatory at publication."
+msgstr "کاتالوگ اختیاری bpms.messages/1 همراه همین نسخه ذخیره می‌شود. null خواندن و چک‌سام نسخه‌های قدیمی را حفظ می‌کند. کمبود ترجمه در پیش‌نویس هشدار است؛ انتشار به ترجمه‌های الزامی و پارامترهای سازگار نیاز دارد."
+
+msgid "Bounded bpms.render/1 document; POST /forms/render-schema returns its complete typed JSON Schema including messages, option_messages and bpms.format/1 field formatting. Message roles resolve to localized_text, localized_options and compatibility label/placeholder/accessibility fields in runtime views."
+msgstr "سند محدود bpms.render/1 است. مسیر POST /forms/render-schema شمای کامل شامل messages و option_messages و قالب‌بندی bpms.format/1 را برمی‌گرداند. متن‌های ترجمه‌شده در localized_text و localized_options و فیلدهای label، placeholder و accessibility نمای زمان اجرا قرار می‌گیرند."
+
+msgid "Plain text with named {parameters}, or exactly one/other branches selected by integer count. No HTML, ICU, format specifiers or executable templates."
+msgstr "متن ساده با پارامترهای نام‌دار {parameters} یا دقیقاً شاخه‌های one و other بر اساس count صحیح. HTML، ICU، مشخصات قالب‌بندی و الگوی اجرایی پشتیبانی نمی‌شوند."
+
+msgid "Translation acknowledgement of the default message SHA-256 revision returned by validation/preview. Missing or old acknowledgements are draft gaps and block required-locale publication."
+msgstr "تأیید ترجمه برای هش SHA-256 متن زبان پیش‌فرض که اعتبارسنجی یا پیش‌نمایش برمی‌گرداند. تأیید غایب یا قدیمی در پیش‌نویس هشدار است و انتشار زبان الزامی را متوقف می‌کند."
+
+msgid "Versioned administrator-authored catalogs, at most 256 messages per locale and 64 KiB in total. Regional requests fall back to their base language, then package default, then English."
+msgstr "کاتالوگ‌های نسخه‌دار مدیر؛ حداکثر ۲۵۶ پیام برای هر زبان و مجموعاً ۶۴ کیبی‌بایت. درخواست منطقه‌ای ابتدا به زبان پایه، سپس زبان پیش‌فرض بسته و سپس انگلیسی برمی‌گردد."
+
+msgid "Exact named arguments. Dates/decimals are canonical strings; integers are JSON integers (never booleans or floating point)."
+msgstr "آرگومان‌های نام‌دار دقیق. تاریخ و عدد اعشاری رشته استاندارد هستند؛ عدد صحیح باید integer در JSON باشد و boolean یا float پذیرفته نیست."
+
+msgid "Untranslated canonical enum value; never replaced by the label."
+msgstr "مقدار استاندارد و ترجمه‌نشده گزینه؛ برچسب هرگز جای مقدار را نمی‌گیرد."
+
+msgid "Only Gregorian YYYY-MM-DD is supported by this profile. Other calendars are rejected, never inferred from Persian locale."
+msgstr "در این پروفایل فقط تاریخ میلادی YYYY-MM-DD پشتیبانی می‌شود. تقویم‌های دیگر رد می‌شوند و از زبان فارسی استنباط نمی‌شوند."
+
+msgid "IANA zone used for datetime display. Input datetime must carry an explicit UTC offset; canonical output is UTC."
+msgstr "ناحیه زمانی IANA برای نمایش زمان. ورودی زمان باید اختلاف صریح با UTC داشته باشد؛ خروجی استاندارد UTC است."
+
+msgid "Optional fixed decimal scale. Values requiring rounding are rejected."
+msgstr "تعداد اختیاری رقم اعشار ثابت؛ مقداری که نیاز به گرد کردن داشته باشد رد می‌شود."
+
+msgid "ISO currency code displayed as a suffix; no conversion or currency rounding."
+msgstr "کد ISO ارز به صورت پسوند نمایش داده می‌شود؛ تبدیل ارز یا گرد کردن انجام نمی‌شود."
+
+msgid "JSON pointer within the selected render document, e.g. /root/children/0. The node must declare formatting."
+msgstr "اشاره‌گر JSON در سند نمای انتخاب‌شده، مانند /root/children/0. گره باید formatting داشته باشد."
+
+msgid "Localized input using the node's exact bpms.format/1 profile. No floats or locale-dependent implicit coercion."
+msgstr "ورودی محلی طبق پروفایل دقیق bpms.format/1 گره. عدد float یا تبدیل ضمنی وابسته به زبان مجاز نیست."
+
+msgid "Preview locale override; regional tags use the base en/fa language. Omitted uses Accept-Language."
+msgstr "زبان جایگزین پیش‌نمایش؛ برچسب منطقه‌ای از زبان پایه en یا fa استفاده می‌کند. در صورت حذف از Accept-Language استفاده می‌شود."
+
+msgid "Draft translation gaps. Publication promotes required gaps to errors."
+msgstr "کمبودهای ترجمه پیش‌نویس. هنگام انتشار، کمبود زبان‌های الزامی خطا می‌شود."
+
+msgid "Default message hashes for translation acknowledgement."
+msgstr "هش متن زبان پیش‌فرض برای تأیید بازبینی ترجمه‌ها."
+
+msgid "Pinned client variant and interaction revision with locale-resolved presentation text. Reads resolve the exact pinned form catalog using Accept-Language without rewriting audit snapshots or canonical data. localization reports resolved_locale, direction, catalog_revision and per-message locale/source_revision. Option values and outcomes remain canonical. Authorized responses are private, no-store; locale changes never select a different variant."
+msgstr "نسخه ثابت نمای کلاینت و تعامل با متن ترجمه‌شده. خواندن بر اساس Accept-Language از کاتالوگ دقیق فرم استفاده می‌کند و داده اصلی یا سابقه تعامل را تغییر نمی‌دهد. localization زبان نهایی، جهت، بازبینی کاتالوگ و زبان و بازبینی هر پیام را گزارش می‌کند. مقادیر گزینه‌ها و نتیجه‌ها ثابت می‌مانند. پاسخ مجاز private, no-store است و تغییر زبان نمای دیگری انتخاب نمی‌کند."
+
+msgid "Requires forms.manage. Checks draft documents and optional canonical data without saving. Returns at most 32 issues and 32 warnings with JSON pointers; warnings do not make draft valid false. Locale and format_values are preview-only inputs. Versioned bpms.messages/1 catalogs support en/fa, named typed parameters and one/other plurals. Draft validation reports missing or stale translations in warnings and returns source_revisions for translation acknowledgement. Publication requires every required-locale message and matching parameter types. Default text hashes track stale translations; published versions remain immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA timezone, Latin/Persian digits and exact decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values are rejected."
+msgstr "نیازمند forms.manage است. سند پیش‌نویس و داده استاندارد اختیاری را بدون ذخیره اعتبارسنجی می‌کند. حداکثر ۳۲ خطا و ۳۲ هشدار با اشاره‌گر JSON برمی‌گرداند. locale و format_values فقط برای پیش‌نمایش هستند. کاتالوگ bpms.messages/1 از en/fa، پارامتر نام‌دار نوع‌دار و جمع one/other پشتیبانی می‌کند. کمبود یا ترجمه قدیمی در warnings و هش متن در source_revisions گزارش می‌شود. انتشار همه ترجمه‌های الزامی و پارامترهای سازگار را لازم دارد. نسخه منتشرشده تغییرناپذیر است؛ null چک‌سام قدیمی را حفظ می‌کند. قالب‌بندی bpms.format/1 جهت، تقویم میلادی، منطقه زمانی IANA، ارقام لاتین یا فارسی و اعشار و ارز دقیق را مشخص می‌کند. ارسال از تاریخ ISO میلادی، زمان UTC و اعشار بدون گروه‌بندی استفاده می‌کند؛ مقادیر محلی یا دارای اتلاف دقت رد می‌شوند."
+
+msgid "Requires forms.manage. Validates all render variants and bounded client predicates, then selects the first matching variant in descending priority using authenticated session context. Conditions combine with client/range targets; version_in_range uses numeric release ordering. Shared design is the final fallback, including legacy clients unless a condition explicitly matches their null identity. Caller headers cannot replace the bound context or grant access. Returns page JSON, variant key and design revision. Expression issues include document pointer, one-based line and zero-based column. Evaluation errors or missing required renderer capabilities fail selection; they do not silently choose another branch. Preview does not publish or modify an interaction. Resolves message roles and option labels into a presentation copy using locale or Accept-Language. Regional tags use en/fa; unsupported locales fall back to the package default. Missing optional translations fall back to default then English; resolved locale is reported per message. format_values contains up to 32 node_pointer/value samples: returns exact canonical/display strings without changing data. Bad samples return valid false with localization.format_value. Design revision is stable across locale switches; catalog_revision changes when content changes. Responses use Cache-Control: private, no-store. Versioned bpms.messages/1 catalogs support en/fa, named typed parameters and one/other plurals. Draft validation reports missing or stale translations in warnings and returns source_revisions for translation acknowledgement. Publication requires every required-locale message and matching parameter types. Default text hashes track stale translations; published versions remain immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA timezone, Latin/Persian digits and exact decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values are rejected."
+msgstr "نیازمند forms.manage است. تمام نماها و شرط‌های محدود را بررسی و اولین نمای سازگار با کلاینت احرازشده را به ترتیب اولویت انتخاب می‌کند؛ نمای مشترک آخرین جایگزین است. سرآیند جعلی دسترسی نمی‌دهد. خطاهای عبارت مکان منبع دارند و خطای ارزیابی یا قابلیت ناکافی جایگزینی پنهانی ندارد. locale یا Accept-Language فقط متن را تغییر می‌دهد؛ زبان منطقه‌ای به en/fa و زبان پشتیبانی‌نشده به پیش‌فرض برمی‌گردد. زبان واقعی هر پیام گزارش می‌شود. format_values حداکثر ۳۲ نمونه node_pointer/value را بدون تغییر داده به canonical/display تبدیل می‌کند؛ نمونه نامعتبر localization.format_value است. بازبینی طراحی در تغییر زبان ثابت است. پیش‌نمایش ذخیره یا منتشر نمی‌شود و پاسخ private, no-store است. کاتالوگ bpms.messages/1 از en/fa، پارامتر نام‌دار نوع‌دار و جمع one/other پشتیبانی می‌کند. کمبود یا ترجمه قدیمی در warnings و هش متن در source_revisions گزارش می‌شود. انتشار همه ترجمه‌های الزامی و پارامترهای سازگار را لازم دارد. نسخه منتشرشده تغییرناپذیر است؛ null چک‌سام قدیمی را حفظ می‌کند. قالب‌بندی bpms.format/1 جهت، تقویم میلادی، منطقه زمانی IANA، ارقام لاتین یا فارسی و اعشار و ارز دقیق را مشخص می‌کند. ارسال از تاریخ ISO میلادی، زمان UTC و اعشار بدون گروه‌بندی استفاده می‌کند؛ مقادیر محلی یا دارای اتلاف دقت رد می‌شوند."
+
+msgid "Requires forms.manage. Creates a draft under an active form using its current revision-bearing ref_id. Invalid structure or parameters fail with VALIDATION_FAILED; translation gaps may be saved. Versioned bpms.messages/1 catalogs support en/fa, named typed parameters and one/other plurals. Draft validation reports missing or stale translations in warnings and returns source_revisions for translation acknowledgement. Publication requires every required-locale message and matching parameter types. Default text hashes track stale translations; published versions remain immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA timezone, Latin/Persian digits and exact decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values are rejected."
+msgstr "نیازمند forms.manage است. با ref_id جاری فرم فعال، پیش‌نویس می‌سازد. ساختار یا پارامتر نامعتبر VALIDATION_FAILED است ولی کمبود ترجمه قابل ذخیره است. کاتالوگ bpms.messages/1 از en/fa، پارامتر نام‌دار نوع‌دار و جمع one/other پشتیبانی می‌کند. کمبود یا ترجمه قدیمی در warnings و هش متن در source_revisions گزارش می‌شود. انتشار همه ترجمه‌های الزامی و پارامترهای سازگار را لازم دارد. نسخه منتشرشده تغییرناپذیر است؛ null چک‌سام قدیمی را حفظ می‌کند. قالب‌بندی bpms.format/1 جهت، تقویم میلادی، منطقه زمانی IANA، ارقام لاتین یا فارسی و اعشار و ارز دقیق را مشخص می‌کند. ارسال از تاریخ ISO میلادی، زمان UTC و اعشار بدون گروه‌بندی استفاده می‌کند؛ مقادیر محلی یا دارای اتلاف دقت رد می‌شوند."
+
+msgid "Requires forms.manage and the current draft revision-bearing ref_id. Replaces all documents atomically; published/retired or stale versions return VERSION_CONFLICT. Localization changes are recorded in version history. Versioned bpms.messages/1 catalogs support en/fa, named typed parameters and one/other plurals. Draft validation reports missing or stale translations in warnings and returns source_revisions for translation acknowledgement. Publication requires every required-locale message and matching parameter types. Default text hashes track stale translations; published versions remain immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA timezone, Latin/Persian digits and exact decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values are rejected."
+msgstr "نیازمند forms.manage و ref_id جاری پیش‌نویس است. اسناد یکجا جایگزین و تغییر ترجمه در تاریخچه ثبت می‌شود. نسخه قدیمی یا تغییرناپذیر VERSION_CONFLICT است. کاتالوگ bpms.messages/1 از en/fa، پارامتر نام‌دار نوع‌دار و جمع one/other پشتیبانی می‌کند. کمبود یا ترجمه قدیمی در warnings و هش متن در source_revisions گزارش می‌شود. انتشار همه ترجمه‌های الزامی و پارامترهای سازگار را لازم دارد. نسخه منتشرشده تغییرناپذیر است؛ null چک‌سام قدیمی را حفظ می‌کند. قالب‌بندی bpms.format/1 جهت، تقویم میلادی، منطقه زمانی IANA، ارقام لاتین یا فارسی و اعشار و ارز دقیق را مشخص می‌کند. ارسال از تاریخ ISO میلادی، زمان UTC و اعشار بدون گروه‌بندی استفاده می‌کند؛ مقادیر محلی یا دارای اتلاف دقت رد می‌شوند."
+
+msgid "Requires forms.manage and the current draft version ref_id under an active form. Locks the version and validates all required translations before checksum/publication. Missing/stale required messages or incompatible parameters return VALIDATION_FAILED with pointer issues; stale or immutable versions return VERSION_CONFLICT. Versioned bpms.messages/1 catalogs support en/fa, named typed parameters and one/other plurals. Draft validation reports missing or stale translations in warnings and returns source_revisions for translation acknowledgement. Publication requires every required-locale message and matching parameter types. Default text hashes track stale translations; published versions remain immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA timezone, Latin/Persian digits and exact decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values are rejected."
+msgstr "نیازمند forms.manage و ref_id جاری پیش‌نویس زیر فرم فعال است. قبل از چک‌سام و انتشار، نسخه قفل و ترجمه‌های الزامی بررسی می‌شوند. ترجمه الزامی غایب یا قدیمی و پارامتر ناسازگار VALIDATION_FAILED با اشاره‌گر است؛ نسخه قدیمی یا تغییرناپذیر VERSION_CONFLICT است. کاتالوگ bpms.messages/1 از en/fa، پارامتر نام‌دار نوع‌دار و جمع one/other پشتیبانی می‌کند. کمبود یا ترجمه قدیمی در warnings و هش متن در source_revisions گزارش می‌شود. انتشار همه ترجمه‌های الزامی و پارامترهای سازگار را لازم دارد. نسخه منتشرشده تغییرناپذیر است؛ null چک‌سام قدیمی را حفظ می‌کند. قالب‌بندی bpms.format/1 جهت، تقویم میلادی، منطقه زمانی IANA، ارقام لاتین یا فارسی و اعشار و ارز دقیق را مشخص می‌کند. ارسال از تاریخ ISO میلادی، زمان UTC و اعشار بدون گروه‌بندی استفاده می‌کند؛ مقادیر محلی یا دارای اتلاف دقت رد می‌شوند."
+
+msgid "Preferred English/Persian language, including regional tags such as fa-IR. Preview locale overrides this header for form content; envelope Content-Language follows the header. Canonical keys and submitted values do not change."
+msgstr "زبان ترجیحی انگلیسی یا فارسی، شامل برچسب منطقه‌ای مانند fa-IR. locale پیش‌نمایش برای محتوای فرم جایگزین این سرآیند می‌شود ولی Content-Language پاسخ تابع سرآیند است. کلیدها و داده ارسالی استاندارد تغییر نمی‌کنند."
+
+msgid "Arrange child fields vertically."
+msgstr "چیدمان عمودی فیلدهای فرزند."
+
+msgid "Arrange child fields horizontally."
+msgstr "چیدمان افقی فیلدهای فرزند."
+
+msgid "Arrange child fields in a bounded responsive grid."
+msgstr "چیدمان فیلدها در شبکه پاسخ‌گوی محدود."
+
+msgid "Display presentation text without writing data."
+msgstr "نمایش متن بدون نوشتن داده."
+
+msgid "Select a declared canonical form outcome."
+msgstr "انتخاب نتیجه استاندارد تعریف‌شده فرم."
+
+msgid "Edit one string value."
+msgstr "ویرایش یک مقدار رشته‌ای."
+
+msgid "Edit a multiline string value."
+msgstr "ویرایش رشته چندخطی."
+
+msgid "Edit an integer value."
+msgstr "ویرایش مقدار عدد صحیح."
+
+msgid "Edit a JSON numeric value."
+msgstr "ویرایش مقدار عددی JSON."
+
+msgid "Edit a boolean value."
+msgstr "ویرایش مقدار بولی."
+
+msgid "Choose canonical keys from a declared option source."
+msgstr "انتخاب کلید استاندارد از منبع گزینه تعریف‌شده."
+
+msgid "Edit a canonical Gregorian date."
+msgstr "ویرایش تاریخ میلادی استاندارد."
+
+msgid "Edit a canonical offset datetime."
+msgstr "ویرایش زمان استاندارد دارای اختلاف منطقه زمانی."
+
+msgid "Choose a user using an opaque reference."
+msgstr "انتخاب کاربر با شناسه مبهم."
+
+msgid "Choose a work group using an opaque reference."
+msgstr "انتخاب گروه کاری با شناسه مبهم."
+
+msgid "Edit repeated values using one item schema."
+msgstr "ویرایش مقادیر تکراری با شمای مشترک آیتم."
+
+msgid "Edit a collection in a table presentation."
+msgstr "ویرایش مجموعه در نمای جدول."
+
+msgid "Display a value calculated by the registered contract."
+msgstr "نمایش مقدار محاسبه‌شده طبق قرارداد ثبت‌شده."
+
+msgid "Select a private uploaded media reference."
+msgstr "انتخاب شناسه فایل خصوصی بارگذاری‌شده."
+
+msgid "Manage bounded private submission attachments."
+msgstr "مدیریت پیوست‌های خصوصی و محدود ارسال فرم."
+
+msgid "Discover versioned primitive field contracts"
+msgstr "کشف قراردادهای نسخه‌دار فیلدها"
+
+msgid "Requires forms.manage. Returns the same code-owned types, allowed options, defaults and renderer contracts used by validation and preview. Descriptions follow Accept-Language. UI support describes the client contract, not an installed frontend renderer. No database mutation or arbitrary import is performed."
+msgstr "نیازمند مجوز forms.manage است. انواع، گزینه‌ها، مقادیر پیش‌فرض و قرارداد نمایش را از همان فهرست مورد استفاده اعتبارسنجی برمی‌گرداند. توضیحات از Accept-Language پیروی می‌کنند. پشتیبانی مشتری قرارداد رابط است؛ مؤلفه نمایشی نصب‌شده نیست."
+
+msgid "Preview a field option source"
+msgstr "پیش‌نمایش منبع گزینه‌های فیلد"
+
+msgid "Requires forms.manage. Validates the draft, selects its authenticated client variant and resolves the requested node. Returns existing key/value items using reversible json-scalar/1 keys, generation and dependency fingerprint. Domain choices are filtered by current actor visibility before pagination. Remote sources return client-fetch metadata only; submitted keys still require pinned schema membership. No server HTTP fetch, arbitrary SQL or import is performed."
+msgstr "نیازمند forms.manage است. سند پیش‌نویس و گونه مشتری احرازشده را اعتبارسنجی می‌کند. گزینه‌ها به صورت key/value با کدگذاری برگشت‌پذیر json-scalar/1، نسل درخواست و اثرانگشت وابستگی بازمی‌گردند. دسترسی دامنه پیش از صفحه‌بندی بررسی می‌شود. منبع remote فقط فراداده دریافت توسط مشتری است و عضویت مقدار در enum نسخه ثابت همچنان الزامی است. واکشی شبکه یا اجرای SQL در سرور انجام نمی‌شود."
+
+msgid "Preview host navigation and atomic result mapping"
+msgstr "پیش‌نمایش ناوبری میزبان و نگاشت اتمی نتیجه"
+
+msgid "Requires forms.manage. Validates the form and authenticated client variant, then returns a host-approved route, typed arguments and data revision. With result and expected_data_revision, returns a fully validated data proposal; no data is persisted. Stale/invalid results fail atomically. cancelled preserves data. Mappings cannot target read-only/calculated fields or repeated items; collection editing is BPMS-029. No route is executed by the backend."
+msgstr "نیازمند forms.manage است. سند و گونه مشتری احرازشده بررسی می‌شود و مسیر مورد تأیید میزبان، آرگومان‌های نوع‌دار و بازبینی داده بازمی‌گردد. نتیجه معتبر همراه expected_data_revision یک پیشنهاد داده بدون ذخیره می‌سازد. نتیجه نامعتبر یا قدیمی کاملاً رد می‌شود و cancelled داده را حفظ می‌کند. مسیرهای فقط‌خواندنی، محاسبه‌شده و آیتم‌های تکراری مقصد مجاز نیستند. سرور مسیر را اجرا نمی‌کند."
+
+msgid "Resolve options for a pinned request form"
+msgstr "گزینه‌های فرم نسخه ثابت درخواست"
+
+msgid "Requires requests.start and current request visibility. Uses the exact pinned form and interaction variant; caller data supplies unsaved dependency values only. Current user/group visibility and ref revisions are checked independently. Results carry source revision, dependency fingerprint and generation; stale responses must be discarded. Submission revalidates saved values. No shared cache or server-side URL fetching."
+msgstr "نیازمند requests.start و دسترسی جاری به درخواست است. فرم و گونه تعامل از نسخه ثابت خوانده می‌شوند. داده ارسالی فقط پارامترهای وابسته ذخیره‌نشده را فراهم می‌کند. دسترسی جاری کاربر و گروه و بازبینی مراجع مستقل بررسی می‌شوند. نتیجه شامل بازبینی منبع، اثرانگشت وابستگی و نسل است؛ پاسخ قدیمی باید دور انداخته شود. ارسال نهایی مقادیر ذخیره‌شده را دوباره بررسی می‌کند. حافظه مشترک یا واکشی URL در سرور وجود ندارد."
+
+msgid "Resolve options for a pinned human-task form"
+msgstr "گزینه‌های فرم نسخه ثابت کار انسانی"
+
+msgid "Requires requests.start and current work-item visibility. Uses the exact pinned form and interaction variant, with current actor-filtered domain membership. Input data supplies unsaved dependency values; completion rechecks persisted submission membership. Results echo generation and dependency fingerprint for stale-response rejection. No server URL fetch or shared cache."
+msgstr "نیازمند requests.start و دسترسی جاری به کار است. فرم و گونه تعامل نسخه ثابت و عضویت دامنه مجاز برای کاربر جاری استفاده می‌شوند. داده ورودی وابستگی‌های ذخیره‌نشده را فراهم می‌کند؛ تکمیل کار عضویت را دوباره بررسی می‌کند. نسل و اثرانگشت وابستگی برای رد پاسخ قدیمی بازگردانده می‌شوند. واکشی URL در سرور یا حافظه مشترک وجود ندارد."
+
+msgid "Search authoring capabilities"
+msgstr "جست‌وجوی قابلیت‌های طراحی"
+
+msgid "Lists bounded step and form catalog entries plus viewable published subprocess interfaces. Subprocess entries report runtime_available=false until execution support is delivered; visibility is not call authorization."
+msgstr "فهرست محدودی از گام‌ها، فرم‌ها و رابط‌های زیرفرایند منتشرشده و قابل مشاهده را برمی‌گرداند. زیرفرایندها تا زمان پشتیبانی اجرا runtime_available=false دارند؛ مشاهده به معنی مجوز فراخوانی نیست."
+
+msgid "Validate a workflow graph"
+msgstr "اعتبارسنجی گراف گردش‌کار"
+
+msgid "Checks step types, bindings, reusable subprocess interfaces and pinned child calls. The caller needs workflows.manage; this preview has no parent version identity. Save and publication recheck dependencies and self-reference."
+msgstr "نوع گام‌ها، اتصال‌ها، رابط‌های زیرفرایند و فراخوانی‌های نسخه‌ثابت را بررسی می‌کند. مجوز workflows.manage لازم است؛ در این پیش‌نمایش شناسه نسخه والد وجود ندارد. هنگام ذخیره و انتشار، وابستگی و خودارجاعی دوباره بررسی می‌شود."
+
+msgid "Read a pinned workflow graph"
+msgstr "خواندن گراف نسخه‌ثابت گردش‌کار"
+
+msgid "Returns the exact saved graph, including its optional reusable subprocess interface and call pins. Requires workflows.manage."
+msgstr "گراف ذخیره‌شده را همراه با رابط اختیاری زیرفرایند و ارجاع نسخه‌ثابت فراخوانی‌ها برمی‌گرداند. مجوز workflows.manage لازم است."
+
+msgid "Replace a draft workflow graph"
+msgstr "جایگزینی گراف پیش‌نویس گردش‌کار"
+
+msgid "Validates and atomically replaces a draft graph. Subprocess calls require start access to an active published child version, typed input mappings and an explicit failure route. Stale or published versions cannot be changed."
+msgstr "گراف پیش‌نویس را اعتبارسنجی و به‌صورت اتمی جایگزین می‌کند. فراخوانی زیرفرایند به مجوز شروع نسخه فعال و منتشرشده فرزند، نگاشت ورودی نوع‌دار و مسیر صریح شکست نیاز دارد. نسخه قدیمی یا منتشرشده قابل تغییر نیست."
+
+msgid "Publish a workflow version"
+msgstr "انتشار نسخه گردش‌کار"
+
+msgid "Locks and revalidates draft dependencies before making the graph immutable. A published subprocess call pins the exact child version but cannot execute until BPMS-032."
+msgstr "پیش از تغییرناپذیر شدن گراف، وابستگی‌های پیش‌نویس را قفل و دوباره اعتبارسنجی می‌کند. فراخوانی منتشرشده نسخه دقیق فرزند را ثابت می‌کند اما تا BPMS-032 اجرا نمی‌شود."
+
+msgid "JSON Schema Draft 2020-12 type expected in the isolated child context."
+msgstr "نوع JSON Schema Draft 2020-12 مورد انتظار در زمینه مستقل فرزند."
+
+msgid "A call must map this input when true."
+msgstr "اگر درست باشد فراخوانی باید این ورودی را نگاشت کند."
+
+msgid "Actor or group assignment reference carried as a string."
+msgstr "ارجاع تخصیص کاربر یا گروه که به‌صورت رشته منتقل می‌شود."
+
+msgid "Declared output schema matching the named child step output port."
+msgstr "شمای خروجی اعلام‌شده که با درگاه خروجی گام فرزند مطابقت دارد."
+
+msgid "Child graph step producing this output."
+msgstr "گام گراف فرزند که این خروجی را تولید می‌کند."
+
+msgid "Output port on source_step."
+msgstr "درگاه خروجی گام source_step."
+
+msgid "Named values copied into the child; parent context is not implicit."
+msgstr "مقادیر نام‌دار کپی‌شده به فرزند؛ زمینه والد به‌طور ضمنی منتقل نمی‌شود."
+
+msgid "Named values returned from child step output ports."
+msgstr "مقادیر نام‌دار بازگشتی از درگاه‌های خروجی گام‌های فرزند."
+
+msgid "Business outcome name to child FINISH step key. The parent also handles failure."
+msgstr "نگاشت نام نتیجه کسب‌وکار به کلید گام FINISH فرزند. والد شکست را نیز مدیریت می‌کند."
+
+msgid "Source JSON Schema; publication checks compatibility with the child input."
+msgstr "شمای JSON منبع؛ سازگاری آن با ورودی فرزند هنگام انتشار بررسی می‌شود."
+
+msgid "Exact published child workflow version ref_id. Existing pins survive retirement."
+msgstr "ref_id دقیق نسخه منتشرشده گردش‌کار فرزند. ارجاع‌های موجود پس از بازنشستگی نسخه حفظ می‌شوند."
+
+msgid "Explicit source mapping for required child inputs and assignment references."
+msgstr "نگاشت صریح منبع برای ورودی‌های اجباری فرزند و ارجاع‌های تخصیص."
+
+msgid "Pinned child call on a SUBPROCESS step. Execution is unavailable until BPMS-032."
+msgstr "فراخوانی نسخه‌ثابت فرزند در گام SUBPROCESS. اجرا تا BPMS-032 در دسترس نیست."
+
+msgid "Reusable published workflow interface; null preserves ordinary workflow behavior."
+msgstr "رابط گردش‌کار منتشرشده و قابل استفاده مجدد؛ مقدار null رفتار عادی گردش‌کار را حفظ می‌کند."
+
+msgid "Opaque child process reference for detailed inspection."
+msgstr "ارجاع کدر فرایند فرزند برای بررسی جزئیات."
+
+msgid "Exact parent call visit that started this child."
+msgstr "اجرای دقیق فراخوانی والد که این فرزند را آغاز کرد."
+
+msgid "Pinned published child workflow version."
+msgstr "نسخه منتشرشده و ثابت گردش کار فرزند."
+
+msgid "Current child process status."
+msgstr "وضعیت کنونی فرایند فرزند."
+
+msgid "Live child token positions, including human and timer waits."
+msgstr "موقعیت‌های فعال نشانگر فرزند، شامل انتظار کار انسانی و زمان‌سنج."
+
+msgid "Nested child summaries without copied input or output data."
+msgstr "خلاصه فرزندان تودرتو بدون کپی داده‌های ورودی یا خروجی."
+
+msgid "Direct child call history with pinned versions and nested active positions."
+msgstr "تاریخچه فراخوانی فرزندان مستقیم همراه با نسخه‌های ثابت و موقعیت‌های فعال تودرتو."
+
+msgid "Returns the authorized process timeline and nested subprocess summaries. Each child includes its pinned version and current token positions without copied form, input, or output data. Request participants with view access can inspect the same request-root child history."
+msgstr "خط زمانی فرایند مجاز و خلاصه زیرفرایندهای تودرتو را برمی‌گرداند. هر فرزند شامل نسخه ثابت و موقعیت‌های فعلی نشانگرهاست، بدون کپی فرم یا داده ورودی و خروجی. مشارکت‌کنندگان درخواست که مجوز مشاهده دارند می‌توانند تاریخچه فرزندان همان درخواست را ببینند."
+
+msgid "Pinned child call on a SUBPROCESS step. Execution uses the exact published version and isolated mapped inputs."
+msgstr "فراخوانی فرزند ثابت روی گام SUBPROCESS. اجرا از نسخه منتشرشده دقیق و ورودی‌های نگاشت‌شده جداگانه استفاده می‌کند."
+
+msgid "Locks and revalidates draft dependencies before making the graph immutable. A published subprocess call pins the exact child version for durable execution."
+msgstr "پیش از تغییرناپذیر شدن گراف، وابستگی‌های پیش‌نویس را قفل و دوباره اعتبارسنجی می‌کند. فراخوانی زیرفرایند منتشرشده نسخه دقیق فرزند را برای اجرای پایدار ثابت می‌کند."
+
+msgid "Lists bounded step and form catalog entries plus viewable published subprocess interfaces. Subprocess entries report whether pinned execution is available; visibility is not call authorization."
+msgstr "فهرست محدودی از گام‌ها، فرم‌ها و رابط‌های زیرفرایند منتشرشده و قابل مشاهده را برمی‌گرداند. موردهای زیرفرایند دسترس‌پذیری اجرای نسخه ثابت را نشان می‌دهند؛ مشاهده به معنی مجوز فراخوانی نیست."
+
+msgid "Returns exact published component, data type and viewable subprocess versions. Search is bounded, paginated and filters current owner/grant visibility. Omit kind only when the caller has both forms.manage and workflows.manage. Help and sample inputs are author-supplied metadata, never execution evidence."
+msgstr "نسخه‌های منتشرشده دقیق کامپوننت، نوع داده و زیرفرایند قابل مشاهده را برمی‌گرداند. جست‌وجو محدود و صفحه‌بندی‌شده است و دسترسی مالک یا مجوز فعلی را اعمال می‌کند. حذف kind به هر دو مجوز forms.manage و workflows.manage نیاز دارد. راهنما و ورودی نمونه داده‌های نویسنده‌اند و نشانه اجرای موفق نیستند."
+
+msgid "Lists exact direct and transitive pinned versions reachable from this version. Inaccessible dependencies are suppressed; no private document is copied into the response."
+msgstr "نسخه‌های ثابت مستقیم و تودرتوی قابل دسترس از این نسخه را فهرست می‌کند. وابستگی‌های غیرقابل دسترس حذف می‌شوند و سند خصوصی در پاسخ کپی نمی‌شود."
+
+msgid "Reports visible draft and published consumers of an exact version, including transitive form reuse. Result paths identify bindings and do not reveal inaccessible definitions."
+msgstr "مصرف‌کنندگان قابل مشاهده پیش‌نویس و منتشرشده یک نسخه دقیق را، همراه با استفاده تودرتوی فرم، گزارش می‌کند. مسیرها محل اتصال را نشان می‌دهند و تعریف‌های غیرقابل دسترس را آشکار نمی‌کنند."
+
+msgid "Compares two exact versions visible to the caller. Changed JSON pointers, capability and locale changes are descriptive; use upgrade-preview for draft compatibility and apply for mutation."
+msgstr "دو نسخه دقیق قابل مشاهده را مقایسه می‌کند. مسیرهای JSON تغییرکرده و تغییرات قابلیت و زبان صرفاً توصیفی‌اند؛ برای سازگاری پیش‌نویس از پیش‌نمایش ارتقا و برای تغییر از اعمال ارتقا استفاده کنید."
+
+msgid "Reports retirement as deprecation and the newest currently published version under the same definition as a possible replacement. It does not auto-upgrade existing pins."
+msgstr "بازنشستگی را به صورت منسوخ‌شدن و جدیدترین نسخه منتشرشده همان تعریف را به عنوان جایگزین احتمالی گزارش می‌کند. نسخه‌های ثابت موجود خودکار ارتقا نمی‌یابند."
+
+msgid "Creates a new root and independent draft from an exact published form or workflow version. COPY embeds the source's resolved form document; REFERENCE retains exact reusable component or subprocess pins and revalidates current grants. Both modes persist source_ref_id, source_checksum and mode as provenance. Example: {\"kind\":\"form\",\"source_ref_id\":\"<exact-ref>\",\"code\":\"purchase_copy\",\"name\":\"Purchase copy\",\"mode\":\"COPY\"}. New references to retired or inaccessible dependencies fail."
+msgstr "از نسخه دقیق منتشرشده فرم یا گردش کار، ریشه و پیش‌نویس مستقل می‌سازد. COPY سند حل‌شده فرم را درون‌گذاری می‌کند؛ REFERENCE ارجاع‌های دقیق کامپوننت یا زیرفرایند را نگه می‌دارد و مجوزهای کنونی را دوباره بررسی می‌کند. هر دو حالت source_ref_id و source_checksum و mode را به عنوان منشأ ذخیره می‌کنند. نمونه: {\"kind\":\"form\",\"source_ref_id\":\"<exact-ref>\",\"code\":\"purchase_copy\",\"name\":\"Purchase copy\",\"mode\":\"COPY\"}. ارجاع جدید به وابستگی بازنشسته یا غیرقابل دسترس رد می‌شود."
+
+msgid "Read-only bulk preview for draft form component bindings and workflow subprocess calls. Replacements map form instance_key or workflow step key to an exact published version ref. Reports affected bindings, translation gaps and incompatible schema/capability issues before any write. Example: {\"targets\":[{\"kind\":\"form\",\"version_ref_id\":\"<draft-ref>\",\"replacements\":{\"billing\":\"<published-component-ref>\"}}]}."
+msgstr "پیش‌نمایش گروهی فقط‌خواندنی برای اتصال‌های کامپوننت فرم و فراخوانی‌های زیرفرایند گردش کار. کلید جایگزینی instance_key فرم یا کلید گام گردش کار است و مقدار آن ارجاع دقیق نسخه منتشرشده است. پیش از هر تغییر، اتصال‌های متاثر، کمبود ترجمه و ناسازگاری طرحواره یا قابلیت گزارش می‌شوند. نمونه: {\"targets\":[{\"kind\":\"form\",\"version_ref_id\":\"<draft-ref>\",\"replacements\":{\"billing\":\"<published-component-ref>\"}}]}."
+
+msgid "Locks every named draft, recomputes the bulk preview, rejects the entire request when any replacement is incompatible, then updates the drafts in one transaction. Published snapshots are never changed. Example: use the same targets body as upgrade-preview after reviewing its report; a new preview is still required server-side."
+msgstr "همه پیش‌نویس‌های نام‌برده را قفل می‌کند، پیش‌نمایش گروهی را دوباره محاسبه می‌کند، و اگر جایگزینی ناسازگار باشد کل درخواست را رد می‌کند؛ سپس پیش‌نویس‌ها را در یک تراکنش به‌روزرسانی می‌کند. نسخه‌های منتشرشده تغییر نمی‌کنند. نمونه: پس از بررسی گزارش، همان بدنه پیش‌نمایش ارتقا را بفرستید؛ سرور همچنان پیش‌نمایش جدید محاسبه می‌کند."
+
+msgid "Returns draft translation missing/stale pointers and bounded static rule explanations (effect, source scope and operator). It does not evaluate or return protected form input values; runtime state still uses the normal authorized preview."
+msgstr "مسیرهای ترجمه ناقص یا کهنه در پیش‌نویس و توضیح محدود قواعد ایستا شامل اثر، حوزه منبع و عملگر را برمی‌گرداند. مقدار ورودی محافظت‌شده را محاسبه یا بازنمی‌گرداند؛ وضعیت زمان اجرا همچنان از پیش‌نمایش مجاز عادی استفاده می‌کند."
+
+msgid "Search reusable definitions"
+msgstr "جست‌وجوی تعریف‌های بازاستفاده‌پذیر"
+
+msgid "Authoring catalogs, selectors, completion, and workflow field analysis."
+msgstr "فهرست‌های طراحی، انتخاب‌گرها، تکمیل و تحلیل فیلدهای گردش کار."
+
+msgid "Reusable definition discovery, dependencies, templates, and draft upgrades."
+msgstr "کشف تعریف‌های بازاستفاده‌پذیر، وابستگی‌ها، قالب‌ها و ارتقای پیش‌نویس‌ها."
+
+msgid "definition-library"
+msgstr "کتابخانه تعریف‌ها"
+
+msgid "designer"
+msgstr "طراح"
+
+msgid "Creates a new root and independent draft from an exact published form or workflow version. COPY embeds the source's resolved form document; REFERENCE retains exact reusable component or subprocess pins and revalidates current grants. Both modes persist source_ref_id, source_checksum and mode as provenance. Example: {\"kind\":\"form\",\"source_ref_id\":\"<exact-ref>\",\"code\":\"purchase_copy\",\"name\":\"Purchase copy\",\"mode\":\"COPY\"}. REFERENCE example: {\"kind\":\"workflow\",\"source_ref_id\":\"<published-workflow-ref>\",\"code\":\"approval_draft\",\"name\":\"Approval draft\",\"mode\":\"REFERENCE\"}. New references to retired or inaccessible dependencies fail."
+msgstr "از نسخه دقیق منتشرشده فرم یا گردش کار، ریشه و پیش‌نویس مستقل می‌سازد. COPY سند حل‌شده فرم را درون‌گذاری می‌کند؛ REFERENCE ارجاع‌های دقیق کامپوننت یا زیرفرایند را نگه می‌دارد و مجوزهای کنونی را دوباره بررسی می‌کند. هر دو حالت source_ref_id و source_checksum و mode را به عنوان منشأ ذخیره می‌کنند. نمونه COPY: {\"kind\":\"form\",\"source_ref_id\":\"<exact-ref>\",\"code\":\"purchase_copy\",\"name\":\"Purchase copy\",\"mode\":\"COPY\"}. نمونه REFERENCE: {\"kind\":\"workflow\",\"source_ref_id\":\"<published-workflow-ref>\",\"code\":\"approval_draft\",\"name\":\"Approval draft\",\"mode\":\"REFERENCE\"}. ارجاع جدید به وابستگی بازنشسته یا غیرقابل دسترس رد می‌شود."
+
+msgid "Locks every named draft, recomputes the bulk preview, rejects the entire request when any replacement is incompatible, then updates the drafts in one transaction. Published snapshots are never changed. Example: {\"targets\":[{\"kind\":\"workflow\",\"version_ref_id\":\"<draft-workflow-ref>\",\"replacements\":{\"manager_call\":\"<published-child-ref>\"}}]}. A new preview is still required server-side."
+msgstr "همه پیش‌نویس‌های نام‌برده را قفل می‌کند، پیش‌نمایش گروهی را دوباره محاسبه می‌کند، و در صورت ناسازگاری کل درخواست را رد می‌کند؛ سپس پیش‌نویس‌ها را در یک تراکنش به‌روزرسانی می‌کند. نسخه‌های منتشرشده تغییر نمی‌کنند. نمونه: {\"targets\":[{\"kind\":\"workflow\",\"version_ref_id\":\"<draft-workflow-ref>\",\"replacements\":{\"manager_call\":\"<published-child-ref>\"}}]}. سرور پیش‌نمایش را دوباره محاسبه می‌کند."
+
+msgid "Explain fields in an exact workflow snapshot"
+msgstr "توضیح وابستگی فیلدها در نسخه دقیق گردش‌کار"
+
+msgid "Requires workflows.manage and forms.manage. Reads only the named workflow revision, the explicitly named start form version, pinned human forms and accessible pinned subprocesses. Returns a bounded, sorted field table with technical dependency evidence, source snapshots, diagnostics, summary counts and conservative review suggestions. No form is changed and no business handler, provider or submission is executed. A missing start form is excluded rather than resolved to a latest version. Stale version references fail; inaccessible workflow or subprocess detail is not exposed. Example request: {\"workflow_version_ref_id\":\"<exact-ref>\",\"start_form_version_ref_id\":\"<exact-ref>\",\"locale\":\"fa\",\"page\":1,\"size\":25}."
+msgstr "نیازمند مجوزهای workflows.manage و forms.manage است. فقط نسخه دقیق گردش‌کار، نسخه صریح فرم آغاز، فرم‌های ثابت کار انسانی و زیرفرایندهای ثابت قابل‌دسترس را می‌خواند. جدول محدود و مرتب فیلدها را همراه شواهد وابستگی فنی، نسخه‌های منبع، عیب‌یابی، شمارش‌ها و پیشنهادهای محتاطانه بازبینی برمی‌گرداند. هیچ فرم، گام کسب‌وکار، ارائه‌دهنده یا ثبت داده‌ای اجرا یا تغییر داده نمی‌شود. اگر فرم آغاز مشخص نشود، به‌جای انتخاب آخرین نسخه حذف می‌شود. ارجاع نسخه قدیمی رد می‌شود و جزئیات زیرفرایند غیرقابل‌دسترس افشا نمی‌شود. نمونه درخواست: {\"workflow_version_ref_id\":\"<exact-ref>\",\"start_form_version_ref_id\":\"<exact-ref>\",\"locale\":\"fa\",\"page\":1,\"size\":25}."
+
+msgid "Authentication and credential operations."
+msgstr "عملیات احراز هویت و اطلاعات ورود."
+
+msgid "Authenticated device-session operations."
+msgstr "عملیات نشست‌های دستگاه‌های احراز هویت‌شده."
+
+msgid "Administrative user operations."
+msgstr "عملیات مدیریتی کاربران."
+
+msgid "Role and permission assignment operations."
+msgstr "عملیات نقش‌ها و تخصیص مجوزها."
+
+msgid "Permission discovery and administration operations."
+msgstr "عملیات جست‌وجو و مدیریت مجوزها."
+
+msgid "Operational work group administration."
+msgstr "مدیریت گروه‌های کاری عملیاتی."
+
+msgid "Authentication and authorization audit operations."
+msgstr "عملیات ممیزی احراز هویت و مجوزدهی."
+
+msgid "Cross-resource history operations."
+msgstr "عملیات تاریخچه میان منابع."
+
+msgid "Registered application clients."
+msgstr "کلاینت‌های ثبت‌شده برنامه."
+
+msgid "Client release capabilities."
+msgstr "قابلیت‌های نسخه‌های کلاینت."
+
+msgid "Reusable form component definitions and grants."
+msgstr "تعریف‌ها و مجوزهای کامپوننت‌های بازاستفاده‌پذیر فرم."
+
+msgid "Immutable published form component versions."
+msgstr "نسخه‌های منتشرشده و تغییرناپذیر کامپوننت‌های فرم."
+
+msgid "Reusable form data type definitions and grants."
+msgstr "تعریف‌ها و مجوزهای نوع داده بازاستفاده‌پذیر فرم."
+
+msgid "Immutable published form data type versions."
+msgstr "نسخه‌های منتشرشده و تغییرناپذیر انواع داده فرم."
+
+msgid "Workflow definition operations."
+msgstr "عملیات تعریف گردش کار."
+
+msgid "Versioned workflow graph authoring operations."
+msgstr "عملیات طراحی گراف نسخه‌دار گردش کار."
+
+msgid "Request type definitions and workflow start rules."
+msgstr "تعریف‌های نوع درخواست و قواعد آغاز گردش کار."
+
+msgid "Business request drafts, submissions, attachments, and lifecycle actions."
+msgstr "پیش‌نویس‌ها، ثبت‌ها، پیوست‌ها و اقدام‌های چرخه عمر درخواست‌های کسب‌وکار."
+
+msgid "Process status, timeline, recovery, and execution controls."
+msgstr "وضعیت فرایند، خط زمانی، بازیابی و کنترل‌های اجرا."
+
+msgid "External event delivery to waiting workflow processes."
+msgstr "تحویل رویدادهای بیرونی به فرایندهای گردش کار منتظر."
+
+msgid "Human work and cartable operations."
+msgstr "عملیات کارهای انسانی و کارتابل."
+
+msgid "Owned in-application notifications and delivery status."
+msgstr "اعلان‌های درون‌برنامه‌ای متعلق به کاربر و وضعیت تحویل آن‌ها."
+
+msgid "File upload and download operations."
+msgstr "عملیات بارگذاری و دریافت فایل."
+
+msgid "WebP image upload and download operations."
+msgstr "عملیات بارگذاری و دریافت تصویر WebP."
+
+msgid "Owned asynchronous report status and downloads."
+msgstr "وضعیت گزارش‌های ناهمگام متعلق به کاربر و دریافت آن‌ها."
+
+msgid "Registered background-task definition operations."
+msgstr "عملیات تعریف وظیفه‌های پس‌زمینه ثبت‌شده."
+
+msgid "Periodic background-task scheduling operations."
+msgstr "عملیات زمان‌بندی دوره‌ای وظیفه‌های پس‌زمینه."
+
+msgid "Background-task execution and control operations."
+msgstr "عملیات اجرا و کنترل وظیفه‌های پس‌زمینه."
+
+msgid "Optional private-download presentation preference. Send only `attachment` for files; send `inline` or `attachment` for normalized WebP images. Do not send filename or other parameters. Duplicate or unsupported values return 422. The server chooses the filename and always returns Cache-Control: private, no-store."
+msgstr "ترجیح اختیاری نمایش دریافت خصوصی. برای فایل‌ها فقط `attachment` و برای تصویرهای WebP تبدیل‌شده `inline` یا `attachment` بفرستید. نام فایل یا پارامتر دیگری نفرستید. مقدار تکراری یا پشتیبانی‌نشده خطای 422 می‌دهد. سرور نام فایل را تعیین می‌کند و همیشه Cache-Control: private, no-store برمی‌گرداند."
+
+msgid "Server-selected inline or attachment mode with a sanitized UTF-8 filename. Generic files are always attachments. Images omit this header by default."
+msgstr "حالت inline یا attachment انتخاب‌شده توسط سرور همراه نام فایل پاک‌سازی‌شده UTF-8. فایل‌های غیرتصویری همیشه به‌صورت attachment هستند. تصویرها به‌طور پیش‌فرض این سرآیند را ندارند."
+
+msgid "Private media is never cached; request Cache-Control is ignored."
+msgstr "رسانه خصوصی هرگز کش نمی‌شود؛ Cache-Control درخواست نادیده گرفته می‌شود."
+
+msgid "Prevents browsers from guessing a different content type."
+msgstr "از حدس‌زدن نوع محتوای متفاوت توسط مرورگر جلوگیری می‌کند."
+
+msgid "Download a private user file"
+msgstr "دریافت فایل خصوصی کاربر"
+
+msgid "Requires an authenticated owner or an explicit trusted access policy. Resolves the versioned upload reference and authorization before object storage. Streams verified passive-format bytes as an attachment with a server-owned filename, nosniff and Cache-Control: private, no-store. The optional Content-Disposition request value may only be attachment; inline, filenames, extra parameters and duplicates return 422. Missing and unauthorized uploads return the same 404."
+msgstr "نیازمند مالک احراز هویت‌شده یا سیاست دسترسی معتبر و صریح است. ارجاع نسخه‌دار بارگذاری و مجوز دسترسی پیش از مراجعه به فضای ذخیره‌سازی بررسی می‌شود. بایت‌های قالب غیرفعال تأییدشده با حالت attachment، نام فایل تعیین‌شده توسط سرور، nosniff و Cache-Control: private, no-store جریان می‌یابند. مقدار اختیاری Content-Disposition درخواست فقط می‌تواند attachment باشد؛ inline، نام فایل، پارامتر اضافه و مقدار تکراری خطای 422 می‌دهند. بارگذاری ناموجود و غیرمجاز هر دو پاسخ 404 یکسان دارند."
+
+msgid "Verified private file bytes; content type matches the stored file."
+msgstr "بایت‌های تأییدشده فایل خصوصی؛ نوع محتوا با فایل ذخیره‌شده مطابقت دارد."
+
+msgid "Download a private WebP image"
+msgstr "دریافت تصویر خصوصی WebP"
+
+msgid "Requires an authenticated owner or an explicit trusted access policy. Resolves the versioned upload reference and authorization before object storage. Streams verified normalized WebP bytes with nosniff and Cache-Control: private, no-store. By default the browser may display the image inline without a Content-Disposition header. Send Content-Disposition: inline or attachment to select a server-named response; filenames, extra parameters and duplicates return 422. Missing and unauthorized images return the same 404."
+msgstr "نیازمند مالک احراز هویت‌شده یا سیاست دسترسی معتبر و صریح است. ارجاع نسخه‌دار بارگذاری و مجوز دسترسی پیش از مراجعه به فضای ذخیره‌سازی بررسی می‌شود. بایت‌های تأییدشده تصویر WebP تبدیل‌شده با nosniff و Cache-Control: private, no-store جریان می‌یابند. مرورگر به‌طور پیش‌فرض می‌تواند تصویر را بدون سرآیند Content-Disposition در صفحه نشان دهد. برای پاسخ با نام تعیین‌شده توسط سرور، Content-Disposition: inline یا attachment بفرستید؛ نام فایل، پارامتر اضافه و مقدار تکراری خطای 422 می‌دهند. تصویر ناموجود و غیرمجاز هر دو پاسخ 404 یکسان دارند."
+
+msgid "Verified private WebP image bytes."
+msgstr "بایت‌های تأییدشده تصویر خصوصی WebP."

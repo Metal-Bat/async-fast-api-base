@@ -1,46 +1,66 @@
 [project]
 name = "fast-api-sample"
 version = "0.1.0"
-description = "A sample FastAPI project"
+description = "Versioned forms and workflow backend"
 readme = "README.md"
-requires-python = ">=3.14.4"
+requires-python = ">=3.14.7"
 license = { file = "LICENSE" }
 authors = [{ name = "erfan ehsany" }]
 dependencies = [
-    "alembic>=1.18.4",
+    "aioboto3>=15.5.0",
+    "alembic>=1.19.1",
     "asyncpg>=0.31.0",
-    "fastapi[standard]>=0.139.0",
+    "babel>=2.18.0",
+    "celery>=5.6.3",
+    "cryptography>=50.0.1",
+    "fastapi[standard]>=0.141.1",
     "fastapi-admin>=1.0.4",
-    "jwt>=1.4.0",
-    "opentelemetry-api>=1.41.1",
-    "opentelemetry-instrumentation-fastapi>=0.62b1",
-    "opentelemetry-sdk>=1.41.1",
-    "pydantic>=2.13.4",
+    "flower>=2.1.0",
+    "opentelemetry-api>=1.44.0",
+    "opentelemetry-exporter-otlp-proto-grpc>=1.44.0",
+    "opentelemetry-instrumentation-celery>=0.65b0",
+    "opentelemetry-instrumentation-fastapi>=0.65b0",
+    "opentelemetry-instrumentation-logging>=0.65b0",
+    "opentelemetry-instrumentation-sqlalchemy>=0.65b0",
+    "opentelemetry-sdk>=1.44.0",
+    "pydantic>=2.13.5,<2.14",
     "pydantic-extra-types>=2.11.1",
-    "pydantic-settings>=2.14.0",
+    "pydantic-settings>=2.15.0",
+    "pillow>=12.3.0",
+    "pyyaml>=6.0.3",
     "pyjwt==2.13.0",
-    "sqlalchemy>=2.0.49",
-    "sqlmodel>=0.0.38",
-    "structlog>=25.5.0",
-    "types-pyjwt>=1.7.1",
-    "uvicorn[standard]>=0.50.0",
+    "redis>=8.1.0",
+    "rich>=15.0.0",
+    "sqlalchemy>=2.0.52",
+    "sqlparse>=0.6.0",
+    "sqlmodel>=0.0.42",
+    "structlog>=26.1.0",
+    "uvicorn[standard]>=0.52.4",
+    "polars>=1.44.2",
+    "openpyxl>=3.1.5",
+    "pyzipper>=0.4.0",
+    "opentelemetry-instrumentation-redis>=0.65b0",
+    "opentelemetry-instrumentation-botocore>=0.65b0",
+    "jsonschema>=4.26,<5",
+    "rfc3339-validator>=0.1.4",
+    "pydantic-ai-slim[anthropic,cerebras,cohere,crusoe,google,groq,huggingface,mistral,openai,openrouter,snowflake,typesafe,zai]==2.50.0",
 ]
 
 [dependency-groups]
 dev = [
     "bandit>=1.9.4",
     "commitizen>=4.16.2",
-    "coverage>=7.15.0",
-    "debugpy>=1.8.20",
+    "coverage>=7.16.0",
+    "debugpy>=1.8.21",
     "detect-secrets>=1.5.0",
     "factory-boy>=3.3.3",
     "pre-commit>=4.6.0",
-    "pytest>=9.0.3",
-    "pytest-benchmark>=5.2.3",
+    "pytest>=9.1.1",
+    "pytest-benchmark>=5.3.0",
     "pytest-cov>=7.1.0",
     "pytest-sugar>=1.1.1",
-    "ruff>=0.15.20",
-    "ty>=0.0.56",
+    "ruff>=0.16.6",
+    "ty>=0.0.78",
 ]
 
 
@@ -86,6 +106,7 @@ datefmt = "%H:%M:%S"
 # ==== ruff ====
 [tool.ruff]
 src = ["src"]
+extend-exclude = [".agents", ".codex", "graphify-out"]
 line-length = 100
 target-version = "py314"
 
@@ -98,7 +119,10 @@ quote-style = "double"
 
 # ==== ty ====
 [tool.ty.environment]
-root = ["./src"]
+root = ["./src", "."]
+
+[tool.ty.src]
+include = ["src", "tests"]
 
 [tool.ty.rules]
 all = "warn"
@@ -110,7 +134,7 @@ include = ["src/**"]
 possibly-unresolved-reference = "error"
 
 [tool.ty.terminal]
-error-on-warning = false
+error-on-warning = true
 output-format = "full"
 
 # ==== pytest ====
@@ -119,11 +143,19 @@ pythonpath = "src"
 minversion = "6.0"
 python_files = ["tests.py", "test_*.py"]
 filterwarnings = []
+markers = [
+    "integration: requires the Docker Compose infrastructure",
+]
 
 # ==== Coverage ====
 [tool.coverage.run]
-include = ["app/**"]
+source = ["src"]
 omit = ["*/tests/*"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+skip_covered = true
 
 # ==== commitizen ====
 [tool.commitizen]

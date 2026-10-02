@@ -1,0 +1,2 @@
+# Local development example. Replace credentials before deployment.
+CACHE_PASSWORD=local-only-cache

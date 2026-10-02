@@ -1,0 +1,399 @@
+{
+  "documents": {
+    "data_schema": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string",
+          "enum": [
+            "IR",
+            "GB"
+          ]
+        },
+        "city": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "country",
+        "city"
+      ]
+    },
+    "render_schema": {
+      "root": {
+        "component": "vertical",
+        "children": [
+          {
+            "component": "choice",
+            "scope": "/properties/country",
+            "source": {
+              "kind": "schema"
+            }
+          },
+          {
+            "component": "choice",
+            "scope": "/properties/city",
+            "source": {
+              "kind": "custom",
+              "dependencies": {
+                "country": "/properties/country"
+              },
+              "items": [
+                {
+                  "key": 1,
+                  "value": "Tehran",
+                  "matches": {
+                    "country": "IR"
+                  }
+                },
+                {
+                  "key": 2,
+                  "value": "London",
+                  "matches": {
+                    "country": "GB"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "variants": [
+      {
+        "key": "web",
+        "kind": "WEB",
+        "priority": 1,
+        "render_schema": {
+          "root": {
+            "component": "vertical",
+            "children": [
+              {
+                "component": "choice",
+                "scope": "/properties/country",
+                "source": {
+                  "kind": "schema"
+                }
+              },
+              {
+                "component": "choice",
+                "scope": "/properties/city",
+                "source": {
+                  "kind": "custom",
+                  "dependencies": {
+                    "country": "/properties/country"
+                  },
+                  "items": [
+                    {
+                      "key": 1,
+                      "value": "Tehran",
+                      "matches": {
+                        "country": "IR"
+                      }
+                    },
+                    {
+                      "key": 2,
+                      "value": "London",
+                      "matches": {
+                        "country": "GB"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "key": "desktop",
+        "kind": "DESKTOP",
+        "priority": 2,
+        "render_schema": {
+          "root": {
+            "component": "grid",
+            "children": [
+              {
+                "component": "choice",
+                "scope": "/properties/country",
+                "source": {
+                  "kind": "schema"
+                }
+              },
+              {
+                "component": "choice",
+                "scope": "/properties/city",
+                "source": {
+                  "kind": "custom",
+                  "dependencies": {
+                    "country": "/properties/country"
+                  },
+                  "items": [
+                    {
+                      "key": 1,
+                      "value": "Tehran",
+                      "matches": {
+                        "country": "IR"
+                      }
+                    },
+                    {
+                      "key": 2,
+                      "value": "London",
+                      "matches": {
+                        "country": "GB"
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "options": {
+              "columns": 2
+            }
+          }
+        }
+      },
+      {
+        "key": "android",
+        "kind": "ANDROID",
+        "priority": 3,
+        "render_schema": {
+          "root": {
+            "component": "vertical",
+            "children": [
+              {
+                "component": "choice",
+                "scope": "/properties/country",
+                "source": {
+                  "kind": "schema"
+                }
+              },
+              {
+                "component": "choice",
+                "scope": "/properties/city",
+                "source": {
+                  "kind": "custom",
+                  "dependencies": {
+                    "country": "/properties/country"
+                  },
+                  "items": [
+                    {
+                      "key": 1,
+                      "value": "Tehran",
+                      "matches": {
+                        "country": "IR"
+                      }
+                    },
+                    {
+                      "key": 2,
+                      "value": "London",
+                      "matches": {
+                        "country": "GB"
+                      }
+                    }
+                  ]
+                },
+                "interaction": {
+                  "picker": "bottom_sheet",
+                  "required_capabilities": [
+                    "picker.bottom_sheet"
+                  ],
+                  "fallback_renderer": "default"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "key": "ios",
+        "kind": "IOS",
+        "priority": 4,
+        "render_schema": {
+          "root": {
+            "component": "vertical",
+            "children": [
+              {
+                "component": "choice",
+                "scope": "/properties/country",
+                "source": {
+                  "kind": "schema"
+                }
+              },
+              {
+                "component": "choice",
+                "scope": "/properties/city",
+                "source": {
+                  "kind": "custom",
+                  "dependencies": {
+                    "country": "/properties/country"
+                  },
+                  "items": [
+                    {
+                      "key": 1,
+                      "value": "Tehran",
+                      "matches": {
+                        "country": "IR"
+                      }
+                    },
+                    {
+                      "key": 2,
+                      "value": "London",
+                      "matches": {
+                        "country": "GB"
+                      }
+                    }
+                  ]
+                },
+                "interaction": {
+                  "picker": "bottom_sheet",
+                  "required_capabilities": [
+                    "picker.bottom_sheet"
+                  ],
+                  "fallback_renderer": "default"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "key": "b2b",
+        "kind": "B2B",
+        "priority": 5,
+        "render_schema": {
+          "root": {
+            "component": "vertical",
+            "children": [
+              {
+                "component": "choice",
+                "scope": "/properties/country",
+                "source": {
+                  "kind": "schema"
+                }
+              },
+              {
+                "component": "choice",
+                "scope": "/properties/city",
+                "source": {
+                  "kind": "custom",
+                  "dependencies": {
+                    "country": "/properties/country"
+                  },
+                  "items": [
+                    {
+                      "key": 1,
+                      "value": "Tehran",
+                      "matches": {
+                        "country": "IR"
+                      }
+                    },
+                    {
+                      "key": 2,
+                      "value": "London",
+                      "matches": {
+                        "country": "GB"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "key": "sdk",
+        "kind": "SDK",
+        "priority": 6,
+        "render_schema": {
+          "root": {
+            "component": "vertical",
+            "children": [
+              {
+                "component": "choice",
+                "scope": "/properties/country",
+                "source": {
+                  "kind": "schema"
+                }
+              },
+              {
+                "component": "choice",
+                "scope": "/properties/city",
+                "source": {
+                  "kind": "custom",
+                  "dependencies": {
+                    "country": "/properties/country"
+                  },
+                  "items": [
+                    {
+                      "key": 1,
+                      "value": "Tehran",
+                      "matches": {
+                        "country": "IR"
+                      }
+                    },
+                    {
+                      "key": 2,
+                      "value": "London",
+                      "matches": {
+                        "country": "GB"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "data": {
+        "country": "IR",
+        "city": 1
+      },
+      "valid": true,
+      "state": "READY",
+      "generation": 1,
+      "keys": [
+        "json:1"
+      ]
+    },
+    {
+      "data": {
+        "country": "GB",
+        "city": 1
+      },
+      "valid": false,
+      "state": "READY",
+      "generation": 2,
+      "keys": [
+        "json:2"
+      ]
+    },
+    {
+      "data": {
+        "city": 1
+      },
+      "valid": false,
+      "state": "BLOCKED",
+      "generation": 3,
+      "keys": []
+    },
+    {
+      "data": {
+        "country": "GB",
+        "city": 2
+      },
+      "valid": true,
+      "state": "READY",
+      "generation": 4,
+      "keys": [
+        "json:2"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,507 @@
+# English translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-09-09 23:18+0330\n"
+"PO-Revision-Date: 2026-09-09 18:39+0330\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: src/apps/media/domain/dto.py:12
+msgid "Opaque versioned upload reference."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:15
+msgid "User that owns the upload."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:26
+msgid "Either file or image."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:30
+msgid "Private S3 object key."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:40
+msgid "Client-provided filename."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:46
+msgid "Validated stored media type."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:52
+msgid "Stored object size in bytes."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:58
+msgid "SHA-256 digest of the stored bytes."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:69
+msgid "Image width in pixels."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:74
+msgid "Image height in pixels."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:14 src/apps/tasks/domain/entity.py:19
+msgid "Unique schedule name."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:15 src/apps/tasks/domain/entity.py:25
+msgid "Registered Celery task name."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:16 src/apps/tasks/domain/entity.py:29
+msgid "Destination queue."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:47
+msgid "Opaque versioned schedule reference."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:100
+msgid "Opaque versioned execution reference."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:35
+msgid "Schedule type."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:40
+msgid "Interval in seconds."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:288
+msgid "Unique scheduler lease name."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:299
+msgid "UUIDv7 of the scheduler process holding the lease."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:309
+msgid "UTC deadline after which another scheduler may claim the lease."
+msgstr ""
+
+#: src/apps/users/domain/auth_dto.py:46
+msgid "Opaque versioned session reference."
+msgstr ""
+
+#: src/apps/users/domain/auth_dto.py:74
+msgid "Opaque versioned permission reference."
+msgstr ""
+
+#: src/apps/users/domain/auth_dto.py:120
+msgid "Opaque versioned audit-event reference."
+msgstr ""
+
+#: src/apps/users/domain/auth_dto.py:152
+msgid "Opaque versioned role reference."
+msgstr ""
+
+#: src/apps/users/domain/auth_entity.py:27
+msgid "User that owns this device session."
+msgstr ""
+
+#: src/apps/users/domain/auth_entity.py:38
+msgid "Refresh-token rotation family identifier."
+msgstr ""
+
+#: src/apps/users/domain/auth_entity.py:48
+msgid "SHA-256 digest of the opaque refresh token."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:14 src/apps/users/domain/dto.py:28
+#: src/apps/users/domain/dto.py:54
+msgid "Unique username."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:15
+msgid "Plaintext password accepted only as input."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:16
+msgid "Grant administrative privileges."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:17 src/apps/users/domain/dto.py:29
+#: src/apps/users/domain/dto.py:55
+msgid "Unique email address."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:18 src/apps/users/domain/dto.py:34
+#: src/apps/users/domain/dto.py:61
+msgid "Given name."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:19 src/apps/users/domain/dto.py:35
+#: src/apps/users/domain/dto.py:62
+msgid "Family name."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:26 src/apps/users/domain/dto.py:52
+msgid "Opaque versioned user reference."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:31 src/apps/users/domain/dto.py:42
+msgid "Replacement plaintext password."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:33 src/apps/users/domain/dto.py:64
+msgid "Administrative privilege flag."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:41
+msgid "Current plaintext password."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:57 src/core/common_dto.py:14
+msgid "UTC creation timestamp."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:58 src/core/base_entity.py:55
+#: src/core/common_dto.py:15
+msgid "UTC timestamp of the most recent update."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:59 src/core/common_dto.py:16
+msgid "UTC soft-deletion timestamp."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:65
+msgid "Whether the user is not soft-deleted."
+msgstr ""
+
+#: src/apps/users/domain/entity.py:14
+msgid "Unique username used to identify the user."
+msgstr ""
+
+#: src/apps/users/domain/entity.py:26
+msgid "Unique email address for the user."
+msgstr ""
+
+#: src/apps/users/domain/entity.py:37
+msgid "Whether the user has administrative privileges."
+msgstr ""
+
+#: src/apps/users/domain/entity.py:48
+msgid "User's given name."
+msgstr ""
+
+#: src/apps/users/domain/entity.py:53
+msgid "User's family name."
+msgstr ""
+
+#: src/apps/users/domain/entity.py:57
+msgid "One-way password hash; a plaintext password is never stored."
+msgstr ""
+
+#: src/core/base_entity.py:20 src/core/common_dto.py:12
+msgid "Time-sortable UUIDv7 primary key."
+msgstr ""
+
+#: src/core/base_entity.py:32 src/core/common_dto.py:13
+msgid "Optimistic-lock version number."
+msgstr ""
+
+#: src/core/base_entity.py:44
+msgid "UTC timestamp at which the row was created."
+msgstr ""
+
+#: src/core/base_entity.py:66
+msgid "UTC soft-deletion timestamp; null means the row is active."
+msgstr ""
+
+#: src/core/common_dto.py:22 src/core/common_dto.py:30
+#: src/core/common_dto.py:43 src/core/common_dto.py:51
+#: src/core/common_entity.py:12 src/core/common_entity.py:46
+msgid "Human-readable title."
+msgstr ""
+
+#: src/core/common_dto.py:23 src/core/common_dto.py:31
+msgid "URL-safe identifier."
+msgstr ""
+
+#: src/core/common_dto.py:24 src/core/common_dto.py:32
+#: src/core/common_dto.py:44 src/core/common_dto.py:52
+#: src/core/common_entity.py:26 src/core/common_entity.py:51
+msgid "Optional long-form description."
+msgstr ""
+
+#: src/core/common_dto.py:33 src/core/common_dto.py:54
+msgid "Version expected by the caller."
+msgstr ""
+
+#: src/core/common_dto.py:45 src/core/common_dto.py:53
+msgid "User-controlled ordering position."
+msgstr ""
+
+#: src/core/common_entity.py:16
+msgid "URL-safe identifier, unique among rows that are not soft-deleted."
+msgstr ""
+
+#: src/core/common_entity.py:57
+msgid "User-controlled position used as the primary default sort key."
+msgstr ""
+
+#: src/core/settings.py:25
+msgid ""
+"Async API with versioned references, background tasks, private media, and"
+" observability."
+msgstr ""
+
+#: src/core/settings.py:37
+msgid "File and WebP image upload and download operations."
+msgstr ""
+
+#: src/core/settings.py:39
+msgid "Administrative background-task scheduling."
+msgstr ""
+
+#: src/core/settings.py:42
+msgid "Administrative user and authorization operations."
+msgstr ""
+
+#: src/core/settings.py:44
+msgid "Authentication and device-session operations."
+msgstr ""
+
+#: src/core/settings.py:45
+msgid "Liveness and dependency readiness probes."
+msgstr ""
+
+#: src/utils/base_schema.py:61
+msgid "UUIDv7 request correlation identifier."
+msgstr ""
+
+#: src/utils/base_schema.py:106
+msgid "Optional UUIDv7 correlation ID; generated when omitted."
+msgstr ""
+
+#: src/utils/errors/auth.py:8
+msgid "Invalid authentication credentials."
+msgstr ""
+
+#: src/utils/errors/auth.py:9
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: src/utils/errors/auth.py:10
+msgid "The account is temporarily locked."
+msgstr ""
+
+#: src/utils/errors/auth.py:11
+msgid "The token is invalid or expired."
+msgstr ""
+
+#: src/utils/errors/auth.py:12
+msgid "User not found."
+msgstr ""
+
+#: src/utils/errors/auth.py:13
+msgid "The user account is inactive."
+msgstr ""
+
+#: src/utils/errors/common.py:8
+msgid "Resource not found."
+msgstr ""
+
+#: src/utils/errors/common.py:9
+msgid "The request is invalid."
+msgstr ""
+
+#: src/utils/errors/common.py:10
+msgid "Request validation failed."
+msgstr ""
+
+#: src/utils/errors/common.py:11
+msgid "The resource was modified. Refresh and try again."
+msgstr ""
+
+#: src/utils/errors/common.py:12
+msgid "The resource reference is invalid."
+msgstr ""
+
+#: src/utils/errors/common.py:13
+msgid "An unexpected error occurred."
+msgstr ""
+
+#: src/utils/errors/common.py:14
+msgid "The service is temporarily unavailable."
+msgstr ""
+
+#: src/utils/errors/common.py:15
+msgid "Too many requests. Try again later."
+msgstr ""
+
+#: src/utils/errors/infrastructure.py:8
+msgid "The database is temporarily unavailable."
+msgstr ""
+
+#: src/utils/errors/infrastructure.py:9
+msgid "The operation conflicts with existing data."
+msgstr ""
+
+#: src/utils/errors/infrastructure.py:10
+msgid "The cache service is temporarily unavailable."
+msgstr ""
+
+#: src/utils/errors/infrastructure.py:11
+msgid "The file storage service is temporarily unavailable."
+msgstr ""
+
+#: src/utils/errors/infrastructure.py:12
+msgid "The task broker is temporarily unavailable."
+msgstr ""
+
+#: src/utils/errors/media.py:8
+msgid "The upload exceeds the size limit."
+msgstr ""
+
+#: src/utils/errors/media.py:9
+msgid "The uploaded content is not a valid image."
+msgstr ""
+
+#: src/utils/errors/media.py:10
+msgid "The upload limit was exceeded. Try again later."
+msgstr ""
+
+#: src/utils/errors/media.py:11
+msgid "The uploaded content is not a supported file."
+msgstr ""
+
+#~ msgid "Authentication and user account operations."
+#~ msgstr ""
+
+#~ msgid "Private file and WebP image operations."
+#~ msgstr ""
+
+
+msgid "Form definition operations."
+msgstr "Form definition operations."
+
+msgid "Versioned form authoring operations."
+msgstr "Versioned form authoring operations."
+
+msgid "Governed integration connection operations."
+msgstr "Governed integration connection operations."
+
+#: src/apps/designer/application/service.py:110
+msgid "Draft"
+msgstr "Draft"
+
+#: src/apps/designer/application/service.py:110
+msgid "Published"
+msgstr "Published"
+
+#: src/apps/designer/application/service.py:110
+msgid "Retired"
+msgstr "Retired"
+
+#: src/apps/designer/application/service.py:111
+msgid "Submitted"
+msgstr "Submitted"
+
+#: src/apps/designer/application/service.py:111
+msgid "Running"
+msgstr "Running"
+
+#: src/apps/designer/application/service.py:111
+msgid "Waiting"
+msgstr "Waiting"
+
+#: src/apps/designer/application/service.py:112
+msgid "Paused"
+msgstr "Paused"
+
+#: src/apps/designer/application/service.py:112
+msgid "Completed"
+msgstr "Completed"
+
+#: src/apps/designer/application/service.py:112
+msgid "Failed"
+msgstr "Failed"
+
+#: src/apps/designer/application/service.py:113
+msgid "Cancelled"
+msgstr "Cancelled"
+
+#: src/apps/designer/application/service.py:113
+msgid "Approve"
+msgstr "Approve"
+
+#: src/apps/designer/application/service.py:113
+msgid "Reject"
+msgstr "Reject"
+
+#: src/apps/designer/application/service.py:114
+msgid "Next"
+msgstr "Next"
+
+#: src/apps/designer/application/service.py:114
+msgid "Success"
+msgstr "Success"
+
+#: src/apps/designer/application/service.py:114
+msgid "Failure"
+msgstr "Failure"
+
+msgid "step.request_priority.name"
+msgstr "Request priority"
+
+msgid "step.request_priority.help"
+msgstr "Read the current business request priority."
+
+msgid "step.permission_check.name"
+msgstr "Permission check"
+
+msgid "step.permission_check.help"
+msgstr "Check the current execution principal permission without granting access."
+
+msgid "step.connection_status.name"
+msgstr "Connection status"
+
+msgid "step.connection_status.help"
+msgstr "Call an approved connection in the background and return its status."
+
+msgid "Trusted workflow step type versions."
+msgstr "Trusted workflow step type versions."
+
+msgid "Search deployed step type versions"
+msgstr "Search deployed step type versions"
+
+msgid "Requires workflows.manage. Includes draft and historical versions; is_available is false when the exact deployed handler is missing or changed."
+msgstr "Requires workflows.manage. Includes draft and historical versions; is_available is false when the exact deployed handler is missing or changed."
+
+msgid "Inspect one pinned step type version"
+msgstr "Inspect one pinned step type version"
+
+msgid "Requires workflows.manage. Historical metadata remains readable if its code extension is no longer deployed."
+msgstr "Requires workflows.manage. Historical metadata remains readable if its code extension is no longer deployed."
+
+msgid "Publish a reconciled step type draft"
+msgstr "Publish a reconciled step type draft"
+
+msgid "Requires workflows.manage. Only a draft whose persisted schema exactly matches deployed trusted code can be published. Published contracts are immutable."
+msgstr "Requires workflows.manage. Only a draft whose persisted schema exactly matches deployed trusted code can be published. Published contracts are immutable."
+
+msgid "Select executable published step types"
+msgstr "Select executable published step types"
+
+msgid "Requires workflows.manage. Returns only currently registered, matching published versions as key/value choices. response_format=items returns the same bounded page without its envelope."
+msgstr "Requires workflows.manage. Returns only currently registered, matching published versions as key/value choices. response_format=items returns the same bounded page without its envelope."

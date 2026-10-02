@@ -1,0 +1,63 @@
+"""Compatibility exports for form authoring and rendering DTOs."""
+
+from apps.forms.domain.dtos.authoring import (
+    DATA_DIALECT,
+    RENDER_DIALECT,
+    FormCreateDTO,
+    FormDesignVariantDTO,
+    FormDocuments,
+    FormDTO,
+    FormQuery,
+    FormVersionCreateDTO,
+    FormVersionDTO,
+    FormVersionQuery,
+    PreviewDTO,
+    PreviewRequest,
+    ValidationIssue,
+    ValidationResult,
+)
+from apps.forms.domain.dtos.preview import (
+    BehaviorPreview,
+    BehaviorPreviewRequest,
+    ComponentCopyRequest,
+    NavigationPreviewRequest,
+    OptionPreviewRequest,
+)
+from apps.forms.domain.dtos.render import (
+    Accessibility,
+    Calculation,
+    GridPlacement,
+    RenderDocument,
+    RenderNode,
+    RenderOptions,
+    RenderRule,
+)
+
+__all__ = [
+    "DATA_DIALECT",
+    "RENDER_DIALECT",
+    "Accessibility",
+    "BehaviorPreview",
+    "BehaviorPreviewRequest",
+    "Calculation",
+    "ComponentCopyRequest",
+    "FormCreateDTO",
+    "FormDTO",
+    "FormDesignVariantDTO",
+    "FormDocuments",
+    "FormQuery",
+    "FormVersionCreateDTO",
+    "FormVersionDTO",
+    "FormVersionQuery",
+    "GridPlacement",
+    "NavigationPreviewRequest",
+    "OptionPreviewRequest",
+    "PreviewDTO",
+    "PreviewRequest",
+    "RenderDocument",
+    "RenderNode",
+    "RenderOptions",
+    "RenderRule",
+    "ValidationIssue",
+    "ValidationResult",
+]

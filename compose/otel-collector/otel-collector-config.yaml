@@ -1,0 +1,52 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:4318"
+  postgresql:
+    endpoint: postgres:5432
+    username: ${env:POSTGRES_USER}
+    password: ${env:POSTGRES_PASSWORD}
+    databases: ["${env:POSTGRES_DB}"]
+    collection_interval: 30s
+    tls:
+      insecure: true
+  redis:
+    endpoint: cache:6379
+    password: ${env:CACHE_PASSWORD}
+    collection_interval: 30s
+  rabbitmq:
+    endpoint: http://broker:15672
+    username: ${env:RABBITMQ_DEFAULT_USER}
+    password: ${env:RABBITMQ_DEFAULT_PASS}
+    collection_interval: 30s
+
+processors:
+  batch: {}
+
+exporters:
+  otlp:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+  debug:
+    verbosity: normal
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp]
+    metrics:
+      receivers: [otlp, postgresql, redis, rabbitmq]
+      processors: [batch]
+      exporters: [prometheus]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]

@@ -270,15 +270,16 @@ app/media/
 .env
 .envs/*
 
-!.envs/.backend
-!.envs/.cache
-!.envs/.s3
-!.envs/.broker
-!.envs/.pgadmin
-!.envs/.postgres
+!.envs/examples/
+!.envs/examples/**
 
 # backup folder
 .backup*/
 
 # graphify history files
 graphify-out/
+
+# Local reading state and downloaded research
+.obsidian/
+.trash/
+/raw/

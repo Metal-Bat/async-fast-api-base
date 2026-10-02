@@ -1,0 +1,106 @@
+{
+  "dialect": "bpms.behavior/1",
+  "documents": {
+    "behavior_dialect": "bpms.behavior/1",
+    "data_schema": {
+      "type": "object",
+      "properties": {
+        "price": {
+          "type": "number"
+        },
+        "tax": {
+          "type": "number"
+        },
+        "total": {
+          "type": "number"
+        },
+        "visible": {
+          "type": "boolean",
+          "default": true
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "render_schema": {
+      "root": {
+        "component": "vertical",
+        "children": [
+          {
+            "component": "calculated",
+            "scope": "/properties/total",
+            "calculation": {
+              "function": "sum",
+              "scopes": [
+                "/properties/price",
+                "/properties/tax"
+              ]
+            }
+          },
+          {
+            "component": "text",
+            "scope": "/properties/note",
+            "rules": [
+              {
+                "scope": "/properties/visible",
+                "operator": "eq",
+                "value": false,
+                "effect": "hide"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "initialize-and-calculate",
+      "data": {
+        "price": 0.1,
+        "tax": 0.2
+      },
+      "initialize": true,
+      "expected": {
+        "price": 0.1,
+        "tax": 0.2,
+        "total": 0.3,
+        "visible": true
+      }
+    },
+    {
+      "name": "explicit-null-wins",
+      "data": {
+        "price": 1,
+        "tax": 2,
+        "visible": null
+      },
+      "initial": {
+        "visible": false
+      },
+      "initialize": true,
+      "expected": {
+        "price": 1,
+        "tax": 2,
+        "total": 3,
+        "visible": null
+      }
+    },
+    {
+      "name": "hidden-note-cleared",
+      "data": {
+        "price": 1,
+        "tax": 2,
+        "visible": false,
+        "note": "stale"
+      },
+      "expected": {
+        "price": 1,
+        "tax": 2,
+        "total": 3,
+        "visible": false
+      }
+    }
+  ]
+}

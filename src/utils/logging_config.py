@@ -6,11 +6,36 @@ import structlog
 from core.settings import settings
 
 
-def setup_logging() -> None:
+def setup_logging(log_level: int | str | None = None) -> None:
+    """Configure standard logging and structlog for the current environment."""
+    effective_level = settings.LOG_LEVEL if log_level is None else log_level
+    configured_handlers = [
+        handler
+        for output, handler in (("console", "console"), ("file", "json_file"))
+        if output in settings.LOG_OUTPUTS
+    ]
+    handler_definitions = {
+        "console": {
+            "level": effective_level,
+            "class": "logging.StreamHandler",
+            "formatter": "plain_console",
+        },
+        "json_file": {
+            "level": effective_level,
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": settings.LOG_FILE,
+            "when": "midnight",
+            "backupCount": 30,
+            "formatter": "json_formatter",
+            "encoding": "utf-8",
+            "utc": True,
+        },
+    }
     LOGGING = {
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
+            "sql_console": {"()": "utils.sql_logging.SQLConsoleFormatter"},
             "json_formatter": {
                 "()": structlog.stdlib.ProcessorFormatter,
                 "processor": structlog.processors.JSONRenderer(),
@@ -25,37 +50,34 @@ def setup_logging() -> None:
                 "processor": structlog.dev.ConsoleRenderer(),
             },
         },
-        "handlers": {
-            "console": {
-                "class": "logging.StreamHandler",
-                "formatter": "plain_console",
-            },
-            "json_file": {
-                "level": "INFO",
-                "class": "logging.handlers.TimedRotatingFileHandler",
-                "filename": settings.LOG_FILE,
-                "when": "midnight",
-                "backupCount": 30,
-                "formatter": "json_formatter",
-                "encoding": "utf-8",
-                "utc": True,
-            },
-        },
+        "handlers": {name: handler_definitions[name] for name in configured_handlers},
         "loggers": {
+            "sqlalchemy.engine.Engine": {
+                "handlers": configured_handlers,
+                "level": effective_level,
+                "propagate": False,
+            },
             "json_logger": {
-                "handlers": ["json_file"],
-                "level": "INFO",
+                "handlers": configured_handlers,
+                "level": effective_level,
                 "propagate": False,
             },
         },
+        "root": {"handlers": configured_handlers, "level": effective_level},
     }
 
-    if settings.ENVIRONMENT == settings.LOCAL_ENVIRONMENT:
-        LOGGING["loggers"] = {
-            "json_logger": {
-                "handlers": ["json_file", "console"],
-                "level": "DEBUG",
-            },
+    if settings.SQL_PRETTY_LOGS and "console" in settings.LOG_OUTPUTS:
+        LOGGING["handlers"]["sql_console"] = {
+            "class": "logging.StreamHandler",
+            "level": effective_level,
+            "formatter": "sql_console",
+        }
+        LOGGING["loggers"]["sqlalchemy.engine.Engine"] = {
+            "handlers": [
+                "sql_console" if name == "console" else name for name in configured_handlers
+            ],
+            "level": effective_level,
+            "propagate": False,
         }
 
     logging.config.dictConfig(LOGGING)
@@ -75,6 +97,6 @@ def setup_logging() -> None:
         ],
         context_class=dict,
         logger_factory=structlog.stdlib.LoggerFactory(),
-        wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
+        wrapper_class=structlog.make_filtering_bound_logger(effective_level),
         cache_logger_on_first_use=True,
     )

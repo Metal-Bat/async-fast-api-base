@@ -1,0 +1,49 @@
+# Local development example. Replace credentials before deployment.
+PROJECT_NAME=fast-api-sample
+PROJECT_DESCRIPTION="Async API with versioned references, background tasks, private media, and observability."
+CONTACT_NAME="API support"
+CONTACT_EMAIL=
+CONTACT_URL=
+DEBUGPY=False
+VERSION=1.0.0
+ALGORITHM=HS256
+SECRET_KEY=local-development-only-replace-before-deployment-32chars
+ACCESS_TOKEN_EXPIRE_MINUTES=15
+REFRESH_TOKEN_EXPIRE_DAYS=30
+PASSWORD_RESET_EXPIRE_MINUTES=30
+MAX_LOGIN_FAILURES=5
+LOGIN_LOCKOUT_MINUTES=15
+HISTORY_RETENTION_DAYS=365
+INITIAL_ADMIN_USERNAME=admin
+INITIAL_ADMIN_PASSWORD=local-only-admin
+SWAGGER_CLIENT_ID=swagger
+SWAGGER_CLIENT_SECRET=local-only-swagger
+
+CORS_ORIGINS=
+ALLOWED_ORIGINS=
+LOG_FILE="/app/logs/services.log"
+LOG_LEVEL=INFO
+LOG_OUTPUTS='["console","file","otel"]'
+
+POSTGRES_USER=sample
+POSTGRES_PASSWORD=local-only-postgres
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=db
+
+CACHE_DSN=redis://:local-only-cache@cache:6379/0
+CELERY_APP_NAME=fast_api_sample
+CELERY_BROKER_URL=amqp://sample:local-only-broker@broker:5672/sample
+# Celery results default to CACHE_DSN; set CELERY_RESULT_BACKEND to use a separate cache.
+CELERY_DEFAULT_QUEUE=sample.default
+CELERY_REPORT_QUEUE=reporting
+CELERY_WORKER_CONCURRENCY=10
+CELERY_TASK_SOFT_TIME_LIMIT=600
+CELERY_TASK_TIME_LIMIT=1200
+CELERY_RESULT_RETENTION_DAYS=30
+S3_ENDPOINT=http://s3:9000
+S3_ACCESS_KEY=sample-storage
+S3_SECRET_KEY=local-only-storage
+S3_BUCKET=sample
+OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+OTEL_METRIC_EXPORT_INTERVAL_MILLIS=60000

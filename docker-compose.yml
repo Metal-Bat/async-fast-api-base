@@ -1,7 +1,9 @@
 volumes:
   sample_postgres_data: {}
   sample_pgadmin_data: {}
-  sample_dragonfly_data: {}
+  sample_cache_data: {}
+  sample_s3_data: {}
+  sample_broker_data: {}
 
 services:
   backend:
@@ -12,11 +14,17 @@ services:
     container_name: sample_backend
     depends_on:
       - postgres
+      - cache
+      - s3
+      - broker
+      - otel-collector
     volumes:
       - ./src:/app/src/:z
       - ./logs:/app/logs:z
     env_file:
-      - ./.envs/backend.env
+      - ./.envs/.backend
+    environment:
+      - OTEL_SERVICE_NAME=sample-api
     ports:
       - "8000:8000"
       - "5678:5678"
@@ -24,6 +32,108 @@ services:
     tty: true
 
     command: /start
+
+  worker:
+    build:
+      context: .
+      dockerfile: ./compose/backend/Dockerfile
+    image: sample_backend
+    container_name: sample_worker
+    restart: unless-stopped
+    stop_grace_period: 21m
+    working_dir: /app/src
+    command: /start-worker
+    depends_on:
+      - postgres
+      - cache
+      - s3
+      - broker
+      - otel-collector
+    volumes:
+      - ./src:/app/src/:z
+    env_file:
+      - ./.envs/.backend
+    environment:
+      - OTEL_SERVICE_NAME=sample-worker
+
+  reporting-worker:
+    build:
+      context: .
+      dockerfile: ./compose/backend/Dockerfile
+    image: sample_backend
+    container_name: sample_reporting_worker
+    restart: unless-stopped
+    stop_grace_period: 21m
+    working_dir: /app/src
+    command: /start-reporting-worker
+    depends_on:
+      - postgres
+      - cache
+      - s3
+      - broker
+      - otel-collector
+    volumes:
+      - ./src:/app/src/:z
+    env_file:
+      - ./.envs/.backend
+    environment:
+      - OTEL_SERVICE_NAME=sample-reporting-worker
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: ./compose/backend/Dockerfile
+    image: sample_backend
+    container_name: sample_scheduler
+    restart: unless-stopped
+    stop_grace_period: 30s
+    working_dir: /app/src
+    command: /start-scheduler
+    depends_on:
+      - postgres
+      - cache
+      - s3
+      - broker
+      - otel-collector
+    volumes:
+      - ./src:/app/src/:z
+    env_file:
+      - ./.envs/.backend
+    environment:
+      - OTEL_SERVICE_NAME=sample-scheduler
+
+  flower:
+    build:
+      context: .
+      dockerfile: ./compose/backend/Dockerfile
+    image: sample_backend
+    container_name: sample_flower
+    working_dir: /app/src
+    command: /start-flower
+    depends_on:
+      - broker
+      - worker
+      - reporting-worker
+    env_file:
+      - ./.envs/.backend
+    ports:
+      - "5555:5555"
+    attach: false
+
+  broker:
+    build:
+      context: .
+      dockerfile: ./compose/broker/Dockerfile
+    image: sample_broker
+    container_name: sample_broker
+    volumes:
+      - sample_broker_data:/var/lib/rabbitmq
+    env_file:
+      - ./.envs/.broker
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    attach: false
 
   postgres:
     build:
@@ -34,9 +144,10 @@ services:
     volumes:
       - sample_postgres_data:/var/lib/postgresql
     env_file:
-      - ./.envs/postgres.env
+      - ./.envs/.postgres
     ports:
       - "5432:5432"
+    attach: false
 
   pgadmin:
     build:
@@ -51,19 +162,35 @@ services:
     depends_on:
       - postgres
     env_file:
-      - ./.envs/pgadmin.env
+      - ./.envs/.pgadmin
     attach: false
 
-  dragonfly:
+  cache:
     build:
       context: .
-      dockerfile: ./compose/dragonfly/Dockerfile
-    image: sample_dragonfly
-    container_name: sample_dragonfly
+      dockerfile: ./compose/cache/Dockerfile
+    image: sample_cache
+    container_name: sample_cache
     volumes:
-      - sample_dragonfly_data:/data
+      - sample_cache_data:/data
     env_file:
-      - ./.envs/dragonfly.env
+      - ./.envs/.cache
+    attach: false
+
+  s3:
+    build:
+      context: .
+      dockerfile: ./compose/s3/Dockerfile
+    image: sample_s3
+    container_name: sample_s3
+    command: ["server", "/data", "--console-address", ":9001"]
+    volumes:
+      - sample_s3_data:/data
+    env_file:
+      - ./.envs/.s3
+    ports:
+      - "9000:9000"
+      - "9001:9001"
     attach: false
 
   jaeger:
@@ -79,10 +206,19 @@ services:
   otel-collector:
     build:
       context: .
-      dockerfile: ./compose/collector/Dockerfile
-    image: sample_collector
-    container_name: sample_collector
+      dockerfile: ./compose/otel-collector/Dockerfile
+    image: sample_otel_collector
+    container_name: sample_otel_collector
     depends_on:
       - jaeger
+      - postgres
+      - cache
+      - broker
+    env_file:
+      - ./.envs/.postgres
+      - ./.envs/.cache
+      - ./.envs/.broker
     command: ["--config", "/etc/otel-collector-config.yaml"]
+    ports:
+      - "8889:8889"
     attach: false

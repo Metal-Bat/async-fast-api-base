@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+cd /app/src
+exec celery --app=core.celery_app:celery_app --quiet worker --pool=prefork \
+    --loglevel="${LOG_LEVEL:-INFO}" \
+    --concurrency="${CELERY_WORKER_CONCURRENCY:-10}" \
+    --queues="${CELERY_DEFAULT_QUEUE:-sample.default},${CELERY_AUTOMATION_QUEUE:-bpms.automation}"

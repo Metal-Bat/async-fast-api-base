@@ -1,0 +1,1 @@
+"""Work-item domain contracts."""

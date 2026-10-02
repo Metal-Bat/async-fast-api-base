@@ -1,0 +1,3 @@
+# Local development example. Replace credentials before deployment.
+MINIO_ROOT_USER=sample-storage
+MINIO_ROOT_PASSWORD=local-only-storage

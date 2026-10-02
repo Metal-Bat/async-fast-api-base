@@ -1,0 +1,4 @@
+# Local development example. Replace credentials before deployment.
+RABBITMQ_DEFAULT_USER=sample
+RABBITMQ_DEFAULT_PASS=local-only-broker
+RABBITMQ_DEFAULT_VHOST=sample

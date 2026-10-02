@@ -1,4 +1,4 @@
-FROM postgres:18.1-bookworm
+FROM postgres:18.6-bookworm
 
 COPY ./compose/postgres/maintenance /usr/bin/maintenance
 

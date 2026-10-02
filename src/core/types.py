@@ -8,16 +8,20 @@ DTOType = TypeVar("DTOType", bound=BaseModel)
 
 OperatorFunc = Callable[[ColumnElement[Any], Any], ColumnElement[bool]]
 
-PlatformTypes = Literal[
-    "ANDROID",
-    "IOS",
-    "PWA",
-    None,
-]
+PlatformTypes = (
+    Literal[
+        "ANDROID",
+        "IOS",
+        "PWA",
+    ]
+    | None
+)
 
 
-AcceptLanguage = Literal[
-    "ENGLISH",
-    "PERSIAN",
-    None,
-]
+AcceptLanguage = (
+    Literal[
+        "ENGLISH",
+        "PERSIAN",
+    ]
+    | None
+)

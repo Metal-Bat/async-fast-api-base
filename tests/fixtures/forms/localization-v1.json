@@ -1,0 +1,145 @@
+{
+  "dialects": [
+    "bpms.messages/1",
+    "bpms.format/1"
+  ],
+  "form": {
+    "data_schema": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        }
+      }
+    },
+    "render_schema": {
+      "root": {
+        "component": "text",
+        "scope": "/properties/email",
+        "messages": {
+          "label": {
+            "key": "email"
+          }
+        },
+        "formatting": {
+          "direction": "ltr"
+        }
+      }
+    },
+    "localization": {
+      "dialect": "bpms.messages/1",
+      "default_locale": "en",
+      "supported_locales": [
+        "en",
+        "fa"
+      ],
+      "required_locales": [
+        "en",
+        "fa"
+      ],
+      "catalogs": {
+        "en": {
+          "email": {
+            "text": "Email",
+            "parameters": {}
+          }
+        },
+        "fa": {
+          "email": {
+            "text": "ایمیل",
+            "source_revision": "e335299f45473c0a26fee676d835b92419d7a1c1f5026515d357da65962e2d1e"
+          }
+        }
+      }
+    }
+  },
+  "format_cases": [
+    {
+      "profile": {
+        "kind": "date",
+        "numbering": "arabext"
+      },
+      "input": "۲۰۲۶-۱۰-۰۱",
+      "canonical": "2026-10-01",
+      "display": "۲۰۲۶-۱۰-۰۱"
+    },
+    {
+      "profile": {
+        "kind": "datetime",
+        "timezone": "Asia/Tehran",
+        "numbering": "arabext"
+      },
+      "input": "۲۰۲۶-۱۰-۰۱T۱۲:۳۰:۰۰+۰۳:۳۰",
+      "canonical": "2026-10-01T09:00:00Z",
+      "display": "۲۰۲۶-۱۰-۰۱T۱۲:۳۰:۰۰+۰۳:۳۰"
+    },
+    {
+      "profile": {
+        "kind": "decimal",
+        "numbering": "arabext",
+        "decimal_places": 3,
+        "currency": "IRR"
+      },
+      "input": "۱۲۳۴٫۵۶۷",
+      "canonical": "1234.567",
+      "display": "۱۲۳۴٫۵۶۷ IRR"
+    },
+    {
+      "profile": {
+        "kind": "text",
+        "direction": "ltr"
+      },
+      "input": "ada@example.test",
+      "canonical": "ada@example.test",
+      "display": "ada@example.test"
+    }
+  ],
+  "plural_cases": [
+    {
+      "locale": "en",
+      "text": {
+        "one": "One item",
+        "other": "{count} items"
+      },
+      "count": 0,
+      "expected": "0 items"
+    },
+    {
+      "locale": "en",
+      "text": {
+        "one": "One item",
+        "other": "{count} items"
+      },
+      "count": 1,
+      "expected": "One item"
+    },
+    {
+      "locale": "fa",
+      "text": {
+        "one": "{count} مورد",
+        "other": "{count} موارد"
+      },
+      "count": 0,
+      "expected": "۰ مورد"
+    },
+    {
+      "locale": "fa",
+      "text": {
+        "one": "{count} مورد",
+        "other": "{count} موارد"
+      },
+      "count": 1,
+      "expected": "۱ مورد"
+    },
+    {
+      "locale": "fa",
+      "text": {
+        "one": "{count} مورد",
+        "other": "{count} موارد"
+      },
+      "count": 2,
+      "expected": "۲ موارد"
+    }
+  ]
+}

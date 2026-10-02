@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+cd /app/src
+exec celery --app=core.celery_app:celery_app --quiet flower --port=5555
