@@ -1,0 +1,165 @@
+{
+  "spec": {
+    "connection_ref": "opaque",
+    "provider_key": "typesafe",
+    "model_id": "jev-1.13.0",
+    "prompt_version": "triage-1",
+    "instructions": "Classify the ticket.",
+    "decision": {
+      "question": "Which queue owns this ticket?",
+      "options": [
+        {
+          "key": "billing",
+          "labels": {
+            "en": "Billing"
+          },
+          "description": "Invoice problem"
+        },
+        {
+          "key": "bug",
+          "labels": {
+            "en": "Bug"
+          },
+          "description": "Software defect"
+        },
+        {
+          "key": "account",
+          "labels": {
+            "en": "Account",
+            "fa": "حساب"
+          },
+          "description": "Profile or access request"
+        }
+      ],
+      "review_below": 0.8
+    },
+    "data_policy": {
+      "allowed_fields": [
+        "ticket"
+      ],
+      "allowed_classifications": [
+        "INTERNAL"
+      ],
+      "redacted_fields": [],
+      "allowed_tools": [],
+      "allowed_retrieval_sources": []
+    },
+    "field_classifications": {
+      "ticket": "INTERNAL"
+    },
+    "user_limits": {
+      "requests": 1,
+      "tool_calls": 0,
+      "input_tokens": 1000,
+      "output_tokens": 100,
+      "total_tokens": 1100,
+      "elapsed_seconds": 10,
+      "spend_usd": "0.10",
+      "strict_spend": false
+    },
+    "effective_limits": {
+      "requests": 1,
+      "tool_calls": 0,
+      "input_tokens": 1000,
+      "output_tokens": 100,
+      "total_tokens": 1100,
+      "elapsed_seconds": 10,
+      "spend_usd": "0.10",
+      "strict_spend": false
+    },
+    "price": {
+      "version": "test-price-1",
+      "input_per_million_usd": "1",
+      "output_per_million_usd": "1",
+      "fixed_per_request_usd": "0.01"
+    },
+    "transport_attempts": 1
+  },
+  "cases": [
+    {
+      "data": {
+        "ticket": "The last invoice lists the same charge twice."
+      },
+      "expected_choice": "billing",
+      "should_review": false
+    },
+    {
+      "data": {
+        "ticket": "I need a copy of my paid invoice."
+      },
+      "expected_choice": "billing",
+      "should_review": false
+    },
+    {
+      "data": {
+        "ticket": "The refund has not appeared on my statement."
+      },
+      "expected_choice": "billing",
+      "should_review": false
+    },
+    {
+      "data": {
+        "ticket": "The save button returns an error."
+      },
+      "expected_choice": "bug",
+      "should_review": false
+    },
+    {
+      "data": {
+        "ticket": "The application crashes when I open reports."
+      },
+      "expected_choice": "bug",
+      "should_review": false
+    },
+    {
+      "data": {
+        "ticket": "The page shows a blank panel after refresh."
+      },
+      "expected_choice": "bug",
+      "should_review": false
+    },
+    {
+      "data": {
+        "ticket": "Please change the email address on my profile."
+      },
+      "expected_choice": "account",
+      "should_review": false
+    },
+    {
+      "data": {
+        "ticket": "I need to reset access to my account."
+      },
+      "expected_choice": "account",
+      "should_review": false
+    },
+    {
+      "data": {
+        "ticket": "Please add a teammate to my account."
+      },
+      "expected_choice": "account",
+      "should_review": false
+    },
+    {
+      "data": {
+        "ticket": "I cannot access invoices because the page is blank."
+      },
+      "expected_choice": "bug",
+      "should_review": true
+    },
+    {
+      "data": {
+        "ticket": "My account renewal charged twice and I cannot sign in."
+      },
+      "expected_choice": "billing",
+      "should_review": true
+    },
+    {
+      "data": {
+        "ticket": "I need help with my account and the payment screen."
+      },
+      "expected_choice": "account",
+      "should_review": true
+    }
+  ],
+  "max_quote_usd": "0.20"
+}

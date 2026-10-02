@@ -1,0 +1,418 @@
+{
+  "description": "Reviewed synthetic wire examples, not captured HTTP responses. Replace all opaque references and tokens with real API values. The fixture assumes a provisioned amount form and matching approval workflow; final completion occurs only after all required steps. Nullable design snapshots are abbreviated by null and do not demonstrate renderer behavior.",
+  "steps": [
+    {
+      "key": "login",
+      "method": "post",
+      "path": "/api/v1/auth/login",
+      "status": 200,
+      "response": {
+        "success": true,
+        "request_id": "docs-purchase-001",
+        "error": null,
+        "code": 200,
+        "data": {
+          "access_token": "synthetic-access-token",
+          "refresh_token": "synthetic-refresh-token",
+          "token_type": "bearer",
+          "expires_in": 900
+        }
+      },
+      "request": {
+        "username": "requester@example.test",
+        "password": "replace-with-your-password",
+        "device_name": "Documentation browser"
+      }
+    },
+    {
+      "key": "create",
+      "method": "post",
+      "path": "/api/v1/business-requests",
+      "status": 201,
+      "response": {
+        "success": true,
+        "request_id": "docs-purchase-001",
+        "error": null,
+        "code": 201,
+        "data": {
+          "ref_id": "opaque-request-draft",
+          "request_type_ref_id": "opaque-request-type",
+          "requester_ref_id": "opaque-requester",
+          "workflow_version_ref_id": "opaque-workflow-version",
+          "form_version_ref_id": "opaque-form-version",
+          "status": "DRAFT",
+          "priority": 5,
+          "data": {
+            "amount": "125.00"
+          },
+          "item_identity": null,
+          "submitted_at": null,
+          "closed_at": null,
+          "created_at": "2026-10-02T12:00:00Z",
+          "origin_client": null,
+          "design_snapshot": null
+        }
+      },
+      "request": {
+        "request_type_ref_id": "opaque-request-type",
+        "priority": 5,
+        "data": {
+          "amount": "125.00"
+        }
+      }
+    },
+    {
+      "key": "save",
+      "method": "put",
+      "path": "/api/v1/business-requests/{ref_id}",
+      "status": 200,
+      "response": {
+        "success": true,
+        "request_id": "docs-purchase-001",
+        "error": null,
+        "code": 200,
+        "data": {
+          "ref_id": "opaque-request-saved",
+          "request_type_ref_id": "opaque-request-type",
+          "requester_ref_id": "opaque-requester",
+          "workflow_version_ref_id": "opaque-workflow-version",
+          "form_version_ref_id": "opaque-form-version",
+          "status": "DRAFT",
+          "priority": 5,
+          "data": {
+            "amount": "125.00"
+          },
+          "item_identity": null,
+          "submitted_at": null,
+          "closed_at": null,
+          "created_at": "2026-10-02T12:00:00Z",
+          "origin_client": null,
+          "design_snapshot": null
+        }
+      },
+      "request": {
+        "priority": 5,
+        "data": {
+          "amount": "125.00"
+        }
+      }
+    },
+    {
+      "key": "submit",
+      "method": "post",
+      "path": "/api/v1/business-requests/{ref_id}/submit",
+      "status": 200,
+      "response": {
+        "success": true,
+        "request_id": "docs-purchase-001",
+        "error": null,
+        "code": 200,
+        "data": {
+          "ref_id": "opaque-request-running",
+          "request_type_ref_id": "opaque-request-type",
+          "requester_ref_id": "opaque-requester",
+          "workflow_version_ref_id": "opaque-workflow-version",
+          "form_version_ref_id": "opaque-form-version",
+          "status": "RUNNING",
+          "priority": 5,
+          "data": {
+            "amount": "125.00"
+          },
+          "item_identity": null,
+          "submitted_at": "2026-10-02T12:00:00Z",
+          "closed_at": null,
+          "created_at": "2026-10-02T12:00:00Z",
+          "origin_client": null,
+          "design_snapshot": null
+        }
+      },
+      "request": {
+        "submit_key": "purchase-submit-001"
+      }
+    },
+    {
+      "key": "available",
+      "method": "post",
+      "path": "/api/v1/work-items/search",
+      "status": 200,
+      "response": {
+        "success": true,
+        "request_id": "docs-purchase-001",
+        "error": null,
+        "code": 200,
+        "result": {
+          "items": [
+            {
+              "ref_id": "opaque-work-open",
+              "request_ref_id": "opaque-request-running",
+              "step_execution_ref_id": "opaque-step-execution",
+              "form_version_ref_id": "opaque-form-version",
+              "submission_ref_id": "opaque-submission",
+              "item_identity": null,
+              "design_snapshot": null,
+              "status": "OPEN",
+              "priority": 5,
+              "claimant_ref_id": null,
+              "outcome_key": null,
+              "due_at": null,
+              "claimed_at": null,
+              "closed_at": null,
+              "created_at": "2026-10-02T12:00:00Z",
+              "read_at": null,
+              "pinned_at": null,
+              "archived_at": null,
+              "watching_at": null
+            }
+          ],
+          "page": 1,
+          "size": 20,
+          "total": 1,
+          "total_pages": 1
+        }
+      },
+      "request": {
+        "cartable": "available",
+        "page": 1,
+        "size": 20
+      }
+    },
+    {
+      "key": "claim",
+      "method": "post",
+      "path": "/api/v1/work-items/{ref_id}/claim",
+      "status": 200,
+      "response": {
+        "success": true,
+        "request_id": "docs-purchase-001",
+        "error": null,
+        "code": 200,
+        "data": {
+          "ref_id": "opaque-work-claimed",
+          "request_ref_id": "opaque-request-running",
+          "step_execution_ref_id": "opaque-step-execution",
+          "form_version_ref_id": "opaque-form-version",
+          "submission_ref_id": "opaque-submission",
+          "item_identity": null,
+          "design_snapshot": null,
+          "status": "CLAIMED",
+          "priority": 5,
+          "claimant_ref_id": "opaque-approver",
+          "outcome_key": null,
+          "due_at": null,
+          "claimed_at": "2026-10-02T12:00:00Z",
+          "closed_at": null,
+          "created_at": "2026-10-02T12:00:00Z",
+          "read_at": null,
+          "pinned_at": null,
+          "archived_at": null,
+          "watching_at": null
+        }
+      },
+      "request": {
+        "command_key": "purchase-claim-001"
+      }
+    },
+    {
+      "key": "view",
+      "method": "get",
+      "path": "/api/v1/work-items/{ref_id}/view",
+      "status": 200,
+      "response": {
+        "success": true,
+        "request_id": "docs-purchase-001",
+        "error": null,
+        "code": 200,
+        "data": {
+          "work_item_ref_id": "opaque-work-claimed",
+          "submission_ref_id": "opaque-submission",
+          "view_key": "review",
+          "purpose": "edit",
+          "title": "Manager approval",
+          "data": {
+            "amount": "125.00"
+          },
+          "item_identity": null,
+          "before_data": null,
+          "render_schema": {
+            "dialect": "bpms.render/1",
+            "root": {
+              "component": "vertical",
+              "children": [
+                {
+                  "component": "text",
+                  "scope": "/properties/amount",
+                  "label": "Amount"
+                }
+              ]
+            },
+            "outcomes": [
+              "approve"
+            ]
+          },
+          "actions": [
+            {
+              "key": "approve",
+              "kind": "complete",
+              "outcome_key": "approve",
+              "title": "Approve",
+              "confirmation": "Approve this purchase?",
+              "required_scopes": [
+                "/properties/amount"
+              ],
+              "require_comment": false,
+              "validation": "complete"
+            }
+          ],
+          "feedback": [],
+          "autosave_conflict": "VERSION_CONFLICT",
+          "unsaved_navigation": "warn_before_leave"
+        }
+      }
+    },
+    {
+      "key": "complete",
+      "method": "post",
+      "path": "/api/v1/work-items/{ref_id}/complete",
+      "status": 200,
+      "response": {
+        "success": true,
+        "request_id": "docs-purchase-001",
+        "error": null,
+        "code": 200,
+        "data": {
+          "ref_id": "opaque-work-completed",
+          "request_ref_id": "opaque-request-running",
+          "step_execution_ref_id": "opaque-step-execution",
+          "form_version_ref_id": "opaque-form-version",
+          "submission_ref_id": "opaque-submission",
+          "item_identity": null,
+          "design_snapshot": null,
+          "status": "COMPLETED",
+          "priority": 5,
+          "claimant_ref_id": "opaque-approver",
+          "outcome_key": "approve",
+          "due_at": null,
+          "claimed_at": "2026-10-02T12:00:00Z",
+          "closed_at": "2026-10-02T12:00:00Z",
+          "created_at": "2026-10-02T12:00:00Z",
+          "read_at": null,
+          "pinned_at": null,
+          "archived_at": null,
+          "watching_at": null
+        }
+      },
+      "request": {
+        "command_key": "purchase-approve-001",
+        "outcome_key": "approve",
+        "data": {
+          "amount": "125.00"
+        },
+        "comment": "Reviewed the purchase amount.",
+        "feedback": []
+      }
+    },
+    {
+      "key": "track",
+      "method": "get",
+      "path": "/api/v1/business-requests/{ref_id}",
+      "status": 200,
+      "response": {
+        "success": true,
+        "request_id": "docs-purchase-001",
+        "error": null,
+        "code": 200,
+        "data": {
+          "ref_id": "opaque-request-completed",
+          "request_type_ref_id": "opaque-request-type",
+          "requester_ref_id": "opaque-requester",
+          "workflow_version_ref_id": "opaque-workflow-version",
+          "form_version_ref_id": "opaque-form-version",
+          "status": "COMPLETED",
+          "priority": 5,
+          "data": {
+            "amount": "125.00"
+          },
+          "item_identity": null,
+          "submitted_at": "2026-10-02T12:00:00Z",
+          "closed_at": "2026-10-02T12:00:00Z",
+          "created_at": "2026-10-02T12:00:00Z",
+          "origin_client": null,
+          "design_snapshot": null
+        }
+      }
+    },
+    {
+      "key": "stale",
+      "method": "put",
+      "path": "/api/v1/business-requests/{ref_id}",
+      "status": 409,
+      "response": {
+        "success": false,
+        "request_id": "docs-purchase-conflict",
+        "error": "The resource was modified. Refresh and try again.",
+        "code": 1004,
+        "data": null
+      },
+      "request": {
+        "priority": 5,
+        "data": {
+          "amount": "125.00"
+        }
+      }
+    },
+    {
+      "key": "invalid",
+      "method": "post",
+      "path": "/api/v1/business-requests/{ref_id}/submit",
+      "status": 422,
+      "response": {
+        "success": false,
+        "request_id": "docs-purchase-invalid",
+        "error": "Request validation failed.",
+        "code": 1002,
+        "data": {
+          "issues": [
+            {
+              "pointer": "/data",
+              "code": "data.required",
+              "line": null,
+              "column": null
+            }
+          ]
+        }
+      },
+      "request": {
+        "submit_key": "purchase-submit-invalid"
+      }
+    }
+  ],
+  "form_contract": {
+    "data_schema": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount"
+      ]
+    },
+    "render_schema": {
+      "dialect": "bpms.render/1",
+      "root": {
+        "component": "vertical",
+        "children": [
+          {
+            "component": "text",
+            "scope": "/properties/amount",
+            "label": "Amount"
+          }
+        ]
+      },
+      "outcomes": [
+        "approve"
+      ]
+    }
+  }
+}
