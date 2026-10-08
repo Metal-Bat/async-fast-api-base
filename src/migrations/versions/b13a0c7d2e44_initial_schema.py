@@ -102,9 +102,9 @@ def downgrade() -> None:
 def _create_initial_admin() -> None:
     username = os.getenv("INITIAL_ADMIN_USERNAME")
     password = os.getenv("INITIAL_ADMIN_PASSWORD")
-    if not username and not password:
+    if not bool(username) and not bool(password):
         return
-    if not username or not password:
+    if not bool(username) or not bool(password):
         raise RuntimeError(
             "INITIAL_ADMIN_USERNAME and INITIAL_ADMIN_PASSWORD must be configured together"
         )

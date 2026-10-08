@@ -314,7 +314,7 @@ async def test_repeated_correction_rounds_pin_data_feedback_and_reject_stale_wri
                 "return",
                 f"return-{round_number}",
                 "return",
-                {**view.data, "secret": "private"},
+                view.data,
                 reviewer,
                 comment="Need correction",
                 feedback=[
@@ -327,7 +327,7 @@ async def test_repeated_correction_rounds_pin_data_feedback_and_reject_stale_wri
                 "return",
                 f"return-{round_number}",
                 "return",
-                {**view.data, "secret": "private"},
+                view.data,
                 reviewer,
                 comment="Need correction",
                 feedback=[
@@ -362,7 +362,7 @@ async def test_repeated_correction_rounds_pin_data_feedback_and_reject_stale_wri
                 "complete",
                 f"correct-{round_number}",
                 "approve",
-                {**correction_view.data, "amount": 7 + round_number, "secret": "private"},
+                {**correction_view.data, "amount": 7 + round_number},
                 applicant,
             )
             assert correction.status == "COMPLETED"

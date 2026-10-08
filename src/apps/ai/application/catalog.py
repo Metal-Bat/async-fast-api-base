@@ -60,7 +60,7 @@ class AISelectionService:
             if row.status != "PUBLISHED":
                 continue
             if (
-                query.search
+                bool(query.search)
                 and query.search.casefold() not in (row.code + " " + row.name).casefold()
             ):
                 continue
@@ -89,7 +89,7 @@ class AISelectionService:
         choices = [
             SelectOption(key=spec.key, value=spec.key)
             for spec, ready, _ in provider_catalog() + custom_provider_catalog()
-            if ready and (not query.search or query.search.casefold() in spec.key.casefold())
+            if ready and (not bool(query.search) or query.search.casefold() in spec.key.casefold())
         ]
         choices.sort(key=lambda item: item.key)
         return select_page(choices, page=query.page, size=query.size)
@@ -120,7 +120,7 @@ class AISelectionService:
             for row in rows
             if available(row.provider)[0]
             and (
-                not query.search
+                not bool(query.search)
                 or query.search.casefold() in (row.code + " " + row.name).casefold()
             )
         ]
@@ -145,7 +145,7 @@ class AISelectionService:
         choices = [
             SelectOption(key=model, value=model)
             for model in policy.models
-            if not query.search or query.search.casefold() in model.casefold()
+            if not bool(query.search) or query.search.casefold() in model.casefold()
         ]
         choices.sort(key=lambda item: item.key)
         return select_page(choices, page=query.page, size=query.size)
@@ -191,6 +191,6 @@ class AISelectionService:
                 can_execute=source == "configured",
             )
             for connection_ref, model_id, source in model_suggestions(custom=custom)
-            if not query.search or query.search.casefold() in model_id.casefold()
+            if not bool(query.search) or query.search.casefold() in model_id.casefold()
         ]
         return select_page(suggestions, page=query.page, size=query.size)

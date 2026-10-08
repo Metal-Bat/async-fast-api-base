@@ -1,4 +1,4 @@
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from contextvars import ContextVar, Token
 from functools import cache
@@ -71,7 +71,7 @@ def reset_language(token: Token[str]) -> None:
 
 
 @contextmanager
-def use_language(value: str | None) -> Iterator[str]:
+def use_language(value: str | None) -> Generator[str]:
     """Temporarily activate a language outside HTTP middleware."""
     language = resolve_language(value)
     token = _current_language.set(language)

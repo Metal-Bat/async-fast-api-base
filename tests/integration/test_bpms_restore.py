@@ -63,7 +63,7 @@ async def test_restore_preserves_pins_private_attachments_and_secret_versions(
     tmp_path, monkeypatch
 ) -> None:
     source_database = make_url(settings.DATABASE_DSN).database
-    assert source_database and source_database.startswith("bpms016_"), (
+    assert bool(source_database) and source_database.startswith("bpms016_"), (
         "Use an explicitly disposable source database"
     )
     target = "bpms016_restore_" + uuid7().hex

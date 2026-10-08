@@ -377,6 +377,71 @@ Used by: `POST /api/v1/forms/preview`
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `RuntimeActionDTO`
+
+Used by: `POST /api/v1/forms/runtime-preview`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `key` | `string` | Yes | — |
+| `kind` | `string` | Yes | — |
+| `outcome_key` | `string` | Yes | — |
+| `title` | `string` | Yes | — |
+| `confirmation` | `string | null` | Yes | — |
+| `required_scopes` | `array[string]` | Yes | — |
+| `require_comment` | `boolean` | Yes | — |
+| `validation` | `string` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `RuntimeFieldMetadataDTO`
+
+Used by: `POST /api/v1/forms/runtime-preview`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `scope` | `string` | Yes | Visible JSON Schema property/items scope. |
+| `validation_schema` | `object` | Yes | Bounded compiled schema of this visible field only. No defaults, examples, hidden properties or shared definitions; backend validates the full canonical document. |
+| `writable` | `boolean` | Yes | — |
+| `required` | `boolean` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `RuntimeFormStateDTO`
+
+Used by: `POST /api/v1/forms/runtime-preview`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `runtime_dialect` | `string` | No |  Default: `bpms.runtime/1`. |
+| `resource_kind` | `string` | Yes | — |
+| `resource_ref_id` | `string` | Yes | Current opaque revision-bearing reference for the owning request/work item; replace after every mutation. |
+| `form_version_ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
+| `form_version_number` | `integer` | Yes | — |
+| `submission_ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
+| `design_key` | `string` | Yes | Exact pinned client variant; locale changes cannot change this key. |
+| `render_dialect` | `string` | No |  Default: `bpms.render/1`. |
+| `data_dialect` | `string` | No |  Default: `https://json-schema.org/draft/2020-12/schema`. |
+| `view_key` | `string` | Yes | — |
+| `purpose` | `string` | Yes | — |
+| `resolved_locale` | `string` | Yes | Locale selected by the pinned catalog, or negotiated en/fa fallback. |
+| `direction` | `string` | Yes | — |
+| `data` | `object` | Yes | Canonical actor-visible values. Hidden values are preserved only on the server. |
+| `item_identity` | `object` | Yes | Stable row keys for visible collection paths only. |
+| `page_settings` | `object` | No | Pinned display-only settings; optional pages contains at most 32 unique key/title/scopes entries with actor-readable scopes only. No scripts, bindings or runtime values. |
+| `before_data` | `object | null` | No | Prior submitted data filtered through the same task view, or null when unavailable. |
+| `before_item_identity` | `object | null` | No | Actor-filtered prior row identities; null when unavailable. / هویت مجاز ردیف‌های پیشین؛ در صورت نبودن null. |
+| `render_schema` | `object` | Yes | Actor-filtered bounded bpms.render/1 display document. Server-evaluated calculation metadata and client expressions are omitted; writable_scopes is authoritative for editability. |
+| `readable_scopes` | `array[string]` | Yes | — |
+| `writable_scopes` | `array[string]` | Yes | — |
+| `required_scopes` | `array[string]` | Yes | — |
+| `field_metadata` | `array[RuntimeFieldMetadataDTO]` | Yes | — |
+| `actions` | `array[RuntimeActionDTO]` | No | — |
+| `override_provenance` | `object` | No | Visible override actor/reason/value/time only; input checksums remain server-only. |
+| `issues` | `array[object]` | No | Safe visible pointer/code pairs. Hidden canonical validation failures produce a generic task.validation issue. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `SelectOption_str_`
 
 Used by: `POST /api/v1/forms/options`
@@ -469,6 +534,20 @@ Used by: `POST /api/v1/forms/preview`
 | `error` | `null` | No | — |
 | `code` | `integer` | No |  Default: `200`. |
 | `data` | `PreviewDTO` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `SuccessResponse_RuntimeFormStateDTO_`
+
+Used by: `POST /api/v1/forms/runtime-preview`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `data` | `RuntimeFormStateDTO` | Yes | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 

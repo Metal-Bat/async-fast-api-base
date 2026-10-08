@@ -40,7 +40,7 @@ class AttachmentCollection:
 
 
 def _data_path(scope: str | None) -> str | None:
-    if not scope or not scope.startswith("/properties/"):
+    if not bool(scope) or not scope.startswith("/properties/"):
         return None
     parts = scope.split("/")[1:]
     values: list[str] = []
@@ -63,7 +63,7 @@ def _collections(
         node = stack.pop()
         if node.component == "attachment_collection":
             paths = []
-            if node.scope and data is not None:
+            if bool(node.scope) and data is not None:
                 from apps.forms.application.behavior import _locations
 
                 try:
@@ -598,17 +598,21 @@ class AttachmentService:
         existing_bytes: int = 0,
     ) -> None:
         issue = None
-        if options.allowed_kinds and upload.kind not in options.allowed_kinds:
+        if bool(options.allowed_kinds) and upload.kind not in options.allowed_kinds:
             issue = "attachment.kind"
-        elif options.allowed_mime_types and upload.content_type not in options.allowed_mime_types:
+        elif (
+            bool(options.allowed_mime_types)
+            and upload.content_type not in options.allowed_mime_types
+        ):
             issue = "attachment.mime"
-        elif options.max_item_bytes and upload.size_bytes > options.max_item_bytes:
+        elif bool(options.max_item_bytes) and upload.size_bytes > options.max_item_bytes:
             issue = "attachment.item_bytes"
         elif (
-            options.max_total_bytes and existing_bytes + upload.size_bytes > options.max_total_bytes
+            bool(options.max_total_bytes)
+            and existing_bytes + upload.size_bytes > options.max_total_bytes
         ):
             issue = "attachment.total_bytes"
-        elif options.caption_required and not (caption or "").strip():
+        elif bool(options.caption_required) and not (caption or "").strip():
             issue = "attachment.caption"
         elif options.allow_duplicates is not True and any(
             item.user_upload_id == upload.id for item in existing

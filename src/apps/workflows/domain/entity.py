@@ -31,3 +31,5 @@ __all__ = [
     "WorkflowTransitionEntity",
     "WorkflowVersionEntity",
 ]
+
+from apps.workflows.domain.entities.workspace import WorkflowWorkspaceEntity  # noqa: F401

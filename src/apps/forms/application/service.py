@@ -88,7 +88,7 @@ class FormService:
     async def _resolve_reuse(
         self, documents: FormDocuments, actor: UserEntity | None
     ) -> tuple[FormDocuments, list[dict[str, Any]] | None]:
-        if not documents.reuse_instances:
+        if not bool(documents.reuse_instances):
             return documents, None
         if actor is None:
             raise ValidationDetailsException(
@@ -115,9 +115,9 @@ class FormService:
             number=data.number,
             **documents.model_dump(exclude={"reuse_instances"}),
             reuse_instances=[item.model_dump() for item in authored.reuse_instances]
-            if authored.reuse_instances
+            if bool(authored.reuse_instances)
             else None,
-            reuse_source=authored.model_dump() if authored.reuse_instances else None,
+            reuse_source=authored.model_dump() if bool(authored.reuse_instances) else None,
             reuse_manifest=manifest,
         )
         self.session.add(row)
@@ -135,9 +135,11 @@ class FormService:
         await self._validate_target_clients(documents)
         row.sqlmodel_update(documents.model_dump(exclude={"reuse_instances"}))
         row.reuse_instances = (
-            [item.model_dump() for item in data.reuse_instances] if data.reuse_instances else None
+            [item.model_dump() for item in data.reuse_instances]
+            if bool(data.reuse_instances)
+            else None
         )
-        row.reuse_source = data.model_dump() if data.reuse_instances else None
+        row.reuse_source = data.model_dump() if bool(data.reuse_instances) else None
         row.reuse_manifest = manifest
         row.updated_at = get_datetime_utc()
         await self.session.flush()
@@ -157,10 +159,10 @@ class FormService:
             raise VersionConflictException("Form is inactive")
         documents = (
             FormDocuments.model_validate(row.reuse_source)
-            if row.reuse_source
+            if bool(row.reuse_source)
             else FormDocuments.model_validate(row, from_attributes=True)
         )
-        if row.reuse_source:
+        if bool(row.reuse_source):
             actor = await self.session.get(UserEntity, actor_id)
             if actor is None:
                 raise VersionConflictException("Publisher is unavailable")
@@ -177,7 +179,7 @@ class FormService:
                     separators=(",", ":"),
                 ).encode()
             ).hexdigest()
-            if row.reuse_manifest
+            if bool(row.reuse_manifest)
             else document_checksum
         )
         row.status = "PUBLISHED"

@@ -12,6 +12,8 @@ from apps.integrations.domain.dto import (
     ConnectionConfig,
     ConnectionCreateDTO,
     ConnectionDTO,
+    ConnectionGrantQuery,
+    ConnectionGrantViewDTO,
     ConnectionQuery,
     ConnectionUpdateDTO,
     GrantDTO,
@@ -26,12 +28,13 @@ from core.history_dto import HistoryQuery, HistoryRecordDTO
 from core.history_service import HistoryService
 from core.ref_id import create_ref_id, open_ref_id
 from core.settings import settings
-from utils.base_schema import response_schema
+from utils.base_schema import PRIVATE_NO_STORE_RESPONSES, response_schema
 from utils.pagination import Page
 from utils.presenter import (
     PageResponse,
     SuccessResponse,
     page_response,
+    private_no_store,
     select_response,
     success_response,
 )
@@ -218,6 +221,24 @@ async def revoke(
     row = await application.revoke(ref_id, actor)
     await session.commit()
     return success_response(request, connection_dto(row))
+
+
+@router.post(
+    "/{ref_id}/grants/search",
+    response_model=PageResponse[Page[ConnectionGrantViewDTO]],
+    dependencies=[Depends(private_no_store)],
+    summary="Read current connection grants",
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    description="Requires integrations.manage plus per-connection manage/owner/superuser authority. Returns current nondeleted grants with opaque grant/user/group refs and can_use/can_manage; no credentials or historical reconstruction. Shared filters allow only can_use/can_manage; one-based page/size defaults 1/20, maximum size 100. Missing connections return 404; denied manage authority returns 403. Private no-store response; grant visibility does not grant use/manage capability.",
+)
+async def search_connection_grants(
+    request: Request,
+    ref_id: str,
+    query: ConnectionGrantQuery,
+    actor: ConnectionActor,
+    application: ServiceDep,
+):
+    return page_response(request, await application.search_grants(ref_id, query, actor))
 
 
 @router.post("/{ref_id}/grants", response_model=SuccessResponse[GrantReferenceDTO])

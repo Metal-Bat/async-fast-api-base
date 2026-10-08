@@ -75,6 +75,7 @@ def test_initial_schema_is_the_root_revision_and_creates_uuid_idempotency_keys(
     versions = Path(__file__).resolve().parents[3] / "src/migrations/versions"
     assert sorted(path.name for path in versions.glob("*.py")) == [
         "b13a0c7d2e44_initial_schema.py",
+        "c24f913ab601_workflow_workspace.py",
     ]
 
     migration = load_migration()

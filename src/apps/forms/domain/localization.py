@@ -61,7 +61,11 @@ class CatalogMessage(BaseDTO):
             names = set()
             for _, name, spec, conversion in Formatter().parse(text):
                 if name is not None:
-                    if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,31}", name) or spec or conversion:
+                    if (
+                        not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,31}", name)
+                        or bool(spec)
+                        or bool(conversion)
+                    ):
                         raise ValueError("Only named message parameters are supported")
                     names.add(name)
             # count may be implicit in a plural branch such as 'One item'.

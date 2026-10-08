@@ -32,6 +32,6 @@ def select_options[T: str](
     [{'key': 'OPEN', 'value': 'OPEN'}, {'key': 'CLOSED', 'value': 'CLOSED'}]
     """
     return [
-        SelectOption(key=value, value=translate(labels[value]) if labels else str(value))
+        SelectOption(key=value, value=translate(labels[value]) if bool(labels) else str(value))
         for value in values
     ]

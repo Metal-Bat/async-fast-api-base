@@ -214,7 +214,7 @@ async def _generate(report_id: UUID) -> dict[str, Any]:
                     definition.renderer().render(processed, xlsx_path)
                     exported_row_count = processed.dataframe.height
                     del processed
-                    if not report.zip_password:
+                    if not bool(report.zip_password):
                         raise ValueError("Report archive password is missing")
                     _create_archive(xlsx_path, zip_path, report.zip_password)
                     storage_key = f"user/{report.owner_id}/report/{report.id}.zip"
@@ -258,7 +258,7 @@ async def _generate(report_id: UUID) -> dict[str, Any]:
                 )
                 return {"report_id": str(report_id), "status": ReportStatus.READY, "rows": count}
         except BaseException as exc:
-            if uploaded_key:
+            if bool(uploaded_key):
                 try:
                     await delete_object(uploaded_key)
                 except Exception:  # noqa: BLE001 - log both cleanup and original failures
@@ -326,7 +326,7 @@ async def _cleanup_expired() -> int:
     for candidate in candidates:
         with bound_contextvars(report_id=str(candidate.id)):
             try:
-                if candidate.storage_key:
+                if bool(candidate.storage_key):
                     await delete_object(candidate.storage_key)
                 async with SessionFactory() as session:
                     report = await session.get(ReportEntity, candidate.id, with_for_update=True)

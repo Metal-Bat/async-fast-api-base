@@ -114,7 +114,7 @@ async def update_user(
         raise VersionConflictException("User version is stale")
     values = data.model_dump(exclude_unset=True, exclude={"ref_id", "password"})
     require_user_management(actor, user, grant_superuser=data.is_superuser is True)
-    if data.password:
+    if bool(data.password):
         await AuthService(session).stage_admin_password_reset(
             user, data.password, actor=actor, request_id=getattr(request.state, "request_id", None)
         )

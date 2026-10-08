@@ -109,7 +109,7 @@ No reviewed business example is published for this schema. Use the field contrac
 
 ### `HistoryRecordDTO`
 
-Used by: `POST /api/v1/workflow-versions/{ref_id}/history`
+Used by: `POST /api/v1/workflow-versions/{ref_id}/history`, `POST /api/v1/workflow-versions/{ref_id}/workspace/history`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -156,7 +156,7 @@ No reviewed business example is published for this schema. Use the field contrac
 
 ### `PageResponse_Page_HistoryRecordDTO__`
 
-Used by: `POST /api/v1/workflow-versions/{ref_id}/history`
+Used by: `POST /api/v1/workflow-versions/{ref_id}/history`, `POST /api/v1/workflow-versions/{ref_id}/workspace/history`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -184,7 +184,7 @@ No reviewed business example is published for this schema. Use the field contrac
 
 ### `Page_HistoryRecordDTO_`
 
-Used by: `POST /api/v1/workflow-versions/{ref_id}/history`
+Used by: `POST /api/v1/workflow-versions/{ref_id}/history`, `POST /api/v1/workflow-versions/{ref_id}/workspace/history`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -309,7 +309,7 @@ No reviewed business example is published for this schema. Use the field contrac
 
 ### `SuccessResponse_WorkflowVersionDTO_`
 
-Used by: `GET /api/v1/workflow-versions/{ref_id}`, `POST /api/v1/workflow-versions`, `POST /api/v1/workflow-versions/{ref_id}/publish`, `POST /api/v1/workflow-versions/{ref_id}/retire`, `PUT /api/v1/workflow-versions/{ref_id}`, `PUT /api/v1/workflow-versions/{ref_id}/graph`
+Used by: `GET /api/v1/workflow-versions/{ref_id}`, `POST /api/v1/workflow-versions`, `POST /api/v1/workflow-versions/{ref_id}/publish`, `POST /api/v1/workflow-versions/{ref_id}/retire`, `POST /api/v1/workflow-versions/{ref_id}/workspace/promote`, `PUT /api/v1/workflow-versions/{ref_id}`, `PUT /api/v1/workflow-versions/{ref_id}/graph`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -318,6 +318,20 @@ Used by: `GET /api/v1/workflow-versions/{ref_id}`, `POST /api/v1/workflow-versio
 | `error` | `null` | No | — |
 | `code` | `integer` | No |  Default: `200`. |
 | `data` | `WorkflowVersionDTO` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `SuccessResponse_WorkflowWorkspaceDTO_`
+
+Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `data` | `WorkflowWorkspaceDTO` | Yes | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
@@ -353,7 +367,7 @@ No reviewed business example is published for this schema. Use the field contrac
 
 ### `WorkflowVersionDTO`
 
-Used by: `GET /api/v1/workflow-versions/{ref_id}`, `POST /api/v1/workflow-versions`, `POST /api/v1/workflow-versions/report`, `POST /api/v1/workflow-versions/search`, `POST /api/v1/workflow-versions/{ref_id}/publish`, `POST /api/v1/workflow-versions/{ref_id}/retire`, `PUT /api/v1/workflow-versions/{ref_id}`, `PUT /api/v1/workflow-versions/{ref_id}/graph`
+Used by: `GET /api/v1/workflow-versions/{ref_id}`, `POST /api/v1/workflow-versions`, `POST /api/v1/workflow-versions/report`, `POST /api/v1/workflow-versions/search`, `POST /api/v1/workflow-versions/{ref_id}/publish`, `POST /api/v1/workflow-versions/{ref_id}/retire`, `POST /api/v1/workflow-versions/{ref_id}/workspace/promote`, `PUT /api/v1/workflow-versions/{ref_id}`, `PUT /api/v1/workflow-versions/{ref_id}/graph`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -366,5 +380,56 @@ Used by: `GET /api/v1/workflow-versions/{ref_id}`, `POST /api/v1/workflow-versio
 | `graph_checksum` | `string | null` | Yes | — |
 | `published_at` | `string | null` | Yes | — |
 | `published_by_ref_id` | `string | null` | Yes | Opaque reference; use the value returned by the API. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `WorkflowWorkspaceDTO`
+
+Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `workflow_version_ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
+| `workspace_ref_id` | `string | null` | Yes | Opaque reference; use the value returned by the API. |
+| `document` | `WorkspaceDocument` | Yes | — |
+| `promoted_graph_checksum` | `string | null` | No | Checksum of the last explicitly promoted graph; layout-only saves do not change execution pins. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `WorkspaceDocument`
+
+Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `dialect` | `string` | No |  Default: `bpms.workspace/1`. |
+| `graph` | `object` | No | Incomplete authoring JSON, at most 256 KiB and depth 32. It is never executed; promotion validates GraphSnapshot and all dependencies. |
+| `positions` | `object` | No | Positions keyed by stable authored step key, never database row IDs. |
+| `viewport` | `WorkspaceViewport` | No | — |
+| `collapsed` | `array[string]` | No | — |
+| `routing` | `object` | No | Optional edge waypoints keyed by authored connection identity; at most 64 points each. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `WorkspacePoint`
+
+Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `x` | `number` | No |  Default: `0`. |
+| `y` | `number` | No |  Default: `0`. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `WorkspaceViewport`
+
+Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `x` | `number` | No |  Default: `0`. |
+| `y` | `number` | No |  Default: `0`. |
+| `zoom` | `number` | No |  Default: `1`. |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.

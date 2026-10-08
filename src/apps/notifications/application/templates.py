@@ -67,6 +67,6 @@ class NotificationTemplateRegistry:
     @staticmethod
     def _format(template: str, values: dict[str, str]) -> str:
         for _, field, spec, conversion in Formatter().parse(template):
-            if field is not None and (field not in values or spec or conversion):
+            if field is not None and (field not in values or bool(spec) or bool(conversion)):
                 raise ValueError("Unsafe notification template field")
         return template.format_map(values)

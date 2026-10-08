@@ -15,11 +15,12 @@ from apps.forms.domain.attachment_dto import (
     AttachmentReplaceDTO,
     SubmissionAttachmentDTO,
 )
-from apps.forms.domain.behavior import ManualOverrideRequest, ManualOverrideState
-from apps.forms.domain.collection import CollectionEditRequest, CollectionState
+from apps.forms.domain.behavior import ManualOverrideRequest
+from apps.forms.domain.collection import CollectionEditRequest
 from apps.forms.domain.dto import FormDocuments
 from apps.forms.domain.entity import FormVersionEntity
 from apps.forms.domain.options import OptionQuery, OptionResult
+from apps.forms.domain.runtime import RuntimeFormStateDTO
 from apps.media.application.service import UserUploadService
 from apps.media.domain.entity import UserUploadEntity
 from apps.processes.domain.entity import StepExecutionEntity
@@ -41,8 +42,9 @@ from apps.work_items.domain.dto import (
 )
 from apps.work_items.domain.entity import WorkItemEntity
 from core.deps import SessionDep
+from core.history_dto import ResourceHistoryDTO, ResourceHistoryQuery
 from core.ref_id import create_ref_id
-from utils.base_schema import response_schema
+from utils.base_schema import PRIVATE_NO_STORE_RESPONSES, response_schema
 from utils.exceptions import NotFoundException
 from utils.pagination import Page
 from utils.presenter import (
@@ -81,25 +83,25 @@ async def work_item_dto(
     state = await service.state_for(item.id, actor.id)
     if request is None or execution is None:
         raise NotFoundException("Work-item dependency not found")
+    runtime = (
+        await service.runtime_state(create_ref_id(item.id, item.version), actor) if form else None
+    )
+    pinned = (submission.design_snapshot or {}) if submission else {}
     snapshot = (
-        localize_snapshot(
-            submission.design_snapshot, FormDocuments.model_validate(form, from_attributes=True)
-        )
-        if submission and form
+        {
+            key: pinned[key]
+            for key in ("variant_key", "design_revision", "interaction_revision")
+            if key in pinned
+        }
+        if runtime
         else None
     )
-    step = await service._step(item)
-    visible_identity = submission.item_identity if submission else None
-    if snapshot and step.task_contract:
-        view = await service.task_view(create_ref_id(item.id, item.version), actor)
-        snapshot = {
-            key: value
-            for key, value in snapshot.items()
-            if key not in {"localization", "page_settings"}
-        }
-        snapshot["render_schema"] = view.render_schema
-        visible_identity = view.item_identity
+    if snapshot is not None and runtime is not None:
+        snapshot["render_schema"] = runtime.render_schema
+    visible_identity = runtime.item_identity if runtime else None
     return WorkItemDTO(
+        kind=await service.item_kind(item),
+        runtime_state=runtime,
         ref_id=create_ref_id(item.id, item.version),
         request_ref_id=create_ref_id(request.id, request.version),
         step_execution_ref_id=create_ref_id(execution.id, execution.version),
@@ -187,6 +189,25 @@ async def get_work_item_view(
     key: str | None = Query(default=None, max_length=64),
 ):
     return success_response(request, await WorkItemService(session).task_view(ref_id, actor, key))
+
+
+@router.get(
+    "/{ref_id}/runtime",
+    response_model=SuccessResponse[RuntimeFormStateDTO],
+    summary="Read the authorized versioned runtime form state",
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    description="Requires requests.start and per-item visibility. Returns bpms.runtime/1 with exact pinned form/design and current owning/submission refs, visible schema metadata, canonical data, stable row keys, effective writable/required scopes and available actions. Named key selects an edit/summary/print view; non-claimants and closed items are explicitly noneditable. Hidden schema/default/value/provenance data stays server-only. Accept-Language resolves en/fa without repinning. Unknown render dialects return 409; inaccessible resources return 404; private no-store response.",
+)
+async def get_work_item_runtime(
+    request: Request,
+    ref_id: str,
+    actor: WorkUser,
+    session: SessionDep,
+    key: str | None = Query(default=None, max_length=64),
+):
+    return success_response(
+        request, await WorkItemService(session).runtime_state(ref_id, actor, key)
+    )
 
 
 @router.post(
@@ -300,7 +321,23 @@ async def remove_work_item_attachment(
     return await _command_response(request, service, item, actor, session)
 
 
-@router.get("/{ref_id}/attachments/{attachment_ref_id}/content")
+@router.get(
+    "/{ref_id}/attachments/{attachment_ref_id}/content",
+    response_class=StreamingResponse,
+    responses={
+        200: {
+            "description": "Authorized private bytes; no JSON envelope. / محتوای خصوصی مجاز؛ بدون پوشش JSON.",
+            "content": {
+                "application/octet-stream": {"schema": {"type": "string", "format": "binary"}}
+            },
+            "headers": {
+                "Cache-Control": {"schema": {"type": "string", "const": "private, no-store"}},
+                "Content-Disposition": {"schema": {"type": "string"}},
+                "X-Content-Type-Options": {"schema": {"type": "string", "const": "nosniff"}},
+            },
+        }
+    },
+)
 async def download_work_item_attachment(
     ref_id: str,
     attachment_ref_id: str,
@@ -362,8 +399,8 @@ async def start_work_item(
 
 @router.post(
     "/{ref_id}/collections/edit",
-    response_model=SuccessResponse[CollectionState],
-    description="Requires requests.start, current work-item ref_id, and the active claimant. Edits a declared collection on the draft submission using stable UUIDv7 item keys. Returns canonical data and the identity map; stale revisions fail with VERSION_CONFLICT.",
+    response_model=SuccessResponse[RuntimeFormStateDTO],
+    description="Requires requests.start, current work-item ref_id, and the active claimant. Edits a declared collection on the draft submission using stable UUIDv7 item keys. Returns the same actor-filtered bpms.runtime/1 state as /runtime, including current resource/submission refs, visible data/row keys and safe issues; there is no idempotency key, so uncertain results require reconciliation rather than automatic retry. Stale revisions fail with VERSION_CONFLICT.",
 )
 async def edit_work_item_collection(
     request: Request,
@@ -372,18 +409,16 @@ async def edit_work_item_collection(
     actor: WorkUser,
     session: SessionDep,
 ):
-    result = await WorkItemService(session).edit_collection(ref_id, data, actor)
+    service = WorkItemService(session)
+    await service.edit_collection(ref_id, data, actor)
     await session.commit()
-    return success_response(
-        request,
-        CollectionState(data=result.data, item_identity=result.identity, issues=result.issues),
-    )
+    return success_response(request, await service.runtime_state(ref_id, actor))
 
 
 @router.post(
     "/{ref_id}/overrides",
-    response_model=SuccessResponse[ManualOverrideState],
-    description="Requires a current owned or claimed draft and the calculation's declared override permission. Set records actor, reason, value and input fingerprint; reset recomputes from current inputs. Source changes invalidate an override at submission.",
+    response_model=SuccessResponse[RuntimeFormStateDTO],
+    description="Requires a current owned or claimed draft and the calculation's declared override permission. Set records actor, reason, value and input fingerprint; reset recomputes from current inputs. Source changes invalidate an override at submission. Returns canonical actor-filtered bpms.runtime/1 state and current owning/submission refs; hidden input checksums never enter provenance. This command has no idempotency key; reconcile uncertain results instead of replaying.",
 )
 async def override_calculation(
     request: Request,
@@ -392,24 +427,30 @@ async def override_calculation(
     actor: WorkUser,
     session: SessionDep,
 ):
-    values, provenance = await WorkItemService(session).apply_override(ref_id, data, actor)
+    service = WorkItemService(session)
+    await service.apply_override(ref_id, data, actor)
     await session.commit()
-    return success_response(
-        request, ManualOverrideState(data=values, override_provenance=provenance)
-    )
+    return success_response(request, await service.runtime_state(ref_id, actor))
 
 
 @router.post(
     "/{ref_id}/save",
     response_model=SuccessResponse[WorkItemDTO],
     summary="Autosave a claimed human-task draft",
-    description="Requires requests.start and the current claimant. The revision-bearing ref_id and command_key guard stale and duplicate writes; a reused key with different data fails. Data replaces the draft, may be incomplete, but supplied types and the pinned task write policy are enforced. Hidden or read-only changes fail with pointer issues. UI navigation should warn about unsaved edits.",
+    description="Requires requests.start and the current claimant. The revision-bearing ref_id and command_key guard stale and duplicate writes; a reused key with different data fails. Restricted tasks merge supplied writable values. Missing fields remain unchanged; delete_paths explicitly removes writable object properties and null remains a value. Unrestricted legacy tasks retain replacement semantics. Named view_key defaults to the pinned edit view; print/summary views cannot write. Completion validates the merged canonical document. Hidden or read-only changes fail with pointer issues. UI navigation should warn about unsaved edits.",
 )
 async def save_work_item(
     request: Request, ref_id: str, data: WorkItemSaveDTO, actor: WorkUser, session: SessionDep
 ):
     service = WorkItemService(session)
-    item = await service.save(ref_id, data.command_key, data.data, actor)
+    item = await service.save(
+        ref_id,
+        data.command_key,
+        data.data,
+        actor,
+        view_key=data.view_key,
+        delete_paths=data.delete_paths,
+    )
     return await _command_response(request, service, item, actor, session)
 
 
@@ -431,6 +472,8 @@ async def _finish_response(
         actor,
         data.comment,
         data.feedback,
+        view_key=data.view_key,
+        delete_paths=data.delete_paths,
     )
     return await _command_response(request, service, item, actor, session)
 
@@ -574,9 +617,17 @@ async def watch_work_item(
     description="Requires requests.start and current work-item visibility. Uses the exact pinned form and interaction variant, with current actor-filtered domain membership. Input data supplies unsaved dependency values; completion rechecks persisted submission membership. Results echo generation and dependency fingerprint for stale-response rejection. No server URL fetch or shared cache.",
 )
 async def work_item_options(
-    request: Request, ref_id: str, query: OptionQuery, actor: WorkUser, session: SessionDep
+    request: Request,
+    ref_id: str,
+    query: OptionQuery,
+    actor: WorkUser,
+    session: SessionDep,
+    key: str | None = None,
 ):
     service = WorkItemService(session)
+    selected_key = (
+        (await service.task_view(ref_id, actor, key)).view_key if key is not None else None
+    )
     item = await service.get(ref_id, actor)
     submission = await service.submission(item)
     form = await session.get(FormVersionEntity, submission.form_version_id)
@@ -584,9 +635,9 @@ async def work_item_options(
         raise NotFoundException("Pinned form version not found")
     documents = FormDocuments.model_validate(form, from_attributes=True)
     snapshot = localize_snapshot(submission.design_snapshot, documents)
-    render = snapshot["render_schema"] if snapshot else documents.render_schema
+    render = snapshot["render_schema"] if bool(snapshot) else documents.render_schema
     step = await service._step(item)
-    if step.task_contract:
+    if bool(step.task_contract):
         from apps.work_items.application.task_views import (
             allowed_view_scopes,
             filter_render,
@@ -595,10 +646,26 @@ async def work_item_options(
         from apps.work_items.domain.task_contract import HumanTaskContract
 
         contract = HumanTaskContract.model_validate(step.task_contract)
-        view = next(row for row in contract.views if row.key == contract.default_view)
+        view = next(
+            row for row in contract.views if row.key == (selected_key or contract.default_view)
+        )
         scopes = allowed_view_scopes(view, step.field_policy or {})
         render = filter_render(render, scopes)
         query = query.model_copy(update={"data": project_data(query.data, scopes)})
     return page_response(
         request, await OptionService(session).resolve(documents, query, actor, render=render)
+    )
+
+
+@router.post(
+    "/{ref_id}/history",
+    response_model=PageResponse[Page[ResourceHistoryDTO]],
+    summary="Read authorized task lifecycle history",
+    description="Requires requests.start and per-item visibility. Reads metadata for the current task by opaque revision-bearing ref_id without claiming or changing it. Body page defaults to 1 and size to 20 (1–100); changed_at/operation are the only filter/sort fields. Actions are ordered by change time descending and stable identity. No payloads, comments, command keys or actor identities are disclosed. Inaccessible items return 404. / نیازمند requests.start و دسترسی به همان کار است. تاریخچهٔ رخدادها را با صفحه‌بندی می‌خواند و کار را تصاحب یا تغییر نمی‌دهد. داده‌ها، نظرها، کلید فرمان و هویت کاربران افشا نمی‌شوند. کار غیرمجاز خطای 404 دارد.",
+)
+async def work_item_history(
+    request: Request, ref_id: str, query: ResourceHistoryQuery, actor: WorkUser, session: SessionDep
+):
+    return page_response(
+        request, await WorkItemService(session).history_metadata(ref_id, query, actor)
     )

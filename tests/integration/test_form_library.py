@@ -64,7 +64,7 @@ async def test_published_component_resolves_two_pinned_form_instances():
             published = await service.publish(
                 "component", create_ref_id(version.id, version.version), actor
             )
-            assert published.status == "PUBLISHED" and published.checksum
+            assert published.status == "PUBLISHED" and bool(published.checksum)
             source = FormDocuments(
                 data_schema={
                     "type": "object",

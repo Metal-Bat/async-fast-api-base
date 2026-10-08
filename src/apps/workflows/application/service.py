@@ -26,6 +26,8 @@ from apps.workflows.domain.dto import (
     GraphValidationResult,
     WorkflowCreateDTO,
     WorkflowGrantDTO,
+    WorkflowGrantQuery,
+    WorkflowGrantViewDTO,
     WorkflowVersionCreateDTO,
     WorkflowVersionUpdateDTO,
 )
@@ -38,7 +40,7 @@ from apps.workflows.domain.entity import (
     WorkflowTransitionEntity,
     WorkflowVersionEntity,
 )
-from core.ref_id import open_ref_id
+from core.ref_id import create_ref_id, open_ref_id
 from utils.date_utils import get_datetime_utc
 from utils.exceptions import (
     InvalidReferenceException,
@@ -47,6 +49,7 @@ from utils.exceptions import (
     ValidationDetailsException,
     VersionConflictException,
 )
+from utils.pagination import Page, paginate_entities
 
 
 class WorkflowService:
@@ -170,7 +173,7 @@ class WorkflowService:
         steps: dict[str, WorkflowStepEntity] = {}
         for item in graph.steps:
             type_version = type_versions[item.type_version_ref or ""]
-            form_id = open_ref_id(item.form_ref)[0] if item.form_ref else None
+            form_id = open_ref_id(item.form_ref)[0] if bool(item.form_ref) else None
             row = WorkflowStepEntity(
                 workflow_version_id=version.id,
                 step_type_version_id=type_version.id,
@@ -178,7 +181,7 @@ class WorkflowService:
                 config=item.config,
                 flow=item.flow.model_dump(mode="json", exclude_defaults=True),
                 form_version_id=form_id,
-                field_policy=(item.field_policy or {}) if item.form_ref else None,
+                field_policy=(item.field_policy or {}) if bool(item.form_ref) else None,
                 task_contract=item.task_contract.model_dump(mode="json")
                 if item.task_contract
                 else None,
@@ -201,9 +204,9 @@ class WorkflowService:
                     ordinal=item.ordinal,
                     source_kind=item.source_kind,
                     source_path=item.source_path,
-                    source_step_id=steps[item.source_step].id if item.source_step else None,
+                    source_step_id=steps[item.source_step].id if bool(item.source_step) else None,
                     source_port_id=ports[(item.source_step, "OUTPUT", item.source_port)].id
-                    if item.source_step and item.source_port
+                    if bool(item.source_step) and bool(item.source_port)
                     else None,
                     constant_value=(
                         item.constant_value if item.source_kind == "CONSTANT" else null()
@@ -214,9 +217,9 @@ class WorkflowService:
             self.session.add(
                 WorkflowStepTargetEntity(
                     workflow_step_id=steps[item.step].id,
-                    user_id=open_ref_id(item.user_ref)[0] if item.user_ref else None,
+                    user_id=open_ref_id(item.user_ref)[0] if bool(item.user_ref) else None,
                     work_group_id=open_ref_id(item.work_group_ref)[0]
-                    if item.work_group_ref
+                    if bool(item.work_group_ref)
                     else None,
                     condition=item.condition,
                     priority=item.priority,
@@ -253,6 +256,9 @@ class WorkflowService:
 
     async def publish(self, ref_id: str, actor_id: UUID) -> WorkflowVersionEntity:
         version = await self._draft(ref_id)
+        from apps.workflows.application.workspace import WorkspaceService
+
+        await WorkspaceService(self).require_promoted(version.id)
         root = await self.session.get(
             WorkflowDefinitionEntity, version.workflow_definition_id, with_for_update=True
         )
@@ -279,12 +285,45 @@ class WorkflowService:
         await self.session.flush()
         return row
 
+    async def search_grants(
+        self, ref_id: str, query: WorkflowGrantQuery
+    ) -> Page[WorkflowGrantViewDTO]:
+        root = await self.get(ref_id)
+        page = await paginate_entities(
+            self.session,
+            WorkflowAccessGrantEntity,
+            query,
+            criteria=(
+                WorkflowAccessGrantEntity.workflow_definition_id == root.id,
+                col(WorkflowAccessGrantEntity.deleted_at).is_(None),
+            ),
+        )
+        items = []
+        for grant in page.items:
+            user = await self.session.get(UserEntity, grant.user_id) if grant.user_id else None
+            group = (
+                await self.session.get(WorkGroupEntity, grant.work_group_id)
+                if grant.work_group_id
+                else None
+            )
+            items.append(
+                WorkflowGrantViewDTO(
+                    ref_id=create_ref_id(grant.id, grant.version),
+                    workflow_ref_id=create_ref_id(root.id, root.version),
+                    user_ref_id=create_ref_id(user.id, user.version) if user else None,
+                    work_group_ref_id=create_ref_id(group.id, group.version) if group else None,
+                    can_view=grant.can_view,
+                    can_start=grant.can_start,
+                )
+            )
+        return Page(items=items, page=page.page, size=page.size, total=page.total)
+
     async def add_grant(
         self, workflow_ref: str, data: WorkflowGrantDTO, actor_id: UUID
     ) -> WorkflowAccessGrantEntity:
         root = await self.get(workflow_ref, update=True)
-        user_id = open_ref_id(data.user_ref_id)[0] if data.user_ref_id else None
-        group_id = open_ref_id(data.work_group_ref_id)[0] if data.work_group_ref_id else None
+        user_id = open_ref_id(data.user_ref_id)[0] if bool(data.user_ref_id) else None
+        group_id = open_ref_id(data.work_group_ref_id)[0] if bool(data.work_group_ref_id) else None
         user = await self.session.get(UserEntity, user_id) if user_id else None
         group = await self.session.get(WorkGroupEntity, group_id) if group_id else None
         if user_id and (user is None or user.deleted_at):
@@ -594,7 +633,7 @@ class WorkflowService:
         ports: dict[tuple[str, str, str], StepTypePortEntity] = {}
         service = StepTypeService(self.session, self.registry)
         for step in graph.steps:
-            if not step.type_version_ref:
+            if not bool(step.type_version_ref):
                 continue
             try:
                 version_id, _ = open_ref_id(step.type_version_ref)
@@ -629,7 +668,7 @@ class WorkflowService:
         human_outcomes: dict[str, set[str]] = {}
         transform_contracts: dict[str, tuple[dict[str, Any], dict[str, Any]]] = {}
         for index, step in enumerate(graph.steps):
-            if not step.type_version_ref or step.type_version_ref not in versions:
+            if not bool(step.type_version_ref) or step.type_version_ref not in versions:
                 issues.append(
                     {"pointer": f"/steps/{index}/type_version_ref", "code": "step_type.required"}
                 )
@@ -641,7 +680,7 @@ class WorkflowService:
                     {"pointer": f"/steps/{index}/type_code", "code": "step_type.mismatch"}
                 )
             config: dict[str, Any] = step.config
-            if step.type_code == "HUMAN_TASK" and step.form_ref:
+            if step.type_code == "HUMAN_TASK" and bool(step.form_ref):
                 config = {**config, "form_version_ref": step.form_ref}
                 try:
                     form_id, _ = open_ref_id(step.form_ref)
@@ -935,7 +974,7 @@ class WorkflowService:
                 if port.cardinality == "LIST" and ordinals != list(range(len(ordinals))):
                     issues.append({"pointer": "/bindings", "code": "binding.list.ordinal"})
         for index, target in enumerate(graph.targets):
-            if target.user_ref:
+            if bool(target.user_ref):
                 try:
                     user = await self.session.get(UserEntity, open_ref_id(target.user_ref)[0])
                 except InvalidReferenceException:
@@ -944,7 +983,7 @@ class WorkflowService:
                     issues.append(
                         {"pointer": f"/targets/{index}/user_ref", "code": "human.user.unknown"}
                     )
-            if target.work_group_ref:
+            if bool(target.work_group_ref):
                 try:
                     group = await self.session.get(
                         WorkGroupEntity, open_ref_id(target.work_group_ref)[0]

@@ -42,11 +42,11 @@ class GraphValidator:
                 add(f"/steps/{index}/key", "graph.step.duplicate")
             positions[step.key] = index
             types[step.key] = step.type_code
-            if step.type_code == "HUMAN_TASK" and not step.form_ref:
+            if step.type_code == "HUMAN_TASK" and not bool(step.form_ref):
                 add(f"/steps/{index}/form_ref", "human.form.required")
             if step.type_code == "HUMAN_TASK" and step.field_policy is None:
                 add(f"/steps/{index}/field_policy", "human.field_policy.required")
-            if step.type_code != "HUMAN_TASK" and (step.form_ref or step.field_policy):
+            if step.type_code != "HUMAN_TASK" and (bool(step.form_ref) or bool(step.field_policy)):
                 add(f"/steps/{index}/form_ref", "graph.form.not_allowed")
             if step.flow.compensation_only and step.type_code not in {"SERVICE_TASK", "TRANSFORM"}:
                 add(f"/steps/{index}/flow/compensation_only", "graph.compensation.type.invalid")
@@ -131,7 +131,7 @@ class GraphValidator:
 
         start = next((key for key, value in types.items() if value == "START"), None)
         reachable: set[str] = set()
-        if start:
+        if bool(start):
             queue = deque([start])
             while queue:
                 current = queue.popleft()
@@ -148,7 +148,7 @@ class GraphValidator:
             for target in targets:
                 predecessors[target].add(source)
         dominators = {key: set(types) for key in types}
-        if start:
+        if bool(start):
             dominators[start] = {start}
             changed = True
             while changed:
@@ -190,7 +190,7 @@ class GraphValidator:
                 ]
                 if len(incoming) < 2 or not split_dominators:
                     add(f"/steps/{index}/flow/join", "graph.join.scope.invalid")
-            if flow.compensation_step:
+            if bool(flow.compensation_step):
                 target = steps_by_key.get(flow.compensation_step)
                 if target is None:
                     add(
@@ -228,7 +228,7 @@ class GraphValidator:
                 ):
                     add(f"/bindings/{index}/source_step", "binding.source.not_prior")
             source_schema = binding.source_schema
-            if source_schema and binding.source_path:
+            if bool(source_schema) and bool(binding.source_path):
                 source_schema = self._schema_at(source_schema, binding.source_path)
                 if source_schema is None:
                     add(f"/bindings/{index}/source_path", "binding.path.unknown")
@@ -246,7 +246,7 @@ class GraphValidator:
             if (
                 binding.source_step in transforms
                 and binding.source_port == "result"
-                and source_schema
+                and bool(source_schema)
                 and not self._compatible(source_schema, transforms[binding.source_step][1])
             ):
                 add(
@@ -255,18 +255,18 @@ class GraphValidator:
                     expected_schema=transforms[binding.source_step][1],
                     actual_schema=source_schema,
                 )
-            if source_schema and not self._assignable(source_schema, target_schema):
+            if bool(source_schema) and not self._assignable(source_schema, target_schema):
                 add(
                     f"/bindings/{index}/source_schema",
                     "binding.type.incompatible",
                     expected_schema=target_schema,
                     actual_schema=source_schema,
                 )
-            if binding.source_path and not binding.source_path.startswith("/"):
+            if bool(binding.source_path) and not binding.source_path.startswith("/"):
                 add(f"/bindings/{index}/source_path", "binding.path.invalid")
 
         for index, target in enumerate(graph.targets):
-            if target.condition and target.step in dominators:
+            if bool(target.condition) and target.step in dominators:
                 self._compile_expression(
                     target.condition,
                     f"/targets/{index}/condition",
@@ -277,7 +277,7 @@ class GraphValidator:
                     expected_schema={"type": "boolean"},
                 )
         for index, edge in enumerate(graph.transitions):
-            if edge.condition and edge.source in dominators:
+            if bool(edge.condition) and edge.source in dominators:
                 self._compile_expression(
                     edge.condition,
                     f"/transitions/{index}/condition",
@@ -476,10 +476,10 @@ class GraphValidator:
             if step in accessible_steps:
                 outputs[step].update(schemas)
         for binding in graph.bindings:
-            if not binding.source_schema:
+            if not bool(binding.source_schema):
                 continue
             source = binding.source_schema
-            if binding.source_path:
+            if bool(binding.source_path):
                 source = cls._schema_at(source, binding.source_path) or source
             if binding.source_kind == "REQUEST":
                 cls._add_source_property(request, binding.source_path, source)
@@ -488,7 +488,7 @@ class GraphValidator:
             elif (
                 binding.source_kind == "STEP_OUTPUT"
                 and binding.source_step in accessible_steps
-                and binding.source_port
+                and bool(binding.source_port)
             ):
                 outputs[binding.source_step][binding.source_port] = source
         step_properties = {
@@ -515,7 +515,7 @@ class GraphValidator:
     def _add_source_property(
         cls, root: dict[str, Any], path: str | None, schema: dict[str, Any]
     ) -> None:
-        if not path:
+        if not bool(path):
             return
         parts = [
             part.replace("~1", "/").replace("~0", "~")

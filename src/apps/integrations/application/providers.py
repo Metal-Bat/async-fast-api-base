@@ -43,14 +43,14 @@ class StatusProvider:
                 or (
                     spec.credential_mode == "aws"
                     and (
-                        not policy.region
+                        not bool(policy.region)
                         or re.fullmatch(r"[a-z]{2}-[a-z]+-[0-9]", policy.region) is None
                     )
                 )
                 or (
                     (spec.credential_mode == "snowflake" or provider == "openai-codex")
                     and (
-                        not policy.account
+                        not bool(policy.account)
                         or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,127}", policy.account) is None
                     )
                 )
@@ -58,9 +58,9 @@ class StatusProvider:
                     policy.endpoint_key != "hosted"
                     and (
                         parsed.scheme != "https"
-                        or not parsed.hostname
-                        or parsed.username
-                        or parsed.password
+                        or not bool(parsed.hostname)
+                        or bool(parsed.username)
+                        or bool(parsed.password)
                         or parsed.query
                         or parsed.fragment
                     )
@@ -81,9 +81,9 @@ class StatusProvider:
             (provider, kind)
             not in {("https_status", "SERVICE"), ("https_notification", "NOTIFICATION")}
             or parsed.scheme != "https"
-            or not parsed.hostname
-            or parsed.username
-            or parsed.password
+            or not bool(parsed.hostname)
+            or bool(parsed.username)
+            or bool(parsed.password)
             or parsed.query
             or parsed.fragment
         ):

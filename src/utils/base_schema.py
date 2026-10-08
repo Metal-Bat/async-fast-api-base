@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Any
 from uuid import uuid7
 
 from fastapi import Header, Request
@@ -9,6 +9,17 @@ from core.types import PlatformTypes
 from utils.localization import resolve_language
 from utils.middleware import normalize_user_agent
 from utils.presenter import ErrorResponse
+
+PRIVATE_NO_STORE_RESPONSES: dict[int | str, dict[str, Any]] = {
+    200: {
+        "headers": {
+            "Cache-Control": {
+                "description": "Protected actor-specific response; persistent caching is prohibited.",
+                "schema": {"type": "string", "const": "private, no-store"},
+            }
+        }
+    }
+}
 
 ERROR_CODES = frozenset([400, 401, 403, 404, 409, 413, 422, 423, 429, 500, 503])
 

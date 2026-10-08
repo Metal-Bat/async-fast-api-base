@@ -38,7 +38,7 @@ class DraftLibraryService(DefinitionLibraryService):
                 raise VersionConflictException("Template source must be an exact published form")
             documents = (
                 FormDocuments.model_validate(source.reuse_source)
-                if data.mode == "REFERENCE" and source.reuse_source
+                if data.mode == "REFERENCE" and bool(source.reuse_source)
                 else FormDocuments.model_validate(source, from_attributes=True)
             )
             if data.mode == "COPY":

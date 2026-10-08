@@ -12,6 +12,9 @@
 
 ### Fixed
 
+- Restore async database imports after the SQLAlchemy 2.1 upgrade by explicitly installing
+  its asyncio extra. See [REPO-002](docs/changes/REPO-002.md).
+
 - Disabled duplicate FastAPI native HTTP telemetry exporters when the application's gRPC
   pipeline owns instrumentation, and removed internal structlog metadata from exported logs.
   Verified real backend log delivery and Jaeger traces. See [OBS-002](docs/changes/OBS-002.md).

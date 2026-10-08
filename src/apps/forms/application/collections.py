@@ -34,11 +34,11 @@ def _walk(
         else:
             identity[path] = [str(uuid7()) for _ in value]
         for index, child in enumerate(value):
-            _walk(child, f"{path}/{index}", identity, schema.get("items") if schema else None)
+            _walk(child, f"{path}/{index}", identity, schema.get("items") if bool(schema) else None)
     elif isinstance(value, dict):
         for key, child in value.items():
             escaped = key.replace("~", "~0").replace("/", "~1")
-            child_schema = schema.get("properties", {}).get(key) if schema else None
+            child_schema = schema.get("properties", {}).get(key) if bool(schema) else None
             _walk(child, f"{path}/{escaped}", identity, child_schema)
 
 
@@ -134,7 +134,7 @@ def edit_collection(
     index_map: dict[int, int | None] = {index: None for index in range(len(old_keys))}
     for new_index, (key, item, old_index) in enumerate(entries):
         if old_index is None:
-            item_schema = array_schema(schema, path).get("items") if schema else None
+            item_schema = array_schema(schema, path).get("items") if bool(schema) else None
             _walk(item, f"{path}/{new_index}", moved, item_schema)
         else:
             index_map[old_index] = new_index

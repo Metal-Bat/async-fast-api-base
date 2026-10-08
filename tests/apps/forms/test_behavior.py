@@ -329,3 +329,29 @@ def test_pinned_variant_uses_authored_render_for_behavior_and_attachments():
     assert "/files" in _collections(selected.render_schema, {})
     assert selected.variants == []
     assert "/files" not in _collections(doc.render_schema, {})
+
+
+def test_concat_rejects_null_input_with_a_validation_error():
+    doc = FormDocuments(
+        behavior_dialect="bpms.behavior/1",
+        data_schema={
+            "type": "object",
+            "properties": {"source": {"type": "string"}, "result": {"type": "string"}},
+        },
+        render_schema={
+            "dialect": "bpms.render/1",
+            "root": {
+                "component": "vertical",
+                "children": [
+                    {"component": "text", "scope": "/properties/source"},
+                    {
+                        "component": "calculated",
+                        "scope": "/properties/result",
+                        "calculation": {"function": "concat", "scopes": ["/properties/source"]},
+                    },
+                ],
+            },
+        },
+    )
+    with pytest.raises(BehaviorError, match="behavior.calculation_type"):
+        evaluate_behavior(doc, {"source": None})

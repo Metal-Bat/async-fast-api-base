@@ -209,7 +209,7 @@ class DesignerService:
                 )
             )
         items.sort(key=lambda item: (item.category, item.key))
-        if query.search:
+        if bool(query.search):
             term = query.search.casefold()
             items = [
                 item
@@ -223,7 +223,7 @@ class DesignerService:
     ) -> Page[SelectOption[str]]:
         if kind in _ENUM_SELECTORS:
             options = _enum_options(kind)
-            if query.search:
+            if bool(query.search):
                 term = query.search.casefold()
                 options = [
                     item
@@ -453,7 +453,7 @@ class DesignerService:
                     )
                 )
         items.sort(key=lambda item: item.path)
-        if query.search:
+        if bool(query.search):
             term = query.search.casefold()
             items = [item for item in items if term in item.path.casefold()]
         return self._slice(items, query)
@@ -558,7 +558,7 @@ class DesignerService:
 
     @staticmethod
     def _search(statement, column, value: str | None):
-        if not value:
+        if not bool(value):
             return statement
         escaped = value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
         return statement.where(column.ilike(f"%{escaped}%", escape="\\"))

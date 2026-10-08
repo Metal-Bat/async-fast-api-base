@@ -26,7 +26,7 @@ async def query_history(
     entity_ref: str | None = None,
 ) -> PageResponse[Page[HistoryRecordDTO]]:
     """Return a filtered page from one registered entity history table."""
-    entity_id = open_ref_id(entity_ref)[0] if entity_ref else None
+    entity_id = open_ref_id(entity_ref)[0] if bool(entity_ref) else None
     return page_response(
         request, await HistoryService.for_entity(session, entity_name).list(query, entity_id)
     )

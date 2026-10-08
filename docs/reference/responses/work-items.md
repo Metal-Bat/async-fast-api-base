@@ -6,30 +6,6 @@ tags: [api, dto, work-items]
 
 These schemas are emitted by successful API responses in this topic. Reviewed examples are included only when a curated fixture exists. Required nullable fields must be present and may be null; optional fields may be omitted as allowed by the schema. See the [frontend journey](../../guides/frontend-journey.md) for lifecycle and call order. The live Swagger/OpenAPI document is authoritative.
 
-### `CollectionIssue`
-
-Used by: `POST /api/v1/work-items/{ref_id}/collections/edit`
-
-| Field | Type | Required | Notes |
-| --- | --- | --- | --- |
-| `pointer` | `string` | Yes | — |
-| `code` | `string` | Yes | — |
-| `item_keys` | `array[string]` | No | — |
-
-No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
-
-### `CollectionState`
-
-Used by: `POST /api/v1/work-items/{ref_id}/collections/edit`
-
-| Field | Type | Required | Notes |
-| --- | --- | --- | --- |
-| `data` | `object` | Yes | — |
-| `item_identity` | `object` | Yes | — |
-| `issues` | `array[CollectionIssue]` | No | — |
-
-No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
-
 ### `CorrectionFeedbackDTO`
 
 Used by: `GET /api/v1/work-items/{ref_id}/view`, `POST /api/v1/work-items/{ref_id}/feedback/{feedback_key}/resolve`
@@ -45,17 +21,6 @@ Used by: `GET /api/v1/work-items/{ref_id}/view`, `POST /api/v1/work-items/{ref_i
 | `created_at` | `string` | Yes | — |
 | `resolved_at` | `string | null` | No | — |
 | `resolved_by_ref_id` | `string | null` | No | Opaque reference; use the value returned by the API. |
-
-No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
-
-### `ManualOverrideState`
-
-Used by: `POST /api/v1/work-items/{ref_id}/overrides`
-
-| Field | Type | Required | Notes |
-| --- | --- | --- | --- |
-| `data` | `object` | Yes | — |
-| `override_provenance` | `object` | Yes | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
@@ -93,6 +58,20 @@ Used by: `POST /api/v1/work-items/{ref_id}/options`
 | `error` | `null` | No | — |
 | `code` | `integer` | No |  Default: `200`. |
 | `result` | `OptionResult` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `PageResponse_Page_ResourceHistoryDTO__`
+
+Used by: `POST /api/v1/work-items/{ref_id}/history`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `result` | `Page_ResourceHistoryDTO_` | Yes | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
@@ -147,6 +126,20 @@ Reviewed synthetic example from the [frontend journey](../../guides/frontend-jou
   }
 }
 ```
+
+### `Page_ResourceHistoryDTO_`
+
+Used by: `POST /api/v1/work-items/{ref_id}/history`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `items` | `array[ResourceHistoryDTO]` | No | — |
+| `page` | `integer` | No |  Default: `1`. |
+| `size` | `integer` | No |  Default: `20`. |
+| `total` | `integer` | Yes | — |
+| `total_pages` | `integer` | Yes | Return the number of nonempty pages in the full result set. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
 ### `Page_WorkItemDTO_`
 
@@ -221,6 +214,87 @@ Used by: `POST /api/v1/work-items/{ref_id}/options`
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `ResourceHistoryDTO`
+
+Used by: `POST /api/v1/work-items/{ref_id}/history`
+
+Authorized timeline metadata; no canonical values or actor identifiers.
+
+فرادادهٔ مجاز تاریخچه؛ بدون مقادیر فرم یا شناسهٔ کاربران.
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `changed_at` | `string` | Yes | UTC change timestamp. / زمان تغییر به UTC. |
+| `operation` | `string` | Yes | Persisted lifecycle action. / رخداد ذخیره‌شده. |
+| `version` | `integer | null` | No | Recorded revision when available; null otherwise. / نسخه در صورت موجود بودن؛ در غیر این صورت null. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `RuntimeActionDTO`
+
+Used by: `DELETE /api/v1/work-items/{ref_id}/attachments/{attachment_ref_id}`, `GET /api/v1/work-items/{ref_id}`, `GET /api/v1/work-items/{ref_id}/runtime`, `POST /api/v1/work-items/search`, `POST /api/v1/work-items/{ref_id}/archive`, `POST /api/v1/work-items/{ref_id}/cancel`, `POST /api/v1/work-items/{ref_id}/claim`, `POST /api/v1/work-items/{ref_id}/collections/edit`, `POST /api/v1/work-items/{ref_id}/comment`, `POST /api/v1/work-items/{ref_id}/complete`, `POST /api/v1/work-items/{ref_id}/expire`, `POST /api/v1/work-items/{ref_id}/forward`, `POST /api/v1/work-items/{ref_id}/overrides`, `POST /api/v1/work-items/{ref_id}/pin`, `POST /api/v1/work-items/{ref_id}/read`, `POST /api/v1/work-items/{ref_id}/reject`, `POST /api/v1/work-items/{ref_id}/release`, `POST /api/v1/work-items/{ref_id}/return`, `POST /api/v1/work-items/{ref_id}/save`, `POST /api/v1/work-items/{ref_id}/start`, `POST /api/v1/work-items/{ref_id}/watch`, `PUT /api/v1/work-items/{ref_id}/attachments`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `key` | `string` | Yes | — |
+| `kind` | `string` | Yes | — |
+| `outcome_key` | `string` | Yes | — |
+| `title` | `string` | Yes | — |
+| `confirmation` | `string | null` | Yes | — |
+| `required_scopes` | `array[string]` | Yes | — |
+| `require_comment` | `boolean` | Yes | — |
+| `validation` | `string` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `RuntimeFieldMetadataDTO`
+
+Used by: `DELETE /api/v1/work-items/{ref_id}/attachments/{attachment_ref_id}`, `GET /api/v1/work-items/{ref_id}`, `GET /api/v1/work-items/{ref_id}/runtime`, `POST /api/v1/work-items/search`, `POST /api/v1/work-items/{ref_id}/archive`, `POST /api/v1/work-items/{ref_id}/cancel`, `POST /api/v1/work-items/{ref_id}/claim`, `POST /api/v1/work-items/{ref_id}/collections/edit`, `POST /api/v1/work-items/{ref_id}/comment`, `POST /api/v1/work-items/{ref_id}/complete`, `POST /api/v1/work-items/{ref_id}/expire`, `POST /api/v1/work-items/{ref_id}/forward`, `POST /api/v1/work-items/{ref_id}/overrides`, `POST /api/v1/work-items/{ref_id}/pin`, `POST /api/v1/work-items/{ref_id}/read`, `POST /api/v1/work-items/{ref_id}/reject`, `POST /api/v1/work-items/{ref_id}/release`, `POST /api/v1/work-items/{ref_id}/return`, `POST /api/v1/work-items/{ref_id}/save`, `POST /api/v1/work-items/{ref_id}/start`, `POST /api/v1/work-items/{ref_id}/watch`, `PUT /api/v1/work-items/{ref_id}/attachments`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `scope` | `string` | Yes | Visible JSON Schema property/items scope. |
+| `validation_schema` | `object` | Yes | Bounded compiled schema of this visible field only. No defaults, examples, hidden properties or shared definitions; backend validates the full canonical document. |
+| `writable` | `boolean` | Yes | — |
+| `required` | `boolean` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `RuntimeFormStateDTO`
+
+Used by: `DELETE /api/v1/work-items/{ref_id}/attachments/{attachment_ref_id}`, `GET /api/v1/work-items/{ref_id}`, `GET /api/v1/work-items/{ref_id}/runtime`, `POST /api/v1/work-items/search`, `POST /api/v1/work-items/{ref_id}/archive`, `POST /api/v1/work-items/{ref_id}/cancel`, `POST /api/v1/work-items/{ref_id}/claim`, `POST /api/v1/work-items/{ref_id}/collections/edit`, `POST /api/v1/work-items/{ref_id}/comment`, `POST /api/v1/work-items/{ref_id}/complete`, `POST /api/v1/work-items/{ref_id}/expire`, `POST /api/v1/work-items/{ref_id}/forward`, `POST /api/v1/work-items/{ref_id}/overrides`, `POST /api/v1/work-items/{ref_id}/pin`, `POST /api/v1/work-items/{ref_id}/read`, `POST /api/v1/work-items/{ref_id}/reject`, `POST /api/v1/work-items/{ref_id}/release`, `POST /api/v1/work-items/{ref_id}/return`, `POST /api/v1/work-items/{ref_id}/save`, `POST /api/v1/work-items/{ref_id}/start`, `POST /api/v1/work-items/{ref_id}/watch`, `PUT /api/v1/work-items/{ref_id}/attachments`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `runtime_dialect` | `string` | No |  Default: `bpms.runtime/1`. |
+| `resource_kind` | `string` | Yes | — |
+| `resource_ref_id` | `string` | Yes | Current opaque revision-bearing reference for the owning request/work item; replace after every mutation. |
+| `form_version_ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
+| `form_version_number` | `integer` | Yes | — |
+| `submission_ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
+| `design_key` | `string` | Yes | Exact pinned client variant; locale changes cannot change this key. |
+| `render_dialect` | `string` | No |  Default: `bpms.render/1`. |
+| `data_dialect` | `string` | No |  Default: `https://json-schema.org/draft/2020-12/schema`. |
+| `view_key` | `string` | Yes | — |
+| `purpose` | `string` | Yes | — |
+| `resolved_locale` | `string` | Yes | Locale selected by the pinned catalog, or negotiated en/fa fallback. |
+| `direction` | `string` | Yes | — |
+| `data` | `object` | Yes | Canonical actor-visible values. Hidden values are preserved only on the server. |
+| `item_identity` | `object` | Yes | Stable row keys for visible collection paths only. |
+| `page_settings` | `object` | No | Pinned display-only settings; optional pages contains at most 32 unique key/title/scopes entries with actor-readable scopes only. No scripts, bindings or runtime values. |
+| `before_data` | `object | null` | No | Prior submitted data filtered through the same task view, or null when unavailable. |
+| `before_item_identity` | `object | null` | No | Actor-filtered prior row identities; null when unavailable. / هویت مجاز ردیف‌های پیشین؛ در صورت نبودن null. |
+| `render_schema` | `object` | Yes | Actor-filtered bounded bpms.render/1 display document. Server-evaluated calculation metadata and client expressions are omitted; writable_scopes is authoritative for editability. |
+| `readable_scopes` | `array[string]` | Yes | — |
+| `writable_scopes` | `array[string]` | Yes | — |
+| `required_scopes` | `array[string]` | Yes | — |
+| `field_metadata` | `array[RuntimeFieldMetadataDTO]` | Yes | — |
+| `actions` | `array[RuntimeActionDTO]` | No | — |
+| `override_provenance` | `object` | No | Visible override actor/reason/value/time only; input checksums remain server-only. |
+| `issues` | `array[object]` | No | Safe visible pointer/code pairs. Hidden canonical validation failures produce a generic task.validation issue. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `SelectOption_str_`
 
 Used by: `POST /api/v1/work-items/{ref_id}/options`
@@ -251,23 +325,9 @@ Used by: `GET /api/v1/work-items/{ref_id}/attachments`, `POST /api/v1/work-items
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
-### `SuccessResponse_CollectionState_`
+### `SuccessResponse_RuntimeFormStateDTO_`
 
-Used by: `POST /api/v1/work-items/{ref_id}/collections/edit`
-
-| Field | Type | Required | Notes |
-| --- | --- | --- | --- |
-| `success` | `boolean` | No |  Default: `True`. |
-| `request_id` | `string` | Yes | — |
-| `error` | `null` | No | — |
-| `code` | `integer` | No |  Default: `200`. |
-| `data` | `CollectionState` | Yes | — |
-
-No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
-
-### `SuccessResponse_ManualOverrideState_`
-
-Used by: `POST /api/v1/work-items/{ref_id}/overrides`
+Used by: `GET /api/v1/work-items/{ref_id}/runtime`, `POST /api/v1/work-items/{ref_id}/collections/edit`, `POST /api/v1/work-items/{ref_id}/overrides`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -275,7 +335,7 @@ Used by: `POST /api/v1/work-items/{ref_id}/overrides`
 | `request_id` | `string` | Yes | — |
 | `error` | `null` | No | — |
 | `code` | `integer` | No |  Default: `200`. |
-| `data` | `ManualOverrideState` | Yes | — |
+| `data` | `RuntimeFormStateDTO` | Yes | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
@@ -468,6 +528,8 @@ Used by: `DELETE /api/v1/work-items/{ref_id}/attachments/{attachment_ref_id}`, `
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
+| `kind` | `string` | No | Explicit classification: human tasks have a pinned form, AI approvals have a real fenced approval association; absent forms alone never imply AI support. Default: `UNSUPPORTED`. |
+| `runtime_state` | `RuntimeFormStateDTO | null` | No | Current canonical authorized form state after reads/mutations. Null for form-less items; never fetch privileged authoring documents as a fallback. |
 | `ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
 | `request_ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
 | `step_execution_ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
@@ -528,6 +590,7 @@ Used by: `GET /api/v1/work-items/{ref_id}/view`, `POST /api/v1/work-items/{ref_i
 | `data` | `object` | Yes | Current canonical data filtered by the task read policy and named view. |
 | `item_identity` | `object | null` | Yes | Stable row keys only for readable collection paths. |
 | `before_data` | `object | null` | Yes | Prior submitted canonical data through the same read filter, or null. |
+| `before_item_identity` | `object | null` | No | Stable prior keys through the same read filter. / کلیدهای پیشین با همان فیلتر دسترسی. |
 | `render_schema` | `object` | Yes | Pinned client variant's bpms.render/1 document with unreadable nodes removed and messages localized. |
 | `actions` | `array[TaskActionViewDTO]` | Yes | Available declared actions for the current claimant; empty for observers or closed work. |
 | `feedback` | `array[CorrectionFeedbackDTO]` | Yes | Visible feedback keyed by stable field scope and optional collection item key. |

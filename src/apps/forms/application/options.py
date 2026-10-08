@@ -79,7 +79,7 @@ class OptionService:
                 "parameters": parameters,
                 "rows": query.row_indices,
                 "locale": locale,
-                "predicate_data": query.data if source.enabled_when else None,
+                "predicate_data": query.data if bool(source.enabled_when) else None,
             }
         )
         revision = digest(
@@ -162,7 +162,7 @@ class OptionService:
                             choice.value = label["label"]
             if query.selected_keys:
                 choices = [choice for choice in choices if choice.key in query.selected_keys]
-            if query.search:
+            if bool(query.search):
                 term = query.search.casefold()
                 choices = [
                     item

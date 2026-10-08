@@ -496,7 +496,7 @@ class FormValidator:
             if node.component != "calculated":
                 raise _Invalid(path + "/calculation", "render.calculation")
             target = self._scope(schema, node.scope, path + "/scope")
-            if node.calculation.expression:
+            if bool(node.calculation.expression):
                 empty = {"type": "object", "properties": {}, "additionalProperties": False}
                 try:
                     ExpressionCompiler().compile(

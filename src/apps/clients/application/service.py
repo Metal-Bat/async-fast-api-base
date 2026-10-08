@@ -32,7 +32,7 @@ class ClientService:
             name=data.name,
             kind=data.kind,
             platform=data.platform,
-            secret_hash=hashlib.sha256(secret.encode()).hexdigest() if secret else None,
+            secret_hash=hashlib.sha256(secret.encode()).hexdigest() if bool(secret) else None,
         )
         self.session.add(row)
         await self.session.flush()
@@ -97,7 +97,7 @@ class ClientService:
             col(ClientEntity.deleted_at).is_(None),
             col(ClientEntity.is_active).is_(True),
         )
-        if query.search:
+        if bool(query.search):
             pattern = "%" + query.search.replace("%", "/%").replace("_", "/_") + "%"
             statement = statement.where(
                 or_(
@@ -135,7 +135,7 @@ class ClientService:
             col(ClientReleaseEntity.deleted_at).is_(None),
             col(ClientReleaseEntity.is_enabled).is_(True),
         )
-        if query.search:
+        if bool(query.search):
             pattern = "%" + query.search.replace("%", "/%").replace("_", "/_") + "%"
             statement = statement.where(
                 col(ClientReleaseEntity.release_version).ilike(pattern, escape="/")
@@ -185,7 +185,7 @@ class ClientService:
     ) -> ClientContext:
         if client_key is None and secret is None and release_version is None:
             return ClientContext.legacy()
-        if not client_key or not release_version:
+        if not bool(client_key) or not bool(release_version):
             raise InvalidCredentialError("Client identity and release are required")
         client = (
             await self.session.exec(select(ClientEntity).where(ClientEntity.code == client_key))

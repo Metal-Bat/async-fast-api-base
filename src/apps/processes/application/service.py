@@ -1001,7 +1001,7 @@ class ProcessService:
                     return dynamic
         eligible: list[WorkflowStepTargetEntity] = []
         for target in targets:
-            if target.condition and not await self._condition(
+            if bool(target.condition) and not await self._condition(
                 target.condition, process, request, submission
             ):
                 continue
@@ -1212,7 +1212,7 @@ class ProcessService:
         for edge in candidates:
             if outcome is not None and edge.outcome != outcome:
                 continue
-            if edge.condition and not await self._condition(
+            if bool(edge.condition) and not await self._condition(
                 edge.condition, process, request, submission
             ):
                 continue
@@ -1384,7 +1384,7 @@ class ProcessService:
         for edge in candidates:
             if outcome is not None and edge.outcome != outcome:
                 continue
-            if edge.condition and not await self._condition(
+            if bool(edge.condition) and not await self._condition(
                 edge.condition, process, request, submission
             ):
                 continue

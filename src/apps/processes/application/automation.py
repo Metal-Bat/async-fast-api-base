@@ -159,7 +159,7 @@ class AutomationDispatcher:
                 )
             ).all()
             for prior in previous:
-                if prior.automation_snapshot and prior.automation_snapshot.get("ai_decision"):
+                if bool(prior.automation_snapshot) and prior.automation_snapshot.get("ai_decision"):
                     old = AutomationSnapshot.model_validate(prior.automation_snapshot)
                     if old.ai_agent_checksum != agent.checksum or old.ai_decision != ai_decision:
                         raise VersionConflictException(

@@ -10,6 +10,8 @@ from apps.integrations.domain.dto import (
     AIConnectionConfig,
     ConnectionConfig,
     ConnectionCreateDTO,
+    ConnectionGrantQuery,
+    ConnectionGrantViewDTO,
     ConnectionQuery,
     ConnectionUpdateDTO,
     GrantDTO,
@@ -117,7 +119,7 @@ class ConnectionService:
             col(Connection.verification_status) == "VERIFIED",
             self.visible(actor),
         )
-        if query.search:
+        if bool(query.search):
             escaped = query.search.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
             statement = statement.where(col(Connection.name).ilike(f"%{escaped}%", escape="\\"))
         total = (
@@ -287,11 +289,40 @@ class ConnectionService:
         except Exception:  # noqa: BLE001 -- This boundary must redact all provider exceptions.
             raise ServiceUnavailableException("Integration unavailable") from None
 
+    async def search_grants(
+        self, ref_id: str, query: ConnectionGrantQuery, actor: UserEntity
+    ) -> Page[ConnectionGrantViewDTO]:
+        row = await self.get(ref_id, actor, manage=True)
+        page = await paginate_entities(
+            self.session,
+            Grant,
+            query,
+            criteria=(Grant.integration_connection_id == row.id, col(Grant.deleted_at).is_(None)),
+        )
+        items = []
+        for grant in page.items:
+            user = await self.session.get(UserEntity, grant.user_id) if grant.user_id else None
+            group = (
+                await self.session.get(WorkGroupEntity, grant.work_group_id)
+                if grant.work_group_id
+                else None
+            )
+            items.append(
+                ConnectionGrantViewDTO(
+                    ref_id=create_ref_id(grant.id, grant.version),
+                    user_ref_id=create_ref_id(user.id, user.version) if user else None,
+                    work_group_ref_id=create_ref_id(group.id, group.version) if group else None,
+                    can_use=grant.can_use,
+                    can_manage=grant.can_manage,
+                )
+            )
+        return Page(items=items, page=page.page, size=page.size, total=page.total)
+
     async def grant(self, ref_id: str, data: GrantDTO, actor: UserEntity) -> Grant:
         row = await self.get(ref_id, actor, manage=True, update=True)
         self._not_revoked(row)
-        user_id = open_ref_id(data.user_ref_id)[0] if data.user_ref_id else None
-        group_id = open_ref_id(data.work_group_ref_id)[0] if data.work_group_ref_id else None
+        user_id = open_ref_id(data.user_ref_id)[0] if bool(data.user_ref_id) else None
+        group_id = open_ref_id(data.work_group_ref_id)[0] if bool(data.work_group_ref_id) else None
         target = (
             await self.session.get(UserEntity, user_id)
             if user_id

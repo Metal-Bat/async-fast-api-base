@@ -6,6 +6,7 @@ from typing import Any, Literal
 from pydantic import ConfigDict, Field, model_validator
 
 from apps.forms.domain.attachment_dto import SubmissionAttachmentDTO
+from apps.forms.domain.runtime import RuntimeActionDTO, RuntimeFormStateDTO
 from core.base_dto import BaseDTO
 
 type CartableKind = Literal["available", "claimed", "completed", "watching", "submitted", "unread"]
@@ -19,6 +20,14 @@ class CartableQueryDTO(BaseDTO):
 
 
 class WorkItemDTO(BaseDTO):
+    kind: Literal["HUMAN_TASK", "AI_APPROVAL", "UNSUPPORTED"] = Field(
+        default="UNSUPPORTED",
+        description="Explicit classification: human tasks have a pinned form, AI approvals have a real fenced approval association; absent forms alone never imply AI support.",
+    )
+    runtime_state: RuntimeFormStateDTO | None = Field(
+        default=None,
+        description="Current canonical authorized form state after reads/mutations. Null for form-less items; never fetch privileged authoring documents as a fallback.",
+    )
     ref_id: str
     request_ref_id: str
     step_execution_ref_id: str
@@ -49,7 +58,19 @@ class WorkItemCommandDTO(BaseDTO):
 
 
 class WorkItemSaveDTO(WorkItemCommandDTO):
-    data: dict[str, Any]
+    data: dict[str, Any] = Field(
+        description="Restricted tasks merge supplied writable values into canonical data. Missing fields are unchanged; null is a value. Unrestricted legacy tasks retain replacement semantics."
+    )
+    view_key: str | None = Field(
+        default=None,
+        max_length=64,
+        description="Named edit view; omitted selects the pinned default. Print/summary views cannot mutate.",
+    )
+    delete_paths: list[str] = Field(
+        default_factory=list,
+        max_length=64,
+        description="Explicit RFC6901 instance pointers to remove writable object properties. Missing values are preserved. Array row structure uses collection commands; stale refs reject index-based edits.",
+    )
 
 
 class CorrectionFeedbackInput(BaseDTO):
@@ -74,16 +95,8 @@ class WorkItemCompleteDTO(WorkItemSaveDTO):
     feedback: list[CorrectionFeedbackInput] = Field(default_factory=list, max_length=64)
 
 
-class TaskActionViewDTO(BaseDTO):
-    model_config = ConfigDict(extra="forbid")
-    key: str
-    kind: Literal["complete", "reject", "return"]
-    outcome_key: str
-    title: str
-    confirmation: str | None
-    required_scopes: list[str]
-    require_comment: bool
-    validation: Literal["complete", "partial"]
+class TaskActionViewDTO(RuntimeActionDTO):
+    pass
 
 
 class WorkItemViewDTO(BaseDTO):
@@ -103,6 +116,10 @@ class WorkItemViewDTO(BaseDTO):
     )
     before_data: dict[str, Any] | None = Field(
         description="Prior submitted canonical data through the same read filter, or null."
+    )
+    before_item_identity: dict[str, list[str]] | None = Field(
+        default=None,
+        description="Stable prior keys through the same read filter. / کلیدهای پیشین با همان فیلتر دسترسی.",
     )
     render_schema: dict[str, Any] = Field(
         description="Pinned client variant's bpms.render/1 document with unreadable nodes removed and messages localized."

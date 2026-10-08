@@ -1,6 +1,6 @@
 import json
 import traceback as traceback_module
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from hashlib import sha256
@@ -85,7 +85,7 @@ def record_execution(task_id: str, **values: Any) -> None:
 @contextmanager
 def task_lifecycle(
     task: Any, args: tuple[Any, ...], kwargs: dict[str, Any]
-) -> Iterator[TaskLifecycle]:
+) -> Generator[TaskLifecycle]:
     """Release failed/retried work in finally; retain successful results for deduplication."""
     request = task.request
     task_id = request.id

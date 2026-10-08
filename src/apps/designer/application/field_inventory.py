@@ -83,7 +83,7 @@ def _whole_request_read(source: str) -> bool:
 
 def _label(node: dict[str, Any], localization: dict[str, Any] | None, locale: str) -> str | None:
     key = (node.get("messages") or {}).get("label", {}).get("key")
-    if key and localization:
+    if key and bool(localization):
         catalogs = localization.get("catalogs") or {}
         fallback = localization.get("default_locale", "en")
         for language in (locale, fallback, "en"):
@@ -259,7 +259,7 @@ def analyze_fields(
             )
             if inherited and source == "USER_INPUT":
                 source = "EARLIER_TASK_OUTPUT"
-            if task_step and task_step.field_policy:
+            if task_step and bool(task_step.field_policy):
                 editable = path in task_step.field_policy.get("write", [])
             matched_instances = [
                 item
@@ -282,7 +282,7 @@ def analyze_fields(
                     path.rsplit("/items/", 1)[0] + "/items" if "/items/" in path else None
                 ),
                 path=path,
-                label=next((value for value in labels if value), path.rsplit("/", 1)[-1]),
+                label=next((value for value in labels if bool(value)), path.rsplit("/", 1)[-1]),
                 type=str(definition.get("type", "unknown")),
                 source=source,
                 author_description=definition.get("description")
@@ -420,7 +420,7 @@ def analyze_fields(
         target: str | None = None,
         condition: str | None = None,
     ) -> None:
-        if not path:
+        if not bool(path):
             diagnostics.append(f"{location}:dynamic_or_whole_object")
             return
         if path.startswith("request."):
@@ -464,7 +464,7 @@ def analyze_fields(
                 f"{binding.step}.{binding.target_port}",
             )
     for index, transition in enumerate(graph.transitions):
-        if transition.condition:
+        if bool(transition.condition):
             if _whole_request_read(transition.condition):
                 diagnostics.append(f"/transitions/{index}/condition:whole_object_read")
             for scope in _request_scopes(transition.condition):
@@ -476,7 +476,7 @@ def analyze_fields(
                     transition.condition,
                 )
     for index, target in enumerate(graph.targets):
-        if target.condition:
+        if bool(target.condition):
             if _whole_request_read(target.condition):
                 diagnostics.append(f"/targets/{index}/condition:whole_object_read")
             for scope in _request_scopes(target.condition):
@@ -495,7 +495,7 @@ def analyze_fields(
                 add_request(scope, "ROUTING", f"/steps/{index}/config/expression", step.key)
         if step.task_contract:
             point = next((name for name in forms if name.endswith("/" + step.key)), None)
-            if point:
+            if bool(point):
                 for view_index, view in enumerate(step.task_contract.views):
                     for scope in view.scopes:
                         key = (point, scope)
@@ -522,9 +522,9 @@ def analyze_fields(
                                     explanation=_explanation("ACTION_REQUIRED", locale),
                                 )
                             )
-        if step.field_policy:
+        if bool(step.field_policy):
             point = next((name for name in forms if name.endswith("/" + step.key)), None)
-            if point:
+            if bool(point):
                 for scope in step.field_policy.get("read", []):
                     key = (point, scope)
                     if key in rows:
@@ -736,7 +736,11 @@ def analyze_fields(
                 location=f"/bindings/{index}/target_port",
             )
         )
-        if binding.source_kind == "STEP_OUTPUT" and binding.source_step and binding.source_port:
+        if (
+            binding.source_kind == "STEP_OUTPUT"
+            and bool(binding.source_step)
+            and bool(binding.source_port)
+        ):
             declared_ports.append(
                 DeclaredPort(
                     step=binding.source_step,
@@ -859,7 +863,7 @@ class FieldInventoryService:
             graphs.append((point, graph))
             for step in graph.steps:
                 child_point = f"{point}/{step.key}"
-                if step.form_ref:
+                if bool(step.form_ref):
                     try:
                         await load_form(child_point, step.form_ref)
                     except NotFoundException:

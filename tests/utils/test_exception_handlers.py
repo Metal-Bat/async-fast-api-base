@@ -129,3 +129,15 @@ async def test_unknown_sqlalchemy_failure_is_internal_error(monkeypatch) -> None
     response = await handlers.application_exception_handler(request(), error)
     assert response.status_code == 500
     assert json.loads(bytes(response.body))["code"] == CommonError.INTERNAL_ERROR.number
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize("kind", ["revision", "lifecycle", "idempotency", "unknown"])
+async def test_conflict_kind_is_safe_and_independent_of_localized_text(kind) -> None:
+    response = await handlers.application_exception_handler(
+        request(), VersionConflictException("private command values", conflict_kind=kind)
+    )
+    body = json.loads(bytes(response.body))
+    assert response.status_code == 409 and body["code"] == 1004
+    assert body["data"] == {"conflict_kind": kind}
+    assert b"private" not in bytes(response.body)

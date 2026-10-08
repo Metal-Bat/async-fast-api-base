@@ -1,6 +1,6 @@
 """Versioned form authoring and validation contracts."""
 
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import ConfigDict, Field
 
@@ -39,6 +39,10 @@ class OptionPreviewRequest(BaseDTO):
         description="Bounded canonical draft documents; validated before source resolution. The authenticated client selects the variant."
     )
     query: OptionQuery
+    locale: Literal["en", "fa"] | None = Field(
+        default=None,
+        description="Author-only simulated option locale. Null uses Accept-Language; no canonical values or client identity change.",
+    )
 
 
 class NavigationPreviewRequest(BaseDTO):

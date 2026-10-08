@@ -79,3 +79,7 @@ class WorkflowGrantDTO(BaseDTO):
 class WorkflowGrantViewDTO(WorkflowGrantDTO):
     ref_id: str
     workflow_ref_id: str
+
+
+class WorkflowGrantQuery(SearchRequest):
+    __query_fields__: ClassVar[dict[str, Any]] = {"can_view": bool, "can_start": bool}

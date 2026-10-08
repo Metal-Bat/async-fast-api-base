@@ -1122,3 +1122,78 @@ msgstr "نیازمند مالک احراز هویت‌شده یا سیاست د�
 
 msgid "Verified private WebP image bytes."
 msgstr "بایت‌های تأییدشده تصویر خصوصی WebP."
+
+msgid "Search request types this requester can start"
+msgstr "جستجوی انواع درخواست مجاز برای درخواست‌کننده"
+
+msgid "Requires requests.start, not requests.manage or forms.manage. Server filters active types/dependencies, workflow start access, current published pins and trusted registered-client/release targets before one-based bounded pagination. Declared supported_render_dialects further narrows compatibility; empty capabilities return an empty page without disclosing inaccessible choices. Empty/incompatible/ineligible results all appear as no eligible choices; selection grants no authority. Draft creation independently repeats eligibility checks. Page/size default to 1/20, size <=100; private no-store response. Client identity comes from the authenticated session, never browser identity headers."
+msgstr "نیازمند requests.start است و به مجوز مدیریت نیاز ندارد. انواع فعال با وابستگی‌های منتشرشده، دسترسی شروع گردش‌کار و محدودیت مشتری محرمانه و نسخه معتبر، پیش از صفحه‌بندی فیلتر می‌شوند. supported_render_dialects فقط سازگاری را محدود می‌کند؛ فهرست خالی قابلیت‌ها نتیجه خالی دارد. نبود گزینه مجاز اطلاعات موارد غیرمجاز را افشا نمی‌کند. ایجاد پیش‌نویس شرایط را دوباره بررسی می‌کند. پیش‌فرض page و size برابر ۱ و ۲۰ و حداکثر اندازه ۱۰۰ است. هویت مشتری از نشست احراز هویت می‌آید. پاسخ private, no-store است."
+
+msgid "Read an ordinary requester's pinned runtime form"
+msgstr "خواندن فرم اجرایی نسخه ثابت درخواست‌کننده"
+
+msgid "Requires requests.start plus ownership/superuser and the pinned origin-client policy. No forms.manage is required. Returns bpms.runtime/1 with exact form/design identity, current request/submission refs, visible display/validation metadata, canonical values, row keys and effective writable/required scopes. DRAFT owners may edit; submitted/closed views are read-only. Accept-Language resolves the pinned catalog without changing the client variant. Incompatible dialects return 409; unauthorized forms return 404; private no-store response."
+msgstr "نیازمند requests.start، مالکیت یا دسترسی مدیر کل و سیاست مشتری مبدأ است؛ forms.manage لازم نیست. bpms.runtime/1 شناسه نسخه ثابت فرم و طراحی، مراجع جاری درخواست و ارسال، داده معتبر، شناسه پایدار ردیف و محدوده‌های نوشتن و الزامی را برمی‌گرداند. مالک پیش‌نویس می‌تواند ویرایش کند و موارد ارسال‌شده فقط خواندنی‌اند. Accept-Language زبان کاتالوگ ثابت را بدون تغییر گونه مشتری تعیین می‌کند. ناسازگاری نسخه 409، عدم دسترسی مالکیت 404 و نقض سیاست مشتری 403 است. پاسخ private, no-store است."
+
+msgid "Read the authorized versioned runtime form state"
+msgstr "خواندن وضعیت نسخه‌دار و مجاز فرم اجرایی"
+
+msgid "Requires requests.start and per-item visibility. Returns bpms.runtime/1 with exact pinned form/design and current owning/submission refs, visible schema metadata, canonical data, stable row keys, effective writable/required scopes and available actions. Named key selects an edit/summary/print view; non-claimants and closed items are explicitly noneditable. Hidden schema/default/value/provenance data stays server-only. Accept-Language resolves en/fa without repinning. Unknown render dialects return 409; inaccessible resources return 404; private no-store response."
+msgstr "نیازمند requests.start و دسترسی به کار است. bpms.runtime/1 نسخه ثابت فرم و طراحی، مراجع جاری کار و ارسال، شمای قابل مشاهده، داده معتبر، شناسه پایدار ردیف، محدوده‌های نوشتن و الزامی و کنش‌ها را برمی‌گرداند. key نمای ویرایش، خلاصه یا چاپ را انتخاب می‌کند؛ موارد بسته و کاربران غیرمسئول حق ویرایش ندارند. شمای پنهان، مقدار پیش‌فرض و منشأ پنهان فقط در سرور می‌ماند. زبان en/fa بدون تغییر نسخه ثابت تعیین می‌شود. نسخه ناسازگار 409 و کار غیرقابل دسترس 404 است. پاسخ private, no-store است."
+
+msgid "Read current workflow access grants"
+msgstr "خواندن مجوزهای جاری گردش‌کار"
+
+msgid "Requires workflows.manage, matching the authoring grant-mutation boundary. Returns current nondeleted grants with current opaque workflow/grant/user/group refs and can_view/can_start. Shared filters allow only these capabilities; page/size default 1/20, maximum size 100. Does not reconstruct audit history or expose confidential assignment/configuration. Missing workflows return 404; private no-store response."
+msgstr "نیازمند workflows.manage همانند تغییر مجوزها است. مجوزهای حذف‌نشده با مراجع جاری گردش‌کار، مجوز، کاربر و گروه و can_view و can_start برمی‌گردند. فیلترها فقط همین قابلیت‌ها را می‌پذیرند. پیش‌فرض صفحه و اندازه ۱ و ۲۰ و حداکثر اندازه ۱۰۰ است. تاریخچه یا تنظیمات محرمانه افشا نمی‌شود. گردش‌کار ناموجود 404 است. پاسخ private, no-store است."
+
+msgid "Read current connection grants"
+msgstr "خواندن مجوزهای جاری اتصال"
+
+msgid "Requires integrations.manage plus per-connection manage/owner/superuser authority. Returns current nondeleted grants with opaque grant/user/group refs and can_use/can_manage; no credentials or historical reconstruction. Shared filters allow only can_use/can_manage; one-based page/size defaults 1/20, maximum size 100. Unauthorized connections return 404. Private no-store response; grant visibility does not grant use/manage capability."
+msgstr "نیازمند integrations.manage و اختیار مدیریت اتصال، مالکیت یا مدیر کل است. مجوزهای حذف‌نشده با مراجع مجوز، کاربر و گروه و can_use و can_manage بازگردانده می‌شوند؛ هیچ اعتبارنامه یا بازسازی تاریخچه‌ای ارائه نمی‌شود. فیلترها فقط همین دو قابلیت را می‌پذیرند. پیش‌فرض صفحه و اندازه ۱ و ۲۰ و حداکثر ۱۰۰ است. اتصال ناموجود 404 و عدم اختیار مدیریت 403 است. مشاهده مجوز اختیار استفاده یا مدیریت ایجاد نمی‌کند. پاسخ private, no-store است."
+
+msgid "Requires integrations.manage plus per-connection manage/owner/superuser authority. Returns current nondeleted grants with opaque grant/user/group refs and can_use/can_manage; no credentials or historical reconstruction. Shared filters allow only can_use/can_manage; one-based page/size defaults 1/20, maximum size 100. Missing connections return 404; denied manage authority returns 403. Private no-store response; grant visibility does not grant use/manage capability."
+msgstr "نیازمند integrations.manage و اختیار مدیریت اتصال، مالکیت یا مدیر کل است. مجوزهای حذف‌نشده با مراجع مجوز، کاربر و گروه و can_use و can_manage بازگردانده می‌شوند؛ هیچ اعتبارنامه یا بازسازی تاریخچه‌ای ارائه نمی‌شود. فیلترها فقط همین دو قابلیت را می‌پذیرند. پیش‌فرض صفحه و اندازه ۱ و ۲۰ و حداکثر ۱۰۰ است. اتصال ناموجود 404 و عدم اختیار مدیریت 403 است. مشاهده مجوز اختیار استفاده یا مدیریت ایجاد نمی‌کند. پاسخ private, no-store است."
+
+msgid "Visible JSON Schema property/items scope."
+msgstr "محدوده قابل مشاهده properties/items در شمای JSON."
+
+msgid "Bounded compiled schema of this visible field only. No defaults, examples, hidden properties or shared definitions; backend validates the full canonical document."
+msgstr "شمای کامپایل‌شده و محدود همین فیلد قابل مشاهده، بدون مقدار پیش‌فرض، مثال، ویژگی پنهان یا تعریف مشترک؛ سرور کل سند معتبر را بررسی می‌کند."
+
+msgid "Current opaque revision-bearing reference for the owning request/work item; replace after every mutation."
+msgstr "مرجع غیرشفاف و نسخه‌دار جاری درخواست یا کار مالک؛ پس از هر تغییر جایگزین شود."
+
+msgid "Exact pinned client variant; locale changes cannot change this key."
+msgstr "گونه دقیق و ثابت مشتری؛ تغییر زبان این کلید را تغییر نمی‌دهد."
+
+msgid "Locale selected by the pinned catalog, or negotiated en/fa fallback."
+msgstr "زبان انتخاب‌شده از کاتالوگ ثابت یا زبان جایگزین توافق‌شده en/fa."
+
+msgid "Canonical actor-visible values. Hidden values are preserved only on the server."
+msgstr "مقادیر معتبر قابل مشاهده برای کاربر؛ مقادیر پنهان فقط در سرور حفظ می‌شوند."
+
+msgid "Stable row keys for visible collection paths only."
+msgstr "کلیدهای پایدار ردیف فقط برای مسیرهای مجموعه قابل مشاهده."
+
+msgid "Actor-filtered bounded bpms.render/1 display document. Server-evaluated calculation metadata and client expressions are omitted; writable_scopes is authoritative for editability."
+msgstr "سند نمایشی محدود bpms.render/1 با فیلتر دسترسی کاربر؛ فراداده محاسبات سرور و عبارت‌های مشتری حذف می‌شوند. writable_scopes اختیار ویرایش را تعیین می‌کند."
+
+msgid "Visible override actor/reason/value/time only; input checksums remain server-only."
+msgstr "فقط کاربر، دلیل، مقدار و زمان بازنویسی قابل مشاهده؛ اثر انگشت ورودی فقط در سرور می‌ماند."
+
+msgid "Safe visible pointer/code pairs. Hidden canonical validation failures produce a generic task.validation issue."
+msgstr "جفت‌های امن و قابل مشاهده pointer/code؛ خطاهای اعتبارسنجی پنهان به task.validation عمومی تبدیل می‌شوند."
+
+msgid "Pinned display-only page settings; no scripts, bindings or runtime values."
+msgstr "تنظیمات ثابت و صرفاً نمایشی صفحه، بدون اسکریپت، اتصال داده یا مقدار اجرایی."
+
+msgid "Prior submitted data filtered through the same task view, or null when unavailable."
+msgstr "داده ارسال‌شده پیشین با فیلتر همین نمای کار، یا null در صورت نبودن."
+
+msgid "Authoritative confidential-client/release restrictions. On PUT, omission preserves existing restrictions; an explicit empty list deliberately removes them."
+msgstr "محدودیت معتبر مشتری محرمانه و نسخه؛ در PUT حذف فیلد از ورودی محدودیت موجود را حفظ می‌کند و فهرست صریح خالی عمداً آن را برمی‌دارد."
+
+msgid "Real authorized root-process ref for tracking, or null for a draft/no process. Never derive a process ref from another entity reference."
+msgstr "مرجع واقعی و مجاز فرایند ریشه برای پیگیری، یا null برای پیش‌نویس یا نبود فرایند؛ مرجع فرایند را از مرجع موجودیت دیگر نسازید."

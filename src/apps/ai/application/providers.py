@@ -255,7 +255,10 @@ def create_model(
         headers: dict[str, str] = {}
         base_url = "https://api.githubcopilot.com"
         if key == "openai-codex":
-            if not account or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,127}", account) is None:
+            if (
+                not bool(account)
+                or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,127}", account) is None
+            ):
                 raise ValueError("A safe Codex account identifier is required")
             headers["ChatGPT-Account-Id"] = account
             base_url = "https://chatgpt.com/backend-api/codex"
@@ -269,7 +272,7 @@ def create_model(
         from botocore.session import Session
         from botocore.tokens import FrozenAuthToken
 
-        if not region or re.fullmatch(r"[a-z]{2}-[a-z]+-[0-9]", region) is None:
+        if not bool(region) or re.fullmatch(r"[a-z]{2}-[a-z]+-[0-9]", region) is None:
             raise ValueError("A safe AWS region is required")
 
         class BearerSession(Session):
@@ -292,7 +295,7 @@ def create_model(
     if key == "bedrock-mantle":
         from openai import AsyncOpenAI
 
-        if not region or re.fullmatch(r"[a-z]{2}-[a-z]+-[0-9]", region) is None:
+        if not bool(region) or re.fullmatch(r"[a-z]{2}-[a-z]+-[0-9]", region) is None:
             raise ValueError("A safe AWS region is required")
         client = AsyncOpenAI(
             api_key=credential,
@@ -372,18 +375,21 @@ def create_model(
         elif key in _OPENAI_SDK_ENDPOINTS:
             client_args["base_url"] = _OPENAI_SDK_ENDPOINTS[key]
         elif key == "snowflake":
-            if not account or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,127}", account) is None:
+            if (
+                not bool(account)
+                or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,127}", account) is None
+            ):
                 raise ValueError("A safe Snowflake account identifier is required")
             client_args["base_url"] = f"https://{account}.snowflakecomputing.com/api/v2/cortex/v1/"
         client = AsyncOpenAI(**client_args)
         return model_type(model_id, provider=provider_type(openai_client=client))
     provider_args: dict[str, Any] = {}
     if spec.credential_mode == "snowflake":
-        if not account:
+        if not bool(account):
             raise ValueError("Snowflake account is required")
         provider_args.update(account=account, token=credential)
     elif spec.credential_mode == "aws":
-        if not region:
+        if not bool(region):
             raise ValueError("AWS region is required")
         provider_args.update(api_key=credential, region_name=region)
     else:

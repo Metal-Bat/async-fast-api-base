@@ -1,5 +1,39 @@
 # Engineering Backlog
 
+## REPO-002 — Restore the quality gate after dependency updates
+
+Priority: P1
+Status: DONE
+Area: repository/dependencies
+Depends-On: None
+Related: REPO-001
+Change-Record: docs/changes/REPO-002.md
+
+### Goal
+
+Make the current working tree pass `mise run check` with the updated uv dependencies,
+and prepare the user-authorized changes for Conventional Commit delivery.
+
+### Context
+
+RELATED REPO-001: retain all-file secret scanning and exact reviewed fingerprints.
+The upgraded type checker reports optional truth tests and changed typing contracts;
+SQLAlchemy 2.1 requires the explicit asyncio extra for async database imports.
+Existing frontend runtime and studio workspace work is included in the requested commit.
+
+Completed: `mise run check` passes with 664 default tests, 119 opt-in skips, one doctest,
+four disposable PostgreSQL workflow tests, and all applicable hooks. The knowledge graph
+was refreshed and Commitizen validated the delivery message. PostgreSQL was started locally;
+an interrupted first flow run passed on retry and in the final complete gate.
+
+### Acceptance Criteria
+
+- Preserve empty-value behavior while resolving type diagnostics without disabling rules.
+- Fresh uv synchronization includes SQLAlchemy's async runtime dependency.
+- Review individual secret findings without weakening scanner failure behavior.
+- The complete quality gate passes, including disposable PostgreSQL workflow tests and hooks.
+- Refresh the knowledge graph and validate the proposed Conventional Commit message.
+
 ## REPO-001 — Prepare a clean, reproducible repository baseline
 
 Priority: P1

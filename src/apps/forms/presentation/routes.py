@@ -475,12 +475,15 @@ async def preview_options(
         raise ValidationDetailsException(
             [{"pointer": "/documents", "code": "render.capabilities"}]
         ) from None
-    return page_response(
-        request,
-        await OptionService(session).resolve(
-            data.documents, data.query, actor, render=design.render_schema
-        ),
-    )
+    from core.i18n import get_language, use_language
+
+    with use_language(data.locale or get_language()):
+        return page_response(
+            request,
+            await OptionService(session).resolve(
+                data.documents, data.query, actor, render=design.render_schema
+            ),
+        )
 
 
 @router.post(
@@ -532,3 +535,38 @@ def preview_navigation(
             [{"pointer": "/query", "code": "navigation.invalid"}]
         ) from None
     return success_response(request, NavigationPreview(plan=plan, data=data))
+
+
+from apps.forms.application.authoring_preview import (
+    SimulatedRuntimePreviewRequest,
+    runtime_preview,
+)
+from apps.forms.domain.runtime import RuntimeFormStateDTO
+from utils.base_schema import PRIVATE_NO_STORE_RESPONSES
+
+
+@router.post(
+    "/runtime-preview",
+    response_model=SuccessResponse[RuntimeFormStateDTO],
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    summary="Preview a simulated runtime form / پیش‌نمایش فرم اجرا",
+    description="Requires forms.manage. Validates authored documents, evaluates supported server behavior and emits the same bounded bpms.runtime/1 projection used for cases. Purpose/policy/prior values are explicitly simulated. This creates no request, submission or attachment and confers no execution permission. Trusted client variants resolve through ClientContext, not arbitrary browser identity. Invalid documents/policies return sanitized 422. / نیازمند مجوز فرم؛ زمینه فقط شبیه‌سازی است و داده ذخیره نمی‌شود.",
+)
+def simulated_runtime_preview(
+    request: Request,
+    response: Response,
+    payload: SimulatedRuntimePreviewRequest,
+    _: FormAdmin,
+    context: ClientContextDep,
+):
+    response.headers["Cache-Control"] = "private, no-store"
+    from apps.forms.application.behavior import BehaviorError
+    from apps.forms.application.collections import CollectionError
+
+    try:
+        result = runtime_preview(payload, context)
+    except BehaviorError, CollectionError, ValueError:
+        raise ValidationDetailsException(
+            [{"pointer": "/documents", "code": "preview.invalid"}]
+        ) from None
+    return success_response(request, result)

@@ -75,7 +75,7 @@ def _merge_messages(
     instance: dict[str, Any],
 ) -> None:
     declared: dict[str, dict[str, Any]] = deepcopy(component.messages)
-    if component.localization:
+    if bool(component.localization):
         for locale, entries in component.localization.get("catalogs", {}).items():
             destination = declared.setdefault(locale, {})
             if set(destination) & set(entries):

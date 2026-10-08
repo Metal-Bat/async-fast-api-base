@@ -68,6 +68,13 @@ def _postgresql_public_error(exc: BaseException) -> tuple[ErrorCode, int]:
 
 async def application_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """Map application exceptions to a safe enum identity and HTTP status."""
+    if isinstance(exc, exceptions.VersionConflictException):
+        return error_response(
+            request,
+            CommonError.VERSION_CONFLICT,
+            status_code=409,
+            data={"conflict_kind": exc.conflict_kind},
+        )
     if isinstance(exc, exceptions.ValidationDetailsException):
         return error_response(
             request, CommonError.VALIDATION_FAILED, status_code=422, data={"issues": exc.issues}

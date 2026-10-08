@@ -240,7 +240,8 @@ async def test_template_is_independent_and_incompatible_bulk_apply_is_rejected()
             copy_row = await forms.get_version(copied.version_ref_id)
             assert ref_row.id != source.id and copy_row.id != source.id
             assert (
-                ref_row.reuse_instances and ref_row.reuse_instances[0]["component_ref"] == first_ref
+                bool(ref_row.reuse_instances)
+                and ref_row.reuse_instances[0]["component_ref"] == first_ref
             )
             assert copy_row.reuse_instances is None
             assert ref_row.template_source is not None

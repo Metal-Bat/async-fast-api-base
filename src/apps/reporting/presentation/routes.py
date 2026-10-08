@@ -52,7 +52,21 @@ async def get_report(
     return success_response(request, detail)
 
 
-@router.get("/{ref_id}/download")
+@router.get(
+    "/{ref_id}/download",
+    response_class=StreamingResponse,
+    responses={
+        200: {
+            "description": "Authorized private bytes; no JSON envelope. / محتوای خصوصی مجاز؛ بدون پوشش JSON.",
+            "content": {"application/zip": {"schema": {"type": "string", "format": "binary"}}},
+            "headers": {
+                "Cache-Control": {"schema": {"type": "string", "const": "private, no-store"}},
+                "Content-Disposition": {"schema": {"type": "string"}},
+                "X-Content-Type-Options": {"schema": {"type": "string", "const": "nosniff"}},
+            },
+        }
+    },
+)
 async def download_report(
     ref_id: str,
     user: CurrentUser,
@@ -64,7 +78,11 @@ async def download_report(
     return StreamingResponse(
         content=content,
         media_type=report.content_type or "application/zip",
-        headers={"Content-Disposition": f'attachment; filename="{report.file_name}"'},
+        headers={
+            "Content-Disposition": f'attachment; filename="{report.file_name}"',
+            "Cache-Control": "private, no-store",
+            "X-Content-Type-Options": "nosniff",
+        },
     )
 
 

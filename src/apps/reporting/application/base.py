@@ -100,10 +100,10 @@ class CleanExcelRenderer(BaseExcelRenderer):
     ) -> Any:
         cell = WriteOnlyCell(sheet, value=value)
         cell.font = Font(name="Aptos", bold=bold, color=color, size=size)
-        if fill:
+        if bool(fill):
             cell.fill = PatternFill(fill_type="solid", fgColor=fill)
         cell.alignment = Alignment(horizontal=align, vertical="center")
-        if number_format:
+        if bool(number_format):
             cell.number_format = number_format
         return cell
 

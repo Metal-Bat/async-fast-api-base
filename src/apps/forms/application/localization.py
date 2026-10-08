@@ -114,7 +114,7 @@ def validate_localization(
                     for i, item in enumerate(node.source.items)
                     if item.message is not None
                 )
-            if catalog and node.localization_key:
+            if catalog and bool(node.localization_key):
                 refs.append(
                     (path + "/localization_key", MessageReference(key=node.localization_key))
                 )

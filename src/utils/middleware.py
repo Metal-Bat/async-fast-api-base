@@ -98,7 +98,7 @@ def _content_length(headers: Any) -> int | None:
 def resolve_request_id(value: str | None) -> str:
     """Return an incoming UUIDv7 request ID or generate a fresh one."""
     try:
-        request_id = UUID(value) if value else None
+        request_id = UUID(value) if bool(value) else None
     except ValueError:
         request_id = None
     if request_id is None or request_id.version != 7:
@@ -108,7 +108,7 @@ def resolve_request_id(value: str | None) -> str:
 
 def normalize_user_agent(value: str | None) -> str | None:
     """Bound caller-controlled agent metadata to persisted column width."""
-    return value[:1024] if value else None
+    return value[:1024] if bool(value) else None
 
 
 def parse_client_date(value: str, reference_year: int | None = None) -> datetime | None:
@@ -202,7 +202,20 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
                 "client_date": client_date.isoformat() if client_date else None,
                 "client_date_delta_seconds": client_date_delta,
             }
-            if _is_json_content_type(request.headers.get("content-type")):
+            # Runtime and authored documents can contain business values under arbitrary keys.
+            private_payload = request.url.path.startswith(
+                (
+                    "/api/v1/business-requests",
+                    "/api/v1/work-items",
+                    "/api/v1/forms",
+                    "/api/v1/form-versions",
+                    "/api/v1/reports",
+                    "/api/v1/workflows",
+                    "/api/v1/workflow-versions",
+                    "/api/v1/integration-connections",
+                )
+            )
+            if not private_payload and _is_json_content_type(request.headers.get("content-type")):
                 declared_length = _content_length(request.headers)
                 if (
                     declared_length is not None
@@ -223,7 +236,11 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
 
             streaming_response = cast(_StreamingBodyResponse, response)
             response_iterator = streaming_response.body_iterator
-            response_is_json = _is_json_content_type(response.headers.get("content-type"))
+            response_is_json = (
+                not private_payload
+                and "no-store" not in response.headers.get("cache-control", "").lower()
+                and _is_json_content_type(response.headers.get("content-type"))
+            )
             response_status = response.status_code
 
             async def body_with_logging() -> AsyncIterator[bytes]:
@@ -277,7 +294,7 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
             if "private" not in cache_policy and "no-store" not in cache_policy:
                 existing_policy = response.headers.get("Cache-Control")
                 response.headers["Cache-Control"] = (
-                    f"private, {existing_policy}" if existing_policy else "private"
+                    f"private, {existing_policy}" if bool(existing_policy) else "private"
                 )
         vary = {
             item.strip() for item in response.headers.get("Vary", "").split(",") if item.strip()

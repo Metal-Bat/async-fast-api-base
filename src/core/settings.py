@@ -163,9 +163,9 @@ class Settings(BaseSettings):
     def CONTACT(self) -> dict[str, str]:
         """Build FastAPI contact metadata from environment-backed settings."""
         contact = {"name": self.CONTACT_NAME}
-        if self.CONTACT_EMAIL:
+        if bool(self.CONTACT_EMAIL):
             contact["email"] = self.CONTACT_EMAIL
-        if self.CONTACT_URL:
+        if bool(self.CONTACT_URL):
             contact["url"] = self.CONTACT_URL
         return contact
 
@@ -241,7 +241,7 @@ class Settings(BaseSettings):
 
     @property
     def SWAGGER_UI_INIT_OAUTH(self) -> dict[str, str] | None:
-        if not self.SWAGGER_CLIENT_ID or not self.SWAGGER_CLIENT_SECRET:
+        if not bool(self.SWAGGER_CLIENT_ID) or not bool(self.SWAGGER_CLIENT_SECRET):
             return None
         return {
             "clientId": self.SWAGGER_CLIENT_ID,

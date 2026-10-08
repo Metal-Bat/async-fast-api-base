@@ -3,6 +3,7 @@
 import logging
 from io import StringIO
 
+from sqlalchemy import literal
 from sqlmodel import Session, create_engine, select
 
 from utils.sql_logging import SQLConsoleFormatter
@@ -55,7 +56,7 @@ def test_real_sqlmodel_query_uses_panel_and_keeps_parameters_bound(monkeypatch) 
     monkeypatch.setattr(logger, "propagate", False)
     try:
         with Session(engine) as session:
-            assert session.exec(select(7)).one() == 7
+            assert session.exec(select(literal(7))).one() == 7
         log = output.getvalue()
         assert log.count("SQL · SELECT") == 1
         assert "SQL parameters" in log

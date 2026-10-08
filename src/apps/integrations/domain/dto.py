@@ -101,3 +101,11 @@ class GrantDTO(BaseDTO):
         ):
             raise ValueError("Exactly one target and at least one capability are required")
         return self
+
+
+class ConnectionGrantViewDTO(GrantDTO):
+    ref_id: str
+
+
+class ConnectionGrantQuery(SearchRequest):
+    __query_fields__: ClassVar[dict[str, Any]] = {"can_use": bool, "can_manage": bool}

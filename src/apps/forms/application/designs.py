@@ -240,7 +240,7 @@ def resolve_form_documents(
         DesignVariant(
             key=item.key,
             priority=item.priority,
-            client_id=open_ref_id(item.client_ref_id)[0] if item.client_ref_id else None,
+            client_id=open_ref_id(item.client_ref_id)[0] if bool(item.client_ref_id) else None,
             kind=item.kind,
             minimum_release=item.minimum_release,
             maximum_release_exclusive=item.maximum_release_exclusive,

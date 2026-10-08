@@ -109,7 +109,7 @@ def changed_paths(before: Any, after: Any, prefix: tuple[str, ...] = ()) -> set[
 def enforce_writes(
     before: dict[str, Any], after: dict[str, Any], policy: dict[str, list[str]] | None
 ) -> None:
-    if not policy or not any(policy.values()):
+    if not bool(policy) or not any(policy.values()):
         return  # Published legacy steps had empty advisory policies.
     writable = policy.get("write", [])
     for path in changed_paths(before, after):

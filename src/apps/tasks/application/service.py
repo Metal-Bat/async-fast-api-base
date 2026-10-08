@@ -73,7 +73,7 @@ class TaskCatalogService:
 
     @staticmethod
     def _select(options: list[SelectOption[str]], query: SelectQuery) -> Page[SelectOption[str]]:
-        if query.search:
+        if bool(query.search):
             term = query.search.casefold()
             options = [
                 item

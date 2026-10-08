@@ -163,7 +163,7 @@ class StepTypeService:
         )
         if query.status is not None:
             statement = statement.where(StepTypeVersionEntity.status == query.status)
-        if query.search:
+        if bool(query.search):
             pattern = f"%{query.search.replace('%', '/%').replace('_', '/_')}%"
             statement = statement.where(
                 or_(

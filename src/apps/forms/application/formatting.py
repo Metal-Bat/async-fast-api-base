@@ -57,7 +57,7 @@ def format_value(value: str, profile: FieldFormatting) -> tuple[str, str]:
             canonical = display = format(amount, "f")
     if profile.numbering == "arabext":
         display = display.translate(str.maketrans(_LATIN, _PERSIAN))
-    if profile.currency:
+    if bool(profile.currency):
         display += " " + profile.currency
     return canonical, display
 

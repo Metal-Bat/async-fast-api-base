@@ -33,6 +33,11 @@ from apps.requests.domain.entity import (
 )
 from apps.users.domain.entity import UserEntity
 from apps.work_groups.domain.entity import WorkGroupEntity, WorkGroupMemberEntity
+from apps.work_items.application.task_mutations import (
+    merge_task_data,
+    normalize_task_behavior,
+    project_task_state,
+)
 from apps.work_items.domain.dto import CartableKind, CartableQueryDTO, WorkItemForwardDTO
 from apps.work_items.domain.entity import (
     UserWorkItemStateEntity,
@@ -83,9 +88,13 @@ class WorkItemService:
         if existing is not None:
             return existing
         if not targets:
-            raise VersionConflictException("Human task has no eligible candidates")
+            raise VersionConflictException(
+                "Human task has no eligible candidates", conflict_kind="lifecycle"
+            )
         if step.form_version_id is None:
-            raise VersionConflictException("Human task has no pinned form")
+            raise VersionConflictException(
+                "Human task has no pinned form", conflict_kind="lifecycle"
+            )
         now = get_datetime_utc()
         item = WorkItemEntity(
             step_execution_id=execution.id,
@@ -93,7 +102,9 @@ class WorkItemService:
             priority=step.default_priority
             if step.default_priority is not None
             else request.priority,
-            due_at=now + timedelta(seconds=step.timeout_seconds) if step.timeout_seconds else None,
+            due_at=now + timedelta(seconds=step.timeout_seconds)
+            if bool(step.timeout_seconds)
+            else None,
             form_version_id=step.form_version_id,
         )
         self.session.add(item)
@@ -109,9 +120,11 @@ class WorkItemService:
             )
         form = await self.session.get(FormVersionEntity, step.form_version_id)
         if form is None:
-            raise VersionConflictException("Human form version is unavailable")
+            raise VersionConflictException(
+                "Human form version is unavailable", conflict_kind="lifecycle"
+            )
         correction_source = None
-        if step.task_contract and step.task_contract.get("correction_entry"):
+        if bool(step.task_contract) and step.task_contract.get("correction_entry"):
             prior = (
                 await self.session.exec(
                     select(FormSubmissionEntity)
@@ -138,12 +151,14 @@ class WorkItemService:
                     )
                 ).first()
                 if consumed is not None:
-                    raise VersionConflictException("Correction source is already consumed")
+                    raise VersionConflictException(
+                        "Correction source is already consumed", conflict_kind="lifecycle"
+                    )
                 correction_source = prior
                 initial_data = deepcopy(prior.data)
         inherited_source = None
         if (
-            step.task_contract
+            bool(step.task_contract)
             and step.task_contract.get("inherit_previous")
             and correction_source is None
         ):
@@ -169,7 +184,9 @@ class WorkItemService:
                 FormDocuments.model_validate(form, from_attributes=True), context
             )
         except ValueError:
-            raise VersionConflictException("Origin client cannot render the human form") from None
+            raise VersionConflictException(
+                "Origin client cannot render the human form", conflict_kind="lifecycle"
+            ) from None
         item_identity = None
         if form.behavior_dialect is not None:
             from apps.forms.application.behavior import BehaviorError, evaluate_behavior
@@ -262,7 +279,7 @@ class WorkItemService:
         if item is None or item.deleted_at is not None or not await self.can_view(item, actor):
             raise NotFoundException("Work item not found")
         if update_row and item.version != expected:
-            raise VersionConflictException("Work item is stale")
+            raise VersionConflictException("Work item is stale", conflict_kind="revision")
         return item
 
     async def can_view(self, item: WorkItemEntity, actor: UserEntity) -> bool:
@@ -325,7 +342,9 @@ class WorkItemService:
             .returning(col(WorkItemEntity.id))
         )
         if result.first() is None:
-            raise VersionConflictException("Work item is no longer available")
+            raise VersionConflictException(
+                "Work item is no longer available", conflict_kind="lifecycle"
+            )
         item = await self.session.get(
             WorkItemEntity, item_id, populate_existing=True, with_for_update=True
         )
@@ -356,7 +375,7 @@ class WorkItemService:
         try:
             item.status = transition(item.status, action)  # ty:ignore[invalid-argument-type]
         except ValueError as exc:
-            raise VersionConflictException(str(exc)) from exc
+            raise VersionConflictException(str(exc), conflict_kind="lifecycle") from exc
         now = get_datetime_utc()
         if action == "release":
             item.claimed_by_user_id = None
@@ -369,9 +388,22 @@ class WorkItemService:
         return item
 
     async def save(
-        self, ref_id: str, command_key: str, data: dict[str, Any], actor: UserEntity
+        self,
+        ref_id: str,
+        command_key: str,
+        data: dict[str, Any],
+        actor: UserEntity,
+        *,
+        view_key: str | None = None,
+        delete_paths: list[str] | None = None,
     ) -> WorkItemEntity:
-        payload_hash = self._hash({"data": data})
+        payload_hash = self._hash(
+            {
+                "data": data,
+                **({"view_key": view_key} if view_key is not None else {}),
+                **({"delete_paths": delete_paths} if bool(delete_paths) else {}),
+            }
+        )
         item_id, _ = open_ref_id(ref_id)
         if await self._idempotent(item_id, command_key, actor.id, payload_hash):
             item = await self.session.get(WorkItemEntity, item_id)
@@ -381,21 +413,32 @@ class WorkItemService:
         item = await self.get(ref_id, actor, update_row=True)
         self._require_claimant(item, actor)
         if item.status not in {"CLAIMED", "IN_PROGRESS"}:
-            raise VersionConflictException("Work item cannot save a form in this state")
+            raise VersionConflictException(
+                "Work item cannot save a form in this state", conflict_kind="lifecycle"
+            )
         submission = await self.submission(item, update_row=True)
         form = await self.session.get(FormVersionEntity, submission.form_version_id)
         if form is None:
-            raise VersionConflictException("Pinned form version is unavailable")
-        from apps.work_items.application.task_views import enforce_writes, validate_action_data
+            raise VersionConflictException(
+                "Pinned form version is unavailable", conflict_kind="lifecycle"
+            )
 
         step = await self._step(item)
-        enforce_writes(submission.data, data, step.field_policy)
-        submission.data = validate_action_data(
-            pinned_behavior_documents(
-                FormDocuments.model_validate(form, from_attributes=True),
-                submission.design_snapshot,
-            ),
-            data,
+        scopes = self._mutation_scopes(step, view_key)
+        canonical = merge_task_data(
+            submission.data, data, step.field_policy, view_scopes=scopes, delete_paths=delete_paths
+        )
+        documents = pinned_behavior_documents(
+            FormDocuments.model_validate(form, from_attributes=True), submission.design_snapshot
+        )
+        canonical = normalize_task_behavior(
+            documents, submission.data, data, canonical, submission.override_provenance
+        )
+        submission.data = self._validate_visible_data(
+            step.field_policy,
+            scopes,
+            documents,
+            canonical,
             None,
             submission.override_provenance,
             partial=True,
@@ -417,11 +460,13 @@ class WorkItemService:
                 submission.item_identity = initialize_identity(
                     submission.data, submission.item_identity, form.data_schema
                 )
-            except BehaviorError as exc:
-                raise ValidationDetailsException([{"pointer": "/data", "code": str(exc)}]) from None
-            except CollectionError as exc:
+            except BehaviorError:
                 raise ValidationDetailsException(
-                    [{"pointer": "/item_identity", "code": str(exc)}]
+                    [{"pointer": "/data", "code": "task.validation"}]
+                ) from None
+            except CollectionError:
+                raise ValidationDetailsException(
+                    [{"pointer": "/item_identity", "code": "task.validation"}]
                 ) from None
         submission.updated_at = get_datetime_utc()
         item.updated_at = submission.updated_at
@@ -446,6 +491,9 @@ class WorkItemService:
         actor: UserEntity,
         comment: str | None = None,
         feedback: list[Any] | None = None,
+        *,
+        view_key: str | None = None,
+        delete_paths: list[str] | None = None,
     ) -> WorkItemEntity:
         payload_hash = self._hash(
             {
@@ -454,6 +502,8 @@ class WorkItemService:
                 "data": data,
                 "comment": comment,
                 "feedback": [row.model_dump() for row in feedback or []],
+                **({"view_key": view_key} if view_key is not None else {}),
+                **({"delete_paths": delete_paths} if bool(delete_paths) else {}),
             }
         )
         item_id, _ = open_ref_id(ref_id)
@@ -467,20 +517,22 @@ class WorkItemService:
         try:
             target = transition(item.status, action)  # ty:ignore[invalid-argument-type]
         except ValueError as exc:
-            raise VersionConflictException(str(exc)) from exc
+            raise VersionConflictException(str(exc), conflict_kind="lifecycle") from exc
         submission = await self.submission(item, update_row=True)
         form = await self.session.get(FormVersionEntity, submission.form_version_id)
         if form is None or form.status not in {"PUBLISHED", "RETIRED"}:
-            raise VersionConflictException("Pinned form version is unavailable")
+            raise VersionConflictException(
+                "Pinned form version is unavailable", conflict_kind="lifecycle"
+            )
         step = await self._step(item)
         from apps.work_items.application.task_views import (
             action_for,
-            enforce_writes,
-            validate_action_data,
         )
 
         contract = (
-            HumanTaskContract.model_validate(step.task_contract) if step.task_contract else None
+            HumanTaskContract.model_validate(step.task_contract)
+            if bool(step.task_contract)
+            else None
         )
         profile = action_for(contract, action, outcome_key) if contract else None
         declared = set(form.render_schema.get("outcomes", []))
@@ -500,36 +552,47 @@ class WorkItemService:
             raise ValidationDetailsException(
                 [{"pointer": "/comment", "code": "task.action.reason_required"}]
             )
-        if profile and action == "return" and not feedback:
+        if profile and action == "return" and not bool(feedback):
             raise ValidationDetailsException(
                 [{"pointer": "/feedback", "code": "task.feedback.required"}]
             )
-        if feedback and contract is None:
+        if bool(feedback) and contract is None:
             raise ValidationDetailsException(
                 [{"pointer": "/feedback", "code": "task.feedback.unavailable"}]
             )
-        if feedback and action != "return":
+        if bool(feedback) and action != "return":
             raise ValidationDetailsException(
                 [{"pointer": "/feedback", "code": "task.feedback.return_only"}]
             )
-        enforce_writes(submission.data, data, step.field_policy)
-        submission.data = data
+        scopes = self._mutation_scopes(step, view_key)
+        before = deepcopy(submission.data)
+        submission.data = merge_task_data(
+            submission.data, data, step.field_policy, view_scopes=scopes, delete_paths=delete_paths
+        )
         await AttachmentService(self.session).materialize(submission)
         documents = pinned_behavior_documents(
             FormDocuments.model_validate(form, from_attributes=True),
             submission.design_snapshot,
         )
-        submission.data = validate_action_data(
+        submission.data = normalize_task_behavior(
+            documents, before, data, submission.data, submission.override_provenance
+        )
+        submission.data = self._validate_visible_data(
+            step.field_policy,
+            scopes,
             documents,
             submission.data,
             profile,
             submission.override_provenance,
             policy_required=(step.field_policy or {}).get("required", []),
         )
-        await OptionService(self.session).validate_submission(
-            FormDocuments.model_validate(form, from_attributes=True), submission.data, actor
-        )
-        if feedback:
+        try:
+            await OptionService(self.session).validate_submission(
+                FormDocuments.model_validate(form, from_attributes=True), submission.data, actor
+            )
+        except ValidationDetailsException as exc:
+            raise self._visible_error(exc, step.field_policy, scopes) from None
+        if bool(feedback):
             submission.correction_feedback = self._record_feedback(
                 submission, feedback, actor, step.field_policy
             )
@@ -579,7 +642,9 @@ class WorkItemService:
         if await self._idempotent(item_id, data.command_key, actor.id, payload_hash):
             prior = await self._prior(item_id, data.command_key, actor.id)
             if prior is None:
-                raise VersionConflictException("Forward command state is inconsistent")
+                raise VersionConflictException(
+                    "Forward command state is inconsistent", conflict_kind="idempotency"
+                )
             forwarded_id = UUID(str(prior.details["forwarded_work_item_id"]))
             forwarded = await self.session.get(WorkItemEntity, forwarded_id)
             if forwarded is None:
@@ -588,9 +653,13 @@ class WorkItemService:
         item = await self.get(ref_id, actor, update_row=True)
         self._require_claimant(item, actor)
         if item.form_version_id is None:
-            raise VersionConflictException("AI tool approvals cannot be forwarded")
+            raise VersionConflictException(
+                "AI tool approvals cannot be forwarded", conflict_kind="lifecycle"
+            )
         if item.status not in {"CLAIMED", "IN_PROGRESS"}:
-            raise VersionConflictException("Work item cannot be forwarded in this state")
+            raise VersionConflictException(
+                "Work item cannot be forwarded in this state", conflict_kind="lifecycle"
+            )
         principals = await self._forward_principals(data)
         now = get_datetime_utc()
         item.status = "RETURNED"
@@ -650,7 +719,7 @@ class WorkItemService:
             raise NotAllowedException("Only the requester or an administrator can close this item")
         now = get_datetime_utc()
         if action == "expire" and (item.due_at is None or item.due_at > now):
-            raise VersionConflictException("Work item has not expired")
+            raise VersionConflictException("Work item has not expired", conflict_kind="lifecycle")
         execution = await self.session.get(StepExecutionEntity, item.step_execution_id)
         process = (
             await self.session.get(ProcessInstanceEntity, execution.process_instance_id)
@@ -680,7 +749,7 @@ class WorkItemService:
         try:
             item.status = transition(item.status, action)  # ty:ignore[invalid-argument-type]
         except ValueError as exc:
-            raise VersionConflictException(str(exc)) from exc
+            raise VersionConflictException(str(exc), conflict_kind="lifecycle") from exc
         item.closed_at = now
         item.updated_at = item.closed_at
         await self._record(
@@ -828,7 +897,7 @@ class WorkItemService:
         if target is None:
             raise NotFoundException("Correction feedback not found")
         step = await self._step(item)
-        if step.task_contract:
+        if bool(step.task_contract):
             from apps.work_items.application.task_views import allowed_view_scopes
 
             contract = HumanTaskContract.model_validate(step.task_contract)
@@ -836,7 +905,9 @@ class WorkItemService:
             if target.get("scope") not in allowed_view_scopes(view, step.field_policy or {}):
                 raise NotFoundException("Correction feedback not found")
         if target.get("status") != "OPEN":
-            raise VersionConflictException("Correction feedback is already resolved")
+            raise VersionConflictException(
+                "Correction feedback is already resolved", conflict_kind="lifecycle"
+            )
         target["status"] = "RESOLVED"
         target["resolved_at"] = get_datetime_utc().isoformat()
         target["resolved_by_ref_id"] = create_ref_id(actor.id, actor.version)
@@ -850,9 +921,7 @@ class WorkItemService:
         from apps.forms.application.localization import localize_snapshot
         from apps.work_items.application.task_views import (
             allowed_view_scopes,
-            filter_identity,
             filter_render,
-            project_data,
         )
         from apps.work_items.domain.dto import CorrectionFeedbackDTO, WorkItemViewDTO
         from core.i18n import get_language
@@ -870,12 +939,16 @@ class WorkItemService:
             or {}
         )
         contract = (
-            HumanTaskContract.model_validate(step.task_contract) if step.task_contract else None
+            HumanTaskContract.model_validate(step.task_contract)
+            if bool(step.task_contract)
+            else None
         )
         if contract is None:
             if view_key not in {None, "shared"}:
                 raise NotFoundException("Task view not found")
-            scopes: set[str] | None = None
+            from apps.work_items.application.task_mutations import visible_scopes
+
+            scopes: set[str] | None = visible_scopes(step.field_policy)
             purpose = "edit"
             title = "Task"
             actions = [
@@ -900,18 +973,18 @@ class WorkItemService:
             scopes = allowed_view_scopes(view, step.field_policy or {})
             purpose = view.purpose
             language = get_language()
-            title = view.title.fa if language == "fa" and view.title.fa else view.title.en
+            title = view.title.fa if language == "fa" and bool(view.title.fa) else view.title.en
             actions = [
                 {
                     "key": action.key,
                     "kind": action.kind,
                     "outcome_key": action.outcome_key,
                     "title": action.title.fa
-                    if language == "fa" and action.title.fa
+                    if language == "fa" and bool(action.title.fa)
                     else action.title.en,
                     "confirmation": (
                         action.confirmation.fa
-                        if language == "fa" and action.confirmation and action.confirmation.fa
+                        if language == "fa" and action.confirmation and bool(action.confirmation.fa)
                         else action.confirmation.en
                         if action.confirmation
                         else None
@@ -928,12 +1001,21 @@ class WorkItemService:
             or purpose != "edit"
         ):
             actions = []
-        data = (
-            deepcopy(submission.data) if scopes is None else project_data(submission.data, scopes)
+        projected = project_task_state(
+            submission.data,
+            submission.item_identity,
+            submission.override_provenance,
+            [],
+            step.field_policy,
+            scopes,
         )
+        data = projected["data"]
         render = snapshot.get("render_schema", form.render_schema)
         if scopes is not None:
             render = filter_render(render, scopes)
+        from apps.forms.application.runtime import display_render
+
+        render = display_render(render, step.field_policy, scopes)
         source = (
             await self.session.get(FormSubmissionEntity, submission.correction_source_submission_id)
             if submission.correction_source_submission_id
@@ -953,8 +1035,10 @@ class WorkItemService:
                     .limit(1)
                 )
             ).first()
-        before = (
-            (deepcopy(source.data) if scopes is None else project_data(source.data, scopes))
+        before_state = (
+            project_task_state(
+                source.data, source.item_identity, None, [], step.field_policy, scopes
+            )
             if source
             else None
         )
@@ -970,14 +1054,188 @@ class WorkItemService:
             purpose=purpose,
             title=title,
             data=data,
-            item_identity=deepcopy(submission.item_identity)
-            if scopes is None
-            else filter_identity(submission.item_identity, scopes),
-            before_data=before,
+            item_identity=projected["item_identity"],
+            before_data=before_state["data"] if bool(before_state) else None,
+            before_item_identity=before_state["item_identity"] if bool(before_state) else None,
             render_schema=render,
             actions=actions,
             feedback=feedback_rows,
         )
+
+    @staticmethod
+    def _mutation_scopes(step: WorkflowStepEntity, view_key: str | None) -> set[str] | None:
+        if not bool(step.task_contract):
+            if view_key not in {None, "shared"}:
+                raise NotFoundException("Task view not found")
+            return None
+        from apps.work_items.application.task_views import allowed_view_scopes
+
+        contract = HumanTaskContract.model_validate(step.task_contract)
+        key = view_key or contract.default_view
+        view = next((view for view in contract.views if view.key == key), None)
+        if view is None:
+            raise NotFoundException("Task view not found")
+        if view.purpose != "edit":
+            raise NotAllowedException("A named edit view is required")
+        return allowed_view_scopes(view, step.field_policy or {})
+
+    @staticmethod
+    def _visible_error(
+        exc: ValidationDetailsException, policy, scopes
+    ) -> ValidationDetailsException:
+        issues = project_task_state({}, {}, {}, exc.issues, policy, scopes)["issues"]
+        return ValidationDetailsException(
+            issues or [{"pointer": "/data", "code": "task.validation"}]
+        )
+
+    @classmethod
+    def _validate_visible_data(cls, policy, scopes, *args, **kwargs):
+        from apps.work_items.application.task_views import validate_action_data
+
+        try:
+            return validate_action_data(*args, **kwargs)
+        except ValidationDetailsException as exc:
+            raise cls._visible_error(exc, policy, scopes) from None
+
+    async def history_metadata(self, ref_id, query, actor):
+        """Page only metadata for an authorized task; never expose action details."""
+        from types import SimpleNamespace
+
+        from sqlmodel import func
+
+        from core.history_dto import ResourceHistoryDTO
+        from utils.pagination import Page, apply_query
+
+        item = await self.get(ref_id, actor)
+        columns = SimpleNamespace(
+            changed_at=WorkItemActionEntity.occurred_at,
+            operation=WorkItemActionEntity.action,
+            id=WorkItemActionEntity.id,
+        )
+        predicate = WorkItemActionEntity.work_item_id == item.id
+        statement = apply_query(
+            select(WorkItemActionEntity).where(predicate),
+            columns,
+            query,
+            default_ordering=("-changed_at", "-id"),
+        )
+        count = apply_query(
+            select(func.count()).select_from(WorkItemActionEntity).where(predicate),
+            columns,
+            query,
+            paginate=False,
+        )
+        actions = (await self.session.exec(statement)).all()
+        total = (await self.session.exec(count)).one()
+        return Page[ResourceHistoryDTO](
+            items=[
+                ResourceHistoryDTO(changed_at=action.occurred_at, operation=action.action)
+                for action in actions
+            ],
+            total=total,
+            page=query.page,
+            size=query.size,
+        )
+
+    async def runtime_state(self, ref_id: str, actor: UserEntity, view_key: str | None = None):
+        from apps.forms.application.runtime import display_page, runtime_projection
+        from apps.forms.domain.runtime import RuntimeFormStateDTO
+        from apps.users.application.authorization import user_permissions
+        from core.i18n import get_language
+
+        item = await self.get(ref_id, actor)
+        view = await self.task_view(ref_id, actor, view_key)
+        submission = await self.submission(item)
+        form = await self.session.get(FormVersionEntity, submission.form_version_id)
+        if form is None or form.render_dialect != "bpms.render/1":
+            raise VersionConflictException(
+                "Runtime form dialect is incompatible", conflict_kind="lifecycle"
+            )
+        step = await self._step(item)
+        editable = (
+            item.claimed_by_user_id == actor.id
+            and item.status in {"CLAIMED", "IN_PROGRESS"}
+            and view.purpose == "edit"
+        )
+        policy = step.field_policy or {}
+        from apps.work_items.application.task_mutations import visible_scopes
+
+        scopes = visible_scopes(policy)
+        if bool(step.task_contract):
+            contract = HumanTaskContract.model_validate(step.task_contract)
+            selected = next(row for row in contract.views if row.key == view.view_key)
+            scopes = set(selected.scopes)
+        from apps.forms.application.runtime import render_scopes
+
+        readable = render_scopes(view.render_schema) if scopes is None else scopes
+        writable = (
+            (set(policy.get("write", [])) if any(policy.values()) else readable)
+            if editable
+            else set()
+        )
+        required = set(policy.get("required", []))
+        from apps.forms.application.localization import localize_snapshot
+
+        snapshot = (
+            localize_snapshot(
+                submission.design_snapshot, FormDocuments.model_validate(form, from_attributes=True)
+            )
+            or {}
+        )
+        projected = runtime_projection(
+            submission.data,
+            submission.item_identity,
+            submission.override_provenance,
+            form.data_schema,
+            snapshot.get("render_schema", form.render_schema),
+            policy,
+            readable,
+            writable,
+            required,
+            permissions=await user_permissions(actor, self.session),
+        )
+        locale = (snapshot.get("localization") or {}).get("resolved_locale", get_language())
+        return RuntimeFormStateDTO(
+            resource_kind="WORK_ITEM",
+            before_data=view.before_data,
+            before_item_identity=view.before_item_identity,
+            page_settings=display_page(
+                snapshot.get("page_settings", form.page_settings), set(projected["readable_scopes"])
+            ),
+            resource_ref_id=create_ref_id(item.id, item.version),
+            form_version_ref_id=create_ref_id(form.id, form.version),
+            form_version_number=form.number,
+            submission_ref_id=create_ref_id(submission.id, submission.version),
+            design_key=(submission.design_snapshot or {}).get("variant_key", "default"),
+            view_key=view.view_key,
+            purpose="correction"
+            if editable and submission.correction_source_submission_id
+            else view.purpose
+            if editable or view.purpose != "edit"
+            else "observer",
+            resolved_locale=locale,
+            direction="rtl" if locale == "fa" else "ltr",
+            actions=[
+                action
+                for action in view.actions
+                if set(action.required_scopes) <= set(projected["readable_scopes"])
+            ],
+            **projected,
+        )
+
+    async def item_kind(
+        self, item: WorkItemEntity
+    ) -> Literal["HUMAN_TASK", "AI_APPROVAL", "UNSUPPORTED"]:
+        if item.form_version_id is not None:
+            return "HUMAN_TASK"
+        from apps.ai.domain.entity import AIToolApprovalEntity
+
+        approval = (
+            await self.session.exec(
+                select(AIToolApprovalEntity.id).where(AIToolApprovalEntity.work_item_id == item.id)
+            )
+        ).first()
+        return "AI_APPROVAL" if approval is not None else "UNSUPPORTED"
 
     async def _step(self, item: WorkItemEntity) -> WorkflowStepEntity:
         execution = await self.session.get(StepExecutionEntity, item.step_execution_id)
@@ -987,7 +1245,9 @@ class WorkItemService:
             else None
         )
         if step is None:
-            raise VersionConflictException("Pinned workflow step is unavailable")
+            raise VersionConflictException(
+                "Pinned workflow step is unavailable", conflict_kind="lifecycle"
+            )
         return step
 
     async def submission(
@@ -1007,7 +1267,7 @@ class WorkItemService:
         from apps.work_items.application.task_views import _matches
 
         step = await self._step(item)
-        if not step.task_contract:
+        if not bool(step.task_contract):
             return True
         policy = step.field_policy or {}
         scopes = set(policy.get("write", []))
@@ -1113,20 +1373,64 @@ class WorkItemService:
 
         item, submission = await self._editable_submission(ref_id, actor)
         await self._require_field(item, data.path, write=True)
+        step = await self._step(item)
+        scopes = self._mutation_scopes(step, None)
+        from apps.work_items.application.task_mutations import _covers, _instance_path
+
+        path = _instance_path(data.path)
+        if scopes is not None and not any(_covers(path, scope) for scope in scopes):
+            raise NotFoundException("Task field not found")
+        if data.operation == "add":
+
+            def check_value(value, current):
+                if any(
+                    _covers(current, scope) for scope in (step.field_policy or {}).get("hidden", [])
+                ):
+                    raise NotAllowedException("Collection value is not writable")
+                if isinstance(value, dict):
+                    for key, child in value.items():
+                        check_value(child, (*current, key))
+                elif isinstance(value, list):
+                    for index, child in enumerate(value):
+                        check_value(child, (*current, str(index)))
+                elif any((step.field_policy or {}).values()) and not any(
+                    _covers(current, scope) for scope in (step.field_policy or {}).get("write", [])
+                ):
+                    raise NotAllowedException("Collection value is not writable")
+
+            check_value(data.value, (*path, "*"))
         form = await self.session.get(FormVersionEntity, submission.form_version_id)
         if form is None or form.status not in {"PUBLISHED", "RETIRED"}:
-            raise VersionConflictException("Pinned form version is unavailable")
+            raise VersionConflictException(
+                "Pinned form version is unavailable", conflict_kind="lifecycle"
+            )
         try:
             result = await edit_submission_collection(
                 self.session, submission, form, data, actor.id
             )
-        except CollectionError as exc:
+        except CollectionError:
             raise ValidationDetailsException(
-                [{"pointer": "/collection", "code": str(exc)}]
+                [{"pointer": "/collection", "code": "task.validation"}]
             ) from None
         item.updated_at = get_datetime_utc()
         await self.session.flush()
-        return result
+        from dataclasses import replace
+
+        step = await self._step(item)
+        projected = project_task_state(
+            result.data,
+            result.identity,
+            submission.override_provenance,
+            result.issues,
+            step.field_policy,
+            self._mutation_scopes(step, None),
+        )
+        return replace(
+            result,
+            data=projected["data"],
+            identity=projected["item_identity"],
+            issues=projected["issues"],
+        )
 
     async def apply_override(self, ref_id: str, command, actor: UserEntity):
         from apps.forms.application.behavior import BehaviorError, apply_manual_override
@@ -1136,7 +1440,9 @@ class WorkItemService:
         await self._require_field(item, "/" + "/".join(command.scope.split("/")[2::2]), write=True)
         form = await self.session.get(FormVersionEntity, submission.form_version_id)
         if form is None or form.status not in {"PUBLISHED", "RETIRED"}:
-            raise VersionConflictException("Pinned form version is unavailable")
+            raise VersionConflictException(
+                "Pinned form version is unavailable", conflict_kind="lifecycle"
+            )
         try:
             changed, provenance = apply_manual_override(
                 pinned_behavior_documents(
@@ -1149,14 +1455,25 @@ class WorkItemService:
                 actor_ref_id=create_ref_id(actor.id, actor.version),
                 permissions=await user_permissions(actor, self.session),
             )
-        except BehaviorError as exc:
-            raise ValidationDetailsException([{"pointer": "/override", "code": str(exc)}]) from None
+        except BehaviorError:
+            raise ValidationDetailsException(
+                [{"pointer": "/override", "code": "task.validation"}]
+            ) from None
         submission.data = changed
         submission.override_provenance = provenance
         submission.updated_at = get_datetime_utc()
         item.updated_at = submission.updated_at
         await self.session.flush()
-        return changed, provenance
+        step = await self._step(item)
+        projected = project_task_state(
+            changed,
+            submission.item_identity,
+            provenance,
+            [],
+            step.field_policy,
+            self._mutation_scopes(step, None),
+        )
+        return projected["data"], projected["override_provenance"]
 
     async def attachment_upload(
         self, ref_id: str, attachment_ref: str, actor: UserEntity
@@ -1177,10 +1494,14 @@ class WorkItemService:
         item = await self.get(ref_id, actor, update_row=True)
         self._require_claimant(item, actor)
         if item.status not in {"CLAIMED", "IN_PROGRESS"}:
-            raise VersionConflictException("Work-item attachments are immutable in this state")
+            raise VersionConflictException(
+                "Work-item attachments are immutable in this state", conflict_kind="lifecycle"
+            )
         submission = await self.submission(item, update_row=True)
         if submission.status != "DRAFT":
-            raise VersionConflictException("Work-item attachments are immutable")
+            raise VersionConflictException(
+                "Work-item attachments are immutable", conflict_kind="lifecycle"
+            )
         return item, submission
 
     async def _eligible(self, item_id: UUID, user_id: UUID, *, require_claim: bool) -> bool:
@@ -1329,7 +1650,9 @@ class WorkItemService:
             )
         ).one_or_none()
         if row is not None and row.actor_user_id != actor_id:
-            raise VersionConflictException("Command key is already used")
+            raise VersionConflictException(
+                "Command key is already used", conflict_kind="idempotency"
+            )
         return row
 
     async def _idempotent(
@@ -1339,7 +1662,9 @@ class WorkItemService:
         if prior is None:
             return False
         if prior.details.get("payload_hash") != payload_hash:
-            raise VersionConflictException("Command key payload does not match")
+            raise VersionConflictException(
+                "Command key payload does not match", conflict_kind="idempotency"
+            )
         return True
 
     @staticmethod

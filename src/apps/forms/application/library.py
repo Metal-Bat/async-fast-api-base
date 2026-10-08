@@ -241,13 +241,13 @@ class LibraryService:
         root = await self.definition(kind, ref_id, actor, update=True)
         user_id = None
         group_id = None
-        if data.user_ref_id:
+        if bool(data.user_ref_id):
             identifier, expected = open_ref_id(data.user_ref_id)
             target = await self.session.get(UserEntity, identifier)
             if target is None or target.deleted_at or target.version != expected:
                 raise VersionConflictException("Grant user is unavailable")
             user_id = identifier
-        if data.work_group_ref_id:
+        if bool(data.work_group_ref_id):
             identifier, expected = open_ref_id(data.work_group_ref_id)
             target = await self.session.get(WorkGroupEntity, identifier)
             if (
@@ -506,7 +506,7 @@ class LibraryService:
         proposed = source.model_copy(deep=True)
         for use in proposed.reuse_instances or []:
             replacement = request.replacements.get(use.instance_key)
-            if replacement:
+            if bool(replacement):
                 use.component_ref = replacement
         resolved, manifest = await self.resolve_form(
             proposed, [use.model_dump() for use in proposed.reuse_instances or []], actor

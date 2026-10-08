@@ -52,7 +52,7 @@ class SubprocessValidator:
                 continue
             if step.subprocess is None:
                 continue
-            if step.timeout_seconds or step.flow.model_dump(exclude_defaults=True):
+            if bool(step.timeout_seconds) or step.flow.model_dump(exclude_defaults=True):
                 issues.append({"pointer": pointer, "code": "subprocess.lifecycle.unsupported"})
             try:
                 child_id, revision = open_ref_id(step.subprocess.workflow_version_ref)

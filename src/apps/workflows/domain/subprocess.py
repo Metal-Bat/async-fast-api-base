@@ -92,17 +92,17 @@ class SubprocessInputMapping(BaseDTO):
     @model_validator(mode="after")
     def valid_source(self) -> SubprocessInputMapping:
         if self.source_kind == "STEP_OUTPUT":
-            if self.source_path:
+            if bool(self.source_path):
                 raise ValueError("Step output mapping cannot use a path")
-            if not self.source_step or not self.source_port:
+            if not bool(self.source_step) or not bool(self.source_port):
                 raise ValueError("Step output source requires step and port")
-        elif self.source_step or self.source_port:
+        elif bool(self.source_step) or bool(self.source_port):
             raise ValueError("Step source is only valid for STEP_OUTPUT")
-        if self.source_kind == "CONSTANT" and self.source_path:
+        if self.source_kind == "CONSTANT" and bool(self.source_path):
             raise ValueError("Constant source cannot have a path")
         if (
             self.source_kind != "CONSTANT"
-            and not self.source_path
+            and not bool(self.source_path)
             and self.source_kind != "STEP_OUTPUT"
         ):
             raise ValueError("Context source requires a path")

@@ -20,7 +20,14 @@ class NotAllowedException(Exception):
 
 
 class VersionConflictException(Exception):
-    """Raised when an optimistic-lock version is stale."""
+    """Safe category for revision, lifecycle, or command identity conflicts."""
+
+    def __init__(self, message: str = "Conflict", *, conflict_kind: str = "revision") -> None:
+        """Validate the safe conflict category without exposing private details."""
+        super().__init__(message)
+        if conflict_kind not in {"revision", "lifecycle", "idempotency", "unknown"}:
+            raise ValueError("Invalid conflict category")
+        self.conflict_kind = conflict_kind
 
 
 class InvalidReferenceException(Exception):

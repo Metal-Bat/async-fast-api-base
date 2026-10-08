@@ -26,6 +26,8 @@ from apps.requests.domain.dto import (
     BusinessRequestCreateDTO,
     BusinessRequestSubmitDTO,
     BusinessRequestUpdateDTO,
+    EligibleRequestTypeDTO,
+    EligibleRequestTypeQuery,
     RequestTypeClientTargetDTO,
     RequestTypeCreateDTO,
 )
@@ -53,6 +55,7 @@ from utils.exceptions import (
     ValidationDetailsException,
     VersionConflictException,
 )
+from utils.pagination import Page
 
 
 class RequestService:
@@ -67,7 +70,7 @@ class RequestService:
         if row is None or row.deleted_at:
             raise NotFoundException("Request type not found")
         if update and row.version != expected:
-            raise VersionConflictException("Request type is stale")
+            raise VersionConflictException("Request type is stale", conflict_kind="revision")
         return row
 
     async def create_type(self, data: RequestTypeCreateDTO) -> RequestTypeEntity:
@@ -90,7 +93,8 @@ class RequestService:
             | {"workflow_definition_id": workflow.id, "form_definition_id": form.id}
         )
         row.updated_at = get_datetime_utc()
-        await self._replace_client_targets(row.id, data.client_targets)
+        if "client_targets" in data.model_fields_set:
+            await self._replace_client_targets(row.id, data.client_targets)
         await self.session.flush()
         return row
 
@@ -100,6 +104,193 @@ class RequestService:
         row.deleted_at = get_datetime_utc()
         await self.session.flush()
 
+    async def runtime_state(
+        self, ref_id: str, actor: UserEntity, client_context: ClientContext | None = None
+    ):
+        from apps.forms.application.localization import localize_snapshot
+        from apps.forms.application.runtime import display_page, render_scopes, runtime_projection
+        from apps.forms.domain.runtime import RuntimeFormStateDTO
+        from apps.users.application.authorization import user_permissions
+        from core.i18n import get_language
+
+        row = await self.get_request(ref_id, actor)
+        # Request participants may track, but a request form is disclosed only to its owner/superuser.
+        if not actor.is_superuser and row.requester_user_id != actor.id:
+            raise NotFoundException("Request form not found")
+        submission = await self.submission_for(row.id)
+        self._require_origin_client(row, client_context, submission)
+        form = await self.session.get(FormVersionEntity, submission.form_version_id)
+        if form is None or form.render_dialect != "bpms.render/1":
+            raise VersionConflictException(
+                "Runtime form dialect is incompatible", conflict_kind="lifecycle"
+            )
+        snapshot = (
+            localize_snapshot(
+                submission.design_snapshot, FormDocuments.model_validate(form, from_attributes=True)
+            )
+            or {}
+        )
+        render = snapshot.get("render_schema", form.render_schema)
+        scopes = render_scopes(render)
+        editable = row.status == "DRAFT" and row.requester_user_id == actor.id
+        required = {
+            "/properties/" + key.replace("~", "~0").replace("/", "~1")
+            for key in form.data_schema.get("required", [])
+        }
+        projection = runtime_projection(
+            submission.data,
+            submission.item_identity,
+            submission.override_provenance,
+            form.data_schema,
+            render,
+            None,
+            None,
+            scopes if editable else set(),
+            required,
+            permissions=await user_permissions(actor, self.session),
+        )
+        locale = (snapshot.get("localization") or {}).get("resolved_locale", get_language())
+        return RuntimeFormStateDTO(
+            resource_kind="REQUEST",
+            page_settings=display_page(
+                snapshot.get("page_settings", form.page_settings),
+                set(projection["readable_scopes"]),
+            ),
+            resource_ref_id=create_ref_id(row.id, row.version),
+            form_version_ref_id=create_ref_id(form.id, form.version),
+            form_version_number=form.number,
+            submission_ref_id=create_ref_id(submission.id, submission.version),
+            design_key=snapshot.get("variant_key", "default"),
+            view_key="request",
+            purpose="edit" if editable else "summary",
+            resolved_locale=locale,
+            direction="rtl" if locale == "fa" else "ltr",
+            **projection,
+        )
+
+    async def history_metadata(self, ref_id, query, actor):
+        """Project only metadata after checking request ownership."""
+        from core.history_dto import HistoryQuery, ResourceHistoryDTO
+        from core.history_service import HistoryService
+        from utils.pagination import Page
+
+        row = await self.get_request(ref_id, actor)
+        if not actor.is_superuser and row.requester_user_id != actor.id:
+            raise NotFoundException("Request history not found")
+        submission = await self.submission_for(row.id)
+        result = await HistoryService.for_entity(self.session, "form_submission").list(
+            HistoryQuery.model_validate(query.model_dump()), submission.id
+        )
+        return Page[ResourceHistoryDTO](
+            items=[
+                ResourceHistoryDTO(changed_at=item.changed_at, operation=item.operation)
+                for item in result.items
+            ],
+            total=result.total,
+            page=result.page,
+            size=result.size,
+        )
+
+    async def eligible_types(
+        self,
+        query: EligibleRequestTypeQuery,
+        actor: UserEntity,
+        context: ClientContext | None = None,
+    ) -> Page[EligibleRequestTypeDTO]:
+        context = context or ClientContext.legacy()
+        items = []
+        total = 0
+        if not query.supported_render_dialects:
+            return Page(items=[], page=query.page, size=query.size, total=0)
+        offset = 0
+        while True:
+            candidates = (
+                await self.session.exec(
+                    select(RequestTypeEntity)
+                    .where(
+                        col(RequestTypeEntity.deleted_at).is_(None),
+                        col(RequestTypeEntity.is_active).is_(True),
+                    )
+                    .order_by(col(RequestTypeEntity.code), col(RequestTypeEntity.id))
+                    .offset(offset)
+                    .limit(128)
+                )
+            ).all()
+            for row in candidates:
+                try:
+                    workflow, form_version = await self._eligible_dependencies(row, actor, context)
+                    if form_version.render_dialect not in query.supported_render_dialects:
+                        continue
+                except NotFoundException, NotAllowedException, VersionConflictException:
+                    continue
+                total += 1
+                if (query.page - 1) * query.size < total <= query.page * query.size:
+                    items.append(
+                        EligibleRequestTypeDTO(
+                            ref_id=create_ref_id(row.id, row.version),
+                            code=row.code,
+                            name=row.name,
+                            workflow_version_ref_id=create_ref_id(workflow.id, workflow.version),
+                            form_version_ref_id=create_ref_id(
+                                form_version.id, form_version.version
+                            ),
+                            render_dialect=form_version.render_dialect,
+                        )
+                    )
+            if len(candidates) < 128:
+                break
+            offset += 128
+        return Page(items=items, page=query.page, size=query.size, total=total)
+
+    async def _eligible_dependencies(
+        self, request_type: RequestTypeEntity, actor: UserEntity, context: ClientContext
+    ):
+        if not request_type.is_active or request_type.deleted_at:
+            raise VersionConflictException("Request type is inactive", conflict_kind="lifecycle")
+        workflow = await self.session.get(
+            WorkflowDefinitionEntity, request_type.workflow_definition_id
+        )
+        form = await self.session.get(FormDefinitionEntity, request_type.form_definition_id)
+        if (
+            workflow is None
+            or not workflow.is_active
+            or workflow.deleted_at
+            or form is None
+            or not form.is_active
+            or form.deleted_at
+        ):
+            raise VersionConflictException(
+                "Request type dependencies are inactive", conflict_kind="lifecycle"
+            )
+        if not await WorkflowService(self.session, get_registry()).can_access(
+            workflow, actor, "start"
+        ):
+            raise NotAllowedException("Workflow start access required")
+        if not matches_client_targets(await self._client_targets(request_type.id), context):
+            raise NotAllowedException("Registered client release is required")
+        workflow_version = await self._published_workflow(request_type.workflow_definition_id)
+        form_version = await self._published_form(request_type.form_definition_id)
+        try:
+            resolve_form_documents(
+                FormDocuments.model_validate(form_version, from_attributes=True), context
+            )
+        except ValueError:
+            raise NotAllowedException("Client cannot render the pinned form") from None
+        return workflow_version, form_version
+
+    async def process_reference(self, request_id: UUID) -> str | None:
+        from apps.processes.domain.entity import ProcessInstanceEntity
+
+        process = (
+            await self.session.exec(
+                select(ProcessInstanceEntity).where(
+                    ProcessInstanceEntity.business_request_id == request_id,
+                    col(ProcessInstanceEntity.parent_step_execution_id).is_(None),
+                )
+            )
+        ).one_or_none()
+        return create_ref_id(process.id, process.version) if process else None
+
     async def create_draft(
         self,
         data: BusinessRequestCreateDTO,
@@ -107,22 +298,10 @@ class RequestService:
         client_context: ClientContext | None = None,
     ) -> tuple[BusinessRequestEntity, FormSubmissionEntity]:
         request_type = await self.get_type(data.request_type_ref_id)
-        if not request_type.is_active:
-            raise VersionConflictException("Request type is inactive")
-        workflow = await self.session.get(
-            WorkflowDefinitionEntity, request_type.workflow_definition_id
-        )
-        if workflow is None or not workflow.is_active or workflow.deleted_at:
-            raise VersionConflictException("Workflow is inactive")
-        if not await WorkflowService(self.session, get_registry()).can_access(
-            workflow, actor, "start"
-        ):
-            raise NotAllowedException("Workflow start access required")
         context = client_context or ClientContext.legacy()
-        if not matches_client_targets(await self._client_targets(request_type.id), context):
-            raise NotAllowedException("Registered client release is required")
-        workflow_version = await self._published_workflow(request_type.workflow_definition_id)
-        form_version = await self._published_form(request_type.form_definition_id)
+        workflow_version, form_version = await self._eligible_dependencies(
+            request_type, actor, context
+        )
         priority = (
             data.priority
             if data.priority is not None
@@ -206,7 +385,9 @@ class RequestService:
                 or client.version != expected
                 or client.secret_hash is None
             ):
-                raise VersionConflictException("Restricted client must be active and confidential")
+                raise VersionConflictException(
+                    "Restricted client must be active and confidential", conflict_kind="lifecycle"
+                )
             if client_id in seen:
                 raise ValueError("Duplicate restricted client target")
             seen.add(client_id)
@@ -219,6 +400,31 @@ class RequestService:
                 )
             )
         await self.session.flush()
+
+    async def client_target_dtos(self, request_type_id: UUID) -> list[RequestTypeClientTargetDTO]:
+        rows = (
+            await self.session.exec(
+                select(RequestTypeClientTargetEntity)
+                .where(
+                    RequestTypeClientTargetEntity.request_type_id == request_type_id,
+                    col(RequestTypeClientTargetEntity.deleted_at).is_(None),
+                )
+                .order_by(col(RequestTypeClientTargetEntity.client_id))
+            )
+        ).all()
+        result = []
+        for row in rows:
+            client = await self.session.get(ClientEntity, row.client_id)
+            if client is None:
+                raise NotFoundException("Request type client target is unavailable")
+            result.append(
+                RequestTypeClientTargetDTO(
+                    client_ref_id=create_ref_id(client.id, client.version),
+                    minimum_release=row.minimum_release,
+                    maximum_release_exclusive=row.maximum_release_exclusive,
+                )
+            )
+        return result
 
     async def _client_targets(self, request_type_id: UUID) -> tuple[ClientTarget, ...]:
         rows = (
@@ -269,7 +475,7 @@ class RequestService:
         if row is None or row.deleted_at or not await self.can_view(row, actor):
             raise NotFoundException("Business request not found")
         if update and row.version != expected:
-            raise VersionConflictException("Business request is stale")
+            raise VersionConflictException("Business request is stale", conflict_kind="revision")
         return row
 
     async def resume_presentation(
@@ -297,7 +503,9 @@ class RequestService:
             raise NotAllowedException("Cross-client resume is not enabled for this request")
         form = await self.session.get(FormVersionEntity, submission.form_version_id)
         if form is None or form.status not in {"PUBLISHED", "RETIRED"}:
-            raise VersionConflictException("Pinned form version is unavailable")
+            raise VersionConflictException(
+                "Pinned form version is unavailable", conflict_kind="lifecycle"
+            )
         try:
             design = resolve_form_documents(
                 FormDocuments.model_validate(form, from_attributes=True), context
@@ -380,7 +588,9 @@ class RequestService:
         self._require_origin_client(row, client_context, submission)
         form = await self.session.get(FormVersionEntity, submission.form_version_id)
         if form is None or form.status not in {"PUBLISHED", "RETIRED"}:
-            raise VersionConflictException("Pinned form version is unavailable")
+            raise VersionConflictException(
+                "Pinned form version is unavailable", conflict_kind="lifecycle"
+            )
         try:
             result = await edit_submission_collection(
                 self.session, submission, form, data, actor.id
@@ -409,7 +619,9 @@ class RequestService:
         self._require_origin_client(row, client_context, submission)
         form = await self.session.get(FormVersionEntity, submission.form_version_id)
         if form is None or form.status not in {"PUBLISHED", "RETIRED"}:
-            raise VersionConflictException("Pinned form version is unavailable")
+            raise VersionConflictException(
+                "Pinned form version is unavailable", conflict_kind="lifecycle"
+            )
         try:
             changed, provenance = apply_manual_override(
                 pinned_behavior_documents(
@@ -465,12 +677,16 @@ class RequestService:
         payload_hash = self._payload_hash(submission.data)
         if row.submit_key == data.submit_key:
             if row.submit_payload_hash != payload_hash:
-                raise VersionConflictException("Submit key payload mismatch")
+                raise VersionConflictException(
+                    "Submit key payload mismatch", conflict_kind="idempotency"
+                )
             return row, submission
         if row.status != "DRAFT":
-            raise VersionConflictException("Only drafts can be submitted")
+            raise VersionConflictException(
+                "Only drafts can be submitted", conflict_kind="lifecycle"
+            )
         if row.version != expected:
-            raise VersionConflictException("Business request is stale")
+            raise VersionConflictException("Business request is stale", conflict_kind="revision")
         from apps.forms.application.attachments import AttachmentService
 
         await AttachmentService(self.session).materialize(submission)
@@ -484,10 +700,14 @@ class RequestService:
             )
         ).first()
         if duplicate is not None:
-            raise VersionConflictException("Submit key is already used")
+            raise VersionConflictException(
+                "Submit key is already used", conflict_kind="idempotency"
+            )
         form = await self.session.get(FormVersionEntity, submission.form_version_id)
         if form is None or form.status not in {"PUBLISHED", "RETIRED"}:
-            raise VersionConflictException("Pinned form version is unavailable")
+            raise VersionConflictException(
+                "Pinned form version is unavailable", conflict_kind="lifecycle"
+            )
         validation = FormValidator().validate(
             pinned_behavior_documents(
                 FormDocuments.model_validate(form, from_attributes=True),
@@ -656,7 +876,7 @@ class RequestService:
         if row.requester_user_id != actor.id:
             raise NotAllowedException("Only the requester can change a draft")
         if row.status != "DRAFT":
-            raise VersionConflictException("Only drafts can be changed")
+            raise VersionConflictException("Only drafts can be changed", conflict_kind="lifecycle")
 
     async def _definition_roots(
         self, workflow_ref: str, form_ref: str
@@ -682,7 +902,9 @@ class RequestService:
             )
         ).one_or_none()
         if row is None:
-            raise VersionConflictException("Published workflow version not found")
+            raise VersionConflictException(
+                "Published workflow version not found", conflict_kind="lifecycle"
+            )
         return row
 
     async def _published_form(self, definition_id: UUID) -> FormVersionEntity:
@@ -698,7 +920,9 @@ class RequestService:
             )
         ).one_or_none()
         if row is None:
-            raise VersionConflictException("Published form version not found")
+            raise VersionConflictException(
+                "Published form version not found", conflict_kind="lifecycle"
+            )
         return row
 
     @staticmethod

@@ -513,7 +513,7 @@ async def select_choices(
         raise VersionConflictException("Agent choices are bound at runtime")
     locale = request.headers.get("accept-language", "en")
     choices = spec.decision.select(locale)
-    if query.search:
+    if bool(query.search):
         term = query.search.casefold()
         choices = [
             item for item in choices if term in item.key.casefold() or term in item.value.casefold()

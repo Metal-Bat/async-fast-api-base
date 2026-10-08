@@ -1,0 +1,520 @@
+[
+  {
+    "kind": "vertical",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "vertical",
+              "label": "field",
+              "children": []
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "horizontal",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "horizontal",
+              "label": "field",
+              "children": []
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "grid",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "grid",
+              "label": "field",
+              "children": []
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "text",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "text",
+              "label": "field",
+              "scope": "/properties/field"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "textarea",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "textarea",
+              "label": "field",
+              "scope": "/properties/field"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "integer",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "integer"
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "integer",
+              "label": "field",
+              "scope": "/properties/field"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "number",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "number"
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "number",
+              "label": "field",
+              "scope": "/properties/field"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "date",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "date",
+              "label": "field",
+              "scope": "/properties/field"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "datetime",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "datetime",
+              "label": "field",
+              "scope": "/properties/field"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "boolean",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "boolean"
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "boolean",
+              "label": "field",
+              "scope": "/properties/field"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "choice",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "choice",
+              "label": "field",
+              "scope": "/properties/field",
+              "source": {
+                "kind": "custom",
+                "items": [
+                  {
+                    "key": "option1",
+                    "value": "Option 1"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "calculated",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "calculated",
+              "label": "field",
+              "scope": "/properties/field",
+              "calculation": {
+                "expression": "\"\""
+              }
+            }
+          ]
+        }
+      },
+      "behavior_dialect": "bpms.behavior/1"
+    }
+  },
+  {
+    "kind": "display",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "display",
+              "label": "field"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "user",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "user",
+              "label": "field",
+              "scope": "/properties/field",
+              "source": {
+                "kind": "domain",
+                "selector": "users"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "group",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "group",
+              "label": "field",
+              "scope": "/properties/field",
+              "source": {
+                "kind": "domain",
+                "selector": "work_groups"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "repeater",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "repeater",
+              "label": "field",
+              "scope": "/properties/field",
+              "children": []
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "table",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "table",
+              "label": "field",
+              "scope": "/properties/field",
+              "children": []
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "media",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "media",
+              "label": "field",
+              "scope": "/properties/field"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "attachment_collection",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "attachment_collection",
+              "label": "field",
+              "scope": "/properties/field"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "action",
+    "documents": {
+      "data_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "render_schema": {
+        "root": {
+          "component": "vertical",
+          "children": [
+            {
+              "component": "action",
+              "label": "field",
+              "outcome": "next"
+            }
+          ]
+        },
+        "outcomes": [
+          "next"
+        ]
+      }
+    }
+  }
+]

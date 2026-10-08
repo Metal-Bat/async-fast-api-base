@@ -42,7 +42,7 @@ class DomainOptionRepository:
                         )
                     )
                 )
-        elif group_ref:
+        elif bool(group_ref):
             try:
                 group_id, version = open_ref_id(group_ref)
             except TypeError, ValueError:
@@ -65,7 +65,7 @@ class DomainOptionRepository:
             )
         elif not managed:
             statement = statement.where(UserEntity.id == actor_id)
-        if search:
+        if bool(search):
             escaped = search.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
             statement = statement.where(label.ilike("%" + escaped + "%", escape="\\"))
         requested: dict[UUID, set[int]] = {}

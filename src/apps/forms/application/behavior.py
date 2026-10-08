@@ -273,6 +273,8 @@ def evaluate_behavior(
                     raise BehaviorError("behavior.numeric") from exc
                 value = int(total) if total == total.to_integral_value() else float(total)
             elif calculation.get("function") == "concat":
+                if any(not isinstance(item, str) for item in values):
+                    raise BehaviorError("behavior.calculation_type")
                 value = "".join(values)
             elif calculation.get("function") == "count":
                 value = sum(len(item) for item in values)

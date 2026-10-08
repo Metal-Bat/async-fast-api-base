@@ -290,7 +290,7 @@ async def test_registered_catalog_search_filters_and_historical_detail() -> None
         assert published.total == 1
         item = published.items[0]
         assert item.is_available and item.has_outputs
-        assert item.help_text and item.name_key == "step.request_priority.name"
+        assert bool(item.help_text) and item.name_key == "step.request_priority.name"
         escaped = await service.search(StepTypeQuery(search="REQUEST%PRIORITY"))
         assert escaped.total == 0
         with use_language("fa"):

@@ -265,3 +265,34 @@ def test_rfc9110_http_date_variants_and_bad_weekday() -> None:
         future_year.weekday()
     ]
     assert middleware.parse_client_date(f"{weekday}, 06-Nov-69 08:49:37 GMT", 2026) == future_year
+
+
+@pytest.mark.anyio
+async def test_runtime_payloads_never_enter_http_logs(monkeypatch):
+    events = []
+
+    class CaptureLogger:
+        def bind(self, **kwargs):
+            return self
+
+        async def ainfo(self, event, **fields):
+            events.append((event, fields))
+
+        async def acritical(self, event, **fields):
+            events.append((event, fields))
+
+    monkeypatch.setattr(middleware, "logger", CaptureLogger())
+    app = FastAPI()
+    app.add_middleware(RequestLoggingMiddleware)
+
+    @app.post("/api/v1/work-items/test/save")
+    async def save(body: dict[str, Any]):
+        return {"data": body}
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.post(
+            "/api/v1/work-items/test/save", json={"amount": "sensitive-value"}
+        )
+    assert response.status_code == 200
+    assert response.json()["data"]["amount"] == "sensitive-value"
+    assert all("body" not in fields for _, fields in events)

@@ -91,7 +91,7 @@ def source_parameters(
         for name, value in parameters.items()
     ):
         return None
-    if source.enabled_when:
+    if bool(source.enabled_when):
         try:
             expression = ExpressionCompiler().compile(
                 source.enabled_when, {"request": schema}, expected_schema={"type": "boolean"}
@@ -158,7 +158,7 @@ def validate_source(
                 and node["scope"] != repeated_parent
             ):
                 return base + "/dependencies", "source.dependency"
-        if source.enabled_when:
+        if bool(source.enabled_when):
             ExpressionCompiler().compile(
                 source.enabled_when, {"request": schema}, expected_schema={"type": "boolean"}
             )
@@ -212,9 +212,9 @@ def validate_source(
         if (
             source.url not in settings.FORM_CLIENT_OPTION_URLS
             or url.scheme != "https"
-            or not url.hostname
-            or url.username
-            or url.password
+            or not bool(url.hostname)
+            or bool(url.username)
+            or bool(url.password)
             or url.query
             or url.fragment
         ):

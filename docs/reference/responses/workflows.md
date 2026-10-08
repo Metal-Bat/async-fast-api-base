@@ -83,6 +83,20 @@ Used by: `POST /api/v1/workflows/report`, `POST /api/v1/workflows/search`
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `PageResponse_Page_WorkflowGrantViewDTO__`
+
+Used by: `POST /api/v1/workflows/{ref_id}/grants/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `result` | `Page_WorkflowGrantViewDTO_` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `Page_HistoryRecordDTO_`
 
 Used by: `POST /api/v1/workflows/{ref_id}/history`
@@ -104,6 +118,20 @@ Used by: `POST /api/v1/workflows/report`, `POST /api/v1/workflows/search`
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `items` | `array[WorkflowDTO]` | No | — |
+| `page` | `integer` | No |  Default: `1`. |
+| `size` | `integer` | No |  Default: `20`. |
+| `total` | `integer` | Yes | — |
+| `total_pages` | `integer` | Yes | Return the number of nonempty pages in the full result set. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `Page_WorkflowGrantViewDTO_`
+
+Used by: `POST /api/v1/workflows/{ref_id}/grants/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `items` | `array[WorkflowGrantViewDTO]` | No | — |
 | `page` | `integer` | No |  Default: `1`. |
 | `size` | `integer` | No |  Default: `20`. |
 | `total` | `integer` | Yes | — |
@@ -184,7 +212,7 @@ No reviewed business example is published for this schema. Use the field contrac
 
 ### `WorkflowGrantViewDTO`
 
-Used by: `POST /api/v1/workflows/{ref_id}/grants`
+Used by: `POST /api/v1/workflows/{ref_id}/grants`, `POST /api/v1/workflows/{ref_id}/grants/search`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |

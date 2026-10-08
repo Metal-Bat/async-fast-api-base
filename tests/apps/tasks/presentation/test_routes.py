@@ -85,7 +85,7 @@ async def test_task_schedule_routes_require_admin_and_persist() -> None:
     with pytest.raises(NotAllowedException):
         await RequirePermission("admin.tasks.manage")(regular, session)
     entity = await routes.create_schedule(request_context(), data, actor, session)
-    assert entity.data.queue
+    assert bool(entity.data.queue)
     session.commit.assert_awaited_once()
     page = await routes.search_schedules(request_context(), PeriodicTaskQuery(), actor, session)
     assert page.result.items == []

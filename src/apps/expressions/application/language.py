@@ -155,7 +155,7 @@ class ExpressionCompiler:
         ):
             raise ExpressionError("expression.limit")
         result_schema = self._infer(tree.body, namespaces)
-        if expected_schema and not self.compatible(result_schema, expected_schema):
+        if bool(expected_schema) and not self.compatible(result_schema, expected_schema):
             raise ExpressionError(
                 "expression.result.incompatible",
                 **_location(tree.body),
@@ -518,7 +518,7 @@ class _Evaluator:
 
 def uses_client_context(source: str | None) -> bool:
     """Identify the additive predicate profile without treating string content as code."""
-    if not source or len(source) > ExpressionLimits().max_chars:
+    if not bool(source) or len(source) > ExpressionLimits().max_chars:
         return False
     try:
         return any(

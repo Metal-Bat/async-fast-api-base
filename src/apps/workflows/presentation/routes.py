@@ -2,7 +2,7 @@
 
 from typing import Annotated, Any, cast
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, Response
 
 from apps.step_types.application.registry import get_registry
 from apps.users.application.authorization import RequirePermission
@@ -14,6 +14,7 @@ from apps.workflows.domain.dto import (
     WorkflowCreateDTO,
     WorkflowDTO,
     WorkflowGrantDTO,
+    WorkflowGrantQuery,
     WorkflowGrantViewDTO,
     WorkflowQuery,
     WorkflowVersionCreateDTO,
@@ -26,9 +27,15 @@ from core.deps import SessionDep
 from core.history_dto import HistoryQuery, HistoryRecordDTO
 from core.history_service import HistoryService
 from core.ref_id import create_ref_id, open_ref_id
-from utils.base_schema import response_schema
+from utils.base_schema import PRIVATE_NO_STORE_RESPONSES, response_schema
 from utils.pagination import Page, paginate_entities
-from utils.presenter import PageResponse, SuccessResponse, page_response, success_response
+from utils.presenter import (
+    PageResponse,
+    SuccessResponse,
+    page_response,
+    private_no_store,
+    success_response,
+)
 
 router = APIRouter(prefix="/workflows", tags=["workflows"], responses=response_schema())
 versions_router = APIRouter(
@@ -143,6 +150,26 @@ async def workflow_history(
         await HistoryService.for_entity(session, "workflow_definition").list(
             query, open_ref_id(ref_id)[0]
         ),
+    )
+
+
+@router.post(
+    "/{ref_id}/grants/search",
+    response_model=PageResponse[Page[WorkflowGrantViewDTO]],
+    dependencies=[Depends(private_no_store)],
+    summary="Read current workflow access grants",
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    description="Requires workflows.manage, matching the authoring grant-mutation boundary. Returns current nondeleted grants with current opaque workflow/grant/user/group refs and can_view/can_start. Shared filters allow only these capabilities; page/size default 1/20, maximum size 100. Does not reconstruct audit history or expose confidential assignment/configuration. Missing workflows return 404; private no-store response.",
+)
+async def search_workflow_grants(
+    request: Request,
+    ref_id: str,
+    query: WorkflowGrantQuery,
+    _actor: WorkflowAdmin,
+    session: SessionDep,
+):
+    return page_response(
+        request, await WorkflowService(session, get_registry()).search_grants(ref_id, query)
     )
 
 
@@ -303,3 +330,99 @@ async def retire_version(request: Request, ref_id: str, _: WorkflowAdmin, sessio
     row = await WorkflowService(session, get_registry()).retire(ref_id)
     await session.commit()
     return success_response(request, version_dto(row))
+
+
+from apps.workflows.application.workspace import WorkspaceService
+from apps.workflows.domain.workspace import (
+    WorkflowWorkspaceDTO,
+    WorkspacePromoteDTO,
+    WorkspaceUpdateDTO,
+)
+
+
+@versions_router.get(
+    "/{ref_id}/workspace",
+    response_model=SuccessResponse[WorkflowWorkspaceDTO],
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    summary="Read workflow authoring workspace / خواندن فضای طراحی",
+    description="Requires workflows.manage. Returns independently revisioned WIP, stable-key layout and viewport; never an executable graph. Missing WIP starts from the current saved snapshot. / نیازمند مجوز طراحی؛ فضای کار مستقل از گراف اجرایی است.",
+)
+async def get_workspace(
+    request: Request, response: Response, ref_id: str, _: WorkflowAdmin, session: SessionDep
+):
+    private_no_store(response)
+    result = await WorkspaceService(WorkflowService(session, get_registry())).get(ref_id)
+    return success_response(request, result)
+
+
+@versions_router.put(
+    "/{ref_id}/workspace",
+    response_model=SuccessResponse[WorkflowWorkspaceDTO],
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    summary="Save incomplete workflow workspace / ذخیره فضای طراحی",
+    description="Requires workflows.manage and a current DRAFT workflow ref. Bounded incomplete graph/layout is accepted without execution validation. workspace_ref_id null creates once; a stale workspace or workflow ref returns 409. Save does not modify graph rows or execution pins; no automatic replay. / طراحی ناقص با نسخه مستقل ذخیره می‌شود؛ تعارض نسخه پاسخ ۴۰۹ دارد.",
+)
+async def save_workspace(
+    request: Request,
+    response: Response,
+    ref_id: str,
+    data: WorkspaceUpdateDTO,
+    _: WorkflowAdmin,
+    session: SessionDep,
+):
+    private_no_store(response)
+    service = WorkspaceService(WorkflowService(session, get_registry()))
+    await service.save(ref_id, data)
+    await session.commit()
+    return success_response(request, await service.get(ref_id))
+
+
+@versions_router.post(
+    "/{ref_id}/workspace/promote",
+    response_model=SuccessResponse[WorkflowVersionDTO],
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    summary="Promote validated workspace graph / ارتقای گراف معتبر",
+    description="Requires workflows.manage, current DRAFT/workspace refs and all dependency authorizations. Validates GraphSnapshot then atomically replaces executable rows, retaining WIP/layout. 422 preserves the invalid workspace; 409 requires reconciliation. This does not publish. Publication requires the current graph to have been promoted and revalidates all dependencies. / ارتقا پس از اعتبارسنجی انجام می‌شود و انتشار دستور جداگانه است.",
+)
+async def promote_workspace(
+    request: Request,
+    response: Response,
+    ref_id: str,
+    data: WorkspacePromoteDTO,
+    actor: WorkflowAdmin,
+    session: SessionDep,
+):
+    private_no_store(response)
+    row = await WorkspaceService(WorkflowService(session, get_registry())).promote(
+        ref_id, data, actor.id
+    )
+    await session.commit()
+    return success_response(request, version_dto(row))
+
+
+@versions_router.post(
+    "/{ref_id}/workspace/history",
+    response_model=PageResponse[Page[HistoryRecordDTO]],
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    summary="Read authoring workspace history / تاریخچه طراحی",
+    description="Requires workflows.manage; bounded authorized audit pages include WIP changes. Not an ordinary-user runtime endpoint. / فقط برای طراح مجاز است.",
+)
+async def workspace_history(
+    request: Request,
+    response: Response,
+    ref_id: str,
+    query: HistoryQuery,
+    _: WorkflowAdmin,
+    session: SessionDep,
+):
+    private_no_store(response)
+    service = WorkspaceService(WorkflowService(session, get_registry()))
+    version = await service.workflows.get_version(ref_id)
+    row = await service.row(version.id)
+    if row is None:
+        return page_response(
+            request, Page[HistoryRecordDTO](items=[], page=query.page, size=query.size, total=0)
+        )
+    return page_response(
+        request, await HistoryService.for_entity(session, "workflow_workspace").list(query, row.id)
+    )

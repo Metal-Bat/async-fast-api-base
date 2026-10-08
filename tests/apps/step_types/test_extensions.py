@@ -186,7 +186,7 @@ def test_invalid_config_class_fails_with_a_clear_error() -> None:
         handler_version = "1"
         category = "ACTION"
         execution_mode = "SYNC"
-        config_model = None  # type: ignore[assignment]
+        config_model = None  # ty: ignore[invalid-assignment] -- exercise invalid plugin input
 
     with pytest.raises(TypeError, match="BaseDTO"):
         build_registry(classes=(InvalidConfig,))

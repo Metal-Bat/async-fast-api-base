@@ -105,7 +105,7 @@ class SearchRequest(PageRequest):
         if fields is None:
             return self
         for sort in self.sort_orders:
-            for name in sort.multi_field or ([sort.field_name] if sort.field_name else []):
+            for name in sort.multi_field or ([sort.field_name] if bool(sort.field_name) else []):
                 if name not in fields:
                     raise ValueError(f"Invalid sort field: {name}")
         for criterion in self.filters:
@@ -214,7 +214,7 @@ OPERATORS = {
 }
 
 
-def apply_query[SelectType: Select[Any]](
+def apply_query[SelectType: Select[*tuple[Any, ...]]](
     query: SelectType,
     model: Any,
     query_params: SearchRequest,
@@ -240,7 +240,7 @@ def apply_query[SelectType: Select[Any]](
                 query = query.order_by(column.desc() if ordering.startswith("-") else column.asc())
                 ordered.add(name)
         for sort in query_params.sort_orders:
-            for name in sort.multi_field or ([sort.field_name] if sort.field_name else []):
+            for name in sort.multi_field or ([sort.field_name] if bool(sort.field_name) else []):
                 column = getattr(model, name)
                 query = query.order_by(
                     column.desc() if sort.operation == SortOperation.DESC else column.asc()
@@ -346,7 +346,7 @@ def paginate_models[ValueType](
     for sort in query.sort_orders:
         ordering.extend(
             (name, sort.operation == SortOperation.DESC)
-            for name in sort.multi_field or ([sort.field_name] if sort.field_name else [])
+            for name in sort.multi_field or ([sort.field_name] if bool(sort.field_name) else [])
         )
     ordered_names = {name for name, _ in ordering}
     ordering.extend(

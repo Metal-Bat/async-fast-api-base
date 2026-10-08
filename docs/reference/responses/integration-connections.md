@@ -49,6 +49,20 @@ Used by: `GET /api/v1/integration-connections/{ref_id}`, `POST /api/v1/integrati
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `ConnectionGrantViewDTO`
+
+Used by: `POST /api/v1/integration-connections/{ref_id}/grants/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `user_ref_id` | `string | null` | No | Opaque reference; use the value returned by the API. |
+| `work_group_ref_id` | `string | null` | No | Opaque reference; use the value returned by the API. |
+| `can_use` | `boolean` | No |  Default: `True`. |
+| `can_manage` | `boolean` | No |  Default: `False`. |
+| `ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `GrantReferenceDTO`
 
 Used by: `POST /api/v1/integration-connections/{ref_id}/grants`
@@ -95,6 +109,20 @@ Used by: `POST /api/v1/integration-connections/report`, `POST /api/v1/integratio
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `PageResponse_Page_ConnectionGrantViewDTO__`
+
+Used by: `POST /api/v1/integration-connections/{ref_id}/grants/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `result` | `Page_ConnectionGrantViewDTO_` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `PageResponse_Page_HistoryRecordDTO__`
 
 Used by: `POST /api/v1/integration-connections/{ref_id}/history`
@@ -130,6 +158,20 @@ Used by: `POST /api/v1/integration-connections/report`, `POST /api/v1/integratio
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `items` | `array[ConnectionDTO]` | No | — |
+| `page` | `integer` | No |  Default: `1`. |
+| `size` | `integer` | No |  Default: `20`. |
+| `total` | `integer` | Yes | — |
+| `total_pages` | `integer` | Yes | Return the number of nonempty pages in the full result set. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `Page_ConnectionGrantViewDTO_`
+
+Used by: `POST /api/v1/integration-connections/{ref_id}/grants/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `items` | `array[ConnectionGrantViewDTO]` | No | — |
 | `page` | `integer` | No |  Default: `1`. |
 | `size` | `integer` | No |  Default: `20`. |
 | `total` | `integer` | Yes | — |

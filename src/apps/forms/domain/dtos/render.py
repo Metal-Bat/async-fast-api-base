@@ -92,7 +92,7 @@ class Calculation(BaseDTO):
     def validate_source(self) -> Calculation:
         if bool(self.function) == bool(self.expression):
             raise ValueError("Exactly one calculation source is required")
-        if self.function and not self.scopes or self.expression and self.scopes:
+        if self.function and not self.scopes or bool(self.expression) and self.scopes:
             raise ValueError("Registered functions require scopes; expressions do not")
         return self
 

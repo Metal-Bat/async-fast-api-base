@@ -42,14 +42,18 @@ class TransformSpec(BaseDTO):
             raise ValueError("default is required for default null behavior")
         if self.projection is not None and self.conversion != "object":
             raise ValueError("projection is only valid for object conversion")
-        if self.conversion == "object" and not self.projection:
+        if self.conversion == "object" and not bool(self.projection):
             raise ValueError("object conversion requires a projection")
         if self.format is not None and self.conversion not in {"string", "date", "date_time"}:
             raise ValueError("format is not supported by this conversion")
-        if self.format and self.conversion == "date" and not _DATE_FORMAT.fullmatch(self.format):
+        if (
+            bool(self.format)
+            and self.conversion == "date"
+            and not _DATE_FORMAT.fullmatch(self.format)
+        ):
             raise ValueError("date format contains a locale-dependent or unsupported directive")
         if (
-            self.format
+            bool(self.format)
             and self.conversion == "date_time"
             and not _DATETIME_FORMAT.fullmatch(self.format)
         ):
@@ -152,7 +156,7 @@ class TransformEngine:
             parsed = date.fromisoformat(value) if isinstance(value, str) else value
             if not isinstance(parsed, date) or isinstance(parsed, datetime):
                 raise ValueError("invalid date")
-            return parsed.strftime(spec.format) if spec.format else parsed.isoformat()
+            return parsed.strftime(spec.format) if bool(spec.format) else parsed.isoformat()
         if spec.conversion == "date_time":
             parsed = datetime.fromisoformat(value) if isinstance(value, str) else value
             if not isinstance(parsed, datetime) or parsed.tzinfo is None:
@@ -160,7 +164,7 @@ class TransformEngine:
             parsed = parsed.astimezone(UTC)
             return (
                 parsed.strftime(spec.format)
-                if spec.format
+                if bool(spec.format)
                 else parsed.isoformat().replace("+00:00", "Z")
             )
         if spec.conversion == "array":

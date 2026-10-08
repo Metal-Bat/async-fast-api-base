@@ -6,6 +6,21 @@ tags: [api, dto, request-types]
 
 These schemas are emitted by successful API responses in this topic. Reviewed examples are included only when a curated fixture exists. Required nullable fields must be present and may be null; optional fields may be omitted as allowed by the schema. See the [frontend journey](../../guides/frontend-journey.md) for lifecycle and call order. The live Swagger/OpenAPI document is authoritative.
 
+### `EligibleRequestTypeDTO`
+
+Used by: `POST /api/v1/request-types/eligible/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
+| `code` | `string` | Yes | — |
+| `name` | `string` | Yes | — |
+| `workflow_version_ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
+| `form_version_ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
+| `render_dialect` | `string` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `HistoryRecordDTO`
 
 Used by: `POST /api/v1/request-types/{ref_id}/history`
@@ -25,6 +40,20 @@ Used by: `POST /api/v1/request-types/{ref_id}/history`
 | `user_agent` | `string | null` | No | — |
 | `from_values` | `object` | Yes | — |
 | `to_values` | `object` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `PageResponse_Page_EligibleRequestTypeDTO__`
+
+Used by: `POST /api/v1/request-types/eligible/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `result` | `Page_EligibleRequestTypeDTO_` | Yes | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
@@ -53,6 +82,20 @@ Used by: `POST /api/v1/request-types/report`, `POST /api/v1/request-types/search
 | `error` | `null` | No | — |
 | `code` | `integer` | No |  Default: `200`. |
 | `result` | `Page_RequestTypeDTO_` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `Page_EligibleRequestTypeDTO_`
+
+Used by: `POST /api/v1/request-types/eligible/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `items` | `array[EligibleRequestTypeDTO]` | No | — |
+| `page` | `integer` | No |  Default: `1`. |
+| `size` | `integer` | No |  Default: `20`. |
+| `total` | `integer` | Yes | — |
+| `total_pages` | `integer` | Yes | Return the number of nonempty pages in the full result set. |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
@@ -108,7 +151,7 @@ Used by: `GET /api/v1/request-types/{ref_id}`, `POST /api/v1/request-types`, `PO
 | `form_ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
 | `is_active` | `boolean` | No |  Default: `True`. |
 | `default_priority` | `integer | null` | No | — |
-| `client_targets` | `array[RequestTypeClientTargetDTO]` | No | — |
+| `client_targets` | `array[RequestTypeClientTargetDTO]` | No | Authoritative confidential-client/release restrictions. On PUT, omission preserves existing restrictions; an explicit empty list deliberately removes them. |
 | `allow_cross_client_resume` | `boolean` | No |  Default: `False`. |
 | `extension_contract` | `string | null` | No | — |
 | `ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |

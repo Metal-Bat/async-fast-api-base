@@ -1,5 +1,5 @@
 import asyncio
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from datetime import timedelta
 from typing import Any, override
@@ -73,7 +73,7 @@ async def _release_leader(owner_id: UUID) -> None:
 
 
 @contextmanager
-def scheduler_lifecycle(runner: asyncio.Runner, owner_id: UUID) -> Iterator[bool]:
+def scheduler_lifecycle(runner: asyncio.Runner, owner_id: UUID) -> Generator[bool]:
     """Release leadership on any tick error; successful ticks retain the renewable lease."""
     try:
         acquired = runner.run(_claim_leader(owner_id))

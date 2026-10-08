@@ -128,7 +128,7 @@ class ReportService:
         report.deleted_at = get_datetime_utc()
         self.session.add(report)
         await self.session.commit()
-        if storage_key:
+        if bool(storage_key):
             await delete_object(storage_key)
             report.storage_key = None
             self.session.add(report)

@@ -164,14 +164,14 @@ class DefinitionLibraryService:
         for kind in kinds:
             for version, root in await self._candidate_rows(kind, actor):
                 card = self._card(kind, version, root, query.locale)
-                if query.category and card.category != query.category:
+                if bool(query.category) and card.category != query.category:
                     continue
                 if query.capabilities and not set(card.required_capabilities) <= set(
                     query.capabilities
                 ):
                     continue
                 if (
-                    query.search
+                    bool(query.search)
                     and query.search.casefold()
                     not in (card.code + " " + card.title + " " + card.category).casefold()
                 ):

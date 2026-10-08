@@ -45,9 +45,9 @@ class HttpNotificationProvider:
             pin.provider != "https_notification"
             or pin.kind != "NOTIFICATION"
             or parsed.scheme != "https"
-            or not parsed.hostname
-            or parsed.username
-            or parsed.password
+            or not bool(parsed.hostname)
+            or bool(parsed.username)
+            or bool(parsed.password)
             or parsed.query
             or parsed.fragment
         ):

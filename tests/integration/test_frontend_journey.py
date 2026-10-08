@@ -8,6 +8,8 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlmodel import select
 
+from apps.forms.application.service import FormService
+from apps.forms.domain.dto import FormCreateDTO, FormVersionCreateDTO
 from apps.requests.application.service import RequestService
 from apps.requests.domain.dto import RequestTypeCreateDTO
 from apps.step_types.application.registry import builtin_registry
@@ -30,7 +32,7 @@ from apps.workflows.domain.dto import (
 from core.deps import SessionFactory, engine
 from core.ref_id import create_ref_id
 from main import app
-from tests.integration.test_processes import _published_form, _step_refs
+from tests.integration.test_processes import _step_refs
 from utils.security import hash_password
 
 pytestmark = [
@@ -62,7 +64,81 @@ async def _prepare_journey() -> tuple[list[str], str, str]:
         session.add(RolePermissionEntity(role_id=role.id, permission_id=permission.id))
         session.add_all([UserRoleEntity(user_id=user.id, role_id=role.id) for user in users[:3]])
         requester, reviewer = users[:2]
-        form, form_version = await _published_form(session, requester)
+        forms = FormService(session)
+        form = await forms.create(
+            FormCreateDTO(code=f"JF{uuid7().hex}", name="Private review"), requester.id
+        )
+        form_version = await forms.create_version(
+            FormVersionCreateDTO(
+                form_ref_id=create_ref_id(form.id, form.version),
+                number=1,
+                behavior_dialect="bpms.behavior/1",
+                data_schema={
+                    "type": "object",
+                    "properties": {
+                        "amount": {"type": "string"},
+                        "private_note": {"type": "string", "default": "hidden-default"},
+                        "summary": {"type": "string"},
+                        "lines": {
+                            "type": "array",
+                            "items": {"type": "object", "properties": {"note": {"type": "string"}}},
+                        },
+                    },
+                    "required": ["amount"],
+                },
+                page_settings={
+                    "pages": [
+                        {
+                            "key": "details",
+                            "title": "Details",
+                            "scopes": ["/properties/amount", "/properties/private_note"],
+                        },
+                        {
+                            "key": "rows",
+                            "title": "Rows",
+                            "scopes": ["/properties/lines", "/properties/summary"],
+                        },
+                    ]
+                },
+                render_schema={
+                    "dialect": "bpms.render/1",
+                    "outcomes": ["approve"],
+                    "root": {
+                        "component": "vertical",
+                        "children": [
+                            {"component": "text", "scope": "/properties/amount", "label": "Amount"},
+                            {
+                                "component": "text",
+                                "scope": "/properties/private_note",
+                                "label": "Private",
+                            },
+                            {
+                                "component": "calculated",
+                                "scope": "/properties/summary",
+                                "calculation": {
+                                    "function": "concat",
+                                    "scopes": ["/properties/amount"],
+                                    "override_permission": "requests.start",
+                                },
+                            },
+                            {
+                                "component": "repeater",
+                                "scope": "/properties/lines",
+                                "children": [
+                                    {
+                                        "component": "text",
+                                        "scope": "/properties/lines/items/properties/note",
+                                    }
+                                ],
+                            },
+                        ],
+                    },
+                },
+            )
+        )
+        form_version = await forms.publish(
+            create_ref_id(form_version.id, form_version.version), requester.id
+        )
         refs = await _step_refs(session)
         workflows = WorkflowService(session, builtin_registry())
         root = await workflows.create(
@@ -87,11 +163,27 @@ async def _prepare_journey() -> tuple[list[str], str, str]:
                             "default_view": "review",
                             "views": [
                                 {
+                                    "key": "summary",
+                                    "purpose": "summary",
+                                    "title": {"en": "Summary"},
+                                    "scopes": ["/properties/amount"],
+                                },
+                                {
+                                    "key": "print",
+                                    "purpose": "print",
+                                    "title": {"en": "Print"},
+                                    "scopes": ["/properties/amount"],
+                                },
+                                {
                                     "key": "review",
                                     "purpose": "edit",
                                     "title": {"en": "Purchase review"},
-                                    "scopes": ["/properties/amount"],
-                                }
+                                    "scopes": [
+                                        "/properties/amount",
+                                        "/properties/summary",
+                                        "/properties/lines",
+                                    ],
+                                },
                             ],
                             "actions": [
                                 {
@@ -104,10 +196,18 @@ async def _prepare_journey() -> tuple[list[str], str, str]:
                             ],
                         },
                         field_policy={
-                            "read": ["/properties/amount"],
-                            "write": ["/properties/amount"],
+                            "read": [
+                                "/properties/amount",
+                                "/properties/summary",
+                                "/properties/lines",
+                            ],
+                            "write": [
+                                "/properties/amount",
+                                "/properties/summary",
+                                "/properties/lines",
+                            ],
                             "required": ["/properties/amount"],
-                            "hidden": [],
+                            "hidden": ["/properties/private_note"],
                         },
                     ),
                     GraphStep(
@@ -210,6 +310,31 @@ async def test_documented_http_login_submit_approve_track_and_session_lifecycle(
             )["data"]
             path = _member("business-requests", draft["ref_id"])
             assert draft["status"] == "DRAFT"
+            assert draft["process_ref_id"] is None
+            requester_view = (await _call(client, "GET", path + "/view", token=requester))["data"]
+            assert requester_view["purpose"] == "edit"
+            assert requester_view["runtime_dialect"] == "bpms.runtime/1"
+            await _call(client, "GET", path + "/view", token=outsider, status=404, code=1003)
+            choices = (
+                await _call(
+                    client,
+                    "POST",
+                    "/request-types/eligible/search",
+                    token=requester,
+                    body={"supported_render_dialects": ["bpms.render/1"], "size": 100},
+                )
+            )["result"]
+            assert kind in [choice["ref_id"] for choice in choices["items"]]
+            incompatible = (
+                await _call(
+                    client,
+                    "POST",
+                    "/request-types/eligible/search",
+                    token=requester,
+                    body={"supported_render_dialects": ["unsupported/9"]},
+                )
+            )["result"]
+            assert incompatible["total"] == 0
             await _call(client, "GET", path, token=outsider, status=404, code=1003)
             await _call(
                 client,
@@ -226,7 +351,10 @@ async def test_documented_http_login_submit_approve_track_and_session_lifecycle(
                     "PUT",
                     path,
                     token=requester,
-                    body={"data": {"amount": "125.00"}, "priority": 5},
+                    body={
+                        "data": {"amount": "125.00", "private_note": "keep-private", "lines": []},
+                        "priority": 5,
+                    },
                 )
             )["data"]
             await _call(
@@ -250,6 +378,11 @@ async def test_documented_http_login_submit_approve_track_and_session_lifecycle(
                     )
                 )["data"]
                 assert submitted["status"] == "RUNNING"
+                assert submitted["process_ref_id"] is not None
+            process_path = _member("processes", submitted["process_ref_id"])
+            await _call(client, "GET", process_path, token=requester)
+            await _call(client, "GET", process_path, token=outsider, status=404, code=1003)
+            await _call(client, "POST", process_path + "/timeline", token=requester, body={})
             items = (
                 await _call(
                     client,
@@ -260,6 +393,8 @@ async def test_documented_http_login_submit_approve_track_and_session_lifecycle(
                 )
             )["result"]["items"]
             assert len(items) == 1
+            assert items[0]["runtime_state"]["purpose"] == "observer"
+            assert items[0]["runtime_state"]["writable_scopes"] == []
             task_path = _member("work-items", items[0]["ref_id"])
             await _call(
                 client,
@@ -289,12 +424,73 @@ async def test_documented_http_login_submit_approve_track_and_session_lifecycle(
                     token=reviewer,
                 )
             )["data"]
-            assert view["data"] == {"amount": "125.00"}
+            assert view["data"]["amount"] == "125.00"
+            assert "private_note" not in view["data"]
             assert any(
                 action["kind"] == "complete" and action["outcome_key"] == "approve"
                 for action in view["actions"]
             )
-            complete_path = _member("work-items", view["work_item_ref_id"]) + "/complete"
+            runtime = (
+                await _call(
+                    client,
+                    "GET",
+                    _member("work-items", claimed["ref_id"]) + "/runtime",
+                    token=reviewer,
+                )
+            )["data"]
+            assert runtime["writable_scopes"]
+            assert "private_note" not in str(runtime) and "hidden-default" not in str(runtime)
+            assert claimed["kind"] == "HUMAN_TASK"
+            for key in ("summary", "print"):
+                selected = (
+                    await _call(
+                        client,
+                        "GET",
+                        _member("work-items", claimed["ref_id"]) + "/runtime?key=" + key,
+                        token=reviewer,
+                    )
+                )["data"]
+                assert selected["purpose"] == key and selected["writable_scopes"] == []
+                assert selected["actions"] == [] and selected["data"] == {"amount": "125.00"}
+            current = runtime["resource_ref_id"]
+            collection = (
+                await _call(
+                    client,
+                    "POST",
+                    _member("work-items", current) + "/collections/edit",
+                    token=reviewer,
+                    body={"path": "/lines", "operation": "add", "value": {"note": "visible line"}},
+                )
+            )["data"]
+            assert "private_note" not in str(collection)
+            assert collection["data"]["lines"] == [{"note": "visible line"}]
+            current = collection["resource_ref_id"]
+            override = (
+                await _call(
+                    client,
+                    "POST",
+                    _member("work-items", current) + "/overrides",
+                    token=reviewer,
+                    body={
+                        "scope": "/properties/summary",
+                        "operation": "set",
+                        "value": "Reviewed",
+                        "reason": "Manual review",
+                    },
+                )
+            )["data"]
+            assert "private_note" not in str(override) and "input_checksum" not in str(override)
+            saved_task = (
+                await _call(
+                    client,
+                    "POST",
+                    _member("work-items", override["resource_ref_id"]) + "/save",
+                    token=reviewer,
+                    body={"command_key": "safe-save", "data": {"amount": "125.00"}},
+                )
+            )["data"]
+            assert saved_task["runtime_state"]["data"]["lines"] == [{"note": "visible line"}]
+            complete_path = _member("work-items", saved_task["ref_id"]) + "/complete"
             action = {
                 "command_key": "purchase-approve-001",
                 "outcome_key": "approve",
@@ -307,7 +503,7 @@ async def test_documented_http_login_submit_approve_track_and_session_lifecycle(
                 "POST",
                 complete_path,
                 token=reviewer,
-                body={**action, "data": {}},
+                body={**action, "data": {"amount": None}},
                 status=422,
                 code=1002,
             )
@@ -327,7 +523,8 @@ async def test_documented_http_login_submit_approve_track_and_session_lifecycle(
             )
             tracked = (await _call(client, "GET", path, token=requester))["data"]
             assert tracked["status"] == "COMPLETED"
-            assert tracked["data"] == {"amount": "125.00"}
+            assert tracked["data"]["amount"] == "125.00"
+            assert tracked["data"]["private_note"] == "keep-private"
             closed = (
                 await _call(
                     client,
