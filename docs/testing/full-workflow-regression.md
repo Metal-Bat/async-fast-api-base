@@ -12,7 +12,9 @@ tags: [testing, bpms, workflow]
 mise run flow-test
 ```
 
-This command needs the local PostgreSQL service and `.envs/.backend`. The runner creates a database named `bpms_flow_<random>`, applies every Alembic migration, runs both the service and HTTP journey tests, and drops that database even when a migration or assertion fails. It refuses non-local PostgreSQL hosts. It does not modify the configured application database. `mise run check` includes this command, so the full local quality gate now needs PostgreSQL running. The default `uv run pytest` suite skips these integration cases unless `RUN_INTEGRATION=1` is set.
+This command needs `.envs/.backend` and local PostgreSQL. It first probes an authenticated connection. If the default local port 5432 is unavailable, it runs `docker compose up -d postgres` with a 60-second command timeout, then tries up to 15 readiness probes with two-second connection timeouts and one-second pauses. Configure matching credentials in `.envs/.backend` and `.envs/.postgres`. An already available server needs no Docker access. Set `FLOW_TEST_AUTOSTART=0` to disable automatic startup; custom ports always require manual startup. Authentication errors never trigger Compose startup. Setup failures return a nonzero status and safe configuration guidance.
+
+The runner creates a database named `bpms_flow_<random>`, applies every Alembic migration, runs the service and HTTP journey tests, and attempts to drop that database even when a migration or assertion fails. It refuses non-local PostgreSQL hosts and does not modify the configured application database. Cleanup failure reports the disposable database name and fails the gate without hiding a prior test failure. A service started by the runner remains running. `mise run check` includes this command. The default `uv run pytest` suite skips these integration cases unless `RUN_INTEGRATION=1` is set.
 
 ## Journey covered now
 

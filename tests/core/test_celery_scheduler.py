@@ -180,3 +180,34 @@ async def test_outbox_marks_success_only_after_publication(monkeypatch) -> None:
     assert await outbox.dispatch_outbox(Mock()) == 1
     assert message.published_at is not None
     assert message.last_error is None
+
+
+@pytest.mark.parametrize("interrupt", [False, True])
+def test_scheduler_defers_close_until_active_tick_unwinds(monkeypatch, interrupt) -> None:
+    release = AsyncMock()
+    dispose = AsyncMock()
+    monkeypatch.setattr(scheduler, "_release_leader", release)
+    monkeypatch.setattr(scheduler, "engine", Mock(dispose=dispose))
+    monkeypatch.setattr(scheduler, "dispatch_outbox", AsyncMock(return_value=0))
+    beat = scheduler.DatabaseScheduler(app=celery_app, lazy=True)
+
+    async def claim(owner):
+        beat.close()
+        beat.close()
+        assert not beat._closed
+        if interrupt:
+            raise SystemExit()
+        return False
+
+    monkeypatch.setattr(scheduler, "_claim_leader", claim)
+    if interrupt:
+        with pytest.raises(SystemExit):
+            beat.tick()
+    else:
+        beat.tick()
+    assert beat._closed
+    dispose.assert_awaited_once()
+    assert release.await_count >= 1
+    beat.close()
+    with pytest.raises(RuntimeError, match="closed"):
+        beat._async_runner.get_loop()

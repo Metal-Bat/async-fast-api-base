@@ -280,3 +280,46 @@ def test_application_lifespan_does_not_install_http_exporters(monkeypatch) -> No
         pass
     for exporter in exporters:
         exporter.assert_not_called()
+
+
+def test_installed_sqlalchemy_emits_query_spans() -> None:
+    import subprocess
+    import sys
+    from textwrap import dedent
+
+    # Other tests configure singleton instrumentors and global providers. Verify
+    # the installed dependency contract in a fresh interpreter, without mocks.
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            dedent("""\
+            from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+            from opentelemetry.sdk.trace import TracerProvider
+            from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+            from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
+            from sqlalchemy import create_engine, text
+
+            exporter = InMemorySpanExporter()
+            provider = TracerProvider()
+            provider.add_span_processor(SimpleSpanProcessor(exporter))
+            engine = create_engine("sqlite://")
+            instrumentor = SQLAlchemyInstrumentor()
+            try:
+                instrumentor.instrument(engine=engine, tracer_provider=provider)
+                with engine.connect() as connection:
+                    assert connection.execute(text("SELECT 1")).scalar_one() == 1
+                assert any((span.attributes or {}).get("db.statement") == "SELECT 1"
+                           for span in exporter.get_finished_spans())
+            finally:
+                instrumentor.uninstrument()
+                engine.dispose()
+                provider.shutdown()
+            """),
+        ],
+        capture_output=True,
+        text=True,
+        timeout=20,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr

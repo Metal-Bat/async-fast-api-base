@@ -12,6 +12,15 @@
 
 ### Fixed
 
+- Restore local cache startup with bounded Dragonfly threads and authenticated health gates,
+  defer Celery scheduler cleanup during signal interruption, and constrain SQLAlchemy to the
+  OpenTelemetry-supported 2.0 series. Rebuild cache and application images; see
+  [REPO-004](docs/changes/REPO-004.md).
+
+- Local workflow checks now start the configured PostgreSQL service when the default port is
+  unavailable, wait for readiness, and report setup/cleanup failures safely. See
+  [REPO-003](docs/changes/REPO-003.md).
+
 - Restore async database imports after the SQLAlchemy 2.1 upgrade by explicitly installing
   its asyncio extra. See [REPO-002](docs/changes/REPO-002.md).
 

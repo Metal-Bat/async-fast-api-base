@@ -277,6 +277,7 @@ class DatabaseScheduler(Scheduler):
         self._async_runner = asyncio.Runner()
         self._leader_id = uuid7()
         self._closed = False
+        self._close_requested = False
         self._is_leader = False
         try:
             super().__init__(*args, **kwargs)
@@ -290,6 +291,13 @@ class DatabaseScheduler(Scheduler):
 
     @override
     def tick(self, *args: Any, **kwargs: Any) -> float:
+        try:
+            return self._tick()
+        finally:
+            if self._close_requested:
+                self.close()
+
+    def _tick(self) -> float:
         with tracer.start_as_current_span("scheduler.tick") as span:
             span.set_attribute("scheduler.owner.id", str(self._leader_id))
             try:
@@ -324,6 +332,11 @@ class DatabaseScheduler(Scheduler):
     def close(self) -> None:
         """Release leadership and close the runner even if database cleanup fails."""
         if self._closed:
+            return
+        # Celery's signal handler calls close() before raising SystemExit, even
+        # inside Runner.run(). Let tick unwind before using or closing its loop.
+        if self._async_runner.get_loop().is_running():
+            self._close_requested = True
             return
         self._closed = True
         try:

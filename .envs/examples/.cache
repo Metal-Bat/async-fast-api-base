@@ -1,2 +1,5 @@
 # Local development example. Replace credentials before deployment.
 CACHE_PASSWORD=local-only-cache
+# Two Dragonfly threads avoid allocating per host CPU on development machines.
+# Each thread requires at least 256 MiB available; increase only with enough RAM.
+CACHE_THREADS=2

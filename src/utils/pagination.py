@@ -214,7 +214,7 @@ OPERATORS = {
 }
 
 
-def apply_query[SelectType: Select[*tuple[Any, ...]]](
+def apply_query[SelectType: Select[Any]](
     query: SelectType,
     model: Any,
     query_params: SearchRequest,

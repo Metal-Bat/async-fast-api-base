@@ -13,11 +13,16 @@ services:
     image: sample_backend
     container_name: sample_backend
     depends_on:
-      - postgres
-      - cache
-      - s3
-      - broker
-      - otel-collector
+      postgres:
+        condition: service_started
+      cache:
+        condition: service_healthy
+      s3:
+        condition: service_started
+      broker:
+        condition: service_started
+      otel-collector:
+        condition: service_started
     volumes:
       - ./src:/app/src/:z
       - ./logs:/app/logs:z
@@ -44,11 +49,16 @@ services:
     working_dir: /app/src
     command: /start-worker
     depends_on:
-      - postgres
-      - cache
-      - s3
-      - broker
-      - otel-collector
+      postgres:
+        condition: service_started
+      cache:
+        condition: service_healthy
+      s3:
+        condition: service_started
+      broker:
+        condition: service_started
+      otel-collector:
+        condition: service_started
     volumes:
       - ./src:/app/src/:z
     env_file:
@@ -67,11 +77,16 @@ services:
     working_dir: /app/src
     command: /start-reporting-worker
     depends_on:
-      - postgres
-      - cache
-      - s3
-      - broker
-      - otel-collector
+      postgres:
+        condition: service_started
+      cache:
+        condition: service_healthy
+      s3:
+        condition: service_started
+      broker:
+        condition: service_started
+      otel-collector:
+        condition: service_started
     volumes:
       - ./src:/app/src/:z
     env_file:
@@ -90,11 +105,16 @@ services:
     working_dir: /app/src
     command: /start-scheduler
     depends_on:
-      - postgres
-      - cache
-      - s3
-      - broker
-      - otel-collector
+      postgres:
+        condition: service_started
+      cache:
+        condition: service_healthy
+      s3:
+        condition: service_started
+      broker:
+        condition: service_started
+      otel-collector:
+        condition: service_started
     volumes:
       - ./src:/app/src/:z
     env_file:
@@ -171,6 +191,13 @@ services:
       dockerfile: ./compose/cache/Dockerfile
     image: sample_cache
     container_name: sample_cache
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", 'REDISCLI_AUTH="$$CACHE_PASSWORD" redis-cli ping | grep -qx PONG']
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
     volumes:
       - sample_cache_data:/data
     env_file:

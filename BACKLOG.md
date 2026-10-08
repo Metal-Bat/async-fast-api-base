@@ -1,5 +1,77 @@
 # Engineering Backlog
 
+## REPO-004 — Restore cache startup, scheduler shutdown and database tracing
+
+Priority: P1
+Status: DONE
+Area: deployment/celery/observability
+Depends-On: None
+Related: REPO-002, OBS-002
+Change-Record: docs/changes/REPO-004.md
+
+### Goal
+
+Fix the reported cache connection failures, reentrant scheduler shutdown and missing SQL spans.
+
+### Context
+
+Dragonfly exited because its automatic 12-thread pool required 3 GiB of available memory.
+Celery beat calls scheduler.close from its signal handler inside an active asyncio runner.
+The installed SQLAlchemy instrumentor rejects SQLAlchemy 2.1.
+RELATED REPO-002: constrain the earlier dependency upgrade to the instrumentor support range.
+RELATED OBS-002: preserve working SQL telemetry alongside application tracing.
+
+Completed: full gate passes (685 default tests, 119 opt-in skips, one doctest, four database
+workflow tests and all applicable hooks). Rebuilt cache remains healthy; reporting-worker
+container resolves it and reads/cleans up Celery results successfully. AST graph refreshed.
+Application image rebuild remains unverified: both normal and host-network Docker builds fail
+package-download DNS resolution. The dependency correction is installed/tested locally; deployment
+requires rebuilding/recreating application services when Docker DNS is available.
+
+### Acceptance Criteria
+
+- Local cache starts with bounded thread count, authenticated health checks and restart policy;
+  API and task services wait for cache health. Preserve volumes and task result semantics.
+- Scheduler signal shutdown unwinds its active loop before releasing resources; regression
+  tests cover interrupting and non-interrupting close requests.
+- A real instrumented query emits spans using locked compatible SQLAlchemy dependencies.
+- Full quality gate passes; document container verification and rebuild requirements.
+
+
+## REPO-003 — Make local workflow checks self-starting and scope SDK notices
+
+Priority: P1
+Status: DONE
+Area: repository/testing
+Depends-On: None
+Related: REPO-002
+Change-Record: docs/changes/REPO-003.md
+
+### Goal
+
+Run the local quality gate when PostgreSQL is stopped, and contain the two known upstream
+Python 3.14 deprecation notices without hiding other warnings.
+
+### Context
+
+RELATED REPO-002: starting PostgreSQL manually fixed one run but did not persist startup behavior.
+Targeted uv resolution found no newer compatible Cohere/Google GenAI releases. Use narrow pytest
+filters while leaving SDK code and global runtime warning policy untouched.
+
+Completed: 56 focused tests and the full quality gate pass (681 default tests, 119 opt-in skips,
+one doctest, four PostgreSQL workflow tests). The full run started the stopped Compose service
+automatically, migrated and removed its disposable database, and emitted no warning summary.
+All applicable hooks, including explicit checks of new tests, pass; graphify was refreshed.
+
+### Acceptance Criteria
+
+- Probe local PostgreSQL, start only the default-port Compose service if unavailable, and wait
+  within bounded limits; support an automatic-start opt-out and reject remote hosts.
+- Authentication/configuration errors fail safely; tests and migrations retain failure status,
+  with cleanup attempted and cleanup failure reported.
+- Only the exact known upstream warnings are filtered; unrelated warnings remain visible.
+- Regression tests and the complete `mise run check` gate pass; document service side effects.
+
 ## REPO-002 — Restore the quality gate after dependency updates
 
 Priority: P1
