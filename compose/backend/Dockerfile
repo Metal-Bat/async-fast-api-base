@@ -1,4 +1,4 @@
-FROM python:3.14.7-slim-trixie AS builder
+FROM python:3.14.8-slim-trixie AS builder
 
 COPY --from=ghcr.io/astral-sh/uv:0.12.9 /uv /bin/uv
 
@@ -14,7 +14,7 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --locked --no-default-groups --no-install-project --active \
     && uv pip check --python /opt/venv/bin/python
 
-FROM python:3.14.7-slim-trixie AS runtime
+FROM python:3.14.8-slim-trixie AS runtime
 
 ARG APP_USER=app
 ARG APP_HOME=/app
