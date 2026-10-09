@@ -1,0 +1,702 @@
+{
+  "schema_version": 1,
+  "delivery_implemented_by": "APP-BE-014",
+  "events": [
+    {
+      "id": "MAP-01",
+      "source_file": "src/apps/processes/application/service.py",
+      "source_symbol": "start_request",
+      "source_events": [
+        "request.submitted"
+      ],
+      "producer_status": "EXISTING_EVENT",
+      "blocked_by": null,
+      "producer_gap": null,
+      "delivery_status": "IMPLEMENTED",
+      "delivery_implemented_by": "APP-BE-014",
+      "target_kind": "case",
+      "requires_case": true,
+      "audience": "requester",
+      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "channel_scope": [
+        "IN_APP",
+        "EMAIL"
+      ],
+      "mandatory": false,
+      "preference_policy": "Mandatory actionable/security notices cannot be disabled; optional email uses explicit owner opt-in and registered active email connection.",
+      "template_key": "application.map_01",
+      "template_version": "1",
+      "variables": {
+        "resource_name": {
+          "type": "string",
+          "max_length": 120,
+          "classification": "authorized display name"
+        }
+      },
+      "templates": {
+        "en": {
+          "subject": "Request submitted",
+          "content": "Request submitted: {resource_name}"
+        },
+        "fa": {
+          "subject": "درخواست ثبت شد",
+          "content": "درخواست ثبت شد: {resource_name}"
+        }
+      },
+      "dedupe_fields": [
+        "process_id",
+        "event_sequence",
+        "recipient_id"
+      ],
+      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+    },
+    {
+      "id": "MAP-02",
+      "source_file": "src/apps/work_items/application/service.py",
+      "source_symbol": "_record",
+      "source_events": [
+        "work_item.created"
+      ],
+      "producer_status": "EXISTING_EVENT",
+      "blocked_by": null,
+      "producer_gap": null,
+      "delivery_status": "IMPLEMENTED",
+      "delivery_implemented_by": "APP-BE-014",
+      "target_kind": "work_item",
+      "requires_case": true,
+      "audience": "currently eligible candidates; maximum 100 per batch",
+      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "channel_scope": [
+        "IN_APP",
+        "EMAIL"
+      ],
+      "mandatory": false,
+      "preference_policy": "Mandatory actionable/security notices cannot be disabled; optional email uses explicit owner opt-in and registered active email connection.",
+      "template_key": "application.map_02",
+      "template_version": "1",
+      "variables": {
+        "resource_name": {
+          "type": "string",
+          "max_length": 120,
+          "classification": "authorized display name"
+        }
+      },
+      "templates": {
+        "en": {
+          "subject": "Human work available",
+          "content": "Human work available: {resource_name}"
+        },
+        "fa": {
+          "subject": "کار انسانی آماده است",
+          "content": "کار انسانی آماده است: {resource_name}"
+        }
+      },
+      "dedupe_fields": [
+        "work_item_id",
+        "availability_generation",
+        "recipient_id"
+      ],
+      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+    },
+    {
+      "id": "MAP-03",
+      "source_file": "src/apps/work_items/application/service.py",
+      "source_symbol": "_record",
+      "source_events": [
+        "work_item.claimed",
+        "work_item.released",
+        "work_item.forwarded"
+      ],
+      "producer_status": "EXISTING_EVENT",
+      "blocked_by": null,
+      "producer_gap": null,
+      "delivery_status": "IMPLEMENTED",
+      "delivery_implemented_by": "APP-BE-014",
+      "target_kind": "work_item",
+      "requires_case": true,
+      "audience": "affected previous/new claimants",
+      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "channel_scope": [
+        "IN_APP",
+        "EMAIL"
+      ],
+      "mandatory": false,
+      "preference_policy": "Mandatory actionable/security notices cannot be disabled; optional email uses explicit owner opt-in and registered active email connection.",
+      "template_key": "application.map_03",
+      "template_version": "1",
+      "variables": {
+        "resource_name": {
+          "type": "string",
+          "max_length": 120,
+          "classification": "authorized display name"
+        }
+      },
+      "templates": {
+        "en": {
+          "subject": "Assignment changed",
+          "content": "Assignment changed: {resource_name}"
+        },
+        "fa": {
+          "subject": "تخصیص تغییر کرد",
+          "content": "تخصیص تغییر کرد: {resource_name}"
+        }
+      },
+      "dedupe_fields": [
+        "work_item_id",
+        "event_sequence",
+        "recipient_id"
+      ],
+      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+    },
+    {
+      "id": "MAP-04",
+      "source_file": "src/apps/work_items/application/service.py",
+      "source_symbol": "_record",
+      "source_events": [
+        "work_item.returned"
+      ],
+      "producer_status": "EXISTING_EVENT",
+      "blocked_by": null,
+      "producer_gap": null,
+      "delivery_status": "IMPLEMENTED",
+      "delivery_implemented_by": "APP-BE-014",
+      "target_kind": "work_item",
+      "requires_case": true,
+      "audience": "actual configured correction recipient",
+      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "channel_scope": [
+        "IN_APP",
+        "EMAIL"
+      ],
+      "mandatory": true,
+      "preference_policy": "Mandatory actionable/security notices cannot be disabled; optional email uses explicit owner opt-in and registered active email connection.",
+      "template_key": "application.map_04",
+      "template_version": "1",
+      "variables": {
+        "resource_name": {
+          "type": "string",
+          "max_length": 120,
+          "classification": "authorized display name"
+        }
+      },
+      "templates": {
+        "en": {
+          "subject": "Correction required",
+          "content": "Correction required: {resource_name}"
+        },
+        "fa": {
+          "subject": "اصلاح لازم است",
+          "content": "اصلاح لازم است: {resource_name}"
+        }
+      },
+      "dedupe_fields": [
+        "work_item_id",
+        "correction_round",
+        "recipient_id"
+      ],
+      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+    },
+    {
+      "id": "MAP-05",
+      "source_file": "src/apps/work_items/application/service.py",
+      "source_symbol": "_record",
+      "source_events": [
+        "work_item.completed",
+        "work_item.rejected"
+      ],
+      "producer_status": "EXISTING_EVENT",
+      "blocked_by": null,
+      "producer_gap": null,
+      "delivery_status": "IMPLEMENTED",
+      "delivery_implemented_by": "APP-BE-014",
+      "target_kind": "case",
+      "requires_case": true,
+      "audience": "requester and explicitly configured next participants",
+      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "channel_scope": [
+        "IN_APP",
+        "EMAIL"
+      ],
+      "mandatory": false,
+      "preference_policy": "Mandatory actionable/security notices cannot be disabled; optional email uses explicit owner opt-in and registered active email connection.",
+      "template_key": "application.map_05",
+      "template_version": "1",
+      "variables": {
+        "resource_name": {
+          "type": "string",
+          "max_length": 120,
+          "classification": "authorized display name"
+        }
+      },
+      "templates": {
+        "en": {
+          "subject": "Human decision recorded",
+          "content": "Human decision recorded: {resource_name}"
+        },
+        "fa": {
+          "subject": "تصمیم انسانی ثبت شد",
+          "content": "تصمیم انسانی ثبت شد: {resource_name}"
+        }
+      },
+      "dedupe_fields": [
+        "work_item_id",
+        "event_sequence",
+        "recipient_id"
+      ],
+      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+    },
+    {
+      "id": "MAP-06",
+      "source_file": "src/apps/processes/application/service.py",
+      "source_symbol": "_complete",
+      "source_events": [
+        "process.completed",
+        "process.failed"
+      ],
+      "producer_status": "EXISTING_EVENT",
+      "blocked_by": null,
+      "producer_gap": null,
+      "delivery_status": "IMPLEMENTED",
+      "delivery_implemented_by": "APP-BE-014",
+      "target_kind": "case",
+      "requires_case": true,
+      "audience": "requester",
+      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "channel_scope": [
+        "IN_APP",
+        "EMAIL"
+      ],
+      "mandatory": false,
+      "preference_policy": "Mandatory actionable/security notices cannot be disabled; optional email uses explicit owner opt-in and registered active email connection.",
+      "template_key": "application.map_06",
+      "template_version": "1",
+      "variables": {
+        "resource_name": {
+          "type": "string",
+          "max_length": 120,
+          "classification": "authorized display name"
+        }
+      },
+      "templates": {
+        "en": {
+          "subject": "Workflow outcome recorded",
+          "content": "Workflow outcome recorded: {resource_name}"
+        },
+        "fa": {
+          "subject": "نتیجه گردش کار ثبت شد",
+          "content": "نتیجه گردش کار ثبت شد: {resource_name}"
+        }
+      },
+      "dedupe_fields": [
+        "process_id",
+        "terminal_sequence",
+        "recipient_id"
+      ],
+      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+    },
+    {
+      "id": "MAP-07",
+      "source_file": "src/apps/processes/application/service.py",
+      "source_symbol": "fail_background",
+      "source_events": [],
+      "producer_status": "BLOCKED_PRODUCER",
+      "blocked_by": "APP-BE-024",
+      "producer_gap": "Distinguish definitive failure from unknown-after-dispatch outcome; generic step failure is insufficient.",
+      "delivery_status": "TARGET_RESERVED_PRODUCER_BLOCKED",
+      "delivery_implemented_by": "APP-BE-014",
+      "target_kind": "operation",
+      "requires_case": true,
+      "audience": "authorized recovery operators; configured safe requester summary",
+      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "channel_scope": [
+        "IN_APP",
+        "EMAIL"
+      ],
+      "mandatory": true,
+      "preference_policy": "Mandatory actionable/security notices cannot be disabled; optional email uses explicit owner opt-in and registered active email connection.",
+      "template_key": "application.map_07",
+      "template_version": "1",
+      "variables": {
+        "resource_name": {
+          "type": "string",
+          "max_length": 120,
+          "classification": "authorized display name"
+        }
+      },
+      "templates": {
+        "en": {
+          "subject": "Operation requires attention",
+          "content": "Operation requires attention: {resource_name}"
+        },
+        "fa": {
+          "subject": "عملیات نیازمند بررسی است",
+          "content": "عملیات نیازمند بررسی است: {resource_name}"
+        }
+      },
+      "dedupe_fields": [
+        "operation_id",
+        "failure_episode",
+        "recipient_id"
+      ],
+      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+    },
+    {
+      "id": "MAP-08",
+      "source_file": "src/apps/processes/application/service.py",
+      "source_symbol": "complete_background",
+      "source_events": [],
+      "producer_status": "BLOCKED_PRODUCER",
+      "blocked_by": "APP-BE-023",
+      "producer_gap": "Bind actual durable sandbox business receipt; automation.completed alone is not provider-effect confirmation.",
+      "delivery_status": "TARGET_RESERVED_PRODUCER_BLOCKED",
+      "delivery_implemented_by": "APP-BE-014",
+      "target_kind": "operation",
+      "requires_case": true,
+      "audience": "authorized case audience",
+      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "channel_scope": [
+        "IN_APP",
+        "EMAIL"
+      ],
+      "mandatory": false,
+      "preference_policy": "Mandatory actionable/security notices cannot be disabled; optional email uses explicit owner opt-in and registered active email connection.",
+      "template_key": "application.map_08",
+      "template_version": "1",
+      "variables": {
+        "resource_name": {
+          "type": "string",
+          "max_length": 120,
+          "classification": "authorized display name"
+        }
+      },
+      "templates": {
+        "en": {
+          "subject": "Business receipt confirmed",
+          "content": "Business receipt confirmed: {resource_name}"
+        },
+        "fa": {
+          "subject": "رسید عملیات تایید شد",
+          "content": "رسید عملیات تایید شد: {resource_name}"
+        }
+      },
+      "dedupe_fields": [
+        "operation_id",
+        "receipt_id",
+        "recipient_id"
+      ],
+      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+    },
+    {
+      "id": "MAP-09",
+      "source_file": "src/apps/reporting/tasks.py",
+      "source_symbol": "_generate",
+      "source_events": [],
+      "producer_status": "EXISTING_COMMAND_HOOK",
+      "blocked_by": null,
+      "producer_gap": null,
+      "delivery_status": "IMPLEMENTED",
+      "delivery_implemented_by": "APP-BE-014",
+      "target_kind": "report",
+      "requires_case": false,
+      "audience": "report owner",
+      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "channel_scope": [
+        "IN_APP",
+        "EMAIL"
+      ],
+      "mandatory": false,
+      "preference_policy": "Mandatory actionable/security notices cannot be disabled; optional email uses explicit owner opt-in and registered active email connection.",
+      "template_key": "application.map_09",
+      "template_version": "1",
+      "variables": {
+        "resource_name": {
+          "type": "string",
+          "max_length": 120,
+          "classification": "authorized display name"
+        }
+      },
+      "templates": {
+        "en": {
+          "subject": "Report status changed",
+          "content": "Report status changed: {resource_name}"
+        },
+        "fa": {
+          "subject": "وضعیت گزارش تغییر کرد",
+          "content": "وضعیت گزارش تغییر کرد: {resource_name}"
+        }
+      },
+      "dedupe_fields": [
+        "report_id",
+        "generation",
+        "status",
+        "recipient_id"
+      ],
+      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+    },
+    {
+      "id": "MAP-10",
+      "source_file": "src/core/celery_scheduler.py",
+      "source_symbol": "tick",
+      "source_events": [],
+      "producer_status": "BLOCKED_PRODUCER",
+      "blocked_by": "APP-BE-017",
+      "producer_gap": "Calendar producer waits for APP-BE-016; scheduler tick is the existing scheduling seam, not a fabricated calendar event.",
+      "delivery_status": "TARGET_RESERVED_PRODUCER_BLOCKED",
+      "delivery_implemented_by": "APP-BE-014",
+      "target_kind": "calendar",
+      "requires_case": false,
+      "audience": "event owner and permitted participants",
+      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "channel_scope": [
+        "IN_APP",
+        "EMAIL"
+      ],
+      "mandatory": false,
+      "preference_policy": "Mandatory actionable/security notices cannot be disabled; optional email uses explicit owner opt-in and registered active email connection.",
+      "template_key": "application.map_10",
+      "template_version": "1",
+      "variables": {
+        "resource_name": {
+          "type": "string",
+          "max_length": 120,
+          "classification": "authorized display name"
+        }
+      },
+      "templates": {
+        "en": {
+          "subject": "Calendar reminder",
+          "content": "Calendar reminder: {resource_name}"
+        },
+        "fa": {
+          "subject": "یادآوری تقویم",
+          "content": "یادآوری تقویم: {resource_name}"
+        }
+      },
+      "dedupe_fields": [
+        "calendar_event_id",
+        "event_revision",
+        "reminder_occurrence",
+        "recipient_id"
+      ],
+      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+    },
+    {
+      "id": "MAP-11",
+      "source_file": "src/apps/processes/application/waits.py",
+      "source_symbol": "fire_claimed_action",
+      "source_events": [],
+      "producer_status": "BLOCKED_PRODUCER",
+      "blocked_by": "APP-BE-017",
+      "producer_gap": "Add due-time revision/reminder producer without inventing SLA deadlines; generic workflow timer is not a work deadline.",
+      "delivery_status": "TARGET_RESERVED_PRODUCER_BLOCKED",
+      "delivery_implemented_by": "APP-BE-014",
+      "target_kind": "work_item",
+      "requires_case": true,
+      "audience": "currently responsible eligible users; configured escalation only",
+      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "channel_scope": [
+        "IN_APP",
+        "EMAIL"
+      ],
+      "mandatory": false,
+      "preference_policy": "Mandatory actionable/security notices cannot be disabled; optional email uses explicit owner opt-in and registered active email connection.",
+      "template_key": "application.map_11",
+      "template_version": "1",
+      "variables": {
+        "resource_name": {
+          "type": "string",
+          "max_length": 120,
+          "classification": "authorized display name"
+        }
+      },
+      "templates": {
+        "en": {
+          "subject": "Work reminder",
+          "content": "Work reminder: {resource_name}"
+        },
+        "fa": {
+          "subject": "یادآوری کار",
+          "content": "یادآوری کار: {resource_name}"
+        }
+      },
+      "dedupe_fields": [
+        "work_item_id",
+        "due_revision",
+        "reminder_key",
+        "recipient_id"
+      ],
+      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+    },
+    {
+      "id": "MAP-12",
+      "source_file": "src/apps/ai/application/approval_service.py",
+      "source_symbol": "stage",
+      "source_events": [],
+      "producer_status": "EXISTING_COMMAND_HOOK",
+      "blocked_by": null,
+      "producer_gap": null,
+      "delivery_status": "IMPLEMENTED",
+      "delivery_implemented_by": "APP-BE-014",
+      "target_kind": "ai_approval",
+      "requires_case": true,
+      "audience": "eligible human approval claimant/candidates",
+      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "channel_scope": [
+        "IN_APP",
+        "EMAIL"
+      ],
+      "mandatory": true,
+      "preference_policy": "Mandatory actionable/security notices cannot be disabled; optional email uses explicit owner opt-in and registered active email connection.",
+      "template_key": "application.map_12",
+      "template_version": "1",
+      "variables": {
+        "resource_name": {
+          "type": "string",
+          "max_length": 120,
+          "classification": "authorized display name"
+        }
+      },
+      "templates": {
+        "en": {
+          "subject": "Read-only AI tool approval",
+          "content": "Read-only AI tool approval: {resource_name}"
+        },
+        "fa": {
+          "subject": "تایید ابزار فقط خواندنی هوش مصنوعی",
+          "content": "تایید ابزار فقط خواندنی هوش مصنوعی: {resource_name}"
+        }
+      },
+      "dedupe_fields": [
+        "approval_id",
+        "approval_generation",
+        "recipient_id"
+      ],
+      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+    },
+    {
+      "id": "MAP-13",
+      "source_file": "src/core/bpms_observability.py",
+      "source_symbol": "record_process_event",
+      "source_events": [],
+      "producer_status": "BLOCKED_PRODUCER",
+      "blocked_by": "APP-BE-015",
+      "producer_gap": "Persist safe incident projection and escalation first; telemetry is not a durable support incident.",
+      "delivery_status": "TARGET_RESERVED_PRODUCER_BLOCKED",
+      "delivery_implemented_by": "APP-BE-014",
+      "target_kind": "support",
+      "requires_case": false,
+      "audience": "support-authorized actor/group",
+      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "channel_scope": [
+        "IN_APP",
+        "EMAIL"
+      ],
+      "mandatory": false,
+      "preference_policy": "Mandatory actionable/security notices cannot be disabled; optional email uses explicit owner opt-in and registered active email connection.",
+      "template_key": "application.map_13",
+      "template_version": "1",
+      "variables": {
+        "resource_name": {
+          "type": "string",
+          "max_length": 120,
+          "classification": "authorized display name"
+        }
+      },
+      "templates": {
+        "en": {
+          "subject": "Support failure requires attention",
+          "content": "Support failure requires attention: {resource_name}"
+        },
+        "fa": {
+          "subject": "خطای پشتیبانی نیازمند بررسی است",
+          "content": "خطای پشتیبانی نیازمند بررسی است: {resource_name}"
+        }
+      },
+      "dedupe_fields": [
+        "incident_id",
+        "episode",
+        "threshold",
+        "recipient_id"
+      ],
+      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+    },
+    {
+      "id": "MAP-14",
+      "source_file": "src/apps/users/application/auth_service.py",
+      "source_symbol": "audit",
+      "source_events": [
+        "password.changed",
+        "password.reset",
+        "password.reset.admin",
+        "logout.all"
+      ],
+      "producer_status": "EXISTING_EVENT",
+      "blocked_by": null,
+      "producer_gap": null,
+      "delivery_status": "IMPLEMENTED",
+      "delivery_implemented_by": "APP-BE-014",
+      "target_kind": "account",
+      "requires_case": false,
+      "audience": "affected user only",
+      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "channel_scope": [
+        "IN_APP",
+        "EMAIL"
+      ],
+      "mandatory": true,
+      "preference_policy": "Mandatory actionable/security notices cannot be disabled; optional email uses explicit owner opt-in and registered active email connection.",
+      "template_key": "application.map_14",
+      "template_version": "1",
+      "variables": {
+        "resource_name": {
+          "type": "string",
+          "max_length": 120,
+          "classification": "authorized display name"
+        }
+      },
+      "templates": {
+        "en": {
+          "subject": "Account security event",
+          "content": "Account security event: {resource_name}"
+        },
+        "fa": {
+          "subject": "رویداد امنیت حساب",
+          "content": "رویداد امنیت حساب: {resource_name}"
+        }
+      },
+      "dedupe_fields": [
+        "security_event_id",
+        "recipient_id"
+      ],
+      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+    }
+  ]
+}

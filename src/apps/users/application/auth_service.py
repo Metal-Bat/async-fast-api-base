@@ -44,19 +44,37 @@ class AuthService:
         ip_address: str | None = None,
         user_agent: str | None = None,
         details: dict[str, object] | None = None,
+        notice_user_id: UUID | None = None,
     ) -> None:
         """Stage one security event in the caller's transaction."""
-        self.session.add(
-            AuthAuditEventEntity(
-                user_id=user_id,
-                event_type=event_type,
-                success=success,
-                request_id=request_id,
-                ip_address=ip_address,
-                user_agent=user_agent,
-                details=details or {},
-            )
+        event = AuthAuditEventEntity(
+            user_id=user_id,
+            event_type=event_type,
+            success=success,
+            request_id=request_id,
+            ip_address=ip_address,
+            user_agent=user_agent,
+            details=details or {},
         )
+
+        self.session.add(event)
+        if (
+            success
+            and user_id is not None
+            and event_type
+            in {"password.changed", "password.reset", "password.reset.admin", "logout.all"}
+        ):
+            await self.session.flush()
+            from apps.notifications.application.events import stage_notice
+
+            await stage_notice(
+                self.session,
+                map_id="MAP-14",
+                event_id=event.id,
+                recipient_id=notice_user_id or user_id,
+                target_kind="account",
+                target_id=notice_user_id or user_id,
+            )
 
     def _access_token(self, user: UserEntity, session_id: UUID) -> str:
         now = get_datetime_utc()
@@ -343,4 +361,5 @@ class AuthService:
             user_id=actor.id,
             request_id=request_id,
             details={"target_user_id": str(user.id)},
+            notice_user_id=user.id,
         )

@@ -1,0 +1,1 @@
+"""Authenticated support HTTP adapters."""

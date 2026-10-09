@@ -1,0 +1,782 @@
+{
+  "status": "VERIFIED_WITH_EXCEPTION",
+  "started_at": "2026-10-08T20:19:36.495990+00:00",
+  "finished_at": "2026-10-08T20:25:06.533304+00:00",
+  "git_head": "995829eebd9483ac6b589c1648fc799c650ad464",
+  "lock_sha256": "4c23cc5a60e0f913471df1a80dcba273c29c22d8878f9d8a75a573cfe35eecf4",
+  "tools": {
+    "python": "3.14.7 (main, Sep  1 2026, 14:18:09) [Clang 22.1.3 ]",
+    "installed": {
+      "ruff": "0.16.10",
+      "ty": "0.0.85",
+      "pre-commit": "4.6.2"
+    },
+    "locked": {
+      "pre-commit": "4.6.2",
+      "ruff": "0.16.10",
+      "ty": "0.0.85"
+    },
+    "mismatches": []
+  },
+  "approved_warning_exceptions": [
+    "ignore:'asyncio\\.iscoroutinefunction' is deprecated and slated for removal in Python 3\\.16; use inspect\\.iscoroutinefunction\\(\\) instead:DeprecationWarning:cohere\\.client$",
+    "ignore:'_UnionGenericAlias' is deprecated and slated for removal in Python 3\\.17:DeprecationWarning:google\\.genai\\.types$"
+  ],
+  "tested_tree_sha256": "1f079ec71dcbcf83a51c5ea66da7497d4882103f4226516086fae8ffb5f23c02",
+  "tested_code_configuration_fixture_sha256": "b026d9b694019736a9162857aba2a8e515bce9ce850fdd21c88b712f8af2ab4e",
+  "private_report": "/tmp/app-be-check-faib6zqz/report.json",
+  "command": "rtk proxy env UV_CACHE_DIR=/tmp/app-be-uv-cache mise run check",
+  "returncode": 0,
+  "migration_head": "j016_calendar_events",
+  "peer_commit": "afe4bbe5f566c80e7eb45f6ef9f12c041d60139d",
+  "peer_verification": "Read-only intake only; no frontend/browser/deployment acceptance",
+  "stages": [
+    {
+      "stage": "lock-check",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "fmt-check",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "lint",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "docstrings",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "typecheck",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "security",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "doctest",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": [],
+      "tests": [
+        {
+          "module": "src.utils.select",
+          "name": "src.utils.select.select_options"
+        }
+      ]
+    },
+    {
+      "stage": "test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 805,
+      "failed": 0,
+      "skipped": 167,
+      "diagnostics": [],
+      "default_exclusions": [
+        {
+          "module": "tests.integration.test_ai_agents",
+          "reason": "uses PostgreSQL",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_ai_budget",
+          "reason": "uses PostgreSQL",
+          "count": 2
+        },
+        {
+          "module": "tests.integration.test_ai_connections",
+          "reason": "uses PostgreSQL",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_ai_query_lookup",
+          "reason": "uses PostgreSQL",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_application_seed",
+          "reason": "uses PostgreSQL",
+          "count": 3
+        },
+        {
+          "module": "tests.integration.test_attachments",
+          "reason": "uses PostgreSQL and S3",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_bpms_operations",
+          "reason": "uses PostgreSQL",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_bpms_recovery",
+          "reason": "uses PostgreSQL",
+          "count": 5
+        },
+        {
+          "module": "tests.integration.test_bpms_restore",
+          "reason": "requires disposable PostgreSQL/S3 and Docker CLI",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_bpms_retention",
+          "reason": "uses PostgreSQL",
+          "count": 3
+        },
+        {
+          "module": "tests.integration.test_bpms_volume",
+          "reason": "loads disposable PostgreSQL volume fixtures",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_bpms_worker_restart",
+          "reason": "requires disposable worker infrastructure",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_business_analytics",
+          "reason": "uses PostgreSQL",
+          "count": 2
+        },
+        {
+          "module": "tests.integration.test_calendar_events",
+          "reason": "uses PostgreSQL",
+          "count": 2
+        },
+        {
+          "module": "tests.integration.test_calendar_reminders",
+          "reason": "uses PostgreSQL",
+          "count": 3
+        },
+        {
+          "module": "tests.integration.test_celery",
+          "reason": "requires disposable Celery test infrastructure",
+          "count": 6
+        },
+        {
+          "module": "tests.integration.test_celery_worker",
+          "reason": "requires disposable Celery test infrastructure",
+          "count": 4
+        },
+        {
+          "module": "tests.integration.test_clients",
+          "reason": "uses PostgreSQL",
+          "count": 2
+        },
+        {
+          "module": "tests.integration.test_connections",
+          "reason": "uses PostgreSQL",
+          "count": 2
+        },
+        {
+          "module": "tests.integration.test_definition_library",
+          "reason": "uses PostgreSQL",
+          "count": 4
+        },
+        {
+          "module": "tests.integration.test_demo_assets",
+          "reason": "requires disposable paired transfer services",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_demo_groups",
+          "reason": "uses PostgreSQL",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_demo_seed",
+          "reason": "uses PostgreSQL",
+          "count": 3
+        },
+        {
+          "module": "tests.integration.test_designer",
+          "reason": "uses PostgreSQL",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_field_inventory",
+          "reason": "uses PostgreSQL",
+          "count": 2
+        },
+        {
+          "module": "tests.integration.test_form_library",
+          "reason": "uses PostgreSQL",
+          "count": 10
+        },
+        {
+          "module": "tests.integration.test_form_options",
+          "reason": "uses PostgreSQL",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_forms",
+          "reason": "uses PostgreSQL",
+          "count": 4
+        },
+        {
+          "module": "tests.integration.test_frontend_journey",
+          "reason": "uses PostgreSQL",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_full_workflow",
+          "reason": "uses PostgreSQL",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_help_state",
+          "reason": "uses PostgreSQL",
+          "count": 2
+        },
+        {
+          "module": "tests.integration.test_live_query_policy",
+          "reason": "uses PostgreSQL",
+          "count": 7
+        },
+        {
+          "module": "tests.integration.test_migrations",
+          "reason": "uses the configured disposable integration database",
+          "count": 2
+        },
+        {
+          "module": "tests.integration.test_owned_calendar_worker",
+          "reason": "requires owned worker and HTTPS email gateway",
+          "count": 2
+        },
+        {
+          "module": "tests.integration.test_owned_notification_worker",
+          "reason": "requires owned worker and HTTPS email gateway",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_owned_report_worker",
+          "reason": "requires disposable reporting worker and storage",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_personal_preferences",
+          "reason": "uses PostgreSQL",
+          "count": 4
+        },
+        {
+          "module": "tests.integration.test_platform_foundation",
+          "reason": "uses PostgreSQL",
+          "count": 2
+        },
+        {
+          "module": "tests.integration.test_private_transfers",
+          "reason": "requires disposable paired transfer services",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_processes",
+          "reason": "uses PostgreSQL",
+          "count": 24
+        },
+        {
+          "module": "tests.integration.test_requests",
+          "reason": "uses PostgreSQL",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_resource_links",
+          "reason": "uses PostgreSQL",
+          "count": 2
+        },
+        {
+          "module": "tests.integration.test_saved_views_favorites",
+          "reason": "uses PostgreSQL",
+          "count": 3
+        },
+        {
+          "module": "tests.integration.test_services",
+          "reason": "set RUN_INTEGRATION=1 with Docker Compose services running",
+          "count": 8
+        },
+        {
+          "module": "tests.integration.test_setup_dependency_readiness",
+          "reason": "uses PostgreSQL",
+          "count": 2
+        },
+        {
+          "module": "tests.integration.test_step_types",
+          "reason": "uses PostgreSQL",
+          "count": 12
+        },
+        {
+          "module": "tests.integration.test_studio_workspace",
+          "reason": "uses isolated PostgreSQL",
+          "count": 2
+        },
+        {
+          "module": "tests.integration.test_subprocess_authoring",
+          "reason": "uses PostgreSQL",
+          "count": 5
+        },
+        {
+          "module": "tests.integration.test_support_failures",
+          "reason": "uses PostgreSQL",
+          "count": 3
+        },
+        {
+          "module": "tests.integration.test_task_corrections",
+          "reason": "uses PostgreSQL",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_unified_notifications",
+          "reason": "uses PostgreSQL",
+          "count": 3
+        },
+        {
+          "module": "tests.integration.test_visual_runtime_conformance",
+          "reason": "uses PostgreSQL",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_wave_four_http",
+          "reason": "uses PostgreSQL",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_work_groups",
+          "reason": "uses PostgreSQL",
+          "count": 2
+        },
+        {
+          "module": "tests.integration.test_work_items",
+          "reason": "uses PostgreSQL and S3",
+          "count": 1
+        },
+        {
+          "module": "tests.integration.test_workflows",
+          "reason": "uses PostgreSQL",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "stage": "flow-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": [],
+      "tests": [
+        {
+          "module": "tests.integration.test_full_workflow",
+          "name": "test_full_purchase_request_flow_preserves_pins_and_human_approvals"
+        },
+        {
+          "module": "tests.integration.test_frontend_journey",
+          "name": "test_documented_http_login_submit_approve_track_and_session_lifecycle"
+        },
+        {
+          "module": "tests.integration.test_platform_foundation",
+          "name": "test_restrictions_round_trip_and_eligibility_rechecked_at_creation"
+        },
+        {
+          "module": "tests.integration.test_platform_foundation",
+          "name": "test_current_grant_reads_enforce_connection_manage_authority"
+        }
+      ],
+      "owned_disposable_databases": [
+        "bpms_flow_7524b070e0bb46359e85043f6d383f6e"
+      ]
+    },
+    {
+      "stage": "delivery-foundation-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": [],
+      "tests": [
+        {
+          "module": "tests.integration.test_migrations",
+          "name": "test_alembic_empty_upgrade_downgrade_upgrade_round_trip"
+        },
+        {
+          "module": "tests.integration.test_migrations",
+          "name": "test_populated_initial_head_upgrade_preserves_pins_media_and_history"
+        },
+        {
+          "module": "tests.integration.test_full_workflow",
+          "name": "test_full_purchase_request_flow_preserves_pins_and_human_approvals"
+        },
+        {
+          "module": "tests.integration.test_frontend_journey",
+          "name": "test_documented_http_login_submit_approve_track_and_session_lifecycle"
+        },
+        {
+          "module": "tests.integration.test_platform_foundation",
+          "name": "test_restrictions_round_trip_and_eligibility_rechecked_at_creation"
+        },
+        {
+          "module": "tests.integration.test_platform_foundation",
+          "name": "test_current_grant_reads_enforce_connection_manage_authority"
+        },
+        {
+          "module": "tests.integration.test_live_query_policy",
+          "name": "test_normal_pages_and_counts_exclude_deleted_entities[UserEntity-UserQuery-username]"
+        },
+        {
+          "module": "tests.integration.test_live_query_policy",
+          "name": "test_normal_pages_and_counts_exclude_deleted_entities[RoleEntity-RoleQuery-name]"
+        },
+        {
+          "module": "tests.integration.test_live_query_policy",
+          "name": "test_normal_pages_and_counts_exclude_deleted_entities[WorkGroupEntity-WorkGroupQuery-code]"
+        },
+        {
+          "module": "tests.integration.test_live_query_policy",
+          "name": "test_normal_pages_and_counts_exclude_deleted_entities[FormDefinitionEntity-FormQuery-code]"
+        },
+        {
+          "module": "tests.integration.test_live_query_policy",
+          "name": "test_normal_pages_and_counts_exclude_deleted_entities[WorkflowDefinitionEntity-WorkflowQuery-code]"
+        },
+        {
+          "module": "tests.integration.test_live_query_policy",
+          "name": "test_normal_pages_and_counts_exclude_deleted_entities[RequestTypeEntity-RequestTypeQuery-code]"
+        },
+        {
+          "module": "tests.integration.test_live_query_policy",
+          "name": "test_real_cache_refreshes_after_authorized_delete_and_restore"
+        },
+        {
+          "module": "tests.integration.test_application_seed",
+          "name": "test_seed_check_repeat_and_operator_edits_are_preserved"
+        },
+        {
+          "module": "tests.integration.test_application_seed",
+          "name": "test_concurrent_seed_converges_and_does_not_rewrite_published_catalogs"
+        },
+        {
+          "module": "tests.integration.test_application_seed",
+          "name": "test_seeded_requester_can_read_self_but_cannot_manage_users_or_restore"
+        }
+      ],
+      "owned_disposable_databases": [
+        "bpms_flow_3542102a1c694c37a8f3158d736a99f0"
+      ]
+    },
+    {
+      "stage": "delivery-wave-four-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 29,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": [],
+      "tests": [
+        {
+          "module": "tests.integration.test_full_workflow",
+          "name": "test_full_purchase_request_flow_preserves_pins_and_human_approvals"
+        },
+        {
+          "module": "tests.integration.test_frontend_journey",
+          "name": "test_documented_http_login_submit_approve_track_and_session_lifecycle"
+        },
+        {
+          "module": "tests.integration.test_platform_foundation",
+          "name": "test_restrictions_round_trip_and_eligibility_rechecked_at_creation"
+        },
+        {
+          "module": "tests.integration.test_platform_foundation",
+          "name": "test_current_grant_reads_enforce_connection_manage_authority"
+        },
+        {
+          "module": "tests.integration.test_demo_seed",
+          "name": "test_demo_publishes_two_templates_and_preserves_operator_changes"
+        },
+        {
+          "module": "tests.integration.test_demo_seed",
+          "name": "test_installation_converges_and_does_not_regrant_revoked_access"
+        },
+        {
+          "module": "tests.integration.test_demo_seed",
+          "name": "test_failed_installation_rolls_back_and_can_be_repaired"
+        },
+        {
+          "module": "tests.integration.test_demo_groups",
+          "name": "test_demo_groups_are_owned_and_do_not_restore_revoked_members"
+        },
+        {
+          "module": "tests.integration.test_personal_preferences",
+          "name": "test_self_settings_http_contract_and_avatar_ownership"
+        },
+        {
+          "module": "tests.integration.test_personal_preferences",
+          "name": "test_settings_persist_conflict_and_isolate_self"
+        },
+        {
+          "module": "tests.integration.test_personal_preferences",
+          "name": "test_concurrent_setting_edits_have_one_explicit_conflict"
+        },
+        {
+          "module": "tests.integration.test_personal_preferences",
+          "name": "test_avatar_binding_is_self_owned_and_removal_preserves_private_media"
+        },
+        {
+          "module": "tests.integration.test_help_state",
+          "name": "test_help_http_requires_an_explicit_action_and_self_ownership"
+        },
+        {
+          "module": "tests.integration.test_help_state",
+          "name": "test_help_repeat_revision_locale_isolation_and_deliberate_self_reset"
+        },
+        {
+          "module": "tests.integration.test_resource_links",
+          "name": "test_resource_links_refresh_and_hide_deleted_or_revoked_targets"
+        },
+        {
+          "module": "tests.integration.test_resource_links",
+          "name": "test_selected_summary_is_not_limited_to_first_search_page"
+        },
+        {
+          "module": "tests.integration.test_business_analytics",
+          "name": "test_metrics_match_live_owned_lists_and_actual_return_decisions"
+        },
+        {
+          "module": "tests.integration.test_business_analytics",
+          "name": "test_dst_half_open_status_buckets_cancelled_unknown_and_live_denial"
+        },
+        {
+          "module": "tests.integration.test_wave_four_http",
+          "name": "test_wave_four_contracts_use_actual_permissions_and_list_queries"
+        },
+        {
+          "module": "tests.integration.test_saved_views_favorites",
+          "name": "test_saved_view_http_contract_is_private_and_strict"
+        },
+        {
+          "module": "tests.integration.test_saved_views_favorites",
+          "name": "test_presets_replay_roundtrip_isolation_schema_drift_and_favorite_refresh"
+        },
+        {
+          "module": "tests.integration.test_saved_views_favorites",
+          "name": "test_concurrent_default_selection_leaves_one_default"
+        },
+        {
+          "module": "tests.integration.test_setup_dependency_readiness",
+          "name": "test_setup_and_dependency_facts_do_not_write_or_grant"
+        },
+        {
+          "module": "tests.integration.test_setup_dependency_readiness",
+          "name": "test_definition_exact_pins_missing_form_client_and_empty_candidates"
+        },
+        {
+          "module": "tests.integration.test_unified_notifications",
+          "name": "test_security_notice_atomic_replay_locale_read_and_legacy_exclusion"
+        },
+        {
+          "module": "tests.integration.test_unified_notifications",
+          "name": "test_claim_release_and_forward_notices_follow_committed_assignments"
+        },
+        {
+          "module": "tests.integration.test_unified_notifications",
+          "name": "test_committed_process_fanout_dedupe_current_links_and_revocation"
+        },
+        {
+          "module": "tests.integration.test_processes",
+          "name": "test_notifications_are_atomic_owned_retryable_and_idempotent"
+        },
+        {
+          "module": "tests.integration.test_task_corrections",
+          "name": "test_repeated_correction_rounds_pin_data_feedback_and_reject_stale_writes"
+        }
+      ],
+      "owned_disposable_databases": [
+        "bpms_flow_8095b732dbf34328a1c621835a53df6b"
+      ]
+    },
+    {
+      "stage": "delivery-transfer-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": [],
+      "tests": [
+        {
+          "module": "tests.integration.test_owned_report_worker",
+          "name": "test_actual_worker_owned_report_download_and_delete"
+        },
+        {
+          "module": "tests.integration.test_owned_notification_worker",
+          "name": "test_owned_worker_notification_receipt_and_duplicate"
+        },
+        {
+          "module": "tests.integration.test_owned_calendar_worker",
+          "name": "test_scheduler_reload_broker_recovery_and_real_worker_deduplicate"
+        },
+        {
+          "module": "tests.integration.test_owned_calendar_worker",
+          "name": "test_cancel_after_enqueue_is_safe_at_the_actual_worker"
+        },
+        {
+          "module": "tests.integration.test_private_transfers",
+          "name": "test_maximum_private_transfer_crosses_actual_session_boundary"
+        },
+        {
+          "module": "tests.integration.test_demo_assets",
+          "name": "test_demo_assets_real_storage_is_idempotent"
+        }
+      ],
+      "owned_disposable_databases": [
+        "bpms_flow_4d962b8745a942a0b7b6eb8dc14aafc5"
+      ]
+    },
+    {
+      "stage": "delivery-through-020-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": [],
+      "tests": [
+        {
+          "module": "tests.integration.test_support_failures",
+          "name": "test_business_rollback_persists_only_safe_incident_and_episodes"
+        },
+        {
+          "module": "tests.integration.test_support_failures",
+          "name": "test_http_failure_rolls_back_then_returns_the_durable_correlation"
+        },
+        {
+          "module": "tests.integration.test_support_failures",
+          "name": "test_client_intake_dedupe_and_rate_limit_are_durable"
+        },
+        {
+          "module": "tests.integration.test_calendar_events",
+          "name": "test_calendar_overlap_exclusive_end_live_group_and_revision"
+        },
+        {
+          "module": "tests.integration.test_calendar_events",
+          "name": "test_work_deadline_is_actual_read_only_point_and_disappears"
+        },
+        {
+          "module": "tests.integration.test_calendar_reminders",
+          "name": "test_event_edit_cancel_replay_and_source_transaction_rollback"
+        },
+        {
+          "module": "tests.integration.test_calendar_reminders",
+          "name": "test_late_relevant_reminder_expires_without_notice"
+        },
+        {
+          "module": "tests.integration.test_calendar_reminders",
+          "name": "test_actual_work_due_change_and_completion_cancel_old_reminders"
+        },
+        {
+          "module": "tests.integration.test_visual_runtime_conformance",
+          "name": "test_twenty_control_runtime_request_review_print_and_correction"
+        }
+      ],
+      "owned_disposable_databases": [
+        "bpms_flow_11e666499c1f4384a65a5e78485f3844"
+      ]
+    },
+    {
+      "stage": "precommit-check",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    }
+  ],
+  "services": [
+    "PostgreSQL disposable databases",
+    "owned Dragonfly cache",
+    "owned MinIO object store",
+    "owned Redis broker",
+    "owned Celery worker child",
+    "local verified-TLS notification gateway",
+    "paired private transfer boundary"
+  ],
+  "limitations": [
+    "Two exact owner-approved SDK deprecations: VERIFIED_WITH_EXCEPTION",
+    "Default opt-in exclusions are listed; required profiles have zero skips",
+    "No deployed image, shared reset, peer/browser, live vendor, downstream SMTP or paid AI claim",
+    "Graceful peer rejection of oversized streaming upload remains unverified; declared-size preflight rejection is verified",
+    "Analytics EXPLAIN uses a controlled four-row fixture; scale acceptance remains later work"
+  ],
+  "post_gate_documentation_changes": [
+    "BACKLOG.md",
+    "CHANGELOG.md",
+    "docs/BACKEND-BACKLOG.md",
+    "docs/changes/APP-BE-015.md",
+    "docs/changes/APP-BE-016.md",
+    "docs/changes/APP-BE-017.md",
+    "docs/changes/APP-BE-018.md",
+    "docs/changes/APP-BE-020.md",
+    "docs/changes/APP-BE-027.md",
+    "docs/delivery/BACKEND-BACKLOG.md",
+    "docs/delivery/through-020-handoff.md",
+    "docs/delivery/through-020-verification.md"
+  ],
+  "installed_dependency_versions": {
+    "fastapi": "0.143.0",
+    "pydantic": "2.13.5",
+    "sqlmodel": "0.0.48",
+    "sqlalchemy": "2.0.54",
+    "celery": "5.6.3",
+    "redis": "8.1.0",
+    "asyncpg": "0.32.0",
+    "pytest": "9.1.1",
+    "detect-secrets": "1.5.0",
+    "cohere": "7.2.0",
+    "google-genai": "2.29.0"
+  },
+  "completion_documentation_check": {
+    "command": "rtk proxy env UV_CACHE_DIR=/tmp/app-be-uv-cache uv run pytest -q tests/docs",
+    "returncode": 0,
+    "passed": 6,
+    "skipped": 0
+  },
+  "new_completion_evidence": [
+    "docs/delivery/through-020-gate.json"
+  ]
+}

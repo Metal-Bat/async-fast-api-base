@@ -33,7 +33,7 @@ class UserService(
                 await super(UserService, self).list(query), from_attributes=True
             )
 
-        return await self.cache.get_or_load(f"page:{query.model_dump_json()}", adapter, load)
+        return await self.cache.get_or_load(f"live-page:{query.model_dump_json()}", adapter, load)
 
     async def get_public_by_id(self, ref_id: str) -> UserDTO:
         """Cache one public user detail by its versioned reference."""

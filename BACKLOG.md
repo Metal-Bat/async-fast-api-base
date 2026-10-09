@@ -1,5 +1,47 @@
 # Engineering Backlog
 
+Application delivery tasks live in [the APP-BE supplement](docs/delivery/BACKEND-BACKLOG.md).
+Existing task IDs and completion records below retain their historical scope.
+APP-BE-001–020 are DONE; see [through-020 verification](docs/delivery/through-020-verification.md).
+The complete fourteen-stage gate passed as VERIFIED_WITH_EXCEPTION under the two exact
+owner-approved SDK exceptions. Remaining APP work retains its separate scope.
+APP-BE-026 is also DONE; [completion verification](docs/delivery/completion-verification.md)
+records the fifteen-stage gate, safe restoration and the remaining eleven APP tasks.
+
+## DB-002 — Split the complete schema and required data into two revisions
+
+Priority: P2
+Status: DONE
+Area: migrations
+Depends-On: DB-001
+Related: APP-BE-003
+Change-Record: docs/changes/DB-002.md
+
+### Goal
+
+Keep exactly two Alembic revision files: all current tables and PostgreSQL guards first,
+required built-in catalog data and schedules second.
+
+### Context
+
+The owner explicitly requested two files on 2026-10-09, superseding the earlier additive-only
+repository migration decision. Preserve final schema and immutable handler contracts. Existing
+legacy databases require a reviewed transition; do not reset or stamp project databases.
+Optional configured admin bootstrap remains available in the data revision. Demo installations,
+role assignments, secrets and external integration activation remain explicit application setup.
+
+Completed: exactly two revisions; 103 tables and all legacy schema/catalog/schedule objects
+retained, all 17 registered handler versions and 13 permissions installed. Full fifteen-stage gate
+passed as VERIFIED_WITH_EXCEPTION (809 default tests and 78 required integration-profile passes).
+No project database reset or rebaseline; legacy deployment transition remains an operator action.
+
+### Acceptance Criteria
+
+- Exactly two revisions in one linear chain; schema-only installation contains no seed rows.
+- Full installation retains built-in handler versions, ports and schedules and installs permissions.
+- Disposable PostgreSQL round trips, populated data preservation and model drift checks pass.
+- Update deployment instructions, migration tests, generated head metadata and quality evidence.
+
 ## REPO-004 — Restore cache startup, scheduler shutdown and database tracing
 
 Priority: P1

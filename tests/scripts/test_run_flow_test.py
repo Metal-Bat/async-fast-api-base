@@ -123,6 +123,31 @@ def test_remote_host_is_rejected_before_startup(environment, monkeypatch):
     startup.assert_not_awaited()
 
 
+def test_delivery_profile_uses_owned_database_and_preserves_workflows(environment, monkeypatch):
+    monkeypatch.setenv("FLOW_TEST_PROFILE", "delivery-foundation")
+    monkeypatch.setattr(runner, "_ensure_postgres", AsyncMock())
+    monkeypatch.setattr(runner, "_database_command", AsyncMock())
+    run = Mock(return_value=subprocess.CompletedProcess([], 0))
+    monkeypatch.setattr(runner.subprocess, "run", run)
+    assert runner.main() == 0
+    command = run.call_args.args[0]
+    assert "tests/integration/test_full_workflow.py" in command
+    assert "tests/integration/test_live_query_policy.py" in command
+    assert "tests/integration/test_application_seed.py" in command
+    assert "tests/integration/test_migrations.py" in command
+    environment = run.call_args.kwargs["env"]
+    assert environment["FLOW_TEST_OWNED_DATABASE"] == environment["POSTGRES_DB"]
+    assert environment["RUN_MIGRATION_INTEGRATION"] == "1"
+
+
+def test_unknown_flow_profile_fails_before_creating_database(environment, monkeypatch):
+    monkeypatch.setenv("FLOW_TEST_PROFILE", "arbitrary-tests")
+    startup = AsyncMock()
+    monkeypatch.setattr(runner, "_ensure_postgres", startup)
+    assert runner.main() == 2
+    startup.assert_not_awaited()
+
+
 def test_missing_test_process_is_failure_and_still_cleans_up(environment, monkeypatch):
     monkeypatch.setattr(runner, "_ensure_postgres", AsyncMock())
     commands = AsyncMock()

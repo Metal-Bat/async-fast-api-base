@@ -1,5 +1,6 @@
 """Atomic attachment collection mutations and trusted request-scoped reads."""
 
+from copy import deepcopy
 from dataclasses import dataclass
 from datetime import timedelta
 from typing import Any
@@ -136,6 +137,7 @@ class AttachmentService:
         self.session.add(row)
         self._touch(request, submission)
         await self.session.flush()
+        await self.sync_values(submission, row.field_path)
         return request, row
 
     async def add_to_submission(
@@ -163,6 +165,7 @@ class AttachmentService:
         self.session.add(row)
         submission.updated_at = get_datetime_utc()
         await self.session.flush()
+        await self.sync_values(submission, row.field_path)
         await self._timeline_attachment(
             submission,
             actor,
@@ -200,6 +203,7 @@ class AttachmentService:
             by_id[attachment_id].position = position
         self._touch(request, submission)
         await self.session.flush()
+        await self.sync_values(submission, data.field_path)
         return request
 
     async def reorder_submission(
@@ -228,6 +232,7 @@ class AttachmentService:
             by_id[attachment_id].position = position
         submission.updated_at = get_datetime_utc()
         await self.session.flush()
+        await self.sync_values(submission, data.field_path)
         await self._timeline_attachment(
             submission,
             actor,
@@ -269,6 +274,7 @@ class AttachmentService:
         row.updated_at = get_datetime_utc()
         self._touch(request, submission)
         await self.session.flush()
+        await self.sync_values(submission, row.field_path)
         return request, row
 
     async def replace_in_submission(
@@ -297,6 +303,7 @@ class AttachmentService:
         row.updated_at = get_datetime_utc()
         submission.updated_at = row.updated_at
         await self.session.flush()
+        await self.sync_values(submission, row.field_path)
         await self._timeline_attachment(
             submission,
             actor,
@@ -326,6 +333,7 @@ class AttachmentService:
             item.position = position
         self._touch(request, submission)
         await self.session.flush()
+        await self.sync_values(submission, row.field_path)
         return request
 
     async def remove_from_submission(
@@ -348,6 +356,7 @@ class AttachmentService:
             item.position = position
         submission.updated_at = now
         await self.session.flush()
+        await self.sync_values(submission, row.field_path)
         await self._timeline_attachment(
             submission,
             actor,
@@ -456,6 +465,21 @@ class AttachmentService:
         if upload is None or upload.deleted_at is not None:
             raise NotFoundException("Attachment not found")
         return upload
+
+    async def sync_values(self, submission: FormSubmissionEntity, field_path: str) -> None:
+        """Keep mutated attachment refs canonical without enforcing unfinished draft minimums."""
+        references = []
+        for row in await self._active(submission.id, field_path):
+            upload = await self.session.get(UserUploadEntity, row.user_upload_id)
+            if upload is None or upload.deleted_at is not None:
+                raise ValidationDetailsException(
+                    [{"pointer": "/data" + field_path, "code": "attachment.missing"}]
+                )
+            references.append(create_ref_id(upload.id, upload.version))
+        updated = deepcopy(submission.data)
+        _set_pointer(updated, field_path, references)
+        submission.data = updated
+        await self.session.flush()
 
     async def materialize(self, submission: FormSubmissionEntity) -> None:
         form = await self.session.get(FormVersionEntity, submission.form_version_id)

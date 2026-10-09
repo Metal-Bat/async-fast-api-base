@@ -2,7 +2,7 @@
 
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import Any, cast
+from typing import Any, cast, override
 
 import pytest
 
@@ -123,3 +123,31 @@ async def test_uploads_are_explicitly_private(tmp_path, monkeypatch) -> None:
     assert metadata["sha256"]
     upload_args = cast(dict[str, Any], upload["ExtraArgs"])
     assert upload_args["ACL"] == "private"
+
+
+@pytest.mark.anyio
+async def test_dropped_download_closes_body_and_storage_client(monkeypatch) -> None:
+    closed = []
+
+    class TrackedBody(Body):
+        @override
+        async def __aexit__(self, *_args):
+            closed.append("body")
+
+    class TrackedClient(Client):
+        @override
+        async def get_object(self, **kwargs):
+            return {"Body": TrackedBody(b"abcdef")}
+
+    @asynccontextmanager
+    async def tracked_client():
+        try:
+            yield TrackedClient()
+        finally:
+            closed.append("client")
+
+    monkeypatch.setattr(s3, "s3_client", tracked_client)
+    stream = s3.stream_object("synthetic", 2)
+    assert await anext(stream) == b"ab"
+    await stream.aclose()
+    assert closed == ["body", "client"]

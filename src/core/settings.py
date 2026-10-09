@@ -24,6 +24,7 @@ class Settings(BaseSettings):
 
     INTEGRATION_SECRETS_DIR: Path = Path("/run/secrets/integrations")
     INTEGRATION_SECRET_KEYS: list[SecretStr] = Field(default_factory=list, repr=False)
+    INTEGRATION_TLS_CA_FILE: Path | None = None
     INTEGRATION_HTTP_ENDPOINTS: dict[str, str] = Field(default_factory=dict)
     FORM_CLIENT_OPTION_URLS: list[str] = Field(default_factory=list)
     FORM_NAVIGATION_ROUTES: list[str] = Field(default_factory=list)
@@ -40,11 +41,21 @@ class Settings(BaseSettings):
     DOCS_URL: str = "/api/v1/swagger-ui"
     REDOC_URL: str = "/api/v1/redoc"
     OPENAPI_URL: str = "/api/v1/openapi.json"
+    HELP_RELEASE_METADATA_FILE: Path | None = None
     OPENAPI_YAML_URL: str = "/api/v1/openapi.yaml"
     DOCS_ASSETS_URL: str = "/api/v1/docs-assets"
     OPENAPI_TAGS: list[dict[str, str]] = Field(
         default_factory=lambda: [
             {"name": "auth", "description": _("Authentication and credential operations.")},
+            {"name": "me", "description": _("Private personal profile, settings and help state.")},
+            {
+                "name": "saved-views",
+                "description": _("Private versioned list presets and explicit personal defaults."),
+            },
+            {
+                "name": "favorites",
+                "description": _("Private authorized canonical resource favorites."),
+            },
             {"name": "sessions", "description": _("Authenticated device-session operations.")},
             {"name": "users", "description": _("Administrative user operations.")},
             {"name": "roles", "description": _("Role and permission assignment operations.")},
@@ -65,6 +76,10 @@ class Settings(BaseSettings):
                 "description": _(
                     "Authoring catalogs, selectors, completion, and workflow field analysis."
                 ),
+            },
+            {
+                "name": "resource-links",
+                "description": _("Authorized stable resource links and selected summaries."),
             },
             {
                 "name": "definition-library",
@@ -134,6 +149,12 @@ class Settings(BaseSettings):
                 "description": _("Owned asynchronous report status and downloads."),
             },
             {
+                "name": "analytics",
+                "description": _(
+                    "Authorized chart-neutral business metric definitions and queries."
+                ),
+            },
+            {
                 "name": "task-definitions",
                 "description": _("Registered background-task definition operations."),
             },
@@ -144,6 +165,21 @@ class Settings(BaseSettings):
             {
                 "name": "task-executions",
                 "description": _("Background-task execution and control operations."),
+            },
+            {"name": "setup", "description": _("Private administrative installation readiness.")},
+            {
+                "name": "calendar-events",
+                "description": _(
+                    "Personal/team Gregorian events and authorized workflow deadlines."
+                ),
+            },
+            {
+                "name": "support-incidents",
+                "description": _("Sanitized support episodes and safe client failure intake."),
+            },
+            {
+                "name": "inbox",
+                "description": _("Recipient-owned unified application notifications."),
             },
             {"name": "health", "description": _("Liveness and dependency readiness probes.")},
         ]
@@ -235,6 +271,7 @@ class Settings(BaseSettings):
     MAX_LOGIN_FAILURES: int = 5
     LOGIN_LOCKOUT_MINUTES: int = 15
     HISTORY_RETENTION_DAYS: int = 365
+    APPLICATION_NOTIFICATION_CONNECTION_REF: str | None = None
     NOTIFICATION_RETENTION_DAYS: int = Field(default=365, ge=1, le=3650)
     SWAGGER_CLIENT_ID: str | None = None
     SWAGGER_CLIENT_SECRET: str | None = None
@@ -261,6 +298,7 @@ class Settings(BaseSettings):
     S3_SECRET_KEY: str
     S3_BUCKET: str
     MAX_UPLOAD_BYTES: int = 10 * 1024 * 1024
+    MAX_REPORT_ARCHIVE_BYTES: int = Field(default=10 * 1024 * 1024, ge=1, le=64 * 1024 * 1024)
     MAX_IMAGE_PIXELS: int = 40_000_000
     USER_UPLOADS_PER_MINUTE: int = 5
     ABANDONED_UPLOAD_RETENTION_HOURS: int = Field(default=24, ge=1, le=8760)

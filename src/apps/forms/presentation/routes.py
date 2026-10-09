@@ -158,11 +158,12 @@ async def delete_forms(request: Request, ref_id: str, _: FormAdmin, session: Ses
 async def search_versions(
     request: Request, query: FormVersionQuery, _: FormAdmin, session: SessionDep
 ):
+    parent = await FormService(session).get(query.form_ref_id)
     page = await paginate_entities(
         session,
         FormVersionEntity,
         query,
-        criteria=(FormVersionEntity.form_definition_id == open_ref_id(query.form_ref_id)[0],),
+        criteria=(FormVersionEntity.form_definition_id == parent.id,),
     )
     return page_response(
         request,

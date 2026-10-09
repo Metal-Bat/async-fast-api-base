@@ -1,0 +1,371 @@
+{
+  "definition": {
+    "$defs": {
+      "DependencyPin": {
+        "properties": {
+          "checksum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Checksum"
+          },
+          "pointer": {
+            "title": "Pointer",
+            "type": "string"
+          },
+          "requested_ref_id": {
+            "title": "Requested Ref Id",
+            "type": "string"
+          },
+          "resource": {
+            "$ref": "#/$defs/ResourceLink"
+          }
+        },
+        "required": [
+          "pointer",
+          "requested_ref_id",
+          "resource"
+        ],
+        "title": "DependencyPin",
+        "type": "object"
+      },
+      "RepairIssue": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "node_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Node Key"
+          },
+          "pointer": {
+            "title": "Pointer",
+            "type": "string"
+          },
+          "repair_key": {
+            "enum": [
+              "workflow_versions",
+              "form_versions",
+              "step_types",
+              "connections",
+              "agent_versions",
+              "work_groups",
+              "clients"
+            ],
+            "title": "Repair Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "pointer",
+          "code",
+          "node_key",
+          "repair_key"
+        ],
+        "title": "RepairIssue",
+        "type": "object"
+      },
+      "ResourceKind": {
+        "enum": [
+          "users",
+          "work_groups",
+          "clients",
+          "client_releases",
+          "forms",
+          "form_versions",
+          "workflows",
+          "workflow_versions",
+          "step_versions",
+          "request_types",
+          "connections",
+          "agent_versions",
+          "components",
+          "component_versions",
+          "data_types",
+          "data_type_versions"
+        ],
+        "type": "string"
+      },
+      "ResourceLink": {
+        "additionalProperties": false,
+        "properties": {
+          "available": {
+            "description": "Current selection eligibility; does not grant execution authority.",
+            "title": "Available",
+            "type": "boolean"
+          },
+          "kind": {
+            "$ref": "#/$defs/ResourceKind"
+          },
+          "label": {
+            "description": "Safe current display name from the owning resource service.",
+            "title": "Label",
+            "type": "string"
+          },
+          "locator": {
+            "description": "Stable encrypted identity; invalid after signing-key replacement.",
+            "title": "Locator",
+            "type": "string"
+          },
+          "number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Exact version number, when applicable.",
+            "title": "Number"
+          },
+          "ref_id": {
+            "description": "Fresh version-bearing reference; replace cached mutation refs.",
+            "title": "Ref Id",
+            "type": "string"
+          },
+          "route_key": {
+            "$ref": "#/$defs/ResourceKind",
+            "description": "Allowlisted frontend route key; no arbitrary navigation URL."
+          }
+        },
+        "required": [
+          "kind",
+          "ref_id",
+          "label",
+          "available",
+          "locator",
+          "route_key"
+        ],
+        "title": "ResourceLink",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "checked_at": {
+        "format": "date-time",
+        "title": "Checked At",
+        "type": "string"
+      },
+      "client_readiness": {
+        "default": "not_checked",
+        "enum": [
+          "not_checked",
+          "ready",
+          "blocked"
+        ],
+        "title": "Client Readiness",
+        "type": "string"
+      },
+      "graph_checksum": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Graph Checksum"
+      },
+      "issues": {
+        "items": {
+          "$ref": "#/$defs/RepairIssue"
+        },
+        "title": "Issues",
+        "type": "array"
+      },
+      "pins": {
+        "items": {
+          "$ref": "#/$defs/DependencyPin"
+        },
+        "title": "Pins",
+        "type": "array"
+      },
+      "ready": {
+        "title": "Ready",
+        "type": "boolean"
+      },
+      "requester_eligibility": {
+        "const": "not_checked",
+        "default": "not_checked",
+        "title": "Requester Eligibility",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "scope": {
+        "const": "author_publication",
+        "default": "author_publication",
+        "title": "Scope",
+        "type": "string"
+      },
+      "workflow_version_ref_id": {
+        "title": "Workflow Version Ref Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "workflow_version_ref_id",
+      "checked_at",
+      "ready",
+      "graph_checksum",
+      "issues",
+      "pins"
+    ],
+    "title": "DependencyReadiness",
+    "type": "object"
+  },
+  "definition_query": {
+    "additionalProperties": false,
+    "properties": {
+      "client_release_ref_id": {
+        "anyOf": [
+          {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Optional exact registered release for renderer compatibility; omitted/null does not check a client.",
+        "title": "Client Release Ref Id"
+      },
+      "workflow_version_ref_id": {
+        "description": "Exact current workflow version reference; stale plans fail 409.",
+        "maxLength": 512,
+        "minLength": 1,
+        "title": "Workflow Version Ref Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "workflow_version_ref_id"
+    ],
+    "title": "DependencyReadinessQuery",
+    "type": "object"
+  },
+  "setup": {
+    "$defs": {
+      "SetupCheck": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "reason": {
+            "description": "Stable localized message key, never an exception or provider response.",
+            "title": "Reason",
+            "type": "string"
+          },
+          "repair_key": {
+            "enum": [
+              "operations",
+              "permissions",
+              "clients",
+              "request_types",
+              "step_types",
+              "connections"
+            ],
+            "title": "Repair Key",
+            "type": "string"
+          },
+          "required": {
+            "title": "Required",
+            "type": "boolean"
+          },
+          "status": {
+            "enum": [
+              "ready",
+              "blocked",
+              "unknown",
+              "not_applicable"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "required",
+          "status",
+          "reason",
+          "repair_key"
+        ],
+        "title": "SetupCheck",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "checked_at": {
+        "format": "date-time",
+        "title": "Checked At",
+        "type": "string"
+      },
+      "checks": {
+        "items": {
+          "$ref": "#/$defs/SetupCheck"
+        },
+        "title": "Checks",
+        "type": "array"
+      },
+      "refresh_after_seconds": {
+        "const": 30,
+        "default": 30,
+        "title": "Refresh After Seconds",
+        "type": "integer"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "scope": {
+        "const": "development_demo",
+        "default": "development_demo",
+        "title": "Scope",
+        "type": "string"
+      },
+      "status": {
+        "enum": [
+          "ready",
+          "blocked",
+          "unknown",
+          "not_applicable"
+        ],
+        "title": "Status",
+        "type": "string"
+      }
+    },
+    "required": [
+      "status",
+      "checked_at",
+      "checks"
+    ],
+    "title": "SetupReport",
+    "type": "object"
+  }
+}

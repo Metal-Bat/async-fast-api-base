@@ -4,12 +4,60 @@ import asyncio
 import os
 import subprocess
 import sys
+from contextlib import nullcontext
 from pathlib import Path
 from uuid import uuid4
 
 import asyncpg
 
 ROOT = Path(__file__).resolve().parents[1]
+FLOW_TESTS = (
+    "tests/integration/test_full_workflow.py",
+    "tests/integration/test_frontend_journey.py",
+    "tests/integration/test_platform_foundation.py",
+)
+PROFILES = {
+    "delivery-completion": (
+        "tests/integration/test_workflow_defaults.py",
+        "tests/integration/test_studio_workspace.py",
+        "tests/integration/test_definition_library.py",
+    ),
+    "delivery-through-020": (
+        "tests/integration/test_support_failures.py",
+        "tests/integration/test_calendar_events.py",
+        "tests/integration/test_calendar_reminders.py",
+        "tests/integration/test_visual_runtime_conformance.py",
+    ),
+    "flow": FLOW_TESTS,
+    "delivery-transfers": (
+        "tests/integration/test_owned_report_worker.py",
+        "tests/integration/test_owned_notification_worker.py",
+        "tests/integration/test_owned_calendar_worker.py",
+        "tests/integration/test_private_transfers.py",
+        "tests/integration/test_demo_assets.py",
+    ),
+    "delivery-wave-four": (
+        *FLOW_TESTS,
+        "tests/integration/test_demo_seed.py",
+        "tests/integration/test_demo_groups.py",
+        "tests/integration/test_personal_preferences.py",
+        "tests/integration/test_help_state.py",
+        "tests/integration/test_resource_links.py",
+        "tests/integration/test_business_analytics.py",
+        "tests/integration/test_wave_four_http.py",
+        "tests/integration/test_saved_views_favorites.py",
+        "tests/integration/test_setup_dependency_readiness.py",
+        "tests/integration/test_unified_notifications.py",
+        "tests/integration/test_processes.py::test_notifications_are_atomic_owned_retryable_and_idempotent",
+        "tests/integration/test_task_corrections.py::test_repeated_correction_rounds_pin_data_feedback_and_reject_stale_writes",
+    ),
+    "delivery-foundation": (
+        "tests/integration/test_migrations.py",
+        *FLOW_TESTS,
+        "tests/integration/test_live_query_policy.py",
+        "tests/integration/test_application_seed.py",
+    ),
+}
 
 
 async def _probe_postgres() -> None:
@@ -75,6 +123,10 @@ async def _database_command(name: str, action: str) -> None:
 
 
 def main() -> int:
+    profile = os.getenv("FLOW_TEST_PROFILE", "flow")
+    if profile not in PROFILES:
+        print("Unknown flow profile; use " + ", ".join(PROFILES), file=sys.stderr)
+        return 2
     host = os.getenv("FLOW_TEST_POSTGRES_HOST", "localhost")
     if host not in {"localhost", "127.0.0.1", "::1"}:
         print("Flow tests require a local PostgreSQL host", file=sys.stderr)
@@ -90,7 +142,10 @@ def main() -> int:
         OTEL_LOGS_EXPORTER="none",
         RUN_INTEGRATION="1",
         PYTHONPATH="src",
+        FLOW_TEST_OWNED_DATABASE=name,
     )
+    if profile == "delivery-foundation":
+        environment["RUN_MIGRATION_INTEGRATION"] = "1"
     try:
         asyncio.run(_ensure_postgres())
         asyncio.run(_database_command(name, "create"))
@@ -119,22 +174,28 @@ def main() -> int:
         )
         status = migration.returncode
         if status == 0:
-            status = subprocess.run(
-                [
-                    sys.executable,
-                    "-m",
-                    "pytest",
-                    "-q",
-                    "--tb=short",
-                    "--show-capture=no",
-                    "tests/integration/test_full_workflow.py",
-                    "tests/integration/test_frontend_journey.py",
-                    "tests/integration/test_platform_foundation.py",
-                ],
-                env=environment,
-                check=False,
-            ).returncode
-    except OSError:
+            if profile == "delivery-transfers":
+                sys.path.insert(0, str(ROOT))
+                from scripts.transfer_services import transfer_services
+
+                resources = transfer_services(environment)
+            else:
+                resources = nullcontext(environment)
+            with resources as test_environment:
+                status = subprocess.run(
+                    [
+                        sys.executable,
+                        "-m",
+                        "pytest",
+                        "-q",
+                        "--tb=short",
+                        *([] if profile == "delivery-foundation" else ["--show-capture=no"]),
+                        *PROFILES[profile],
+                    ],
+                    env=test_environment,
+                    check=False,
+                ).returncode
+    except OSError, RuntimeError, subprocess.TimeoutExpired:
         print("Unable to execute migration or tests", file=sys.stderr)
         status = 2
     finally:

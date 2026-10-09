@@ -160,7 +160,11 @@ class NotificationService:
             self.session,
             NotificationEntity,
             query,
-            criteria=(NotificationEntity.recipient_user_id == actor.id,),
+            criteria=(
+                NotificationEntity.recipient_user_id == actor.id,
+                col(NotificationEntity.business_request_id).is_not(None),
+                col(NotificationEntity.process_instance_id).is_not(None),
+            ),
             default_ordering=("-created_at", "id"),
         )
 

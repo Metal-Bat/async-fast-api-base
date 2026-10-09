@@ -148,6 +148,9 @@ class ProcessEventService:
         )
         self.session.add(event)
         await self.session.flush()
+        from apps.notifications.application.events import stage_process_intent
+
+        stage_process_intent(self.session, event)
         execution = None
         if step_execution_id is not None and event_type in {
             "step.completed",

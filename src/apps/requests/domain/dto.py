@@ -1,7 +1,7 @@
 """Snake-case request-type and business-request API contracts."""
 
 from datetime import datetime
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Literal
 
 from pydantic import ConfigDict, Field, model_validator
 
@@ -116,8 +116,14 @@ class BusinessRequestDTO(BaseDTO):
 
 
 class BusinessRequestQuery(SearchRequest):
+    scope: Literal["visible", "mine"] = Field(
+        default="visible",
+        description="Visible uses current read policy; mine additionally requires requester ownership.",
+    )
     __query_fields__: ClassVar[dict[str, Any]] = {
         "status": str,
         "priority": int,
         "created_at": datetime,
+        "submitted_at": datetime,
+        "closed_at": datetime,
     }

@@ -43,6 +43,21 @@ Optional advanced control-flow policy; absent means legacy single-path behavior.
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `GraphIssue`
+
+Used by: `POST /api/v1/workflow-versions/{ref_id}/default-preview`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `pointer` | `string` | Yes | — |
+| `code` | `string` | Yes | — |
+| `line` | `integer | null` | No | — |
+| `column` | `integer | null` | No | — |
+| `expected_schema` | `object | null` | No | — |
+| `actual_schema` | `object | null` | No | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `GraphSnapshot`
 
 Used by: `GET /api/v1/workflow-versions/{ref_id}/graph`
@@ -210,6 +225,36 @@ Used by: `POST /api/v1/workflow-versions/report`, `POST /api/v1/workflow-version
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `RestorePlan`
+
+Used by: `POST /api/v1/workflow-versions/{ref_id}/default-preview`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `template_ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
+| `template_checksum` | `string` | Yes | — |
+| `mode` | `string` | Yes | — |
+| `dependencies` | `object` | Yes | — |
+| `changed_step_keys` | `array[string]` | Yes | — |
+| `changed_paths` | `array[string]` | No | Safe changed top-level definition paths; no embedded config or private values. |
+| `blockers` | `array[GraphIssue]` | Yes | — |
+| `expires_in_seconds` | `integer` | No |  Default: `600`. |
+| `plan_token` | `string | null` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `RestoreResult`
+
+Used by: `POST /api/v1/workflow-versions/{ref_id}/default-apply`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `workflow_version_ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
+| `workspace_ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
+| `replayed` | `boolean` | No |  Default: `False`. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `SubprocessCall`
 
 Used by: `GET /api/v1/workflow-versions/{ref_id}/graph`
@@ -307,6 +352,34 @@ Used by: `DELETE /api/v1/workflow-versions/{ref_id}`
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `SuccessResponse_RestorePlan_`
+
+Used by: `POST /api/v1/workflow-versions/{ref_id}/default-preview`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `data` | `RestorePlan` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `SuccessResponse_RestoreResult_`
+
+Used by: `POST /api/v1/workflow-versions/{ref_id}/default-apply`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `data` | `RestoreResult` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `SuccessResponse_WorkflowVersionDTO_`
 
 Used by: `GET /api/v1/workflow-versions/{ref_id}`, `POST /api/v1/workflow-versions`, `POST /api/v1/workflow-versions/{ref_id}/publish`, `POST /api/v1/workflow-versions/{ref_id}/retire`, `POST /api/v1/workflow-versions/{ref_id}/workspace/promote`, `PUT /api/v1/workflow-versions/{ref_id}`, `PUT /api/v1/workflow-versions/{ref_id}/graph`
@@ -323,7 +396,7 @@ No reviewed business example is published for this schema. Use the field contrac
 
 ### `SuccessResponse_WorkflowWorkspaceDTO_`
 
-Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
+Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `POST /api/v1/workflow-versions/{ref_id}/layout-reset`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -385,7 +458,7 @@ No reviewed business example is published for this schema. Use the field contrac
 
 ### `WorkflowWorkspaceDTO`
 
-Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
+Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `POST /api/v1/workflow-versions/{ref_id}/layout-reset`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -398,7 +471,7 @@ No reviewed business example is published for this schema. Use the field contrac
 
 ### `WorkspaceDocument`
 
-Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
+Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `POST /api/v1/workflow-versions/{ref_id}/layout-reset`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -413,7 +486,7 @@ No reviewed business example is published for this schema. Use the field contrac
 
 ### `WorkspacePoint`
 
-Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
+Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `POST /api/v1/workflow-versions/{ref_id}/layout-reset`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -424,7 +497,7 @@ No reviewed business example is published for this schema. Use the field contrac
 
 ### `WorkspaceViewport`
 
-Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
+Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `POST /api/v1/workflow-versions/{ref_id}/layout-reset`, `PUT /api/v1/workflow-versions/{ref_id}/workspace`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |

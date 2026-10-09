@@ -104,12 +104,18 @@ def _subject_tag(path: str) -> str:
 
     if root == "admin":
         return child
+    if root == "me" and child in {"saved-views", "favorites"}:
+        return child
     if root == "designer":
         return "definition-library" if child == "library" else "designer"
     if root == "auth" and child in {"permissions", "sessions"}:
         return child
     if root == "media" and child in {"files", "images"}:
         return child
+    if root == "support":
+        return "support-incidents"
+    if root == "calendar":
+        return "calendar-events"
     if root == "tasks":
         if child in {"definitions", "executions", "schedules"}:
             return f"task-{child}"

@@ -1,5 +1,6 @@
 """Registered external notification delivery adapters."""
 
+import ssl
 from typing import Protocol
 from urllib.parse import urlsplit
 
@@ -8,6 +9,7 @@ from anyio import to_thread
 
 from apps.integrations.domain.contracts import ConnectionPin, SecretStore
 from apps.notifications.domain.dto import DeliveryResult
+from core.settings import settings
 from utils.exceptions import ServiceUnavailableException, ValidationDetailsException
 
 
@@ -59,7 +61,12 @@ class HttpNotificationProvider:
         )
         try:
             async with httpx.AsyncClient(
-                timeout=10, follow_redirects=False, trust_env=False
+                timeout=10,
+                follow_redirects=False,
+                trust_env=False,
+                verify=ssl.create_default_context(cafile=str(settings.INTEGRATION_TLS_CA_FILE))
+                if settings.INTEGRATION_TLS_CA_FILE is not None
+                else True,
             ) as client:
                 response = await client.post(
                     endpoint,

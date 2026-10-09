@@ -7,7 +7,15 @@ from fastapi import APIRouter, Depends, Request, Response
 from apps.step_types.application.registry import get_registry
 from apps.users.application.authorization import RequirePermission
 from apps.users.domain.entity import UserEntity
+from apps.workflows.application.defaults import WorkflowDefaultsService
 from apps.workflows.application.service import WorkflowService
+from apps.workflows.domain.defaults import (
+    LayoutResetInput,
+    RestoreApplyInput,
+    RestorePlan,
+    RestorePreviewInput,
+    RestoreResult,
+)
 from apps.workflows.domain.dto import (
     GraphSnapshot,
     GraphValidationResult,
@@ -26,6 +34,7 @@ from apps.workflows.domain.entity import WorkflowDefinitionEntity, WorkflowVersi
 from core.deps import SessionDep
 from core.history_dto import HistoryQuery, HistoryRecordDTO
 from core.history_service import HistoryService
+from core.i18n import _
 from core.ref_id import create_ref_id, open_ref_id
 from utils.base_schema import PRIVATE_NO_STORE_RESPONSES, response_schema
 from utils.pagination import Page, paginate_entities
@@ -212,13 +221,12 @@ async def remove_grant(
 async def search_versions(
     request: Request, query: WorkflowVersionQuery, _: WorkflowAdmin, session: SessionDep
 ):
+    parent = await WorkflowService(session, get_registry()).get(query.workflow_ref_id)
     page = await paginate_entities(
         session,
         WorkflowVersionEntity,
         query,
-        criteria=(
-            WorkflowVersionEntity.workflow_definition_id == open_ref_id(query.workflow_ref_id)[0],
-        ),
+        criteria=(WorkflowVersionEntity.workflow_definition_id == parent.id,),
     )
     return page_response(
         request,
@@ -426,3 +434,84 @@ async def workspace_history(
     return page_response(
         request, await HistoryService.for_entity(session, "workflow_workspace").list(query, row.id)
     )
+
+
+RESTORE_DESCRIPTION = _(
+    "Requires live workflows.manage and current template visibility. Preview freezes the exact target/workspace "
+    "revisions, published template checksum and symbolic reference bindings for ten minutes. An unassociated "
+    "workflow requires explicit source_ref_id. Dependencies are validated through existing publication rules; "
+    "blockers return no plan_token. replace_draft changes only DRAFT; successor creates a new DRAFT for any "
+    "live target including PUBLISHED/RETIRED. Apply requires the reviewed token and command_key; replay returns "
+    "the same result and changed-plan key reuse conflicts. Stale target/workspace, expired plan or changed "
+    "dependencies conflict 409; unavailable source is 404 and invalid bindings/graph are 422. Graph/workspace "
+    "and the replay receipt commit atomically. No automatic publication, request-type retargeting, form edit, "
+    "execution-pin change, secret/grant reset or provider operation occurs. Existing private no-store "
+    "snake_case success envelopes and en/fa localization apply."
+)
+
+
+@versions_router.post(
+    "/{ref_id}/default-preview",
+    response_model=SuccessResponse[RestorePlan],
+    summary=_("Preview a workflow default restoration"),
+    description=RESTORE_DESCRIPTION,
+    responses=PRIVATE_NO_STORE_RESPONSES,
+)
+async def default_preview(
+    request: Request,
+    ref_id: str,
+    data: RestorePreviewInput,
+    response: Response,
+    actor: WorkflowAdmin,
+    session: SessionDep,
+):
+    private_no_store(response)
+    return success_response(
+        request, await WorkflowDefaultsService(session).preview(ref_id, data, actor)
+    )
+
+
+@versions_router.post(
+    "/{ref_id}/default-apply",
+    response_model=SuccessResponse[RestoreResult],
+    summary=_("Apply the reviewed workflow default"),
+    description=RESTORE_DESCRIPTION,
+    responses=PRIVATE_NO_STORE_RESPONSES,
+)
+async def default_apply(
+    request: Request,
+    ref_id: str,
+    data: RestoreApplyInput,
+    response: Response,
+    actor: WorkflowAdmin,
+    session: SessionDep,
+):
+    result = await WorkflowDefaultsService(session).apply(ref_id, data, actor)
+    await session.commit()
+    private_no_store(response)
+    return success_response(request, result)
+
+
+@versions_router.post(
+    "/{ref_id}/layout-reset",
+    response_model=SuccessResponse[WorkflowWorkspaceDTO],
+    summary=_("Reset draft workspace layout"),
+    description=_(
+        "Requires workflows.manage and current DRAFT/workspace revisions. Clears positions, routes, collapsed nodes and viewport; preserves graph and promotion checksum. This never restores a definition, discards server graph changes, publishes or resets environment data. Local unsaved-edit discard belongs to the client. Private no-store."
+    ),
+    responses=PRIVATE_NO_STORE_RESPONSES,
+)
+async def layout_reset(
+    request: Request,
+    ref_id: str,
+    data: LayoutResetInput,
+    response: Response,
+    actor: WorkflowAdmin,
+    session: SessionDep,
+):
+    result = await WorkflowDefaultsService(session).reset_layout(
+        ref_id, data.workspace_ref_id, actor
+    )
+    await session.commit()
+    private_no_store(response)
+    return success_response(request, result)

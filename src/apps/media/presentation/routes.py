@@ -2,7 +2,7 @@ from pathlib import PurePath
 from typing import Annotated, Literal
 from urllib.parse import quote
 
-from fastapi import APIRouter, Depends, Header, Request, UploadFile
+from fastapi import APIRouter, Depends, Header, Request, Response, UploadFile
 from fastapi.responses import StreamingResponse
 from pydantic import TypeAdapter
 
@@ -10,9 +10,9 @@ from apps.media.application.service import UserUploadService, safe_filename
 from apps.media.domain.dto import UserUploadDTO
 from core.deps import CurrentUser, SessionDep
 from core.i18n import _
-from utils.base_schema import response_schema
+from utils.base_schema import PRIVATE_NO_STORE_RESPONSES, response_schema
 from utils.exceptions import ValidationDetailsException
-from utils.presenter import SuccessResponse, success_response
+from utils.presenter import SuccessResponse, private_no_store, success_response
 
 router = APIRouter(responses=response_schema(), prefix="/media", tags=["media"])
 
@@ -86,14 +86,21 @@ def _image_filename(original: str) -> str:
     return f"{stem[:250]}.webp"
 
 
-@router.post("/files", response_model=SuccessResponse[UserUploadDTO], status_code=201)
+@router.post(
+    "/files",
+    response_model=SuccessResponse[UserUploadDTO],
+    status_code=201,
+    responses=PRIVATE_NO_STORE_RESPONSES,
+)
 async def upload_file(
     request: Request,
+    response: Response,
     upload: UploadFile,
     user: CurrentUser,
     service: UploadServiceDep,
 ) -> SuccessResponse[UserUploadDTO]:
     """Upload one authenticated user's private file."""
+    private_no_store(response)
     return success_response(
         request,
         TypeAdapter(UserUploadDTO).validate_python(
@@ -103,14 +110,21 @@ async def upload_file(
     )
 
 
-@router.post("/images", response_model=SuccessResponse[UserUploadDTO], status_code=201)
+@router.post(
+    "/images",
+    response_model=SuccessResponse[UserUploadDTO],
+    status_code=201,
+    responses=PRIVATE_NO_STORE_RESPONSES,
+)
 async def upload_image(
     request: Request,
+    response: Response,
     upload: UploadFile,
     user: CurrentUser,
     service: UploadServiceDep,
 ) -> SuccessResponse[UserUploadDTO]:
     """Validate and upload one authenticated user's image as WebP."""
+    private_no_store(response)
     return success_response(
         request,
         TypeAdapter(UserUploadDTO).validate_python(

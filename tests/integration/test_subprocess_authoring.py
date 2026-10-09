@@ -98,8 +98,9 @@ async def test_published_subprocess_is_pinned_and_retirement_does_not_change_par
         )
         assert len(catalog.items) == 1
         assert catalog.items[0].category == "subprocess"
-        assert catalog.items[0].metadata["runtime_available"] is True
-        assert catalog.items[0].metadata["interface"]["outcomes"] == {"approved": "finish"}
+        metadata = catalog.items[0].model_dump(mode="json")["metadata"]
+        assert metadata["runtime_available"] is True
+        assert metadata["interface"]["outcomes"] == {"approved": "finish"}
         parent_root = await service.create(
             WorkflowCreateDTO(code=f"Parent{uuid7().hex}", name="PurchaseRequest"), actor.id
         )

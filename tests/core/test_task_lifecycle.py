@@ -14,7 +14,14 @@ from apps.tasks.application.idempotency import TaskClaim
 
 
 @pytest.fixture
-def managed(monkeypatch):
+def support_sink(monkeypatch):
+    sink = AsyncMock(return_value=None)
+    monkeypatch.setattr(lifecycle, "record_failure", sink)
+    return sink
+
+
+@pytest.fixture
+def managed(monkeypatch, support_sink):
     monkeypatch.setattr(lifecycle, "run_async", asyncio.run)
     claim = TaskClaim(uuid7(), "task", uuid7(), True)
     acquire = AsyncMock(return_value=claim)
@@ -151,3 +158,36 @@ def test_worker_span_records_pickup_and_originating_user(managed, monkeypatch) -
     span.set_attribute.assert_any_call("app.user.id", "0199-user")
     span.set_attribute.assert_any_call("enduser.id", "0199-user")
     span.set_attribute.assert_any_call("messaging.destination.name", "reporting")
+
+
+def test_failure_support_projection_contains_no_task_input_or_exception_text(managed, support_sink):
+    task, *_ = managed
+    with (
+        pytest.raises(ValueError),
+        lifecycle.task_lifecycle(task, ("private prompt",), {"credential": "private"}),
+    ):
+        raise ValueError("private provider response")
+    call = support_sink.call_args.kwargs
+    assert set(call) == {"category", "error_code", "operation", "request_id"}
+    assert call["operation"] == "test.task" and call["category"] == "technical"
+    assert "private" not in str(call)
+    record = managed[-1]
+    assert record.call_args.kwargs["traceback"] is None
+    assert "private" not in str(record.call_args_list)
+
+
+def test_expected_business_rejection_creates_no_support_incident(managed, support_sink):
+    from utils.exceptions import ValidationDetailsException
+
+    task, *_ = managed
+    with pytest.raises(ValidationDetailsException), lifecycle.task_lifecycle(task, (), {}):
+        raise ValidationDetailsException([{"pointer": "/data", "code": "data.type"}])
+    support_sink.assert_not_awaited()
+
+
+def test_notification_failure_uses_nonrecursive_support_category(managed, support_sink):
+    task, *_ = managed
+    task.name = "bpms.deliver_notification"
+    with pytest.raises(ConnectionError), lifecycle.task_lifecycle(task, (), {}):
+        raise ConnectionError("private destination")
+    assert support_sink.call_args.kwargs["category"] == "notification"

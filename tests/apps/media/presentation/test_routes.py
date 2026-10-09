@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock, Mock
 from uuid import uuid7
 
 import pytest
-from fastapi import FastAPI, Request, UploadFile
+from fastapi import FastAPI, Request, Response, UploadFile
 from httpx import ASGITransport, AsyncClient
 from starlette.middleware.cors import CORSMiddleware
 
@@ -68,16 +68,20 @@ async def test_media_uploads_and_downloads_require_the_owner() -> None:
     request_upload = UploadFile(io.BytesIO(b"x"), filename="x")
     request = Request({"type": "http", "headers": []})
 
-    assert open_ref_id((await upload_file(request, request_upload, user, service)).data.ref_id) == (
-        stored.id,
-        stored.version,
-    )
+    upload_response = Response()
     assert open_ref_id(
-        (await upload_image(request, request_upload, user, service)).data.ref_id
+        (await upload_file(request, upload_response, request_upload, user, service)).data.ref_id
     ) == (
         stored.id,
         stored.version,
     )
+    assert open_ref_id(
+        (await upload_image(request, upload_response, request_upload, user, service)).data.ref_id
+    ) == (
+        stored.id,
+        stored.version,
+    )
+    assert upload_response.headers["cache-control"] == "private, no-store"
     ref_id = create_ref_id(stored.id, stored.version)
     response = await download_file(ref_id, user, service, download_request())
     assert response.media_type == "text/plain"

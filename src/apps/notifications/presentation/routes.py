@@ -32,7 +32,19 @@ async def notification_dto(
     business_request = await application.session.get(BusinessRequestEntity, row.business_request_id)
     process = await application.session.get(ProcessInstanceEntity, row.process_instance_id)
     if business_request is None or process is None:
-        raise RuntimeError("Notification context is unavailable")
+        from utils.exceptions import NotFoundException
+
+        raise NotFoundException("Case notification not found")
+    from apps.notifications.application.inbox import InboxService
+    from apps.users.domain.entity import UserEntity
+    from core.i18n import _
+
+    recipient = await application.session.get(UserEntity, row.recipient_user_id)
+    available = (
+        recipient is not None
+        and recipient.deleted_at is None
+        and (await InboxService(application.session).target(row, recipient)).available
+    )
     return NotificationDTO(
         ref_id=create_ref_id(row.id, row.version),
         request_ref_id=create_ref_id(business_request.id, business_request.version),
@@ -40,8 +52,8 @@ async def notification_dto(
         template_key=row.template_key,
         template_version=row.template_version,
         locale=row.locale,
-        subject=row.subject,
-        content=row.content,
+        subject=row.subject if available else _("Notification unavailable"),
+        content=row.content if available else None,
         priority=row.priority,
         status=row.status,
         read_at=row.read_at,

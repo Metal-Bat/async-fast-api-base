@@ -11,6 +11,24 @@ from core.base_repository import BaseCrudRepository
 from utils.exceptions import VersionConflictException
 
 
+@pytest.mark.anyio
+async def test_live_list_and_count_cannot_be_bypassed_by_deleted_filter() -> None:
+    result = Mock()
+    result.all.return_value = []
+    result.one.return_value = 0
+    session = Mock(exec=AsyncMock(return_value=result))
+    repo = BaseCrudRepository(session, UserEntity)
+    query = UserQuery.model_validate(
+        {"filters": [{"field_name": "deleted_at", "operation": "isNotNull"}], "page": 3}
+    )
+    assert await repo.list(query) == []
+    assert await repo.count(query) == 0
+    for call in session.exec.await_args_list:
+        statement = str(call.args[0])
+        assert '"USER"."DELETED_AT" IS NULL' in statement
+        assert '"USER"."DELETED_AT" IS NOT NULL' in statement
+
+
 def user() -> UserEntity:
     return UserEntity(id=uuid7(), username="tester", hashed_password="hash")
 

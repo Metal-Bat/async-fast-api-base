@@ -42,6 +42,23 @@ async def deliver_notification(
             delivery.status = "CANCELLED"
             delivery.terminal_at = get_datetime_utc()
             return "cancelled"
+        if notification.event_id is not None:
+            from apps.notifications.application.inbox import InboxService
+            from apps.users.application.preferences import PersonalSettingsService
+
+            target = await InboxService(session).target(notification, recipient)
+            preferences = (
+                await PersonalSettingsService(session).read(recipient)
+                if recipient.deleted_at is None
+                else None
+            )
+            mandatory = notification.template_key in {"application.map_12", "application.map_14"}
+            if not target.available or (
+                not mandatory
+                and (preferences is None or not preferences.notifications.email_enabled)
+            ):
+                await _terminal(session, delivery, "CANCELLED", "notification.authority.revoked")
+                return "cancelled"
         if recipient.deleted_at is not None or recipient.email is None:
             await _terminal(session, delivery, "FAILED", "notification.recipient.unavailable")
             await _finalize_if_ready(session, notification)
@@ -131,6 +148,8 @@ async def _terminal(session, delivery, status: str, code: str) -> None:
 
 
 async def _finalize_if_ready(session, notification: NotificationEntity) -> None:
+    if notification.step_execution_id is None:
+        return
     attempt = (
         await session.exec(
             select(StepExecutionAttemptEntity)

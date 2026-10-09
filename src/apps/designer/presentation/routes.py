@@ -5,6 +5,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Request, Response
 
 from apps.designer.application.field_inventory import FieldInventoryService
+from apps.designer.application.inspector import inspector_contract, validate_configuration
+from apps.designer.application.readiness import DependencyReadinessService
 from apps.designer.application.service import DesignerService
 from apps.designer.domain.dto import (
     CatalogItemDTO,
@@ -14,11 +16,17 @@ from apps.designer.domain.dto import (
     SelectorKind,
 )
 from apps.designer.domain.field_inventory import FieldInventoryQuery, FieldInventoryResult
+from apps.designer.domain.inspector import (
+    InspectorContract,
+    InspectorValidationQuery,
+    InspectorValidationResult,
+)
+from apps.designer.domain.readiness import DependencyReadiness, DependencyReadinessQuery
 from apps.users.application.authorization import RequirePermission, user_permissions
 from apps.users.domain.entity import UserEntity
 from core.deps import SessionDep
 from core.i18n import _
-from utils.base_schema import response_schema
+from utils.base_schema import PRIVATE_NO_STORE_RESPONSES, response_schema
 from utils.exceptions import NotAllowedException
 from utils.pagination import Page
 from utils.presenter import (
@@ -33,6 +41,77 @@ from utils.select import SelectOption, SelectResponseFormat
 
 router = APIRouter(prefix="/designer", tags=["designer"], responses=response_schema())
 Designer = Annotated[UserEntity, Depends(RequirePermission("workflows.manage"))]
+
+
+@router.post(
+    "/dependency-readiness",
+    response_model=SuccessResponse[DependencyReadiness],
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    summary=_("Inspect exact definition dependencies and repair guidance"),
+    description=_(
+        "Requires workflows.manage and ownership of the workflow, or a superuser. Validates the exact current saved workflow version through the publication validator and workspace promotion policy. Stale references fail 409; inaccessible versions fail 404. Returns at most 256 safe code/pointer issues with selected node keys and allowlisted owning repair destinations, plus authorized exact version pins. Inaccessible dependencies expose no title, reference or content. Retired pins are preserved for deliberate repair; no dependency is replaced with latest. Empty candidate groups are reported. Author readiness never establishes requester or service-principal eligibility. An optional exact client_release_ref_id checks renderer compatibility through the existing form resolver; omitted/null remains not_checked. Requester eligibility still belongs to existing request/runtime contracts. This bounded private no-store projection never writes, grants, promotes, publishes, executes a handler or calls a provider. Re-read after each repair using refreshed current refs; malformed bodies fail 422."
+    ),
+)
+async def dependency_readiness(
+    request: Request,
+    query: DependencyReadinessQuery,
+    response: Response,
+    actor: Designer,
+    session: SessionDep,
+) -> SuccessResponse[DependencyReadiness]:
+    private_no_store(response)
+    return success_response(
+        request, await DependencyReadinessService(session).inspect(query, actor)
+    )
+
+
+@router.get(
+    "/inspector-contract",
+    response_model=SuccessResponse[InspectorContract],
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    summary=_("Read versioned authoring inspector contracts"),
+    description=_(
+        "Requires workflows.manage. Returns the deployed handler/version configuration schemas, "
+        "ports, exact fingerprints, outcomes, capabilities and twenty primitive field contracts. "
+        "This is code discovery, not a list of operator-published versions or permission to use a "
+        "connection, agent or form. Existing selectors and publication policies still apply. "
+        "Configuration dialect is JSON Schema 2020-12; diagnostics use JSON pointers. "
+        "Examples are synthetic and contain no credentials. Preview permits bounded pure "
+        "evaluation only; this read never executes a handler or changes a published checksum. "
+        "Unknown configuration must be validated against its exact handler version. "
+        "Private no-store response uses the existing success envelope; authentication and "
+        "permission failures use the existing 401/403 error envelopes."
+    ),
+)
+async def inspectors(
+    request: Request,
+    response: Response,
+    actor: Designer,
+) -> SuccessResponse[InspectorContract]:
+    private_no_store(response)
+    return success_response(request, inspector_contract())
+
+
+@router.post(
+    "/config-validation",
+    response_model=SuccessResponse[InspectorValidationResult],
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    summary=_("Validate an exact handler configuration without execution"),
+    description=_(
+        "Requires workflows.manage. Accepts a deployed handler key/version and at most 128 "
+        "configuration properties within 16 KiB. Performs typed configuration validation only; "
+        "never invokes handlers, connections, providers or pure previews. Unknown handler returns "
+        "valid=false with handler_unavailable; wrong unions, nulls and unknown fields return safe "
+        "JSON-pointer diagnostics without echoed values or exception details. Unknown field names "
+        "are omitted from diagnostics. Success does not imply publication or use authorization. "
+        "Excess or malformed request bodies fail 422. Private no-store success envelope."
+    ),
+)
+async def config_validation(
+    request: Request, data: InspectorValidationQuery, response: Response, actor: Designer
+) -> SuccessResponse[InspectorValidationResult]:
+    private_no_store(response)
+    return success_response(request, validate_configuration(data))
 
 
 @router.post(

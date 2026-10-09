@@ -266,7 +266,7 @@ async def search_requests(
         session,
         BusinessRequestEntity,
         query,
-        criteria=service.visibility_criteria(actor),
+        criteria=service.visibility_criteria(actor, mine=query.scope == "mine"),
     )
     return page_response(
         request,

@@ -798,7 +798,8 @@ class WorkItemService:
         await self.session.flush()
         return item
 
-    async def search(self, query: CartableQueryDTO, actor: UserEntity) -> Page[WorkItemEntity]:
+    def search_criteria(self, query: CartableQueryDTO, actor: UserEntity):
+        """Shared actor, archive and filter population for lists and registered metrics."""
         criterion = self._cartable_criterion(query.cartable, actor.id)
         criteria = criterion if isinstance(criterion, tuple) else (criterion,)
         base = [*criteria, col(WorkItemEntity.deleted_at).is_(None)]
@@ -808,6 +809,23 @@ class WorkItemService:
                 col(UserWorkItemStateEntity.archived_at).is_not(None),
             )
             base.append(col(WorkItemEntity.id).not_in(archived))
+        stamp = (
+            col(WorkItemEntity.created_at)
+            if query.time_field == "created_at"
+            else col(WorkItemEntity.closed_at)
+        )
+        if query.after is not None:
+            base.append(stamp >= query.after)
+        if query.before is not None:
+            base.append(stamp < query.before)
+        if query.overdue_before is not None:
+            base.append(col(WorkItemEntity.due_at) < query.overdue_before)
+        if query.status is not None:
+            base.append(col(WorkItemEntity.status) == query.status)
+        return base
+
+    async def search(self, query: CartableQueryDTO, actor: UserEntity) -> Page[WorkItemEntity]:
+        base = self.search_criteria(query, actor)
         items = list(
             (
                 await self.session.exec(
@@ -1696,6 +1714,10 @@ class WorkItemService:
                 command_key=command_key,
             )
         )
+        if action in {"COMPLETE", "REJECT", "RETURN", "CANCEL", "EXPIRE", "FORWARD"}:
+            from apps.calendar.application.reminders import cancel_source_reminders
+
+            await cancel_source_reminders(self.session, "work_item", item.id)
         execution = await self.session.get(StepExecutionEntity, item.step_execution_id)
         if execution is None:
             raise NotFoundException("Step execution not found")

@@ -56,6 +56,9 @@ def test_application_exposes_expected_routes() -> None:
     assert app.swagger_ui_parameters["operationsSorter"] == "subjectCrudOrder"
     assert [tag["name"] for tag in schema["tags"]] == [
         "auth",
+        "me",
+        "saved-views",
+        "favorites",
         "sessions",
         "users",
         "roles",
@@ -66,6 +69,7 @@ def test_application_exposes_expected_routes() -> None:
         "clients",
         "client-releases",
         "designer",
+        "resource-links",
         "definition-library",
         "forms",
         "form-versions",
@@ -87,9 +91,14 @@ def test_application_exposes_expected_routes() -> None:
         "files",
         "images",
         "reports",
+        "analytics",
         "task-definitions",
         "task-schedules",
         "task-executions",
+        "setup",
+        "calendar-events",
+        "support-incidents",
+        "inbox",
         "health",
     ]
     assert paths["/api/v1/admin/permissions/search"]["post"]["tags"] == ["permissions"]

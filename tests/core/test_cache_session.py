@@ -36,24 +36,28 @@ def test_user_create_update_and_delete_mark_cache_namespace() -> None:
     def enable_uuidv7(connection, _record):
         connection.create_function("uuidv7", 0, lambda: str(uuid7()))
 
-    getattr(UserEntity, "__table__").create(engine)  # noqa: B009
-    UserHistoryTable.create(engine)
-    with CacheTrackingSession(engine) as session:
-        user = UserEntity(id=uuid7(), username="cached", hashed_password="hash")
-        session.add(user)
-        session.flush()
-        assert session.info.pop("read_cache_pending_namespaces") == {"users"}
+    try:
+        getattr(UserEntity, "__table__").create(engine)  # noqa: B009
+        UserHistoryTable.create(engine)
+        with CacheTrackingSession(engine) as session:
+            user = UserEntity(id=uuid7(), username="cached", hashed_password="hash")
+            session.add(user)
+            session.flush()
+            assert session.info.pop("read_cache_pending_namespaces") == {"users"}
 
-        user.first_name = "Updated"
-        session.flush()
-        assert session.info.pop("read_cache_pending_namespaces") == {"users"}
+            user.first_name = "Updated"
+            session.flush()
+            assert session.info.pop("read_cache_pending_namespaces") == {"users"}
 
-        session.delete(user)
-        session.flush()
-        assert session.info.pop("read_cache_pending_namespaces") == {"users"}
+            session.delete(user)
+            session.flush()
+            assert session.info.pop("read_cache_pending_namespaces") == {"users"}
 
-        session.exec(update(UserEntity).values(first_name="Bulk"))
-        assert session.info.pop("read_cache_pending_namespaces") == {"users"}
+            session.exec(update(UserEntity).values(first_name="Bulk"))
+            assert session.info.pop("read_cache_pending_namespaces") == {"users"}
+
+    finally:
+        engine.dispose()
 
 
 @pytest.mark.anyio

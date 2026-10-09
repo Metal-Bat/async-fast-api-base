@@ -217,7 +217,7 @@ class StepTypeService:
         if version is None or version.deleted_at is not None:
             raise NotFoundException("Step type version not found")
         root = await self.session.get(StepTypeEntity, version.step_type_id)
-        if root is None:
+        if root is None or root.deleted_at is not None:
             raise NotFoundException("Step type not found")
         return await self._as_dto(root, version)
 
@@ -252,7 +252,7 @@ class StepTypeService:
     ) -> StepTypeVersionDTO:
         try:
             await self._validate_snapshot(version)
-            is_available = True
+            is_available = root.is_enabled and root.deleted_at is None
         except ValueError:
             is_available = False
         ports = [

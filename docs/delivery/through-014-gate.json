@@ -1,0 +1,150 @@
+{
+  "status": "VERIFIED_WITH_EXCEPTION",
+  "started_at": "2026-10-08T19:08:54.182350+00:00",
+  "finished_at": "2026-10-08T19:13:26.151857+00:00",
+  "git_head": "995829eebd9483ac6b589c1648fc799c650ad464",
+  "tested_tree_sha256": "75b30d345e9c97d45e8cbd6da4a00571a4e66735bb462b82e7782db0c4b32064",
+  "lock_sha256": "4c23cc5a60e0f913471df1a80dcba273c29c22d8878f9d8a75a573cfe35eecf4",
+  "tools": {
+    "python": "3.14.7 (main, Sep  1 2026, 14:18:09) [Clang 22.1.3 ]",
+    "installed": {
+      "ruff": "0.16.10",
+      "ty": "0.0.85",
+      "pre-commit": "4.6.2"
+    },
+    "locked": {
+      "pre-commit": "4.6.2",
+      "ruff": "0.16.10",
+      "ty": "0.0.85"
+    },
+    "mismatches": []
+  },
+  "private_report": "/tmp/app-be-check-unvbh0u6/report.json",
+  "stages": [
+    {
+      "stage": "lock-check",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "fmt-check",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "lint",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "docstrings",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "typecheck",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "security",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "doctest",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 791,
+      "failed": 0,
+      "skipped": 155,
+      "diagnostics": []
+    },
+    {
+      "stage": "flow-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "delivery-foundation-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "delivery-wave-four-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 28,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "delivery-transfer-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "precommit-check",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "diagnostics": []
+    }
+  ],
+  "not_run": [],
+  "warning_approval": "docs/delivery/approved-decisions.json#D07",
+  "baseline_approval": "docs/delivery/secret-baseline-review.json",
+  "limits": [
+    "Default integration exclusions are recorded; selected required profiles have no skips.",
+    "Local TLS gateway receipt does not establish downstream SMTP, deployment or frontend acceptance.",
+    "Completion records were updated after the tested tree; production code and test source are unchanged."
+  ]
+}

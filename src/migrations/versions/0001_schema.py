@@ -1,36 +1,36 @@
-"""Complete initial schema, seeds and PostgreSQL guards.
+"""Complete frozen application schema, indexes and PostgreSQL guards.
 
-Consolidates the former 33-revision chain. The former head ID is retained so
-fully upgraded databases remain current. Domain stages preserve the original
-operation order, including seed updates and trigger installation.
+Required catalog data is installed separately by 0002_required_data.
 """
 
-import hashlib
-import json
-import os
 from collections.abc import Sequence
-from datetime import UTC, datetime
 from typing import Any
 
 import sqlalchemy as sa
-from alembic import op
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.dialects.postgresql import JSONB
 
-revision: str = "b13a0c7d2e44"
+from alembic import op
+
+revision: str = "0001_schema"
 down_revision: str | Sequence[str] | None = None
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 
+def _object_name(prefix: str, table: str, suffix: str) -> str:
+    """Apply the frozen database object naming convention."""
+    return f"{prefix}_{table}_{suffix}"
+
+
 def upgrade() -> None:
-    """Create the complete schema and seed data from an empty database."""
+    """Create all application tables and guards without inserting seed rows."""
     _upgrade_core()
     _upgrade_work_groups()
     _upgrade_versioned_step_types_and_typed_ports()
     _upgrade_versioned_forms_and_render_contracts()
     _upgrade_governed_integration_connections()
     _upgrade_versioned_workflow_authoring()
-    _upgrade_typed_transform_handler_v2()
     _upgrade_request_types_and_business_request()
     _upgrade_durable_single_token_process_runtime()
     _upgrade_background_automation_snapshot()
@@ -57,10 +57,28 @@ def upgrade() -> None:
     _upgrade_subprocess_authoring_contract()
     _upgrade_subprocess_runtime()
     _upgrade_library_template_provenance()
+    _workflow_workspaceupgrade()
+    _workspace_commentsupgrade()
+    _user_preferencesupgrade()
+    _help_stateupgrade()
+    _personal_itemsupgrade()
+    _unified_notificationsupgrade()
+    _support_incidentsupgrade()
+    _calendar_eventsupgrade()
+    _workflow_restoreupgrade()
 
 
 def downgrade() -> None:
     """Remove the complete schema in reverse dependency order."""
+    _workflow_restoredowngrade()
+    _calendar_eventsdowngrade()
+    _support_incidentsdowngrade()
+    _unified_notificationsdowngrade()
+    _personal_itemsdowngrade()
+    _help_statedowngrade()
+    _user_preferencesdowngrade()
+    _workspace_commentsdowngrade()
+    _workflow_workspacedowngrade()
     _downgrade_library_template_provenance()
     _downgrade_subprocess_runtime()
     _downgrade_subprocess_authoring_contract()
@@ -87,7 +105,6 @@ def downgrade() -> None:
     _downgrade_background_automation_snapshot()
     _downgrade_durable_single_token_process_runtime()
     _downgrade_request_types_and_business_request()
-    _downgrade_typed_transform_handler_v2()
     _downgrade_versioned_workflow_authoring()
     _downgrade_governed_integration_connections()
     _downgrade_versioned_forms_and_render_contracts()
@@ -97,84 +114,6 @@ def downgrade() -> None:
 
 
 # Core
-
-
-def _create_initial_admin() -> None:
-    username = os.getenv("INITIAL_ADMIN_USERNAME")
-    password = os.getenv("INITIAL_ADMIN_PASSWORD")
-    if not bool(username) and not bool(password):
-        return
-    if not bool(username) or not bool(password):
-        raise RuntimeError(
-            "INITIAL_ADMIN_USERNAME and INITIAL_ADMIN_PASSWORD must be configured together"
-        )
-    salt = os.urandom(32)
-    key = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 100_000)
-    user = sa.table(
-        "USER",
-        sa.column("VERSION", sa.Integer()),
-        sa.column("CREATED_AT", sa.DateTime(timezone=True)),
-        sa.column("USERNAME", sa.String(length=255)),
-        sa.column("EMAIL", sa.String(length=255)),
-        sa.column("IS_SUPERUSER", sa.Boolean()),
-        sa.column("FIRST_NAME", sa.String(length=255)),
-        sa.column("LAST_NAME", sa.String(length=255)),
-        sa.column("HASHED_PASSWORD", sa.String()),
-    )
-    op.bulk_insert(
-        user,
-        [
-            {
-                "VERSION": 1,
-                "CREATED_AT": datetime.now(UTC),
-                "USERNAME": username,
-                "EMAIL": None,
-                "IS_SUPERUSER": True,
-                "FIRST_NAME": None,
-                "LAST_NAME": None,
-                "HASHED_PASSWORD": (salt + key).hex(),
-            }
-        ],
-    )
-
-
-def _create_report_cleanup_schedule() -> None:
-    schedule = sa.table(
-        "PERIODIC_TASK",
-        sa.column("VERSION", sa.Integer()),
-        sa.column("CREATED_AT", sa.DateTime(timezone=True)),
-        sa.column("NAME", sa.String(length=255)),
-        sa.column("TASK_NAME", sa.String(length=255)),
-        sa.column("QUEUE", sa.String(length=255)),
-        sa.column("SCHEDULE_TYPE", sa.String(length=32)),
-        sa.column("INTERVAL_SECONDS", sa.Float()),
-        sa.column("ARGS", sa.JSON()),
-        sa.column("KWARGS", sa.JSON()),
-        sa.column("HEADERS", sa.JSON()),
-        sa.column("ENABLED", sa.Boolean()),
-        sa.column("ONE_OFF", sa.Boolean()),
-        sa.column("TOTAL_RUN_COUNT", sa.Integer()),
-    )
-    op.bulk_insert(
-        schedule,
-        [
-            {
-                "VERSION": 1,
-                "CREATED_AT": datetime.now(UTC),
-                "NAME": "report-cleanup-hourly",
-                "TASK_NAME": "reporting.cleanup_expired",
-                "QUEUE": os.getenv("CELERY_REPORT_QUEUE", "reporting"),
-                "SCHEDULE_TYPE": "interval",
-                "INTERVAL_SECONDS": 3600.0,
-                "ARGS": [],
-                "KWARGS": {},
-                "HEADERS": {},
-                "ENABLED": True,
-                "ONE_OFF": False,
-                "TOTAL_RUN_COUNT": 0,
-            }
-        ],
-    )
 
 
 def _upgrade_core() -> None:
@@ -2337,8 +2276,6 @@ def _upgrade_core() -> None:
     op.create_index(
         op.f("ix_USER_UPLOAD_HISTORY_TRACE_ID"), "USER_UPLOAD_HISTORY", ["TRACE_ID"], unique=False
     )
-    _create_initial_admin()
-    _create_report_cleanup_schedule()
 
 
 def _downgrade_core() -> None:
@@ -2619,43 +2556,6 @@ def _downgrade_work_groups() -> None:
 
 
 # Versioned step types and typed ports
-
-
-def _seed_catalog() -> None:
-    payload = json.dumps(_INITIAL_CATALOG)
-    op.execute(
-        sa.text("""
-        WITH seeds AS (
-            SELECT value AS data FROM jsonb_array_elements(CAST(:payload AS jsonb))
-        ), roots AS (
-            INSERT INTO "STEP_TYPE" ("CODE", "NAME", "IS_ENABLED", "VERSION", "CREATED_AT")
-            SELECT data->>'code', data->>'name', true, 1, now() FROM seeds
-            RETURNING "ID", "CODE", "NAME"
-        ), history AS (
-            INSERT INTO "STEP_TYPE_HISTORY"
-                ("ENTITY_ID", "MODIFIER_TYPE", "MODIFIER_ID", "CHANGED_AT", "OPERATION",
-                 "TO_CODE", "TO_NAME", "TO_IS_ENABLED")
-            SELECT "ID", 'system', 'migration:b8d982c92b94', now(), 'insert',
-                   "CODE", "NAME", true FROM roots
-        ), versions AS (
-            INSERT INTO "STEP_TYPE_VERSION"
-                ("STEP_TYPE_ID", "NUMBER", "STATUS", "HANDLER_KEY", "HANDLER_VERSION",
-                 "EXECUTION_MODE", "CONFIG_SCHEMA", "PUBLISHED_AT", "VERSION", "CREATED_AT")
-            SELECT roots."ID", 1, 'PUBLISHED', data->>'handler_key', data->>'handler_version',
-                   data->>'execution_mode', data->'config_schema', now(), 1, now()
-            FROM roots JOIN seeds ON roots."CODE" = data->>'code'
-            RETURNING "ID", "HANDLER_KEY"
-        )
-        INSERT INTO "STEP_TYPE_PORT"
-            ("STEP_TYPE_VERSION_ID", "DIRECTION", "PORT_KEY", "VALUE_SCHEMA",
-             "REQUIRED", "NULLABLE", "CARDINALITY", "CREATED_AT")
-        SELECT versions."ID", port->>'direction', port->>'port_key', port->'value_schema',
-               (port->>'required')::boolean, (port->>'nullable')::boolean,
-               port->>'cardinality', now()
-        FROM versions JOIN seeds ON versions."HANDLER_KEY" = data->>'handler_key'
-        CROSS JOIN LATERAL jsonb_array_elements(data->'ports') AS port
-    """).bindparams(sa.bindparam("payload", value=payload, type_=sa.Text()))
-    )
 
 
 def _install_immutability_versioned_step_types_and_typed_ports() -> None:
@@ -2989,7 +2889,6 @@ def _upgrade_versioned_step_types_and_typed_ports() -> None:
         "STEP_TYPE_VERSION",
         '"STATUS" = \'DRAFT\' OR "DELETED_AT" IS NULL',
     )
-    _seed_catalog()
     _install_immutability_versioned_step_types_and_typed_ports()
 
 
@@ -3015,318 +2914,6 @@ def _downgrade_versioned_step_types_and_typed_ports() -> None:
     op.drop_index("ix_STEP_TYPE_enabled_code", table_name="STEP_TYPE")
     op.drop_index(op.f("ix_STEP_TYPE_CREATED_AT"), table_name="STEP_TYPE")
     op.drop_table("STEP_TYPE")
-
-
-_INITIAL_CATALOG = [
-    {
-        "code": "DECISION",
-        "name": "Decision",
-        "handler_key": "decision",
-        "handler_version": "1",
-        "execution_mode": "SYNC",
-        "config_schema": {
-            "additionalProperties": False,
-            "properties": {
-                "expression": {
-                    "maxLength": 4096,
-                    "minLength": 1,
-                    "title": "Expression",
-                    "type": "string",
-                }
-            },
-            "required": ["expression"],
-            "title": "DecisionConfig",
-            "type": "object",
-        },
-        "ports": [
-            {
-                "port_key": "data",
-                "direction": "INPUT",
-                "value_schema": {
-                    "$defs": {"JsonValue": {}},
-                    "additionalProperties": {"$ref": "#/$defs/JsonValue"},
-                    "type": "object",
-                    "not": {"type": "null"},
-                },
-                "required": True,
-                "nullable": False,
-                "cardinality": "SCALAR",
-            },
-            {
-                "port_key": "outcome",
-                "direction": "OUTPUT",
-                "value_schema": {"type": "string", "not": {"type": "null"}},
-                "required": True,
-                "nullable": False,
-                "cardinality": "SCALAR",
-            },
-        ],
-    },
-    {
-        "code": "FINISH",
-        "name": "Finish",
-        "handler_key": "finish",
-        "handler_version": "1",
-        "execution_mode": "SYNC",
-        "config_schema": {
-            "additionalProperties": False,
-            "properties": {},
-            "title": "EmptyConfig",
-            "type": "object",
-        },
-        "ports": [],
-    },
-    {
-        "code": "FUNCTION",
-        "name": "Function",
-        "handler_key": "function",
-        "handler_version": "1",
-        "execution_mode": "SYNC",
-        "config_schema": {
-            "$defs": {"Reference": {"maxLength": 512, "minLength": 1, "type": "string"}},
-            "additionalProperties": False,
-            "properties": {"function_key": {"$ref": "#/$defs/Reference"}},
-            "required": ["function_key"],
-            "title": "FunctionConfig",
-            "type": "object",
-        },
-        "ports": [
-            {
-                "port_key": "arguments",
-                "direction": "INPUT",
-                "value_schema": {
-                    "$defs": {"JsonValue": {}},
-                    "additionalProperties": {"$ref": "#/$defs/JsonValue"},
-                    "type": "object",
-                    "not": {"type": "null"},
-                },
-                "required": True,
-                "nullable": False,
-                "cardinality": "SCALAR",
-            },
-            {
-                "port_key": "result",
-                "direction": "OUTPUT",
-                "value_schema": {
-                    "$defs": {"JsonValue": {}},
-                    "anyOf": [{"$ref": "#/$defs/JsonValue"}, {"type": "null"}],
-                },
-                "required": True,
-                "nullable": True,
-                "cardinality": "SCALAR",
-            },
-        ],
-    },
-    {
-        "code": "HUMAN_TASK",
-        "name": "Human task",
-        "handler_key": "human_task",
-        "handler_version": "1",
-        "execution_mode": "HUMAN",
-        "config_schema": {
-            "$defs": {"Reference": {"maxLength": 512, "minLength": 1, "type": "string"}},
-            "additionalProperties": False,
-            "properties": {"form_version_ref": {"$ref": "#/$defs/Reference"}},
-            "required": ["form_version_ref"],
-            "title": "HumanConfig",
-            "type": "object",
-        },
-        "ports": [
-            {
-                "port_key": "initial_data",
-                "direction": "INPUT",
-                "value_schema": {
-                    "$defs": {"JsonValue": {}},
-                    "additionalProperties": {"$ref": "#/$defs/JsonValue"},
-                    "type": "object",
-                    "not": {"type": "null"},
-                },
-                "required": False,
-                "nullable": False,
-                "cardinality": "SCALAR",
-            },
-            {
-                "port_key": "submission",
-                "direction": "OUTPUT",
-                "value_schema": {
-                    "$defs": {"JsonValue": {}},
-                    "additionalProperties": {"$ref": "#/$defs/JsonValue"},
-                    "type": "object",
-                    "not": {"type": "null"},
-                },
-                "required": True,
-                "nullable": False,
-                "cardinality": "SCALAR",
-            },
-            {
-                "port_key": "outcome",
-                "direction": "OUTPUT",
-                "value_schema": {"type": "string", "not": {"type": "null"}},
-                "required": True,
-                "nullable": False,
-                "cardinality": "SCALAR",
-            },
-        ],
-    },
-    {
-        "code": "NOTIFICATION",
-        "name": "Notification",
-        "handler_key": "notification",
-        "handler_version": "1",
-        "execution_mode": "BACKGROUND",
-        "config_schema": {
-            "$defs": {"Reference": {"maxLength": 512, "minLength": 1, "type": "string"}},
-            "additionalProperties": False,
-            "properties": {
-                "connection_ref": {"$ref": "#/$defs/Reference"},
-                "template_key": {"$ref": "#/$defs/Reference"},
-            },
-            "required": ["connection_ref", "template_key"],
-            "title": "NotificationConfig",
-            "type": "object",
-        },
-        "ports": [
-            {
-                "port_key": "recipients",
-                "direction": "INPUT",
-                "value_schema": {
-                    "$defs": {"Reference": {"maxLength": 512, "minLength": 1, "type": "string"}},
-                    "items": {"$ref": "#/$defs/Reference"},
-                    "type": "array",
-                    "not": {"type": "null"},
-                    "x-reference-kind": "user",
-                },
-                "required": True,
-                "nullable": False,
-                "cardinality": "LIST",
-            },
-            {
-                "port_key": "data",
-                "direction": "INPUT",
-                "value_schema": {
-                    "$defs": {"JsonValue": {}},
-                    "additionalProperties": {"$ref": "#/$defs/JsonValue"},
-                    "type": "object",
-                    "not": {"type": "null"},
-                },
-                "required": True,
-                "nullable": False,
-                "cardinality": "SCALAR",
-            },
-            {
-                "port_key": "notification",
-                "direction": "OUTPUT",
-                "value_schema": {
-                    "maxLength": 512,
-                    "minLength": 1,
-                    "type": "string",
-                    "not": {"type": "null"},
-                    "x-reference-kind": "notification",
-                },
-                "required": True,
-                "nullable": False,
-                "cardinality": "SCALAR",
-            },
-        ],
-    },
-    {
-        "code": "SERVICE_TASK",
-        "name": "Service task",
-        "handler_key": "service_task",
-        "handler_version": "1",
-        "execution_mode": "BACKGROUND",
-        "config_schema": {
-            "$defs": {"Reference": {"maxLength": 512, "minLength": 1, "type": "string"}},
-            "additionalProperties": False,
-            "properties": {
-                "connection_ref": {"$ref": "#/$defs/Reference"},
-                "operation_key": {"$ref": "#/$defs/Reference"},
-            },
-            "required": ["connection_ref", "operation_key"],
-            "title": "ServiceConfig",
-            "type": "object",
-        },
-        "ports": [
-            {
-                "port_key": "payload",
-                "direction": "INPUT",
-                "value_schema": {
-                    "$defs": {"JsonValue": {}},
-                    "additionalProperties": {"$ref": "#/$defs/JsonValue"},
-                    "type": "object",
-                    "not": {"type": "null"},
-                },
-                "required": True,
-                "nullable": False,
-                "cardinality": "SCALAR",
-            },
-            {
-                "port_key": "result",
-                "direction": "OUTPUT",
-                "value_schema": {
-                    "$defs": {"JsonValue": {}},
-                    "anyOf": [{"$ref": "#/$defs/JsonValue"}, {"type": "null"}],
-                },
-                "required": True,
-                "nullable": True,
-                "cardinality": "SCALAR",
-            },
-        ],
-    },
-    {
-        "code": "START",
-        "name": "Start",
-        "handler_key": "start",
-        "handler_version": "1",
-        "execution_mode": "SYNC",
-        "config_schema": {
-            "additionalProperties": False,
-            "properties": {},
-            "title": "EmptyConfig",
-            "type": "object",
-        },
-        "ports": [],
-    },
-    {
-        "code": "TRANSFORM",
-        "name": "Transform",
-        "handler_key": "transform",
-        "handler_version": "1",
-        "execution_mode": "SYNC",
-        "config_schema": {
-            "$defs": {"Reference": {"maxLength": 512, "minLength": 1, "type": "string"}},
-            "additionalProperties": False,
-            "properties": {"conversion_key": {"$ref": "#/$defs/Reference"}},
-            "required": ["conversion_key"],
-            "title": "TransformConfig",
-            "type": "object",
-        },
-        "ports": [
-            {
-                "port_key": "value",
-                "direction": "INPUT",
-                "value_schema": {
-                    "$defs": {"JsonValue": {}},
-                    "anyOf": [{"$ref": "#/$defs/JsonValue"}, {"type": "null"}],
-                },
-                "required": True,
-                "nullable": True,
-                "cardinality": "SCALAR",
-            },
-            {
-                "port_key": "result",
-                "direction": "OUTPUT",
-                "value_schema": {
-                    "$defs": {"JsonValue": {}},
-                    "anyOf": [{"$ref": "#/$defs/JsonValue"}, {"type": "null"}],
-                },
-                "required": True,
-                "nullable": True,
-                "cardinality": "SCALAR",
-            },
-        ],
-    },
-]
 
 
 # Versioned forms and render contracts
@@ -4520,7 +4107,7 @@ def _upgrade_versioned_workflow_authoring() -> None:
         ),
         sa.CheckConstraint(
             '(NOT "CAN_START" OR "CAN_VIEW")',
-            name="ck_WORKFLOW_ACCESS_GRANT_start_implies_view",
+            name=_object_name("ck", "WORKFLOW_ACCESS_GRANT", "start_implies_view"),
         ),
         sa.CheckConstraint(
             '(num_nonnulls("USER_ID", "WORK_GROUP_ID") = 1)', name="ck_WORKFLOW_ACCESS_GRANT_target"
@@ -5280,124 +4867,6 @@ def _downgrade_versioned_workflow_authoring() -> None:
 
 
 # Typed transform handler v2
-
-_CONFIG_SCHEMA = {
-    "$defs": {"JsonValue": {}},
-    "additionalProperties": False,
-    "properties": {
-        "conversion_key": {
-            "enum": [
-                "string",
-                "integer",
-                "decimal",
-                "boolean",
-                "date",
-                "date_time",
-                "array",
-                "object",
-            ],
-            "title": "Conversion Key",
-            "type": "string",
-        },
-        "null_behavior": {
-            "default": "error",
-            "enum": ["error", "preserve", "default"],
-            "title": "Null Behavior",
-            "type": "string",
-        },
-        "default": {
-            "anyOf": [{"$ref": "#/$defs/JsonValue"}, {"type": "null"}],
-            "default": None,
-        },
-        "format": {
-            "anyOf": [{"maxLength": 128, "type": "string"}, {"type": "null"}],
-            "default": None,
-            "title": "Format",
-        },
-        "projection": {
-            "anyOf": [
-                {
-                    "additionalProperties": {"type": "string"},
-                    "maxProperties": 64,
-                    "type": "object",
-                },
-                {"type": "null"},
-            ],
-            "default": None,
-            "title": "Projection",
-        },
-    },
-    "required": ["conversion_key"],
-    "title": "TransformConfigV2",
-    "type": "object",
-}
-
-
-_VALUE_SCHEMA = {
-    "$defs": {"JsonValue": {}},
-    "anyOf": [{"$ref": "#/$defs/JsonValue"}, {"type": "null"}],
-}
-
-
-def _upgrade_typed_transform_handler_v2() -> None:
-    """Publish the additive transform contract without changing version 1."""
-    connection = op.get_bind()
-    version_id = connection.execute(
-        sa.text("""
-            INSERT INTO "STEP_TYPE_VERSION"
-                ("STEP_TYPE_ID", "NUMBER", "STATUS", "HANDLER_KEY", "HANDLER_VERSION",
-                 "EXECUTION_MODE", "CONFIG_SCHEMA", "VERSION", "CREATED_AT")
-            SELECT "ID", 2, 'DRAFT', 'transform', '2', 'SYNC',
-                   CAST(:config_schema AS jsonb), 1, now()
-            FROM "STEP_TYPE" WHERE "CODE" = 'TRANSFORM' AND "DELETED_AT" IS NULL
-            RETURNING "ID"
-        """).bindparams(config_schema=json.dumps(_CONFIG_SCHEMA))
-    ).scalar_one()
-    for direction, key in (("INPUT", "value"), ("OUTPUT", "result")):
-        connection.execute(
-            sa.text("""
-                INSERT INTO "STEP_TYPE_PORT"
-                    ("STEP_TYPE_VERSION_ID", "DIRECTION", "PORT_KEY", "VALUE_SCHEMA",
-                     "REQUIRED", "NULLABLE", "CARDINALITY", "CREATED_AT")
-                VALUES (:version_id, :direction, :port_key, CAST(:value_schema AS jsonb),
-                        true, true, 'SCALAR', now())
-            """).bindparams(
-                version_id=version_id,
-                direction=direction,
-                port_key=key,
-                value_schema=json.dumps(_VALUE_SCHEMA),
-            )
-        )
-    connection.execute(
-        sa.text("""
-            UPDATE "STEP_TYPE_VERSION"
-            SET "STATUS" = 'PUBLISHED', "PUBLISHED_AT" = now(), "UPDATED_AT" = now()
-            WHERE "ID" = :version_id
-        """).bindparams(version_id=version_id)
-    )
-
-
-def _downgrade_typed_transform_handler_v2() -> None:
-    """Remove only transform v2, retaining the original published contract."""
-    op.execute('DROP TRIGGER step_type_port_immutable ON "STEP_TYPE_PORT"')
-    op.execute('DROP TRIGGER step_type_version_immutable ON "STEP_TYPE_VERSION"')
-    op.execute("""
-        DELETE FROM "STEP_TYPE_PORT"
-        WHERE "STEP_TYPE_VERSION_ID" IN (
-            SELECT "ID" FROM "STEP_TYPE_VERSION"
-            WHERE "HANDLER_KEY" = 'transform' AND "HANDLER_VERSION" = '2'
-        )
-    """)
-    op.execute("""
-        DELETE FROM "STEP_TYPE_VERSION"
-        WHERE "HANDLER_KEY" = 'transform' AND "HANDLER_VERSION" = '2'
-    """)
-    op.execute("""CREATE TRIGGER step_type_version_immutable
-        BEFORE INSERT OR UPDATE OR DELETE ON "STEP_TYPE_VERSION"
-        FOR EACH ROW EXECUTE FUNCTION protect_step_type_version()""")
-    op.execute("""CREATE TRIGGER step_type_port_immutable
-        BEFORE INSERT OR UPDATE OR DELETE ON "STEP_TYPE_PORT"
-        FOR EACH ROW EXECUTE FUNCTION protect_step_type_port()""")
 
 
 # Request types and business request
@@ -6466,7 +5935,7 @@ def _upgrade_form_submission_attachments() -> None:
         "ix_FORM_SUBMISSION_ATTACHMENT_CREATED_AT", "FORM_SUBMISSION_ATTACHMENT", ["CREATED_AT"]
     )
     op.create_index(
-        "uq_FORM_SUBMISSION_ATTACHMENT_active_position",
+        _object_name("uq", "FORM_SUBMISSION_ATTACHMENT", "active_position"),
         "FORM_SUBMISSION_ATTACHMENT",
         ["FORM_SUBMISSION_ID", "FIELD_PATH", "POSITION"],
         unique=True,
@@ -6569,48 +6038,8 @@ def _upgrade_form_submission_attachments() -> None:
             columns,
         )
 
-    schedule = sa.table(
-        "PERIODIC_TASK",
-        sa.column("VERSION", sa.Integer()),
-        sa.column("CREATED_AT", sa.DateTime(timezone=True)),
-        sa.column("NAME", sa.String(255)),
-        sa.column("TASK_NAME", sa.String(255)),
-        sa.column("QUEUE", sa.String(255)),
-        sa.column("SCHEDULE_TYPE", sa.String(32)),
-        sa.column("INTERVAL_SECONDS", sa.Float()),
-        sa.column("ARGS", sa.JSON()),
-        sa.column("KWARGS", sa.JSON()),
-        sa.column("HEADERS", sa.JSON()),
-        sa.column("ENABLED", sa.Boolean()),
-        sa.column("ONE_OFF", sa.Boolean()),
-        sa.column("TOTAL_RUN_COUNT", sa.Integer()),
-    )
-    op.bulk_insert(
-        schedule,
-        [
-            {
-                "VERSION": 1,
-                "CREATED_AT": datetime.now(UTC),
-                "NAME": "abandoned-upload-cleanup-hourly",
-                "TASK_NAME": "media.cleanup_abandoned_uploads",
-                "QUEUE": "default",
-                "SCHEDULE_TYPE": "interval",
-                "INTERVAL_SECONDS": 3600.0,
-                "ARGS": [],
-                "KWARGS": {},
-                "HEADERS": {},
-                "ENABLED": True,
-                "ONE_OFF": False,
-                "TOTAL_RUN_COUNT": 0,
-            }
-        ],
-    )
-
 
 def _downgrade_form_submission_attachments() -> None:
-    op.execute(
-        sa.text('DELETE FROM "PERIODIC_TASK" WHERE "NAME" = \'abandoned-upload-cleanup-hourly\'')
-    )
     for suffix in ("entity_changed", "TRACE_ID", "REQUEST_ID", "CHANGED_AT", "ENTITY_ID"):
         op.drop_index(
             f"ix_FORM_SUBMISSION_ATTACHMENT_HISTORY_{suffix}",
@@ -6622,7 +6051,7 @@ def _downgrade_form_submission_attachments() -> None:
         "ix_FORM_SUBMISSION_ATTACHMENT_added_by",
         "ix_FORM_SUBMISSION_ATTACHMENT_upload",
         "ix_FORM_SUBMISSION_ATTACHMENT_collection",
-        "uq_FORM_SUBMISSION_ATTACHMENT_active_position",
+        _object_name("uq", "FORM_SUBMISSION_ATTACHMENT", "active_position"),
         "ix_FORM_SUBMISSION_ATTACHMENT_CREATED_AT",
     ):
         op.drop_index(name, table_name="FORM_SUBMISSION_ATTACHMENT")
@@ -6899,106 +6328,6 @@ def _downgrade_claimable_human_work() -> None:
 
 # Durable event and timer waits
 
-_WAIT_CATALOG = [
-    {
-        "code": "EVENT_WAIT",
-        "name": "Event wait",
-        "handler_key": "event_wait",
-        "handler_version": "1",
-        "execution_mode": "WAIT",
-        "config_schema": {
-            "additionalProperties": False,
-            "properties": {
-                "event_type": {
-                    "maxLength": 64,
-                    "minLength": 1,
-                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
-                    "title": "Event Type",
-                    "type": "string",
-                },
-                "expires_in_seconds": {
-                    "anyOf": [
-                        {"maximum": 31536000, "minimum": 1, "type": "integer"},
-                        {"type": "null"},
-                    ],
-                    "default": None,
-                    "title": "Expires In Seconds",
-                },
-            },
-            "required": ["event_type"],
-            "title": "EventWaitConfig",
-            "type": "object",
-        },
-        "ports": [
-            {
-                "port_key": "correlation_key",
-                "direction": "INPUT",
-                "value_schema": {
-                    "maxLength": 512,
-                    "minLength": 1,
-                    "type": "string",
-                    "not": {"type": "null"},
-                },
-                "required": True,
-                "nullable": False,
-                "cardinality": "SCALAR",
-            },
-            {
-                "port_key": "payload",
-                "direction": "OUTPUT",
-                "value_schema": {
-                    "$defs": {"JsonValue": {}},
-                    "additionalProperties": {"$ref": "#/$defs/JsonValue"},
-                    "type": "object",
-                    "not": {"type": "null"},
-                },
-                "required": True,
-                "nullable": False,
-                "cardinality": "SCALAR",
-            },
-            {
-                "port_key": "outcome",
-                "direction": "OUTPUT",
-                "value_schema": {"type": "string", "not": {"type": "null"}},
-                "required": True,
-                "nullable": False,
-                "cardinality": "SCALAR",
-            },
-        ],
-    },
-    {
-        "code": "TIMER",
-        "name": "Timer",
-        "handler_key": "timer",
-        "handler_version": "1",
-        "execution_mode": "WAIT",
-        "config_schema": {
-            "additionalProperties": False,
-            "properties": {
-                "delay_seconds": {
-                    "maximum": 31536000,
-                    "minimum": 1,
-                    "title": "Delay Seconds",
-                    "type": "integer",
-                }
-            },
-            "required": ["delay_seconds"],
-            "title": "TimerConfig",
-            "type": "object",
-        },
-        "ports": [
-            {
-                "port_key": "outcome",
-                "direction": "OUTPUT",
-                "value_schema": {"type": "string", "not": {"type": "null"}},
-                "required": True,
-                "nullable": False,
-                "cardinality": "SCALAR",
-            }
-        ],
-    },
-]
-
 
 def _base_columns_durable_event_and_timer_waits() -> list[sa.Column[Any]]:
     return [
@@ -7131,78 +6460,8 @@ def _upgrade_durable_event_and_timer_waits() -> None:
         postgresql_where=sa.text("\"STATUS\" = 'LEASED'"),
     )
 
-    payload = json.dumps(_WAIT_CATALOG)
-    op.execute(
-        sa.text("""
-        WITH seeds AS (
-            SELECT value AS data FROM jsonb_array_elements(CAST(:payload AS jsonb))
-        ), roots AS (
-            INSERT INTO "STEP_TYPE" ("CODE", "NAME", "IS_ENABLED", "VERSION", "CREATED_AT")
-            SELECT data->>'code', data->>'name', true, 1, now() FROM seeds
-            RETURNING "ID", "CODE", "NAME"
-        ), history AS (
-            INSERT INTO "STEP_TYPE_HISTORY"
-                ("ENTITY_ID", "MODIFIER_TYPE", "MODIFIER_ID", "CHANGED_AT", "OPERATION",
-                 "TO_CODE", "TO_NAME", "TO_IS_ENABLED")
-            SELECT "ID", 'system', 'migration:a13d5e7f9012', now(), 'insert',
-                   "CODE", "NAME", true FROM roots
-        ), versions AS (
-            INSERT INTO "STEP_TYPE_VERSION"
-                ("STEP_TYPE_ID", "NUMBER", "STATUS", "HANDLER_KEY", "HANDLER_VERSION",
-                 "EXECUTION_MODE", "CONFIG_SCHEMA", "PUBLISHED_AT", "VERSION", "CREATED_AT")
-            SELECT roots."ID", 1, 'DRAFT', data->>'handler_key', data->>'handler_version',
-                   data->>'execution_mode', data->'config_schema', NULL, 1, now()
-            FROM roots JOIN seeds ON roots."CODE" = data->>'code'
-            RETURNING "ID", "HANDLER_KEY"
-        )
-        INSERT INTO "STEP_TYPE_PORT"
-            ("STEP_TYPE_VERSION_ID", "DIRECTION", "PORT_KEY", "VALUE_SCHEMA",
-             "REQUIRED", "NULLABLE", "CARDINALITY", "CREATED_AT")
-        SELECT versions."ID", port->>'direction', port->>'port_key', port->'value_schema',
-               (port->>'required')::boolean, (port->>'nullable')::boolean,
-               port->>'cardinality', now()
-        FROM versions JOIN seeds ON versions."HANDLER_KEY" = data->>'handler_key'
-        CROSS JOIN LATERAL jsonb_array_elements(data->'ports') AS port
-        """).bindparams(sa.bindparam("payload", value=payload, type_=sa.Text()))
-    )
-    op.execute(
-        sa.text("""
-        UPDATE "STEP_TYPE_VERSION" SET "STATUS" = 'PUBLISHED', "PUBLISHED_AT" = now(),
-            "UPDATED_AT" = now()
-        WHERE "HANDLER_KEY" IN ('event_wait', 'timer') AND "STATUS" = 'DRAFT'
-        """)
-    )
-
 
 def _downgrade_durable_event_and_timer_waits() -> None:
-    op.execute('ALTER TABLE "STEP_TYPE_PORT" DISABLE TRIGGER step_type_port_immutable')
-    op.execute('ALTER TABLE "STEP_TYPE_VERSION" DISABLE TRIGGER step_type_version_immutable')
-    op.execute(
-        sa.text("""
-        DELETE FROM "STEP_TYPE_PORT" WHERE "STEP_TYPE_VERSION_ID" IN (
-            SELECT "ID" FROM "STEP_TYPE_VERSION" WHERE "STEP_TYPE_ID" IN (
-                SELECT "ID" FROM "STEP_TYPE" WHERE "CODE" IN ('EVENT_WAIT', 'TIMER')
-            )
-        )
-        """)
-    )
-    op.execute(
-        sa.text("""
-        DELETE FROM "STEP_TYPE_VERSION" WHERE "STEP_TYPE_ID" IN (
-            SELECT "ID" FROM "STEP_TYPE" WHERE "CODE" IN ('EVENT_WAIT', 'TIMER')
-        )
-        """)
-    )
-    op.execute(
-        sa.text("""
-        DELETE FROM "STEP_TYPE_HISTORY" WHERE "ENTITY_ID" IN (
-            SELECT "ID" FROM "STEP_TYPE" WHERE "CODE" IN ('EVENT_WAIT', 'TIMER')
-        )
-        """)
-    )
-    op.execute(sa.text("DELETE FROM \"STEP_TYPE\" WHERE \"CODE\" IN ('EVENT_WAIT', 'TIMER')"))
-    op.execute('ALTER TABLE "STEP_TYPE_VERSION" ENABLE TRIGGER step_type_version_immutable')
-    op.execute('ALTER TABLE "STEP_TYPE_PORT" ENABLE TRIGGER step_type_port_immutable')
     op.drop_table("SCHEDULED_ACTION")
     op.drop_table("EVENT_SUBSCRIPTION")
 
@@ -7472,56 +6731,6 @@ def _base_columns_durable_notifications() -> list[sa.Column[Any]]:
 
 
 def _upgrade_durable_notifications() -> None:
-    op.get_bind().exec_driver_sql(
-        """
-        WITH source AS (
-            SELECT v."STEP_TYPE_ID"
-            FROM "STEP_TYPE_VERSION" v
-            JOIN "STEP_TYPE" t ON t."ID" = v."STEP_TYPE_ID"
-            WHERE t."CODE" = 'NOTIFICATION' AND v."NUMBER" = 1
-        ), inserted AS (
-            INSERT INTO "STEP_TYPE_VERSION" (
-                "ID", "VERSION", "CREATED_AT", "STEP_TYPE_ID", "NUMBER", "STATUS",
-                "HANDLER_KEY", "HANDLER_VERSION", "EXECUTION_MODE", "CONFIG_SCHEMA", "PUBLISHED_AT"
-            )
-            SELECT uuidv7(), 1, now(), "STEP_TYPE_ID", 2, 'DRAFT',
-                   'notification', '2', 'BACKGROUND',
-                   '{
-                     "$defs":{"Reference":{"maxLength":512,"minLength":1,"type":"string"}},
-                     "additionalProperties":false,
-                     "properties":{
-                       "channel":{"const":"EMAIL","default":"EMAIL","title":"Channel","type":"string"},
-                       "connection_ref":{"$ref":"#/$defs/Reference"},
-                       "locale":{"default":"en","enum":["en","fa"],"title":"Locale","type":"string"},
-                       "template_key":{"$ref":"#/$defs/Reference"},
-                       "template_version":{"default":"1","maxLength":32,"minLength":1,"title":"Template Version","type":"string"}
-                     },
-                     "required":["connection_ref","template_key"],
-                     "title":"NotificationConfigV2","type":"object"
-                   }'::jsonb,
-                   NULL
-            FROM source
-            RETURNING "ID"
-        )
-        INSERT INTO "STEP_TYPE_PORT" (
-            "ID", "STEP_TYPE_VERSION_ID", "DIRECTION", "PORT_KEY", "VALUE_SCHEMA",
-            "REQUIRED", "NULLABLE", "CARDINALITY", "CREATED_AT"
-        )
-        SELECT uuidv7(), inserted."ID", p."DIRECTION", p."PORT_KEY", p."VALUE_SCHEMA",
-               p."REQUIRED", p."NULLABLE", p."CARDINALITY", now()
-        FROM inserted
-        JOIN "STEP_TYPE_VERSION" old ON old."HANDLER_KEY" = 'notification'
-                                    AND old."HANDLER_VERSION" = '1'
-        JOIN "STEP_TYPE_PORT" p ON p."STEP_TYPE_VERSION_ID" = old."ID"
-        """
-    )
-    op.execute(
-        """
-        UPDATE "STEP_TYPE_VERSION"
-        SET "STATUS" = 'PUBLISHED', "PUBLISHED_AT" = now()
-        WHERE "HANDLER_KEY" = 'notification' AND "HANDLER_VERSION" = '2'
-        """
-    )
     op.create_table(
         "NOTIFICATION",
         *_base_columns_durable_notifications(),
@@ -7630,30 +6839,6 @@ def _upgrade_durable_notifications() -> None:
 def _downgrade_durable_notifications() -> None:
     op.drop_table("NOTIFICATION_DELIVERY")
     op.drop_table("NOTIFICATION")
-    op.execute('DROP TRIGGER step_type_port_immutable ON "STEP_TYPE_PORT"')
-    op.execute('DROP TRIGGER step_type_version_immutable ON "STEP_TYPE_VERSION"')
-    op.execute(
-        """
-        DELETE FROM "STEP_TYPE_PORT"
-        WHERE "STEP_TYPE_VERSION_ID" IN (
-            SELECT "ID" FROM "STEP_TYPE_VERSION"
-            WHERE "HANDLER_KEY" = 'notification' AND "HANDLER_VERSION" = '2'
-        )
-        """
-    )
-    op.execute(
-        'DELETE FROM "STEP_TYPE_VERSION" WHERE "HANDLER_KEY" = \'notification\' AND "HANDLER_VERSION" = \'2\''
-    )
-    op.execute(
-        """CREATE TRIGGER step_type_version_immutable
-        BEFORE INSERT OR UPDATE OR DELETE ON "STEP_TYPE_VERSION"
-        FOR EACH ROW EXECUTE FUNCTION protect_step_type_version()"""
-    )
-    op.execute(
-        """CREATE TRIGGER step_type_port_immutable
-        BEFORE INSERT OR UPDATE OR DELETE ON "STEP_TYPE_PORT"
-        FOR EACH ROW EXECUTE FUNCTION protect_step_type_port()"""
-    )
 
 
 # Registered client releases
@@ -10713,7 +9898,7 @@ def _upgrade_authored_form_library_versions() -> None:
         unique=False,
     )
     op.create_index(
-        "ix_FORM_DATA_TYPE_VERSION_HISTORY_entity_changed",
+        _object_name("ix", "FORM_DATA_TYPE_VERSION_HISTORY", "entity_changed"),
         "FORM_DATA_TYPE_VERSION_HISTORY",
         ["ENTITY_ID", "CHANGED_AT"],
         unique=False,
@@ -10965,7 +10150,7 @@ def _downgrade_authored_form_library_versions() -> None:
     )
     op.drop_table("FORM_LIBRARY_GRANT_HISTORY")
     op.drop_index(
-        "ix_FORM_DATA_TYPE_VERSION_HISTORY_entity_changed",
+        _object_name("ix", "FORM_DATA_TYPE_VERSION_HISTORY", "entity_changed"),
         table_name="FORM_DATA_TYPE_VERSION_HISTORY",
     )
     op.drop_index(
@@ -11208,68 +10393,9 @@ def _upgrade_subprocess_authoring_contract() -> None:
                 comment=f"{prefix} VALUE OF SUBPROCESS_INTERFACE FOR THIS CHANGE.",
             ),
         )
-    connection = op.get_bind()
-    root_id = connection.execute(
-        sa.text("""
-        INSERT INTO "STEP_TYPE" ("CODE", "NAME", "IS_ENABLED", "VERSION", "CREATED_AT")
-        VALUES ('SUBPROCESS', 'Subprocess call', true, 1, now())
-        RETURNING "ID"
-    """)
-    ).scalar_one()
-    connection.execute(
-        sa.text("""
-        INSERT INTO "STEP_TYPE_HISTORY"
-            ("ENTITY_ID", "MODIFIER_TYPE", "MODIFIER_ID", "CHANGED_AT", "OPERATION",
-             "TO_CODE", "TO_NAME", "TO_IS_ENABLED")
-        VALUES (:root_id, 'system', 'migration:4e6f8a913c02', now(), 'insert',
-                'SUBPROCESS', 'Subprocess call', true)
-    """),
-        {"root_id": root_id},
-    )
-    version_id = connection.execute(
-        sa.text("""
-        INSERT INTO "STEP_TYPE_VERSION"
-            ("STEP_TYPE_ID", "NUMBER", "STATUS", "HANDLER_KEY", "HANDLER_VERSION",
-             "EXECUTION_MODE", "CONFIG_SCHEMA", "VERSION", "CREATED_AT")
-        VALUES (:root_id, 1, 'DRAFT', 'subprocess', '1', 'WAIT',
-                CAST(:config_schema AS jsonb),
-                1, now())
-        RETURNING "ID"
-    """),
-        {
-            "root_id": root_id,
-            "config_schema": '{"additionalProperties":false,"properties":{},"title":"EmptyConfig","type":"object"}',
-        },
-    ).scalar_one()
-    connection.execute(
-        sa.text("""
-        UPDATE "STEP_TYPE_VERSION" SET "STATUS" = 'PUBLISHED', "PUBLISHED_AT" = now()
-        WHERE "ID" = :version_id
-    """),
-        {"version_id": version_id},
-    )
 
 
 def _downgrade_subprocess_authoring_contract() -> None:
-    connection = op.get_bind()
-    op.execute('ALTER TABLE "STEP_TYPE_VERSION" DISABLE TRIGGER step_type_version_immutable')
-    connection.execute(
-        sa.text("""
-        DELETE FROM "STEP_TYPE_VERSION" WHERE "HANDLER_KEY" = 'subprocess'
-        AND "HANDLER_VERSION" = '1'
-    """)
-    )
-    op.execute('ALTER TABLE "STEP_TYPE_VERSION" ENABLE TRIGGER step_type_version_immutable')
-    connection.execute(
-        sa.text("""
-        DELETE FROM "STEP_TYPE_HISTORY" WHERE "MODIFIER_ID" = 'migration:4e6f8a913c02'
-    """)
-    )
-    connection.execute(
-        sa.text("""
-        DELETE FROM "STEP_TYPE" WHERE "CODE" = 'SUBPROCESS'
-    """)
-    )
     for prefix in ("TO", "FROM"):
         op.drop_column("WORKFLOW_VERSION_HISTORY", f"{prefix}_SUBPROCESS_INTERFACE")
     op.drop_column("WORKFLOW_STEP", "SUBPROCESS_CALL")
@@ -11372,3 +10498,491 @@ def _downgrade_library_template_provenance() -> None:
         for prefix in ("TO", "FROM"):
             op.drop_column(f"{table}_HISTORY", f"{prefix}_TEMPLATE_SOURCE")
         op.drop_column(table, "TEMPLATE_SOURCE")
+
+
+def _workflow_workspaceupgrade():
+    op.create_table(
+        "WORKFLOW_WORKSPACE",
+        sa.Column("ID", sa.Uuid(), primary_key=True, server_default=sa.text("uuidv7()")),
+        sa.Column("VERSION", sa.Integer(), nullable=False, server_default="1"),
+        sa.Column(
+            "CREATED_AT",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.text("now()"),
+        ),
+        sa.Column("UPDATED_AT", sa.DateTime(timezone=True)),
+        sa.Column("DELETED_AT", sa.DateTime(timezone=True)),
+        sa.Column(
+            "WORKFLOW_VERSION_ID",
+            sa.Uuid(),
+            sa.ForeignKey("WORKFLOW_VERSION.ID", ondelete="RESTRICT", onupdate="RESTRICT"),
+            nullable=False,
+        ),
+        sa.Column("DOCUMENT", JSONB(), nullable=False),
+        sa.Column("PROMOTED_GRAPH_CHECKSUM", sa.String(64)),
+        sa.UniqueConstraint("WORKFLOW_VERSION_ID", name="uq_WORKFLOW_WORKSPACE_version"),
+    )
+    op.create_index("ix_WORKFLOW_WORKSPACE_CREATED_AT", "WORKFLOW_WORKSPACE", ["CREATED_AT"])
+    from core.history import create_history_table
+
+    metadata = sa.MetaData()
+    source = sa.Table("WORKFLOW_WORKSPACE", metadata, autoload_with=op.get_bind())
+    create_history_table(source, ondelete="RESTRICT", onupdate="RESTRICT").create(op.get_bind())
+
+
+def _workflow_workspacedowngrade():
+    op.drop_table("WORKFLOW_WORKSPACE_HISTORY")
+    op.drop_table("WORKFLOW_WORKSPACE")
+
+
+COMMENTS = {
+    "ID": "TIME-SORTABLE UUIDV7 PRIMARY KEY.",
+    "VERSION": "OPTIMISTIC-LOCK VERSION NUMBER.",
+    "CREATED_AT": "UTC TIMESTAMP AT WHICH THE ROW WAS CREATED.",
+    "UPDATED_AT": "UTC TIMESTAMP OF THE MOST RECENT UPDATE.",
+    "DELETED_AT": "UTC SOFT-DELETION TIMESTAMP; NULL MEANS THE ROW IS ACTIVE.",
+}
+
+
+def _workspace_commentsupgrade() -> None:
+    """Repair comment-only drift reported by the disposable populated _workspace_commentsupgrade check."""
+    for name, comment in COMMENTS.items():
+        op.alter_column("WORKFLOW_WORKSPACE", name, comment=comment)
+
+
+def _workspace_commentsdowngrade() -> None:
+    """Restore only the prior absence of these comments."""
+    for name in COMMENTS:
+        op.alter_column("WORKFLOW_WORKSPACE", name, comment=None)
+
+
+def _user_preferencesupgrade() -> None:
+    """Add one bounded settings record per existing user without creating or changing accounts."""
+    op.create_table(
+        "USER_PREFERENCES",
+        sa.Column(
+            "ID",
+            sa.Uuid(),
+            primary_key=True,
+            server_default=sa.text("uuidv7()"),
+            comment="TIME-SORTABLE UUIDV7 PRIMARY KEY.",
+        ),
+        sa.Column(
+            "VERSION", sa.Integer(), nullable=False, comment="OPTIMISTIC-LOCK VERSION NUMBER."
+        ),
+        sa.Column(
+            "CREATED_AT",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            comment="UTC TIMESTAMP AT WHICH THE ROW WAS CREATED.",
+        ),
+        sa.Column(
+            "UPDATED_AT",
+            sa.DateTime(timezone=True),
+            comment="UTC TIMESTAMP OF THE MOST RECENT UPDATE.",
+        ),
+        sa.Column(
+            "DELETED_AT",
+            sa.DateTime(timezone=True),
+            comment="UTC SOFT-DELETION TIMESTAMP; NULL MEANS THE ROW IS ACTIVE.",
+        ),
+        sa.Column(
+            "USER_ID",
+            sa.Uuid(),
+            sa.ForeignKey("USER.ID", ondelete="RESTRICT", onupdate="RESTRICT"),
+            nullable=False,
+        ),
+        sa.Column("DOCUMENT", JSONB(), nullable=False),
+        sa.Column(
+            "AVATAR_UPLOAD_ID",
+            sa.Uuid(),
+            sa.ForeignKey("USER_UPLOAD.ID", ondelete="RESTRICT", onupdate="RESTRICT"),
+        ),
+        sa.UniqueConstraint("USER_ID", name="uq_USER_PREFERENCES_user"),
+        sa.CheckConstraint(
+            'jsonb_typeof("DOCUMENT") = \'object\' AND octet_length("DOCUMENT"::text) <= 4096',
+            name="ck_USER_PREFERENCES_document",
+        ),
+    )
+    op.create_index("ix_USER_PREFERENCES_CREATED_AT", "USER_PREFERENCES", ["CREATED_AT"])
+    from core.history import create_history_table
+
+    source = sa.Table("USER_PREFERENCES", sa.MetaData(), autoload_with=op.get_bind())
+    create_history_table(source).create(op.get_bind())
+
+
+def _user_preferencesdowngrade() -> None:
+    """Remove only personal settings and their audit table; existing identities remain."""
+    op.drop_table("USER_PREFERENCES_HISTORY")
+    op.drop_table("USER_PREFERENCES")
+
+
+def _help_stateupgrade() -> None:
+    """Store only tuple identity and explicit server timestamps, without content or tracking."""
+    op.create_table(
+        "USER_HELP_STATE",
+        sa.Column(
+            "USER_ID",
+            sa.Uuid(),
+            sa.ForeignKey("USER.ID", ondelete="CASCADE", onupdate="RESTRICT"),
+            primary_key=True,
+        ),
+        sa.Column("HELP_KEY", sa.String(64), primary_key=True),
+        sa.Column("REVISION", sa.String(64), primary_key=True),
+        sa.Column("LOCALE", sa.String(2), primary_key=True),
+        sa.Column("FIRST_VIEWED_AT", sa.DateTime(timezone=True)),
+        sa.Column("LAST_VIEWED_AT", sa.DateTime(timezone=True)),
+        sa.Column("DISMISSED_AT", sa.DateTime(timezone=True)),
+        sa.CheckConstraint("\"LOCALE\" IN ('en', 'fa')", name="ck_USER_HELP_STATE_locale"),
+        sa.CheckConstraint(
+            '("FIRST_VIEWED_AT" IS NULL AND "LAST_VIEWED_AT" IS NULL) OR ("FIRST_VIEWED_AT" IS NOT NULL AND "LAST_VIEWED_AT" >= "FIRST_VIEWED_AT")',
+            name="ck_USER_HELP_STATE_viewed",
+        ),
+    )
+
+
+def _help_statedowngrade() -> None:
+    """Remove only help state; users, personal settings and business records remain."""
+    op.drop_table("USER_HELP_STATE")
+
+
+def _personal_itemsupgrade() -> None:
+    """Add bounded personal documents and unique live defaults without changing business data."""
+    op.create_table(
+        "PERSONAL_ITEM",
+        sa.Column(
+            "ID",
+            sa.Uuid(),
+            primary_key=True,
+            server_default=sa.text("uuidv7()"),
+            comment="TIME-SORTABLE UUIDV7 PRIMARY KEY.",
+        ),
+        sa.Column(
+            "VERSION", sa.Integer(), nullable=False, comment="OPTIMISTIC-LOCK VERSION NUMBER."
+        ),
+        sa.Column(
+            "CREATED_AT",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            comment="UTC TIMESTAMP AT WHICH THE ROW WAS CREATED.",
+        ),
+        sa.Column(
+            "UPDATED_AT",
+            sa.DateTime(timezone=True),
+            comment="UTC TIMESTAMP OF THE MOST RECENT UPDATE.",
+        ),
+        sa.Column(
+            "DELETED_AT",
+            sa.DateTime(timezone=True),
+            comment="UTC SOFT-DELETION TIMESTAMP; NULL MEANS THE ROW IS ACTIVE.",
+        ),
+        sa.Column(
+            "USER_ID",
+            sa.Uuid(),
+            sa.ForeignKey("USER.ID", ondelete="RESTRICT", onupdate="RESTRICT"),
+            nullable=False,
+        ),
+        sa.Column("KIND", sa.String(16), nullable=False),
+        sa.Column("SCOPE", sa.String(32), nullable=False),
+        sa.Column("NAME", sa.String(120)),
+        sa.Column("TARGET_ID", sa.Uuid()),
+        sa.Column("DOCUMENT", JSONB(), nullable=False),
+        sa.Column("IS_DEFAULT", sa.Boolean(), nullable=False),
+        sa.CheckConstraint("\"KIND\" IN ('view', 'favorite')", name="ck_PERSONAL_ITEM_kind"),
+        sa.CheckConstraint(
+            'jsonb_typeof("DOCUMENT") = \'object\' AND octet_length("DOCUMENT"::text) <= 24576',
+            name="ck_PERSONAL_ITEM_document",
+        ),
+        sa.CheckConstraint(
+            '("KIND" = \'view\' AND "NAME" IS NOT NULL AND "TARGET_ID" IS NULL) OR ("KIND" = \'favorite\' AND "NAME" IS NULL AND "TARGET_ID" IS NOT NULL AND NOT "IS_DEFAULT")',
+            name="ck_PERSONAL_ITEM_shape",
+        ),
+    )
+    op.create_index("ix_PERSONAL_ITEM_CREATED_AT", "PERSONAL_ITEM", ["CREATED_AT"])
+    op.create_index(
+        "uq_PERSONAL_ITEM_default",
+        "PERSONAL_ITEM",
+        ["USER_ID", "SCOPE"],
+        unique=True,
+        postgresql_where=sa.text('"IS_DEFAULT" AND "DELETED_AT" IS NULL'),
+    )
+    op.create_index(
+        "uq_PERSONAL_ITEM_name",
+        "PERSONAL_ITEM",
+        ["USER_ID", "SCOPE", "NAME"],
+        unique=True,
+        postgresql_where=sa.text('"KIND" = \'view\' AND "DELETED_AT" IS NULL'),
+    )
+    op.create_index(
+        "uq_PERSONAL_ITEM_target",
+        "PERSONAL_ITEM",
+        ["USER_ID", "SCOPE", "TARGET_ID"],
+        unique=True,
+        postgresql_where=sa.text("\"KIND\" = 'favorite'"),
+    )
+    from core.history import create_history_table
+
+    source = sa.Table("PERSONAL_ITEM", sa.MetaData(), autoload_with=op.get_bind())
+    create_history_table(source).create(op.get_bind())
+
+
+def _personal_itemsdowngrade() -> None:
+    """Remove only private personal state; retained targets and earlier schema remain."""
+    op.drop_table("PERSONAL_ITEM_HISTORY")
+    op.drop_table("PERSONAL_ITEM")
+
+
+def _unified_notificationsupgrade() -> None:
+    for name in ("BUSINESS_REQUEST_ID", "PROCESS_INSTANCE_ID", "STEP_EXECUTION_ID"):
+        op.alter_column("NOTIFICATION", name, existing_type=sa.Uuid(), nullable=True)
+    op.add_column(
+        "NOTIFICATION",
+        sa.Column("TARGET_KIND", sa.String(16), nullable=False, server_default=sa.text("'case'")),
+    )
+    op.add_column("NOTIFICATION", sa.Column("TARGET_ID", sa.Uuid(), nullable=True))
+    op.add_column("NOTIFICATION", sa.Column("EVENT_ID", sa.Uuid(), nullable=True))
+    op.execute('UPDATE "NOTIFICATION" SET "TARGET_ID" = "BUSINESS_REQUEST_ID"')
+    op.create_unique_constraint(
+        "uq_NOTIFICATION_event_recipient",
+        "NOTIFICATION",
+        ["EVENT_ID", "RECIPIENT_USER_ID", "TEMPLATE_KEY", "TEMPLATE_VERSION"],
+    )
+    op.create_check_constraint(
+        "ck_NOTIFICATION_target_kind",
+        "NOTIFICATION",
+        "\"TARGET_KIND\" IN ('case','work_item','report','calendar','account','ai_approval','operation','support')",
+    )
+
+    op.create_check_constraint(
+        "ck_NOTIFICATION_target_shape",
+        "NOTIFICATION",
+        '("EVENT_ID" IS NULL AND "BUSINESS_REQUEST_ID" IS NOT NULL AND "PROCESS_INSTANCE_ID" IS NOT NULL AND "STEP_EXECUTION_ID" IS NOT NULL) OR ("EVENT_ID" IS NOT NULL AND "TARGET_ID" IS NOT NULL)',
+    )
+
+
+def _unified_notificationsdowngrade() -> None:
+    # Refuse truncating non-case notices; an operator must deliberately archive them first.
+    connection = op.get_bind()
+    if connection.execute(
+        sa.text(
+            'SELECT EXISTS (SELECT 1 FROM "NOTIFICATION" WHERE "BUSINESS_REQUEST_ID" IS NULL OR "PROCESS_INSTANCE_ID" IS NULL OR "STEP_EXECUTION_ID" IS NULL)'
+        )
+    ).scalar():
+        raise RuntimeError(
+            "Cannot _unified_notificationsdowngrade while unified notification rows are retained"
+        )
+    op.drop_constraint("ck_NOTIFICATION_target_shape", "NOTIFICATION", type_="check")
+    op.drop_constraint("ck_NOTIFICATION_target_kind", "NOTIFICATION", type_="check")
+    op.drop_constraint("uq_NOTIFICATION_event_recipient", "NOTIFICATION", type_="unique")
+    for name in ("EVENT_ID", "TARGET_ID", "TARGET_KIND"):
+        op.drop_column("NOTIFICATION", name)
+    for name in ("BUSINESS_REQUEST_ID", "PROCESS_INSTANCE_ID", "STEP_EXECUTION_ID"):
+        op.alter_column("NOTIFICATION", name, existing_type=sa.Uuid(), nullable=False)
+
+
+def _support_incidentsupgrade() -> None:
+    op.create_table(
+        "SUPPORT_INCIDENT",
+        sa.Column(
+            "ID",
+            sa.Uuid(),
+            primary_key=True,
+            server_default=sa.text("uuidv7()"),
+            comment="TIME-SORTABLE UUIDV7 PRIMARY KEY.",
+        ),
+        sa.Column(
+            "VERSION", sa.Integer(), nullable=False, comment="OPTIMISTIC-LOCK VERSION NUMBER."
+        ),
+        sa.Column(
+            "CREATED_AT",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            comment="UTC TIMESTAMP AT WHICH THE ROW WAS CREATED.",
+        ),
+        sa.Column(
+            "UPDATED_AT",
+            sa.DateTime(timezone=True),
+            nullable=True,
+            comment="UTC TIMESTAMP OF THE MOST RECENT UPDATE.",
+        ),
+        sa.Column(
+            "DELETED_AT",
+            sa.DateTime(timezone=True),
+            nullable=True,
+            comment="UTC SOFT-DELETION TIMESTAMP; NULL MEANS THE ROW IS ACTIVE.",
+        ),
+        sa.Column("FINGERPRINT", sa.String(64), nullable=False),
+        sa.Column("EPISODE", sa.Integer(), nullable=False),
+        sa.Column("CATEGORY", sa.String(20), nullable=False),
+        sa.Column("ERROR_CODE", sa.Integer(), nullable=False),
+        sa.Column("OPERATION", sa.String(80), nullable=False),
+        sa.Column("STATE", sa.String(16), nullable=False),
+        sa.Column("OCCURRENCE_COUNT", sa.Integer(), nullable=False),
+        sa.Column("LAST_SEEN_AT", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("EXPIRES_AT", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("REQUEST_ID", sa.Uuid(), nullable=False),
+        sa.Column("ACTOR_ID", sa.Uuid(), nullable=True),
+        sa.Column("BUILD", sa.String(80), nullable=True),
+        sa.Column("RECENT_REQUEST_IDS", JSONB(), nullable=False),
+        sa.Column("RATE_WINDOW_AT", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("RATE_COUNT", sa.Integer(), nullable=False),
+        sa.UniqueConstraint("FINGERPRINT", "EPISODE", name="uq_SUPPORT_INCIDENT_episode"),
+        sa.CheckConstraint(
+            "\"STATE\" IN ('OPEN','ACKNOWLEDGED','RESOLVED')", name="ck_SUPPORT_INCIDENT_state"
+        ),
+        sa.CheckConstraint(
+            '"OCCURRENCE_COUNT" BETWEEN 1 AND 1000000', name="ck_SUPPORT_INCIDENT_count"
+        ),
+    )
+    for field in ("CREATED_AT", "FINGERPRINT", "EXPIRES_AT", "ACTOR_ID"):
+        op.create_index(f"ix_SUPPORT_INCIDENT_{field}", "SUPPORT_INCIDENT", [field])
+    from core.history import create_history_table
+
+    source = sa.Table("SUPPORT_INCIDENT", sa.MetaData(), autoload_with=op.get_bind())
+    create_history_table(source, ondelete="CASCADE").create(op.get_bind())
+
+
+def _support_incidentsdowngrade() -> None:
+    op.drop_table("SUPPORT_INCIDENT_HISTORY")
+    op.drop_table("SUPPORT_INCIDENT")
+
+
+def _calendar_events_base():
+    return [
+        sa.Column(
+            "ID",
+            sa.Uuid(),
+            primary_key=True,
+            server_default=sa.text("uuidv7()"),
+            comment="TIME-SORTABLE UUIDV7 PRIMARY KEY.",
+        ),
+        sa.Column(
+            "VERSION", sa.Integer(), nullable=False, comment="OPTIMISTIC-LOCK VERSION NUMBER."
+        ),
+        sa.Column(
+            "CREATED_AT",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            comment="UTC TIMESTAMP AT WHICH THE ROW WAS CREATED.",
+        ),
+        sa.Column(
+            "UPDATED_AT",
+            sa.DateTime(timezone=True),
+            nullable=True,
+            comment="UTC TIMESTAMP OF THE MOST RECENT UPDATE.",
+        ),
+        sa.Column(
+            "DELETED_AT",
+            sa.DateTime(timezone=True),
+            nullable=True,
+            comment="UTC SOFT-DELETION TIMESTAMP; NULL MEANS THE ROW IS ACTIVE.",
+        ),
+    ]
+
+
+def _calendar_eventsupgrade() -> None:
+    op.create_table(
+        "CALENDAR_EVENT",
+        *_calendar_events_base(),
+        sa.Column("OWNER_ID", sa.Uuid(), sa.ForeignKey("USER.ID"), nullable=False),
+        sa.Column("WORK_GROUP_ID", sa.Uuid(), sa.ForeignKey("WORK_GROUP.ID"), nullable=True),
+        sa.Column("TITLE", sa.String(120), nullable=False),
+        sa.Column("KIND", sa.String(16), nullable=False),
+        sa.Column("TIMEZONE", sa.String(64), nullable=False),
+        sa.Column("START_AT", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("END_AT", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("START_DATE", sa.Date(), nullable=True),
+        sa.Column("END_DATE", sa.Date(), nullable=True),
+        sa.Column("DOCUMENT", JSONB(), nullable=False),
+        sa.CheckConstraint(
+            '("KIND" = \'timed\' AND "START_AT" IS NOT NULL AND "END_AT" IS NOT NULL AND "END_AT" > "START_AT" AND "START_DATE" IS NULL AND "END_DATE" IS NULL) OR ("KIND" = \'all_day\' AND "START_DATE" IS NOT NULL AND "END_DATE" IS NOT NULL AND "END_DATE" > "START_DATE" AND "START_AT" IS NULL AND "END_AT" IS NULL)',
+            name="ck_CALENDAR_EVENT_shape",
+        ),
+    )
+    for field in ("CREATED_AT", "OWNER_ID", "WORK_GROUP_ID", "START_AT", "START_DATE"):
+        op.create_index(f"ix_CALENDAR_EVENT_{field}", "CALENDAR_EVENT", [field])
+    from core.history import create_history_table
+
+    source = sa.Table("CALENDAR_EVENT", sa.MetaData(), autoload_with=op.get_bind())
+    create_history_table(source).create(op.get_bind())
+    op.create_table(
+        "CALENDAR_REMINDER",
+        *_calendar_events_base(),
+        sa.Column("SOURCE_KIND", sa.String(16), nullable=False),
+        sa.Column("SOURCE_ID", sa.Uuid(), nullable=False),
+        sa.Column("SOURCE_REVISION", sa.String(64), nullable=False),
+        sa.Column("RECIPIENT_ID", sa.Uuid(), sa.ForeignKey("USER.ID"), nullable=False),
+        sa.Column(
+            "SCHEDULE_ID", sa.Uuid(), sa.ForeignKey("PERIODIC_TASK.ID"), nullable=False, unique=True
+        ),
+        sa.Column("COMMAND_KEY", sa.String(128), nullable=False),
+        sa.Column("OFFSET_SECONDS", sa.Integer(), nullable=False),
+        sa.Column("DUE_AT", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("STATUS", sa.String(16), nullable=False),
+        sa.CheckConstraint(
+            "\"STATUS\" IN ('PENDING','SENT','CANCELLED','EXPIRED')",
+            name="ck_CALENDAR_REMINDER_status",
+        ),
+        sa.CheckConstraint(
+            '"OFFSET_SECONDS" BETWEEN 0 AND 2592000', name="ck_CALENDAR_REMINDER_offset"
+        ),
+        sa.CheckConstraint(
+            "\"SOURCE_KIND\" IN ('manual','work_item')", name="ck_CALENDAR_REMINDER_source"
+        ),
+    )
+    for field in ("CREATED_AT", "SOURCE_ID", "RECIPIENT_ID", "DUE_AT"):
+        op.create_index(f"ix_CALENDAR_REMINDER_{field}", "CALENDAR_REMINDER", [field])
+
+
+def _calendar_eventsdowngrade() -> None:
+    op.drop_table("CALENDAR_REMINDER")
+    op.drop_table("CALENDAR_EVENT_HISTORY")
+    op.drop_table("CALENDAR_EVENT")
+
+
+def _workflow_restoreupgrade() -> None:
+    op.create_table(
+        "WORKFLOW_RESTORE",
+        sa.Column(
+            "ID",
+            sa.Uuid(),
+            primary_key=True,
+            server_default=sa.text("uuidv7()"),
+            comment="TIME-SORTABLE UUIDV7 PRIMARY KEY.",
+        ),
+        sa.Column(
+            "VERSION", sa.Integer(), nullable=False, comment="OPTIMISTIC-LOCK VERSION NUMBER."
+        ),
+        sa.Column(
+            "CREATED_AT",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            comment="UTC TIMESTAMP AT WHICH THE ROW WAS CREATED.",
+        ),
+        sa.Column(
+            "UPDATED_AT",
+            sa.DateTime(timezone=True),
+            nullable=True,
+            comment="UTC TIMESTAMP OF THE MOST RECENT UPDATE.",
+        ),
+        sa.Column(
+            "DELETED_AT",
+            sa.DateTime(timezone=True),
+            nullable=True,
+            comment="UTC SOFT-DELETION TIMESTAMP; NULL MEANS THE ROW IS ACTIVE.",
+        ),
+        sa.Column("ACTOR_ID", sa.Uuid(), sa.ForeignKey("USER.ID"), nullable=False),
+        sa.Column("TARGET_ID", sa.Uuid(), sa.ForeignKey("WORKFLOW_VERSION.ID"), nullable=False),
+        sa.Column("COMMAND_KEY", sa.String(128), nullable=False),
+        sa.Column("PLAN_HASH", sa.String(64), nullable=False),
+        sa.Column("RESULT_ID", sa.Uuid(), sa.ForeignKey("WORKFLOW_VERSION.ID"), nullable=False),
+        sa.UniqueConstraint(
+            "ACTOR_ID", "TARGET_ID", "COMMAND_KEY", name="uq_WORKFLOW_RESTORE_command"
+        ),
+    )
+    op.create_index("ix_WORKFLOW_RESTORE_CREATED_AT", "WORKFLOW_RESTORE", ["CREATED_AT"])
+
+
+def _workflow_restoredowngrade() -> None:
+    op.drop_table("WORKFLOW_RESTORE")

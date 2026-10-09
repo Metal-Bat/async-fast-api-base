@@ -240,12 +240,12 @@ def validate_action_data(
         from apps.forms.application.formatting import canonical_value_issues
         from apps.forms.application.option_validation import static_membership_issues
 
-        for validator in (static_membership_issues, canonical_value_issues):
-            field_issues = validator(documents.render_schema, schema, canonical)
-            if field_issues:
-                raise ValidationDetailsException(
-                    [{"pointer": path, "code": code} for path, code in field_issues[:32]]
-                )
+        field_issues = static_membership_issues(documents.render_schema, schema, canonical)
+        field_issues.extend(canonical_value_issues(documents.render_schema, canonical, schema))
+        if field_issues:
+            raise ValidationDetailsException(
+                [{"pointer": path, "code": code} for path, code in field_issues[:32]]
+            )
     from apps.forms.application.behavior import _MISSING, _get_concrete, _locations
 
     required_scopes = [*(policy_required or []), *(action.required_scopes if action else [])]

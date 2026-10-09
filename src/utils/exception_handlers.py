@@ -38,6 +38,7 @@ EXCEPTION_ERRORS: dict[type[Exception], tuple[ErrorCode, int]] = {
     exceptions.InvalidImageException: (MediaError.INVALID_IMAGE, 422),
     exceptions.InvalidFileException: (MediaError.INVALID_FILE, 422),
     exceptions.UploadRateLimitException: (MediaError.UPLOAD_RATE_LIMIT, 429),
+    exceptions.RateLimitedException: (CommonError.RATE_LIMITED, 429),
 }
 
 _CLIENT_UNIQUE_CONSTRAINTS = frozenset(
@@ -87,11 +88,34 @@ async def application_exception_handler(request: Request, exc: Exception) -> JSO
             sqlstate=postgresql_sqlstate(exc) or "unknown",
             code=error.number,
         )
-        return error_response(request, error, status_code=status)
+        data = None
+        if status >= 500:
+            from apps.support.application.recorder import record_request_failure
+
+            data = await record_request_failure(
+                request, category="database", error_code=error.number
+            )
+        return error_response(request, error, status_code=status, data=data)
     for cls in type(exc).__mro__:
         if issubclass(cls, Exception) and cls in EXCEPTION_ERRORS:
             error, status = EXCEPTION_ERRORS[cls]
-            return error_response(request, error, status_code=status)
+            data = None
+            if status >= 500:
+                from apps.support.application.recorder import record_request_failure
+
+                category = (
+                    "cache"
+                    if isinstance(exc, RedisError)
+                    else "storage"
+                    if isinstance(exc, BotoCoreError | ClientError)
+                    else "broker"
+                    if isinstance(exc, AMQPError)
+                    else "technical"
+                )
+                data = await record_request_failure(
+                    request, category=category, error_code=error.number
+                )
+            return error_response(request, error, status_code=status, data=data)
     return await unhandled_exception_handler(request, exc)
 
 
@@ -110,7 +134,14 @@ async def custom_http_exception_handler(request: Request, exc: HTTPException) ->
         exc.status_code,
         CommonError.INTERNAL_ERROR if exc.status_code >= 500 else CommonError.INVALID_REQUEST,
     )
-    return error_response(request, error, status_code=exc.status_code, headers=exc.headers)
+    data = None
+    if exc.status_code >= 500:
+        from apps.support.application.recorder import record_request_failure
+
+        data = await record_request_failure(request, category="technical", error_code=error.number)
+    return error_response(
+        request, error, status_code=exc.status_code, headers=exc.headers, data=data
+    )
 
 
 async def validation_exception_handler(
@@ -122,8 +153,15 @@ async def validation_exception_handler(
 
 async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """Log unexpected failures and return a safe localized error."""
-    await logger.aerror("request.failed", path=request.url.path, exc_info=exc)
-    return error_response(request, CommonError.INTERNAL_ERROR, status_code=500)
+    from apps.support.application.recorder import record_request_failure
+
+    data = await record_request_failure(
+        request, category="technical", error_code=CommonError.INTERNAL_ERROR.number
+    )
+    await logger.aerror(
+        "request.failed", request_id=request_id(request), code=CommonError.INTERNAL_ERROR.number
+    )
+    return error_response(request, CommonError.INTERNAL_ERROR, status_code=500, data=data)
 
 
 # Existing callers can use the named handlers while registration stays centralized.

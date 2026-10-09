@@ -14,6 +14,7 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
     Uuid,
+    text,
 )
 from sqlmodel import Field
 
@@ -36,6 +37,21 @@ class NotificationEntity(BaseEntity, table=True):
             '("CONTENT" IS NOT NULL)::int + ("CONTENT_REF" IS NOT NULL)::int = 1',
             name="ck_NOTIFICATION_content",
         ),
+        CheckConstraint(
+            '("EVENT_ID" IS NULL AND "BUSINESS_REQUEST_ID" IS NOT NULL AND "PROCESS_INSTANCE_ID" IS NOT NULL AND "STEP_EXECUTION_ID" IS NOT NULL) OR ("EVENT_ID" IS NOT NULL AND "TARGET_ID" IS NOT NULL)',
+            name="ck_NOTIFICATION_target_shape",
+        ),
+        UniqueConstraint(
+            "EVENT_ID",
+            "RECIPIENT_USER_ID",
+            "TEMPLATE_KEY",
+            "TEMPLATE_VERSION",
+            name="uq_NOTIFICATION_event_recipient",
+        ),
+        CheckConstraint(
+            "\"TARGET_KIND\" IN ('case','work_item','report','calendar','account','ai_approval','operation','support')",
+            name="ck_NOTIFICATION_target_kind",
+        ),
     )
     recipient_user_id: UUID = Field(
         sa_column=Column(
@@ -49,7 +65,8 @@ class NotificationEntity(BaseEntity, table=True):
             nullable=False,
         ),
     )
-    business_request_id: UUID = Field(
+    business_request_id: UUID | None = Field(
+        default=None,
         sa_column=Column(
             "BUSINESS_REQUEST_ID",
             Uuid,
@@ -58,10 +75,11 @@ class NotificationEntity(BaseEntity, table=True):
                 ondelete="RESTRICT",
                 onupdate="RESTRICT",
             ),
-            nullable=False,
+            nullable=True,
         ),
     )
-    process_instance_id: UUID = Field(
+    process_instance_id: UUID | None = Field(
+        default=None,
         sa_column=Column(
             "PROCESS_INSTANCE_ID",
             Uuid,
@@ -70,10 +88,11 @@ class NotificationEntity(BaseEntity, table=True):
                 ondelete="RESTRICT",
                 onupdate="RESTRICT",
             ),
-            nullable=False,
+            nullable=True,
         ),
     )
-    step_execution_id: UUID = Field(
+    step_execution_id: UUID | None = Field(
+        default=None,
         sa_column=Column(
             "STEP_EXECUTION_ID",
             Uuid,
@@ -82,7 +101,7 @@ class NotificationEntity(BaseEntity, table=True):
                 ondelete="RESTRICT",
                 onupdate="RESTRICT",
             ),
-            nullable=False,
+            nullable=True,
         ),
     )
     template_key: str = Field(
@@ -90,6 +109,31 @@ class NotificationEntity(BaseEntity, table=True):
             "TEMPLATE_KEY",
             String(128),
             nullable=False,
+        ),
+    )
+    target_kind: str = Field(
+        default="case",
+        sa_column=Column(
+            "TARGET_KIND",
+            String(16),
+            nullable=False,
+            server_default=text("'case'"),
+        ),
+    )
+    target_id: UUID | None = Field(
+        default=None,
+        sa_column=Column(
+            "TARGET_ID",
+            Uuid,
+            nullable=True,
+        ),
+    )
+    event_id: UUID | None = Field(
+        default=None,
+        sa_column=Column(
+            "EVENT_ID",
+            Uuid,
+            nullable=True,
         ),
     )
     template_version: str = Field(

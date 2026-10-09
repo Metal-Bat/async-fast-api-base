@@ -1,7 +1,9 @@
 """Code-owned, versioned plain-text notification templates."""
 
+import json
 from dataclasses import dataclass
 from html import escape
+from pathlib import Path
 from string import Formatter
 from typing import Any
 
@@ -15,13 +17,34 @@ class TemplateDefinition:
     variables: dict[str, type]
     subjects: dict[str, str]
     contents: dict[str, str]
+    max_text_length: int = 10_000
 
 
 class NotificationTemplateRegistry:
     """Render an allowlisted template without expressions, attributes, or format directives."""
 
     def __init__(self, definitions: tuple[TemplateDefinition, ...] | None = None) -> None:
-        definitions = definitions or (
+        if definitions is None:
+            definitions = self._defaults()
+        self._definitions = {(item.key, item.version): item for item in definitions}
+
+    @staticmethod
+    def _defaults() -> tuple[TemplateDefinition, ...]:
+        manifest = json.loads(
+            (Path(__file__).resolve().parents[1] / "data/application_map.json").read_text()
+        )
+        mapped = tuple(
+            TemplateDefinition(
+                key=row["template_key"],
+                version=row["template_version"],
+                variables={"resource_name": str},
+                subjects={locale: value["subject"] for locale, value in row["templates"].items()},
+                contents={locale: value["content"] for locale, value in row["templates"].items()},
+                max_text_length=120,
+            )
+            for row in manifest["events"]
+        )
+        return (
             TemplateDefinition(
                 key="workflow.notice",
                 version="1",
@@ -29,8 +52,7 @@ class NotificationTemplateRegistry:
                 subjects={"en": "Workflow notification", "fa": "اعلان گردش کار"},
                 contents={"en": "{message}", "fa": "{message}"},
             ),
-        )
-        self._definitions = {(item.key, item.version): item for item in definitions}
+        ) + mapped
 
     def resolve(self, key: str, version: str) -> TemplateDefinition:
         try:
@@ -47,7 +69,7 @@ class NotificationTemplateRegistry:
             value = data[name]
             if type(value) is not expected:
                 raise ValueError(f"Notification variable {name} has an incompatible type")
-            if isinstance(value, str) and len(value) > 10_000:
+            if isinstance(value, str) and len(value) > definition.max_text_length:
                 raise ValueError("Notification variable is too large")
             result[name] = value
         return result

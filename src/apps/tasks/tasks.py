@@ -121,6 +121,18 @@ def deliver_bpms_notification(task: Task, delivery_id: str) -> dict[str, str]:
     raise NotificationDeliveryFailed("Notification delivery failed") from None
 
 
+@register_task("bpms.fanout_application_notice", policy=_BACKGROUND_POLICY)
+def fanout_application_notice(event_id: str, after_user_id: str | None = None) -> dict[str, int]:
+    """Fan out one committed event in a bounded recipient batch."""
+    from apps.notifications.application.events import fanout_event
+
+    return {
+        "recipients": run_async(
+            fanout_event(UUID(event_id), UUID(after_user_id) if after_user_id is not None else None)
+        )
+    }
+
+
 @register_task("bpms.fire_scheduled_action", policy=_BACKGROUND_POLICY)
 def fire_bpms_scheduled_action(action_id: str, owner_id: str) -> dict[str, bool]:
     """Apply one leased timer/deadline delivery; stale messages are safe no-ops."""
@@ -143,17 +155,33 @@ def ping() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@register_task("bpms.fanout_support_incident", policy=_BACKGROUND_POLICY)
+def fanout_support_incident(incident_id: str, after_user_id: str | None = None) -> dict[str, int]:
+    """Deliver one bounded committed support episode through the existing inbox."""
+    from apps.support.application.alerts import fanout_incident
+
+    return {
+        "recipients": run_async(
+            fanout_incident(
+                UUID(incident_id), UUID(after_user_id) if after_user_id is not None else None
+            )
+        )
+    }
+
+
 @register_task("system.cleanup_task_history")
 def cleanup_task_history() -> dict[str, int]:
     """Delete expired idempotency claims and old execution history."""
 
     async def cleanup() -> int:
         from apps.notifications.application.service import NotificationService
+        from apps.support.application.service import prune_incidents
         from apps.tasks.application.retention import cleanup_operational_history
 
         async with SessionFactory() as session:
             expired = await cleanup_operational_history(session)
             await NotificationService(session).redact_expired()
+            await prune_incidents(session)
             await session.commit()
             return expired
 
@@ -170,3 +198,11 @@ def cleanup_abandoned_media() -> dict[str, int]:
             return await cleanup_abandoned_uploads(session)
 
     return {"deleted": run_async(cleanup())}
+
+
+@register_task("bpms.fire_calendar_reminder", policy=_BACKGROUND_POLICY)
+def fire_calendar_reminder(reminder_id: str) -> dict[str, str]:
+    """Fire one committed schedule after checking current source and recipient."""
+    from apps.calendar.application.reminders import fire_reminder
+
+    return {"status": run_async(fire_reminder(UUID(reminder_id)))}

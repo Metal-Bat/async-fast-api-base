@@ -1,0 +1,416 @@
+{
+  "manifest_version": 1,
+  "profiles": {
+    "system": "Code-owned missing definitions only",
+    "installation": "Explicit optional role templates; no user assignments",
+    "demo": "Deferred to APP-BE-005; not a production bootstrap"
+  },
+  "permissions": [
+    {
+      "key": "admin.users.manage",
+      "version": "1",
+      "description": "Manage ordinary users; superuser changes require superuser authority.",
+      "ownership": "definition:system; grants:operator",
+      "depends_on": [],
+      "content_sha256": "0dab0aa69ab0be6558b765a5427cdcda3993bcaa42961f4edbbfc6bdc6e939b3"
+    },
+    {
+      "key": "admin.permissions.manage",
+      "version": "1",
+      "description": "Manage permission definitions and role assignments.",
+      "ownership": "definition:system; grants:operator",
+      "depends_on": [],
+      "content_sha256": "afac4dee1f0cfccf89afb844c317618b07509e544c2c3ce2cb279f9326ff3c7c"
+    },
+    {
+      "key": "admin.work_groups.manage",
+      "version": "1",
+      "description": "Manage work groups and administrative resource selectors.",
+      "ownership": "definition:system; grants:operator",
+      "depends_on": [],
+      "content_sha256": "b89840bfcf24b1f08ff7e48e6e0e298f1a5ce87608176a2e2758a03fbc112ccd"
+    },
+    {
+      "key": "admin.history.read",
+      "version": "1",
+      "description": "Read authorized administrative history.",
+      "ownership": "definition:system; grants:operator",
+      "depends_on": [],
+      "content_sha256": "3b544171cd6f9a77f6be366cde2d370ccfaf9702689d5c482edaac879b9ee60d"
+    },
+    {
+      "key": "admin.tasks.manage",
+      "version": "1",
+      "description": "Manage task definitions, schedules and execution operations.",
+      "ownership": "definition:system; grants:operator",
+      "depends_on": [],
+      "content_sha256": "4512e533d4ac244fed09388d013ade099b63e34bb69ec746a95911e38b8f69ed"
+    },
+    {
+      "key": "forms.manage",
+      "version": "1",
+      "description": "Author forms, reusable form definitions and client catalog entries.",
+      "ownership": "definition:system; grants:operator",
+      "depends_on": [],
+      "content_sha256": "fc053545c17c81d6fb7290addd27cafc60eb91068120b9dc9575468960f5ac57"
+    },
+    {
+      "key": "workflows.manage",
+      "version": "1",
+      "description": "Author workflows, step catalogs, agents and designer metadata.",
+      "ownership": "definition:system; grants:operator",
+      "depends_on": [],
+      "content_sha256": "1bf5488d50b9a440449b9ddbe05c40b2880e9de77ef57b02a3d500234969d154"
+    },
+    {
+      "key": "requests.manage",
+      "version": "1",
+      "description": "Manage request types and their application configuration.",
+      "ownership": "definition:system; grants:operator",
+      "depends_on": [],
+      "content_sha256": "e1e5548dfa294442f30cd079202c7acd498c3ae04581203620174ecad9fb2213"
+    },
+    {
+      "key": "requests.start",
+      "version": "1",
+      "description": "Use requests and work items subject to current resource eligibility.",
+      "ownership": "definition:system; grants:operator",
+      "depends_on": [],
+      "content_sha256": "5b6a2aa3fecbbac1cd50227e7d1630393c6a206f36d8e842b996bf402f857f08"
+    },
+    {
+      "key": "integrations.manage",
+      "version": "1",
+      "description": "Manage governed integration connections and grants.",
+      "ownership": "definition:system; grants:operator",
+      "depends_on": [],
+      "content_sha256": "6e2101f68f5e33eeb077761ed7a4ac98dbe4d1220164111e67f82e8250688d8b"
+    },
+    {
+      "key": "integration.connection.use",
+      "version": "1",
+      "description": "Use an explicitly granted integration connection.",
+      "ownership": "definition:system; grants:operator",
+      "depends_on": [],
+      "content_sha256": "8025b6007b119fc3b75b8eea5356e8dbbed05a11b1261f8117be3ba61c8597e4"
+    },
+    {
+      "key": "processes.recover",
+      "version": "1",
+      "description": "Enter recovery routes; recovery service also requires a superuser.",
+      "ownership": "definition:system; grants:operator",
+      "depends_on": [],
+      "content_sha256": "36249b4efa637f7386ebd2a66d71d945c59db2061386bf3f218149e4c2e30856"
+    }
+  ],
+  "roles": [
+    {
+      "key": "app.requester.v1",
+      "version": "1",
+      "permissions": [
+        "requests.start"
+      ],
+      "ownership": "operator after explicit installation",
+      "depends_on": [
+        "requests.start"
+      ],
+      "content_sha256": "17178dd5f5b2e943997243bf2433fe07aa081967fe2fc4f0a2802e0daa556207"
+    },
+    {
+      "key": "app.reviewer.v1",
+      "version": "1",
+      "permissions": [
+        "requests.start"
+      ],
+      "ownership": "operator after explicit installation",
+      "depends_on": [
+        "requests.start"
+      ],
+      "content_sha256": "17178dd5f5b2e943997243bf2433fe07aa081967fe2fc4f0a2802e0daa556207"
+    },
+    {
+      "key": "app.designer.v1",
+      "version": "1",
+      "permissions": [
+        "forms.manage",
+        "workflows.manage"
+      ],
+      "ownership": "operator after explicit installation",
+      "depends_on": [
+        "forms.manage",
+        "workflows.manage"
+      ],
+      "content_sha256": "2e2a2f36e41c4f4335baa7f5dcfaec62c5a1f51509fa245c1871ae5e5762f4fc"
+    },
+    {
+      "key": "app.administrator.v1",
+      "version": "1",
+      "permissions": [
+        "admin.users.manage",
+        "admin.permissions.manage",
+        "admin.work_groups.manage",
+        "admin.history.read",
+        "admin.tasks.manage",
+        "forms.manage",
+        "workflows.manage",
+        "requests.manage",
+        "requests.start",
+        "integrations.manage",
+        "integration.connection.use"
+      ],
+      "ownership": "operator after explicit installation",
+      "depends_on": [
+        "admin.users.manage",
+        "admin.permissions.manage",
+        "admin.work_groups.manage",
+        "admin.history.read",
+        "admin.tasks.manage",
+        "forms.manage",
+        "workflows.manage",
+        "requests.manage",
+        "requests.start",
+        "integrations.manage",
+        "integration.connection.use"
+      ],
+      "content_sha256": "c030bc7ee2605ed1df0c219298d5f6513b35007c6d15c20f0b2d6b0664d3081f"
+    },
+    {
+      "key": "app.operator.v1",
+      "version": "1",
+      "permissions": [
+        "requests.start",
+        "admin.tasks.manage"
+      ],
+      "ownership": "operator after explicit installation",
+      "depends_on": [
+        "requests.start",
+        "admin.tasks.manage"
+      ],
+      "content_sha256": "94d59c5f3be6ee2d29f98320c9265250f9d5c1ed62a54071150882d7931840a8"
+    },
+    {
+      "key": "app.auditor.v1",
+      "version": "1",
+      "permissions": [
+        "admin.history.read"
+      ],
+      "ownership": "operator after explicit installation",
+      "depends_on": [
+        "admin.history.read"
+      ],
+      "content_sha256": "9199577d61cd348d295ce30f1f6315d4b4ff6f9b167b13f49600be340585cc3c"
+    }
+  ],
+  "handlers": [
+    {
+      "key": "ai_decision",
+      "version": "1",
+      "code": "AI_DECISION",
+      "implemented": true,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [
+        "ai.agent.use"
+      ],
+      "depends_on": [
+        "ai.agent.use"
+      ],
+      "content_sha256": "be36785cd4f500e627a655b29661073946704e8114ea3088bfb763ebe114e249",
+      "handler_fingerprint": "b45b624048dbb53a8486c011539333c4cafbf49e3d8659986ac6f22cb004a174"
+    },
+    {
+      "key": "connection_status",
+      "version": "1",
+      "code": "CONNECTION_STATUS",
+      "implemented": true,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [
+        "integration.connection.use"
+      ],
+      "depends_on": [
+        "integration.connection.use"
+      ],
+      "content_sha256": "eb678c39a1032568f73cc039d95ae4edb888d6778f59421a709e019e18992908",
+      "handler_fingerprint": "1ed92c376234876f5e4a1f10aa20b0abeaa56517ec96b63679a808eda9545e2b"
+    },
+    {
+      "key": "decision",
+      "version": "1",
+      "code": "DECISION",
+      "implemented": false,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "d5718ce7c7f54aead4fb5c4aad1de37e487272a4fd447c5d0e722481e2c4ea27",
+      "handler_fingerprint": "146e96fe7d941fb3c5920391d1ad346590ecd6551ce3ac0e68fb38ed446eb23d"
+    },
+    {
+      "key": "event_wait",
+      "version": "1",
+      "code": "EVENT_WAIT",
+      "implemented": false,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "267ed077826354496129dd961148d364f05041a95cdd1d599d125cb46bdd921c",
+      "handler_fingerprint": "d0637cadaf3151d4e4ffea90ac320be2bd87464dd6c739a4f1b99fdd63206cdd"
+    },
+    {
+      "key": "finish",
+      "version": "1",
+      "code": "FINISH",
+      "implemented": false,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "f149ff50adc0ebb5f6ca190b99f5c53c804ab176b1dff23522263c618c5eccfd",
+      "handler_fingerprint": "9269703c32f2d1777c739f144ed46addf926af23129dfe972519c2d7b6f35860"
+    },
+    {
+      "key": "function",
+      "version": "1",
+      "code": "FUNCTION",
+      "implemented": false,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "a5dc02c4857305b350515163a8d01ea99ca9b42652292ea6d7d7c0934cbe2b88",
+      "handler_fingerprint": "5a48953f4f570c7df4b46059b5ca7e537fecac470b1724587c19346883e83104"
+    },
+    {
+      "key": "human_task",
+      "version": "1",
+      "code": "HUMAN_TASK",
+      "implemented": false,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "5e3a19c4a932a4ebf14fb3cec92b6383baeb23134023b2a1c80ac6da8d645388",
+      "handler_fingerprint": "046c8decb4a1668966bf11be084af056c0a69fe8e40e52ddbab810125dfc9ae4"
+    },
+    {
+      "key": "notification",
+      "version": "1",
+      "code": "NOTIFICATION",
+      "implemented": false,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "6db1df2882ad8f60f123cf498d58f5afbae6cea5dc5fd63b50f4ea34b31be8cf",
+      "handler_fingerprint": "d1863bcdba002f27a038a955a7d1a59a8a496b5dba7987748314093edaf2e28e"
+    },
+    {
+      "key": "notification",
+      "version": "2",
+      "code": "NOTIFICATION",
+      "implemented": false,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "00fd323cf0c259288b5117461a293409a6f9b88b2ec180a0c7ac3ae47dc3e6d7",
+      "handler_fingerprint": "eb49ad17b204cba60b093c09ac2da8941266aba95bf9f80d378b9952a0aa6525"
+    },
+    {
+      "key": "permission_check",
+      "version": "1",
+      "code": "PERMISSION_CHECK",
+      "implemented": true,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "91e8cb6eb0588c6afcb795bffcb91e5560a79eb57e0e409cd733c5bc1f3b3a21",
+      "handler_fingerprint": "44490c4eb7acd18f8e443d98f504d0d6b8d4dc383b412f441f4b0b0d08e84f4d"
+    },
+    {
+      "key": "request_priority",
+      "version": "1",
+      "code": "REQUEST_PRIORITY",
+      "implemented": true,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "f149ff50adc0ebb5f6ca190b99f5c53c804ab176b1dff23522263c618c5eccfd",
+      "handler_fingerprint": "f76c606a60fbe96422f32e8769d66c06c2cead2b0bbeffadc6e5675382507ec7"
+    },
+    {
+      "key": "service_task",
+      "version": "1",
+      "code": "SERVICE_TASK",
+      "implemented": false,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "c9e67a26114eed64379efffe947f7befd6a420ba8b89d1501f1dee04f57c510e",
+      "handler_fingerprint": "62f825f6102a3255d83b892d6ff1c3b5b747b9a64ee3f5673266e7e67843fb8d"
+    },
+    {
+      "key": "start",
+      "version": "1",
+      "code": "START",
+      "implemented": false,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "f149ff50adc0ebb5f6ca190b99f5c53c804ab176b1dff23522263c618c5eccfd",
+      "handler_fingerprint": "b6846271e2768910632e3951a4c0a6c5450a06d9c1edf479724cbf2f2a9f25d0"
+    },
+    {
+      "key": "subprocess",
+      "version": "1",
+      "code": "SUBPROCESS",
+      "implemented": false,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "f149ff50adc0ebb5f6ca190b99f5c53c804ab176b1dff23522263c618c5eccfd",
+      "handler_fingerprint": "8e8e7054c549d4d6582e4150048a4836d66706c4c12dfaf877e9cad9145e5788"
+    },
+    {
+      "key": "timer",
+      "version": "1",
+      "code": "TIMER",
+      "implemented": false,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "ad1ff2b28dee6850d69acf1f657bdf7e9cba1391264d7086f413ecfa600b1a36",
+      "handler_fingerprint": "589f287cf924db232ff41ae06594d4bbc107fbd62e1b1ca689ad1f13677714c1"
+    },
+    {
+      "key": "transform",
+      "version": "1",
+      "code": "TRANSFORM",
+      "implemented": false,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "407abeb55d464390cfb8cf61544e4f3018b823858a97c873e19d3a6e171d3bfb",
+      "handler_fingerprint": "aa4b6cff764e887c7781e507674d9ec1aadca7e1d8754a86acbeed2cf789e1b4"
+    },
+    {
+      "key": "transform",
+      "version": "2",
+      "code": "TRANSFORM",
+      "implemented": false,
+      "ownership": "StepTypeService.reconcile; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "142d34a3d07f7e14250e4d3f62683af8b2d80f1c8171d7f65a5f2b6cd1855c43",
+      "handler_fingerprint": "a5d8d16806456d6cf0cb350f68bbb9afcf43cb7b509866a35a18fc65692df9b6"
+    }
+  ],
+  "templates": [
+    {
+      "key": "workflow.notice",
+      "version": "1",
+      "ownership": "NotificationTemplateRegistry; no DB seed",
+      "depends_on": [],
+      "permission_requirements": [
+        "current resource audience"
+      ],
+      "content_sha256": "b947877e608e4a2e0203b949f92e71d510dec10eed75c7889c07d74dcb13d118"
+    }
+  ],
+  "transforms": {
+    "ownership": "Registered TRANSFORM handler schemas; operator-owned definitions are never overwritten"
+  }
+}

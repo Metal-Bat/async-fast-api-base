@@ -213,6 +213,8 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
                     "/api/v1/workflows",
                     "/api/v1/workflow-versions",
                     "/api/v1/integration-connections",
+                    "/api/v1/support",
+                    "/api/v1/calendar",
                 )
             )
             if not private_payload and _is_json_content_type(request.headers.get("content-type")):
@@ -271,8 +273,8 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
 
             streaming_response.body_iterator = body_with_logging()
 
-        except Exception as e:
-            await request_logger.acritical("UNHANDLED_ERROR", error=e)
+        except Exception:
+            await request_logger.acritical("UNHANDLED_ERROR", code=1099)
             raise
         finally:
             history_context.reset(history_token)

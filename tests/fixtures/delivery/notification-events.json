@@ -1,0 +1,173 @@
+{
+  "MAP-01": {
+    "identity": {
+      "process_id": "synthetic-process_id",
+      "event_sequence": "synthetic-event_sequence",
+      "recipient_id": "synthetic-recipient_id"
+    },
+    "variables": {
+      "resource_name": "Synthetic resource"
+    },
+    "expected_target_kind": "case",
+    "expected_delivery_status": "DESIGNED_ONLY"
+  },
+  "MAP-02": {
+    "identity": {
+      "work_item_id": "synthetic-work_item_id",
+      "availability_generation": "synthetic-availability_generation",
+      "recipient_id": "synthetic-recipient_id"
+    },
+    "variables": {
+      "resource_name": "Synthetic resource"
+    },
+    "expected_target_kind": "work_item",
+    "expected_delivery_status": "DESIGNED_ONLY"
+  },
+  "MAP-03": {
+    "identity": {
+      "work_item_id": "synthetic-work_item_id",
+      "event_sequence": "synthetic-event_sequence",
+      "recipient_id": "synthetic-recipient_id"
+    },
+    "variables": {
+      "resource_name": "Synthetic resource"
+    },
+    "expected_target_kind": "work_item",
+    "expected_delivery_status": "DESIGNED_ONLY"
+  },
+  "MAP-04": {
+    "identity": {
+      "work_item_id": "synthetic-work_item_id",
+      "correction_round": "synthetic-correction_round",
+      "recipient_id": "synthetic-recipient_id"
+    },
+    "variables": {
+      "resource_name": "Synthetic resource"
+    },
+    "expected_target_kind": "work_item",
+    "expected_delivery_status": "DESIGNED_ONLY"
+  },
+  "MAP-05": {
+    "identity": {
+      "work_item_id": "synthetic-work_item_id",
+      "event_sequence": "synthetic-event_sequence",
+      "recipient_id": "synthetic-recipient_id"
+    },
+    "variables": {
+      "resource_name": "Synthetic resource"
+    },
+    "expected_target_kind": "case",
+    "expected_delivery_status": "DESIGNED_ONLY"
+  },
+  "MAP-06": {
+    "identity": {
+      "process_id": "synthetic-process_id",
+      "terminal_sequence": "synthetic-terminal_sequence",
+      "recipient_id": "synthetic-recipient_id"
+    },
+    "variables": {
+      "resource_name": "Synthetic resource"
+    },
+    "expected_target_kind": "case",
+    "expected_delivery_status": "DESIGNED_ONLY"
+  },
+  "MAP-07": {
+    "identity": {
+      "operation_id": "synthetic-operation_id",
+      "failure_episode": "synthetic-failure_episode",
+      "recipient_id": "synthetic-recipient_id"
+    },
+    "variables": {
+      "resource_name": "Synthetic resource"
+    },
+    "expected_target_kind": "operation",
+    "expected_delivery_status": "DESIGNED_ONLY"
+  },
+  "MAP-08": {
+    "identity": {
+      "operation_id": "synthetic-operation_id",
+      "receipt_id": "synthetic-receipt_id",
+      "recipient_id": "synthetic-recipient_id"
+    },
+    "variables": {
+      "resource_name": "Synthetic resource"
+    },
+    "expected_target_kind": "operation",
+    "expected_delivery_status": "DESIGNED_ONLY"
+  },
+  "MAP-09": {
+    "identity": {
+      "report_id": "synthetic-report_id",
+      "generation": "synthetic-generation",
+      "status": "synthetic-status",
+      "recipient_id": "synthetic-recipient_id"
+    },
+    "variables": {
+      "resource_name": "Synthetic resource"
+    },
+    "expected_target_kind": "report",
+    "expected_delivery_status": "DESIGNED_ONLY"
+  },
+  "MAP-10": {
+    "identity": {
+      "calendar_event_id": "synthetic-calendar_event_id",
+      "event_revision": "synthetic-event_revision",
+      "reminder_occurrence": "synthetic-reminder_occurrence",
+      "recipient_id": "synthetic-recipient_id"
+    },
+    "variables": {
+      "resource_name": "Synthetic resource"
+    },
+    "expected_target_kind": "calendar",
+    "expected_delivery_status": "DESIGNED_ONLY"
+  },
+  "MAP-11": {
+    "identity": {
+      "work_item_id": "synthetic-work_item_id",
+      "due_revision": "synthetic-due_revision",
+      "reminder_key": "synthetic-reminder_key",
+      "recipient_id": "synthetic-recipient_id"
+    },
+    "variables": {
+      "resource_name": "Synthetic resource"
+    },
+    "expected_target_kind": "work_item",
+    "expected_delivery_status": "DESIGNED_ONLY"
+  },
+  "MAP-12": {
+    "identity": {
+      "approval_id": "synthetic-approval_id",
+      "approval_generation": "synthetic-approval_generation",
+      "recipient_id": "synthetic-recipient_id"
+    },
+    "variables": {
+      "resource_name": "Synthetic resource"
+    },
+    "expected_target_kind": "ai_approval",
+    "expected_delivery_status": "DESIGNED_ONLY"
+  },
+  "MAP-13": {
+    "identity": {
+      "incident_id": "synthetic-incident_id",
+      "episode": "synthetic-episode",
+      "threshold": "synthetic-threshold",
+      "recipient_id": "synthetic-recipient_id"
+    },
+    "variables": {
+      "resource_name": "Synthetic resource"
+    },
+    "expected_target_kind": "support",
+    "expected_delivery_status": "DESIGNED_ONLY"
+  },
+  "MAP-14": {
+    "identity": {
+      "security_event_id": "synthetic-security_event_id",
+      "recipient_id": "synthetic-recipient_id"
+    },
+    "variables": {
+      "resource_name": "Synthetic resource"
+    },
+    "expected_target_kind": "account",
+    "expected_delivery_status": "DESIGNED_ONLY"
+  }
+}

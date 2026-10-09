@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import Any, Literal
 
-from pydantic import ConfigDict, Field, model_validator
+from pydantic import AwareDatetime, ConfigDict, Field, model_validator
 
 from apps.forms.domain.attachment_dto import SubmissionAttachmentDTO
 from apps.forms.domain.runtime import RuntimeActionDTO, RuntimeFormStateDTO
@@ -17,6 +17,38 @@ class CartableQueryDTO(BaseDTO):
     cartable: CartableKind
     page: int = Field(default=1, ge=1)
     size: int = Field(default=20, ge=1, le=100)
+    time_field: Literal["created_at", "closed_at"] = Field(
+        default="created_at", description="Timestamp used by optional half-open date bounds."
+    )
+    after: AwareDatetime | None = Field(
+        default=None, description="Inclusive UTC instant lower bound."
+    )
+    before: AwareDatetime | None = Field(
+        default=None, description="Exclusive UTC instant upper bound."
+    )
+    overdue_before: AwareDatetime | None = Field(
+        default=None,
+        description="Only items with a non-null deadline strictly before this instant.",
+    )
+    status: (
+        Literal[
+            "OPEN",
+            "CLAIMED",
+            "IN_PROGRESS",
+            "COMPLETED",
+            "REJECTED",
+            "RETURNED",
+            "CANCELLED",
+            "EXPIRED",
+        ]
+        | None
+    ) = None
+
+    @model_validator(mode="after")
+    def valid_window(self):
+        if self.after is not None and self.before is not None and self.after >= self.before:
+            raise ValueError("Date bounds must be increasing")
+        return self
 
 
 class WorkItemDTO(BaseDTO):

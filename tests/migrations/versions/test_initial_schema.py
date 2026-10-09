@@ -14,11 +14,14 @@ from alembic.operations import Operations
 from utils.security import verify_password
 
 
+def load_seed_migration() -> ModuleType:
+    import importlib
+
+    return importlib.import_module("migrations.versions.0002_required_data")
+
+
 def load_migration() -> ModuleType:
-    path = (
-        Path(__file__).resolve().parents[3]
-        / "src/migrations/versions/b13a0c7d2e44_initial_schema.py"
-    )
+    path = Path(__file__).resolve().parents[3] / "src/migrations/versions/0001_schema.py"
     spec = importlib.util.spec_from_file_location("initial_migration", path)
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
@@ -28,7 +31,7 @@ def load_migration() -> ModuleType:
 
 @pytest.mark.anyio
 async def test_initial_admin_uses_local_environment_credentials(monkeypatch) -> None:
-    migration = load_migration()
+    migration = load_seed_migration()
     bulk_insert = Mock()
     monkeypatch.setattr(migration.op, "bulk_insert", bulk_insert)
     monkeypatch.setenv("INITIAL_ADMIN_USERNAME", "admin")
@@ -43,7 +46,7 @@ async def test_initial_admin_uses_local_environment_credentials(monkeypatch) -> 
 
 
 def test_initial_admin_is_optional_but_requires_a_complete_pair(monkeypatch) -> None:
-    migration = load_migration()
+    migration = load_seed_migration()
     bulk_insert = Mock()
     monkeypatch.setattr(migration.op, "bulk_insert", bulk_insert)
     monkeypatch.delenv("INITIAL_ADMIN_USERNAME", raising=False)
@@ -57,7 +60,7 @@ def test_initial_admin_is_optional_but_requires_a_complete_pair(monkeypatch) -> 
 
 
 def test_report_cleanup_schedule_uses_reporting_queue_by_default(monkeypatch) -> None:
-    migration = load_migration()
+    migration = load_seed_migration()
     bulk_insert = Mock()
     monkeypatch.setattr(migration.op, "bulk_insert", bulk_insert)
     monkeypatch.delenv("CELERY_REPORT_QUEUE", raising=False)
@@ -73,10 +76,21 @@ def test_initial_schema_is_the_root_revision_and_creates_uuid_idempotency_keys(
     monkeypatch,
 ) -> None:
     versions = Path(__file__).resolve().parents[3] / "src/migrations/versions"
-    assert sorted(path.name for path in versions.glob("*.py")) == [
-        "b13a0c7d2e44_initial_schema.py",
-        "c24f913ab601_workflow_workspace.py",
-    ]
+    from itertools import pairwise
+
+    from alembic.config import Config
+    from alembic.script import ScriptDirectory
+
+    scripts = ScriptDirectory.from_config(Config(toml_file="pyproject.toml"))
+    revisions = list(scripts.walk_revisions())
+    assert len(scripts.get_heads()) == 1
+    assert len(revisions) == 2
+    assert revisions[-1].revision == "0001_schema"
+    assert revisions[0].revision == "0002_required_data"
+    assert len(revisions) == len(list(versions.glob("*.py")))
+    assert all(
+        revision.down_revision == parent.revision for revision, parent in pairwise(revisions)
+    )
 
     migration = load_migration()
     created_tables: dict[str, tuple[object, ...]] = {}
@@ -92,7 +106,7 @@ def test_initial_schema_is_the_root_revision_and_creates_uuid_idempotency_keys(
     monkeypatch.setattr(migration.op, "get_bind", Mock())
     monkeypatch.setattr(migration.op, "f", lambda value: value)
 
-    assert migration.revision == "b13a0c7d2e44"
+    assert migration.revision == "0001_schema"
     assert migration.down_revision is None
     sql = StringIO()
     context = MigrationContext.configure(
@@ -100,10 +114,11 @@ def test_initial_schema_is_the_root_revision_and_creates_uuid_idempotency_keys(
         opts={"as_sql": True, "output_buffer": sql, "literal_binds": True},
     )
     with Operations.context(context):
-        migration.upgrade()
+        migration._upgrade_core()
+        migration._install_immutability_versioned_step_types_and_typed_ports()
 
-    assert "AI_AGENT" in created_tables
-    assert "PROCESS_INSTANCE" in created_tables
+    assert "USER" in created_tables
+    assert "PERMISSION" in created_tables
     assert "CREATE TRIGGER" in sql.getvalue()
 
     key = next(

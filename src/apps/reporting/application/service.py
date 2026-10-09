@@ -17,7 +17,7 @@ from core.settings import settings
 from utils.date_utils import get_datetime_utc
 from utils.exceptions import NotFoundException
 from utils.pagination import Page, apply_query
-from utils.s3 import delete_object, stream_object
+from utils.s3 import delete_object, object_info, stream_object
 
 
 class ReportService:
@@ -106,6 +106,18 @@ class ReportService:
             report.status != ReportStatus.READY
             or report.storage_key is None
             or report.expires_at <= now
+            or report.file_size is None
+            or report.file_size > settings.MAX_REPORT_ARCHIVE_BYTES
+        ):
+            raise NotFoundException("Report file not found")
+        info = await object_info(report.storage_key)
+        if (
+            info.size != report.file_size
+            or info.content_type != (report.content_type or "application/zip")
+            or (
+                info.metadata.get("sha256") is not None
+                and info.metadata["sha256"] != report.checksum_sha256
+            )
         ):
             raise NotFoundException("Report file not found")
         report.download_count += 1

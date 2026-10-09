@@ -1,0 +1,284 @@
+{
+  "ClientFailure": {
+    "additionalProperties": false,
+    "examples": [
+      {
+        "build": "release.1",
+        "error_code": "client.render_failed",
+        "request_id": "00000000-0000-4000-8000-000000000001",
+        "screen_key": "calendar"
+      }
+    ],
+    "properties": {
+      "build": {
+        "maxLength": 80,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9._-]+$",
+        "title": "Build",
+        "type": "string"
+      },
+      "error_code": {
+        "enum": [
+          "client.render_failed",
+          "client.network_failed",
+          "client.unexpected_error"
+        ],
+        "title": "Error Code",
+        "type": "string"
+      },
+      "request_id": {
+        "description": "UUID correlation identity; do not send stack, message or request body.",
+        "format": "uuid",
+        "title": "Request Id",
+        "type": "string"
+      },
+      "screen_key": {
+        "enum": [
+          "calendar",
+          "work_items",
+          "requests",
+          "designer",
+          "reports",
+          "preferences",
+          "support"
+        ],
+        "title": "Screen Key",
+        "type": "string"
+      }
+    },
+    "required": [
+      "screen_key",
+      "build",
+      "error_code",
+      "request_id"
+    ],
+    "title": "ClientFailure",
+    "type": "object"
+  },
+  "IncidentDTO": {
+    "properties": {
+      "category": {
+        "enum": [
+          "technical",
+          "database",
+          "cache",
+          "storage",
+          "broker",
+          "client",
+          "notification"
+        ],
+        "title": "Category",
+        "type": "string"
+      },
+      "error_code": {
+        "title": "Error Code",
+        "type": "integer"
+      },
+      "expires_at": {
+        "format": "date-time",
+        "title": "Expires At",
+        "type": "string"
+      },
+      "first_seen_at": {
+        "format": "date-time",
+        "title": "First Seen At",
+        "type": "string"
+      },
+      "last_seen_at": {
+        "format": "date-time",
+        "title": "Last Seen At",
+        "type": "string"
+      },
+      "occurrence_count": {
+        "title": "Occurrence Count",
+        "type": "integer"
+      },
+      "operation": {
+        "title": "Operation",
+        "type": "string"
+      },
+      "ref_id": {
+        "title": "Ref Id",
+        "type": "string"
+      },
+      "state": {
+        "enum": [
+          "OPEN",
+          "ACKNOWLEDGED",
+          "RESOLVED"
+        ],
+        "title": "State",
+        "type": "string"
+      },
+      "support_ref": {
+        "format": "uuid",
+        "title": "Support Ref",
+        "type": "string"
+      }
+    },
+    "required": [
+      "ref_id",
+      "support_ref",
+      "category",
+      "error_code",
+      "operation",
+      "state",
+      "occurrence_count",
+      "first_seen_at",
+      "last_seen_at",
+      "expires_at"
+    ],
+    "title": "IncidentDTO",
+    "type": "object"
+  },
+  "IncidentQuery": {
+    "$defs": {
+      "FilterCriteria": {
+        "additionalProperties": false,
+        "description": "One filter in the shared search wire format.",
+        "properties": {
+          "field_name": {
+            "minLength": 1,
+            "title": "Field Name",
+            "type": "string"
+          },
+          "operation": {
+            "$ref": "#/$defs/FilterOperation"
+          },
+          "value": {
+            "default": null,
+            "title": "Value"
+          }
+        },
+        "required": [
+          "field_name",
+          "operation"
+        ],
+        "title": "FilterCriteria",
+        "type": "object"
+      },
+      "FilterOperation": {
+        "description": "Filter operators exposed by the shared search contract.",
+        "enum": [
+          "equal",
+          "notEqual",
+          "startWith",
+          "endsWith",
+          "contains",
+          "notContains",
+          "between",
+          "isNull",
+          "isNotNull",
+          "gt",
+          "gte",
+          "lt",
+          "lte",
+          "in",
+          "nin"
+        ],
+        "title": "FilterOperation",
+        "type": "string"
+      },
+      "SortOperation": {
+        "description": "Sort direction for one field or a sequence of fields.",
+        "enum": [
+          "asc",
+          "desc"
+        ],
+        "title": "SortOperation",
+        "type": "string"
+      },
+      "SortOrder": {
+        "additionalProperties": false,
+        "description": "Sort one field or multiple fields using the same direction.",
+        "properties": {
+          "field_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Field Name"
+          },
+          "multi_field": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Multi Field",
+            "type": "array"
+          },
+          "operation": {
+            "$ref": "#/$defs/SortOperation",
+            "default": "asc"
+          }
+        },
+        "title": "SortOrder",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "filters": {
+        "items": {
+          "$ref": "#/$defs/FilterCriteria"
+        },
+        "title": "Filters",
+        "type": "array"
+      },
+      "page": {
+        "default": 1,
+        "minimum": 1,
+        "title": "Page",
+        "type": "integer"
+      },
+      "size": {
+        "default": 20,
+        "maximum": 100,
+        "minimum": 1,
+        "title": "Size",
+        "type": "integer"
+      },
+      "sort_orders": {
+        "items": {
+          "$ref": "#/$defs/SortOrder"
+        },
+        "title": "Sort Orders",
+        "type": "array"
+      }
+    },
+    "title": "IncidentQuery",
+    "type": "object"
+  },
+  "SupportReceipt": {
+    "properties": {
+      "persisted": {
+        "description": "True only after independent incident commit; false means durability is unavailable.",
+        "title": "Persisted",
+        "type": "boolean"
+      },
+      "support_ref": {
+        "anyOf": [
+          {
+            "format": "uuid",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "description": "Correlation identity only; support.incidents.manage is still required for inspection.",
+        "title": "Support Ref"
+      }
+    },
+    "required": [
+      "persisted",
+      "support_ref"
+    ],
+    "title": "SupportReceipt",
+    "type": "object"
+  }
+}

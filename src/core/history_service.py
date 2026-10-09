@@ -19,7 +19,7 @@ class HistoryService:
     def for_entity(cls, session: AsyncSession, entity_name: str) -> HistoryService:
         """Build a service for one registered source-table name."""
         table = history_tables().get(entity_name)
-        if table is None:
+        if table is None or table.info.get("self_only"):
             raise NotFoundException("History entity not found")
         return cls(HistoryRepository(session, table))
 

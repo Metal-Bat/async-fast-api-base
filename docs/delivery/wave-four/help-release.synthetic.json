@@ -1,0 +1,14 @@
+{
+  "items": [
+    {
+      "help_key": "requests.start",
+      "locales": [
+        "en",
+        "fa"
+      ],
+      "revision": "1"
+    }
+  ],
+  "release_key": "synthetic-contract-example",
+  "schema_version": 1
+}

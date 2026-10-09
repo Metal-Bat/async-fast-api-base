@@ -1,0 +1,587 @@
+{
+  "schema_version": 1,
+  "runtime_dialect": "bpms.runtime/1",
+  "documents": {
+    "behavior_dialect": "bpms.behavior/1",
+    "data_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "textarea": {
+          "type": "string"
+        },
+        "integer": {
+          "type": "integer"
+        },
+        "number": {
+          "type": "number"
+        },
+        "boolean": {
+          "type": "boolean"
+        },
+        "choice": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "datetime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "group": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "media": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "money": {
+          "type": "string"
+        },
+        "optional": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "missing": {
+          "type": "string"
+        },
+        "private_note": {
+          "type": "string",
+          "default": "server-only-default"
+        },
+        "calculated": {
+          "type": "integer"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer"
+              },
+              "children": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "minItems": 0,
+          "maxItems": 5
+        },
+        "table": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "boolean"
+              }
+            }
+          },
+          "maxItems": 5
+        }
+      },
+      "additionalProperties": false
+    },
+    "render_schema": {
+      "root": {
+        "component": "vertical",
+        "children": [
+          {
+            "component": "horizontal",
+            "children": [
+              {
+                "component": "grid",
+                "options": {
+                  "columns": 2
+                },
+                "children": [
+                  {
+                    "component": "text",
+                    "scope": "/properties/text",
+                    "label": "text"
+                  },
+                  {
+                    "component": "textarea",
+                    "scope": "/properties/textarea",
+                    "label": "textarea"
+                  },
+                  {
+                    "component": "integer",
+                    "scope": "/properties/integer",
+                    "label": "integer"
+                  },
+                  {
+                    "component": "number",
+                    "scope": "/properties/number",
+                    "label": "number"
+                  },
+                  {
+                    "component": "boolean",
+                    "scope": "/properties/boolean",
+                    "label": "boolean"
+                  },
+                  {
+                    "component": "choice",
+                    "scope": "/properties/choice",
+                    "label": "choice"
+                  },
+                  {
+                    "component": "date",
+                    "scope": "/properties/date",
+                    "label": "date"
+                  },
+                  {
+                    "component": "datetime",
+                    "scope": "/properties/datetime",
+                    "label": "datetime"
+                  },
+                  {
+                    "component": "user",
+                    "scope": "/properties/user",
+                    "label": "user"
+                  },
+                  {
+                    "component": "group",
+                    "scope": "/properties/group",
+                    "label": "group"
+                  },
+                  {
+                    "component": "media",
+                    "scope": "/properties/media",
+                    "label": "media"
+                  },
+                  {
+                    "component": "attachment_collection",
+                    "scope": "/properties/attachments",
+                    "options": {
+                      "allowed_kinds": [
+                        "file"
+                      ],
+                      "allowed_mime_types": [
+                        "application/pdf"
+                      ],
+                      "max_items": 3
+                    }
+                  },
+                  {
+                    "component": "text",
+                    "scope": "/properties/money",
+                    "formatting": {
+                      "kind": "decimal",
+                      "currency": "USD",
+                      "decimal_places": 3
+                    }
+                  },
+                  {
+                    "component": "text",
+                    "scope": "/properties/optional"
+                  },
+                  {
+                    "component": "text",
+                    "scope": "/properties/missing"
+                  },
+                  {
+                    "component": "text",
+                    "scope": "/properties/private_note"
+                  },
+                  {
+                    "component": "calculated",
+                    "scope": "/properties/calculated",
+                    "calculation": {
+                      "function": "count",
+                      "scopes": [
+                        "/properties/rows"
+                      ]
+                    }
+                  },
+                  {
+                    "component": "repeater",
+                    "scope": "/properties/rows",
+                    "children": [
+                      {
+                        "component": "integer",
+                        "scope": "/properties/rows/items/properties/value"
+                      },
+                      {
+                        "component": "table",
+                        "scope": "/properties/rows/items/properties/children",
+                        "children": [
+                          {
+                            "component": "text",
+                            "scope": "/properties/rows/items/properties/children/items/properties/value"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "component": "table",
+                    "scope": "/properties/table",
+                    "children": [
+                      {
+                        "component": "boolean",
+                        "scope": "/properties/table/items/properties/value"
+                      }
+                    ]
+                  },
+                  {
+                    "component": "display",
+                    "label": "Display without writing values"
+                  },
+                  {
+                    "component": "action",
+                    "label": "Continue",
+                    "outcome": "continue"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "outcomes": [
+        "continue",
+        "return"
+      ]
+    },
+    "page_settings": {
+      "title": "Canonical controls"
+    }
+  },
+  "initial_data": {
+    "text": "",
+    "textarea": "line one\nline two",
+    "integer": 0,
+    "number": 0,
+    "boolean": false,
+    "choice": 0,
+    "date": "2028-02-29",
+    "datetime": "2028-02-29T00:00:00Z",
+    "user": null,
+    "group": null,
+    "media": null,
+    "attachments": [],
+    "money": "125.750",
+    "optional": null,
+    "private_note": "retained-private",
+    "calculated": 2,
+    "rows": [
+      {
+        "value": 0,
+        "children": [
+          {
+            "value": "first"
+          }
+        ]
+      },
+      {
+        "value": 1,
+        "children": [
+          {
+            "value": "second"
+          }
+        ]
+      }
+    ],
+    "table": [
+      {
+        "value": false
+      }
+    ]
+  },
+  "correction_data": {
+    "text": "Corrected",
+    "textarea": "line one\nline two",
+    "integer": 1,
+    "number": 0,
+    "boolean": true,
+    "choice": 1,
+    "date": "2028-02-29",
+    "datetime": "2028-02-29T00:00:00Z",
+    "user": null,
+    "group": null,
+    "media": null,
+    "attachments": [],
+    "money": "200.000",
+    "optional": "",
+    "private_note": "retained-private",
+    "calculated": 2,
+    "rows": [
+      {
+        "value": 0,
+        "children": [
+          {
+            "value": "first"
+          }
+        ]
+      },
+      {
+        "value": 1,
+        "children": [
+          {
+            "value": "second"
+          }
+        ]
+      }
+    ],
+    "table": [
+      {
+        "value": false
+      }
+    ]
+  },
+  "locales": [
+    "en",
+    "fa"
+  ],
+  "control_matrix": [
+    {
+      "kind": "action",
+      "create": "presentation_only",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "attachment_collection",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "boolean",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "calculated",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "choice",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "date",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "datetime",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "display",
+      "create": "presentation_only",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "grid",
+      "create": "presentation_only",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "group",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "horizontal",
+      "create": "presentation_only",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "integer",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "media",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "number",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "repeater",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "table",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "text",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "textarea",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "user",
+      "create": "canonical",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    },
+    {
+      "kind": "vertical",
+      "create": "presentation_only",
+      "read": "actor_filtered",
+      "edit": "field_policy",
+      "summary": "read_only",
+      "print": "read_only",
+      "correction": "before_after"
+    }
+  ],
+  "negative_values": [
+    {
+      "field": "integer",
+      "value": "0",
+      "code": "data.type"
+    },
+    {
+      "field": "number",
+      "value": "0",
+      "code": "data.type"
+    },
+    {
+      "field": "boolean",
+      "value": 0,
+      "code": "data.type"
+    },
+    {
+      "field": "choice",
+      "value": false,
+      "code": "data.type"
+    },
+    {
+      "field": "money",
+      "value": "125.7500",
+      "code": "data.canonical_format"
+    },
+    {
+      "field": "date",
+      "value": "2028-02-30",
+      "code": "data.format"
+    }
+  ]
+}

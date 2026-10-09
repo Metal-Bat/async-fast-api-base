@@ -142,6 +142,7 @@ async def select_groups(
         query,
         criteria=tuple(criteria),
         default_ordering=("name", "id"),
+        live_only=not query.include_deleted,
     )
     return select_response(
         request,
@@ -173,6 +174,7 @@ async def select_users(
         query,
         criteria=criteria,
         default_ordering=("username", "id"),
+        live_only=not query.include_deleted,
     )
     return select_response(
         request,

@@ -6,7 +6,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from time import monotonic, time
 from typing import Any
-from uuid import UUID
+from uuid import UUID, uuid5
 
 import polars as pl
 import pyzipper
@@ -40,6 +40,14 @@ def artifact_name(definition_key: str, created_at: datetime, extension: str) -> 
 
 class ReportTooLargeError(ValueError):
     """Raised before generation when a report exceeds its persisted row limit."""
+
+
+def validate_archive_size(path: Path) -> int:
+    """Refuse oversized completed artifacts before uploading or marking them ready."""
+    size = path.stat().st_size
+    if size > settings.MAX_REPORT_ARCHIVE_BYTES:
+        raise ReportTooLargeError("Report artifact exceeds the configured byte limit")
+    return size
 
 
 def _public_error_message(exc: BaseException) -> str:
@@ -94,6 +102,17 @@ async def _mark_failed(report_id: UUID, exc: BaseException) -> None:
                 report.completed_at = get_datetime_utc()
                 report.storage_key = None
                 session.add(report)
+                await session.flush()
+                from apps.notifications.application.events import stage_notice
+
+                await stage_notice(
+                    session,
+                    map_id="MAP-09",
+                    event_id=uuid5(report.id, f"generation:{report.attempt_count}:FAILED"),
+                    recipient_id=report.owner_id,
+                    target_kind="report",
+                    target_id=report.id,
+                )
                 await session.commit()
     except Exception as persistence_error:  # noqa: BLE001 - preserve original task failure
         await logger.aexception(
@@ -218,10 +237,10 @@ async def _generate(report_id: UUID) -> dict[str, Any]:
                         raise ValueError("Report archive password is missing")
                     _create_archive(xlsx_path, zip_path, report.zip_password)
                     storage_key = f"user/{report.owner_id}/report/{report.id}.zip"
-                    await put_file(storage_key, zip_path, _CONTENT_TYPE)
-                    uploaded_key = storage_key
-                    file_size = zip_path.stat().st_size
+                    file_size = validate_archive_size(zip_path)
                     checksum = _sha256(zip_path)
+                    await put_file(storage_key, zip_path, _CONTENT_TYPE, checksum_sha256=checksum)
+                    uploaded_key = storage_key
 
                 await session.refresh(report)
                 if (
@@ -247,6 +266,17 @@ async def _generate(report_id: UUID) -> dict[str, Any]:
                     report.status = ReportStatus.READY
                     report.completed_at = get_datetime_utc()
                     session.add(report)
+                    await session.flush()
+                    from apps.notifications.application.events import stage_notice
+
+                    await stage_notice(
+                        session,
+                        map_id="MAP-09",
+                        event_id=uuid5(report.id, f"generation:{report.attempt_count}:READY"),
+                        recipient_id=report.owner_id,
+                        target_kind="report",
+                        target_id=report.id,
+                    )
                     await session.commit()
                 uploaded_key = None
                 await logger.ainfo(

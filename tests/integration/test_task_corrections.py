@@ -12,6 +12,9 @@ from apps.forms.application.service import FormService
 from apps.forms.domain.attachment_dto import AttachmentAddDTO
 from apps.forms.domain.dto import FormCreateDTO, FormVersionCreateDTO
 from apps.media.domain.entity import UserUploadEntity
+from apps.notifications.application.events import fanout_event
+from apps.notifications.domain.entity import NotificationEntity
+from apps.processes.domain.entity import ProcessEventEntity
 from apps.requests.application.service import RequestService
 from apps.requests.domain.dto import (
     BusinessRequestCreateDTO,
@@ -19,6 +22,8 @@ from apps.requests.domain.dto import (
     RequestTypeCreateDTO,
 )
 from apps.step_types.application.registry import builtin_registry
+from apps.users.application.permission_catalog import reconcile_permissions
+from apps.users.domain.auth_entity import RoleEntity, UserRoleEntity
 from apps.users.domain.entity import UserEntity
 from apps.work_items.application.service import WorkItemService
 from apps.work_items.domain.dto import CorrectionFeedbackInput
@@ -118,6 +123,15 @@ async def test_repeated_correction_rounds_pin_data_feedback_and_reject_stale_wri
         applicant = UserEntity(username=f"correction-app-{uuid7()}", hashed_password="hash")
         reviewer = UserEntity(username=f"correction-review-{uuid7()}", hashed_password="hash")
         session.add_all([applicant, reviewer])
+        await session.flush()
+        await reconcile_permissions(session, roles=("requester", "reviewer"))
+        for actor, role_name in ((applicant, "requester"), (reviewer, "reviewer")):
+            role = (
+                await session.exec(
+                    select(RoleEntity).where(RoleEntity.name == f"app.{role_name}.v1")
+                )
+            ).one()
+            session.add(UserRoleEntity(user_id=actor.id, role_id=role.id))
         await session.flush()
         forms = FormService(session)
         form = await forms.create(
@@ -335,7 +349,31 @@ async def test_repeated_correction_rounds_pin_data_feedback_and_reject_stale_wri
                 ],
             )
             assert duplicate.id == returned.id
+            # Observe each committed correction occurrence while its new task is actionable.
+            events = (
+                await session.exec(
+                    select(ProcessEventEntity).where(
+                        ProcessEventEntity.work_item_id == returned.id,
+                        ProcessEventEntity.event_type == "work_item.returned",
+                    )
+                )
+            ).all()
+            assert len(events) == 1
+            event_id = events[0].id
+            await session.commit()
+            assert await fanout_event(event_id) == 1
+            assert await fanout_event(event_id) == 1
+            notices = (
+                await session.exec(
+                    select(NotificationEntity).where(NotificationEntity.event_id == event_id)
+                )
+            ).all()
+            assert len(notices) == 1
+            assert notices[0].recipient_user_id == applicant.id
+            assert notices[0].template_key == "application.map_04"
             correction = await open_item(applicant)
+            assert notices[0].target_kind == "work_item"
+            assert notices[0].target_id == correction.id
             correction_ref = create_ref_id(correction.id, correction.version)
             correction_view = await service.task_view(correction_ref, applicant)
             assert correction_view.before_data is not None

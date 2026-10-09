@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "backend_head": "995829eebd9483ac6b589c1648fc799c650ad464",
+  "backend_worktree": "uncommitted; final gate records complete nonignored source hashes",
+  "schema_head": "0002_required_data",
+  "contracts": [
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C05",
+    "C06",
+    "C07",
+    "C08",
+    "C09",
+    "C10",
+    "C11",
+    "C14"
+  ],
+  "artifacts": {
+    "openapi-en.json": "cb61bfb17b23c4af8b56059a2cbaa16ae76cf57b5e876d48201e0bf0e07665b2",
+    "inspector-en.json": "40a356b08b9ef858ece7aea62c8c2966785539896a9db929f6ef8321e30f52c8",
+    "openapi-fa.json": "3365c97b8b656dd163df947ad81244d2595834679ae92df4392fdf86f02ffd5f",
+    "inspector-fa.json": "d8b18d8d86e03702a70dcedd4f899c1e94e72a6efb53be27d17f7cba8f8e8561",
+    "metric-dictionary.json": "fecbc2f82cfbf20633c6547494b73c36f7c2cc4a04cc8b00cd93362d63ff2df2",
+    "readiness-contracts.json": "88f8daaa5f9d7f973ed0aecde55f15de468d6403d698796945554be7f5f08b5b",
+    "inbox-contracts.json": "0804f23896487bf14b3fc7b32ed46afe061e4214bb4bfd25933eef53450fd02f",
+    "support-contracts.json": "ce4bde0525095c7ecb29623067b0b28c1b70268712c8cffb8c3057637ea07b81",
+    "calendar-contracts.json": "ace5c9b14eb2ae4534fce84635248ad66b75f0f0535a86fc7fd7128e81692558",
+    "runtime-controls-v1.json": "6fcfda546313424c84ef2f972d9d2e61657ea1a28f0003789dcb8f4522475109",
+    "help-release.schema.json": "ee3a51bc28a467a7155371a21463b0a100ae5840c11ab5e38b6112749dfee050",
+    "personal-contracts.json": "fcdd675e50419a1b3e2beca54c2f1c38c5a36d6a462e5ccb32924bad73813d74",
+    "help-release.synthetic.json": "bec7e581f11d26d6734d03ec5876677deabad82c4974923be077ebe83dd0902d"
+  },
+  "help_content": "Frontend-owned; synthetic example does not attest a shipped frontend catalog.",
+  "verification": "See ../through-020-verification.md; snapshots alone are not integration evidence."
+}

@@ -29,8 +29,13 @@ class WorkGroupService:
             raise NotFoundException("Work group not found")
         return group
 
-    async def create_group(self, data: WorkGroupCreateDTO, actor_id: UUID) -> WorkGroupEntity:
-        group = WorkGroupEntity(**data.model_dump())
+    async def create_group(
+        self, data: WorkGroupCreateDTO, actor_id: UUID, *, identifier: UUID | None = None
+    ) -> WorkGroupEntity:
+        values = data.model_dump()
+        if identifier is not None:
+            values["id"] = identifier
+        group = WorkGroupEntity(**values)
         self.session.add(group)
         self.session.add(AuthAuditEventEntity(user_id=actor_id, event_type="work_group.created"))
         await self.session.flush()

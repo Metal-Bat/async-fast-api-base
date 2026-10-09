@@ -41,7 +41,7 @@ class WorkspaceService:
             statement = statement.with_for_update().execution_options(populate_existing=True)
         return (await self.session.exec(statement)).one_or_none()
 
-    async def get(self, version_ref):
+    async def get(self, version_ref) -> WorkflowWorkspaceDTO:
         version = await self.workflows.get_version(version_ref)
         row = await self.row(version.id)
         document = (
@@ -65,7 +65,7 @@ class WorkspaceService:
         elif reference is None or open_ref_id(reference) != (row.id, row.version):
             raise VersionConflictException("Workspace changed; reload and reconcile")
 
-    async def save(self, version_ref, data):
+    async def save(self, version_ref, data) -> WorkflowWorkspaceDTO:
         version = await self.workflows._draft(version_ref)
         row = await self.row(version.id, lock=True)
         self.require_current(row, data.workspace_ref_id)

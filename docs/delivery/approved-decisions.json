@@ -1,0 +1,28 @@
+{
+  "recorded_on": "2026-10-08",
+  "authority": "Repository owner, explicit conversation replies",
+  "D01": {
+    "response": "Approve additive migrations",
+    "policy": "Preserve both applied revisions; add revisions on one linear chain, including the reviewed five-comment repair.",
+    "superseded_on": "2026-10-09",
+    "superseded_by": "DB-002: explicit owner request for exactly two migration files, schema first and required data second. Repository restructuring only; no project database reset or stamp authorized."
+  },
+  "D07": {
+    "response": "Accept the two exact exceptions",
+    "verification_label": "VERIFIED_WITH_EXCEPTION",
+    "warning_filters": [
+      "ignore:'asyncio\\.iscoroutinefunction' is deprecated and slated for removal in Python 3\\.16; use inspect\\.iscoroutinefunction\\(\\) instead:DeprecationWarning:cohere\\.client$",
+      "ignore:'_UnionGenericAlias' is deprecated and slated for removal in Python 3\\.17:DeprecationWarning:google\\.genai\\.types$"
+    ]
+  },
+  "secret_baseline_review": {
+    "response": "Approve the exact 10 baseline entries",
+    "scope": "Exact ten file/type/hash tuples in docs/delivery/secret-baseline-review.json; mark non-secret only; preserve existing entries and scanner rules."
+  },
+  "DB-002": {
+    "recorded_on": "2026-10-09",
+    "request": "make the migration files just 2\nfirst one for all the code tables\nsecond one for all the items we need data for like opration and all",
+    "policy": "Exactly two repository revisions: complete schema first, required built-in and deployed handler catalogs, permission definitions and maintenance schedules second. Supersedes the earlier additive-only repository file policy.",
+    "database_scope": "Repository migration restructuring and owned disposable verification. No shared database reset, teardown or rebaseline performed."
+  }
+}

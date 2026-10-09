@@ -44,7 +44,9 @@ class OwnerOnlyUploadAccess:
 def safe_filename(value: str | None) -> str:
     """Keep one bounded basename without response-header control characters."""
     name = PurePath((value or "upload").replace("\\", "/")).name
-    safe = "".join(char for char in name if char >= " " and char not in {'"', ":", ";"})
+    safe = "".join(
+        char for char in name if char >= " " and char != "\x7f" and char not in {'"', ":", ";"}
+    )
     return safe[:255] or "upload"
 
 
@@ -109,6 +111,9 @@ async def _read_limited(upload: UploadFile) -> bytes:
 def _to_webp(data: bytes) -> tuple[bytes, int, int]:
     try:
         with Image.open(io.BytesIO(data)) as source:
+            width, height = source.size
+            if width * height > settings.MAX_IMAGE_PIXELS:
+                raise InvalidImageException("The uploaded image dimensions are too large")
             source.load()
             source = ImageOps.exif_transpose(source)
             width, height = source.size

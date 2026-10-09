@@ -1,0 +1,1 @@
+"""Private calendar HTTP adapters."""

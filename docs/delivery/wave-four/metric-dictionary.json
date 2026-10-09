@@ -1,0 +1,83 @@
+[
+  {
+    "availability": "available",
+    "metric_key": "submitted_requests",
+    "population": "Live requests owned by me with an actual submission timestamp, including cancelled terminal requests.",
+    "reason": null,
+    "timestamp": "submitted_at",
+    "unit": "count",
+    "version": 1
+  },
+  {
+    "availability": "available",
+    "metric_key": "active_requests",
+    "population": "Live requests owned by me currently SUBMITTED or RUNNING; current-state cohort, not historical occupancy.",
+    "reason": null,
+    "timestamp": "created_at",
+    "unit": "count",
+    "version": 1
+  },
+  {
+    "availability": "available",
+    "metric_key": "available_work",
+    "population": "My currently claimable OPEN work, excluding my archived items; same live direct/group cartable policy.",
+    "reason": null,
+    "timestamp": "created_at",
+    "unit": "count",
+    "version": 1
+  },
+  {
+    "availability": "available",
+    "metric_key": "claimed_work",
+    "population": "My currently CLAIMED or IN_PROGRESS work, excluding my archived items.",
+    "reason": null,
+    "timestamp": "created_at",
+    "unit": "count",
+    "version": 1
+  },
+  {
+    "availability": "available",
+    "metric_key": "overdue_work",
+    "population": "My currently claimable OPEN work with a non-null deadline strictly before as_of; unclaimed and unarchived.",
+    "reason": null,
+    "timestamp": "created_at",
+    "unit": "count",
+    "version": 1
+  },
+  {
+    "availability": "available",
+    "metric_key": "terminal_duration",
+    "population": "Mean submission-to-close duration of my live COMPLETED/FAILED/CANCELLED requests. Missing or negative timing is unknown, excluded from mean and included in population_count.",
+    "reason": null,
+    "timestamp": "closed_at",
+    "unit": "seconds",
+    "version": 1
+  },
+  {
+    "availability": "available",
+    "metric_key": "correction_frequency",
+    "population": "My live terminal RETURNED work items; counts actual return decisions, not rejected/failed or inferred outcomes. Archived items excluded.",
+    "reason": null,
+    "timestamp": "closed_at",
+    "unit": "count",
+    "version": 1
+  },
+  {
+    "availability": "unavailable",
+    "metric_key": "integration_outcomes",
+    "population": "No business-effect receipt registry has been delivered.",
+    "reason": "receipt_metric_not_configured",
+    "timestamp": null,
+    "unit": "count",
+    "version": 1
+  },
+  {
+    "availability": "unavailable",
+    "metric_key": "business_outcomes",
+    "population": "Completion status is not business approval.",
+    "reason": "business_outcome_mapping_not_configured",
+    "timestamp": null,
+    "unit": "count",
+    "version": 1
+  }
+]

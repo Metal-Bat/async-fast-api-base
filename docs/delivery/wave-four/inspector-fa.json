@@ -1,0 +1,2491 @@
+{
+  "diagnostic_pointer_format": "json-pointer",
+  "fields": [
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {},
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "انتخاب نتیجه استاندارد تعریف‌شده فرم.",
+      "key": "action",
+      "node_kind": "action",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "array"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "مدیریت پیوست‌های خصوصی و محدود ارسال فرم.",
+      "key": "attachment_collection",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "allow_duplicates": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Allow Duplicates"
+          },
+          "allow_remove": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Allow Remove"
+          },
+          "allow_reorder": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Allow Reorder"
+          },
+          "allow_replace": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Allow Replace"
+          },
+          "allowed_kinds": {
+            "anyOf": [
+              {
+                "items": {
+                  "enum": [
+                    "file",
+                    "image"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Allowed Kinds"
+          },
+          "allowed_mime_types": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 32,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Allowed Mime Types"
+          },
+          "camera": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Camera"
+          },
+          "caption_required": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Caption Required"
+          },
+          "max_item_bytes": {
+            "anyOf": [
+              {
+                "maximum": 1073741824,
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Max Item Bytes"
+          },
+          "max_items": {
+            "anyOf": [
+              {
+                "maximum": 256,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Max Items"
+          },
+          "max_total_bytes": {
+            "anyOf": [
+              {
+                "maximum": 4294967296,
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Max Total Bytes"
+          },
+          "min_items": {
+            "anyOf": [
+              {
+                "maximum": 256,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Min Items"
+          },
+          "preview": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Preview"
+          },
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "boolean"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "ویرایش مقدار بولی.",
+      "key": "boolean",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "array",
+          "integer",
+          "number",
+          "string"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "نمایش مقدار محاسبه‌شده طبق قرارداد ثبت‌شده.",
+      "key": "calculated",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "array",
+          "boolean",
+          "integer",
+          "number",
+          "string"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "انتخاب کلید استاندارد از منبع گزینه تعریف‌شده.",
+      "key": "choice",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "multiple": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Multiple"
+          },
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "string"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "ویرایش تاریخ میلادی استاندارد.",
+      "key": "date",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "string"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "ویرایش زمان استاندارد دارای اختلاف منطقه زمانی.",
+      "key": "datetime",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {},
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "نمایش متن بدون نوشتن داده.",
+      "key": "display",
+      "node_kind": "display",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": true,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {},
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "چیدمان فیلدها در شبکه پاسخ‌گوی محدود.",
+      "key": "grid",
+      "node_kind": "layout",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "columns": {
+            "anyOf": [
+              {
+                "maximum": 12,
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Columns"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "string"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "انتخاب گروه کاری با شناسه مبهم.",
+      "key": "group",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": true,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {},
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "چیدمان افقی فیلدهای فرزند.",
+      "key": "horizontal",
+      "node_kind": "layout",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "integer"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "ویرایش مقدار عدد صحیح.",
+      "key": "integer",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "string"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "انتخاب شناسه فایل خصوصی بارگذاری‌شده.",
+      "key": "media",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "integer",
+          "number"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "ویرایش مقدار عددی JSON.",
+      "key": "number",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": true,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "array"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "ویرایش مقادیر تکراری با شمای مشترک آیتم.",
+      "key": "repeater",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "max_items": {
+            "anyOf": [
+              {
+                "maximum": 256,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Max Items"
+          },
+          "min_items": {
+            "anyOf": [
+              {
+                "maximum": 256,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Min Items"
+          },
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": true,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "array"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "ویرایش مجموعه در نمای جدول.",
+      "key": "table",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "max_items": {
+            "anyOf": [
+              {
+                "maximum": 256,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Max Items"
+          },
+          "min_items": {
+            "anyOf": [
+              {
+                "maximum": 256,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Min Items"
+          },
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "string"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "ویرایش یک مقدار رشته‌ای.",
+      "key": "text",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "placeholder": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Placeholder"
+          },
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "string"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "ویرایش رشته چندخطی.",
+      "key": "textarea",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "placeholder": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Placeholder"
+          },
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          },
+          "rows": {
+            "anyOf": [
+              {
+                "maximum": 30,
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Rows"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": false,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {
+        "type": [
+          "string"
+        ]
+      },
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "انتخاب کاربر با شناسه مبهم.",
+      "key": "user",
+      "node_kind": "control",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "read_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Read Only"
+          }
+        },
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    },
+    {
+      "children": true,
+      "client_kinds": [
+        "WEB",
+        "DESKTOP",
+        "ANDROID",
+        "IOS",
+        "B2B",
+        "SDK"
+      ],
+      "data_schema": {},
+      "defaults": {
+        "options": {},
+        "renderer": "default"
+      },
+      "description": "چیدمان عمودی فیلدهای فرزند.",
+      "key": "vertical",
+      "node_kind": "layout",
+      "options_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "renderers": [
+        "default",
+        "compact"
+      ],
+      "validation": [
+        "server_submit"
+      ],
+      "version": 1
+    }
+  ],
+  "handlers": [
+    {
+      "bindings": [
+        {
+          "pinned": true,
+          "pointer": "/agent_ref",
+          "scope": "published_agent",
+          "secret_reference": true,
+          "selector_kind": "agent_versions"
+        }
+      ],
+      "code": "AI_DECISION",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "$defs": {
+          "Reference": {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "properties": {
+          "agent_ref": {
+            "$ref": "#/$defs/Reference"
+          }
+        },
+        "required": [
+          "agent_ref"
+        ],
+        "title": "AIDecisionConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "b45b624048dbb53a8486c011539333c4cafbf49e3d8659986ac6f22cb004a174",
+      "examples": [
+        {
+          "agent_ref": "<published-agent-ref>"
+        }
+      ],
+      "execution_mode": "BACKGROUND",
+      "handler_key": "ai_decision",
+      "handler_version": "1",
+      "help_key": "step.ai_decision.help",
+      "help_text": "طبقه‌بندی محدود با مدل مجاز و مسیر بازبینی انسانی.",
+      "name": "تصمیم هوش مصنوعی",
+      "name_key": "step.ai_decision.name",
+      "outcome_source": "handler",
+      "outcomes": [
+        "next",
+        "review"
+      ],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "data",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "not": {
+              "type": "null"
+            },
+            "type": "object"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "choice",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "string"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "confidence",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "number"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "needs_review",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "boolean"
+          }
+        }
+      ],
+      "required_capabilities": [
+        "ai.agent.use"
+      ]
+    },
+    {
+      "bindings": [
+        {
+          "pinned": false,
+          "pointer": "/connection_ref",
+          "scope": "connection_use",
+          "secret_reference": true,
+          "selector_kind": "connections"
+        }
+      ],
+      "code": "CONNECTION_STATUS",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "$defs": {
+          "Reference": {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "connection_ref": {
+            "$ref": "#/$defs/Reference"
+          }
+        },
+        "required": [
+          "connection_ref"
+        ],
+        "title": "ConnectionStatusConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "1ed92c376234876f5e4a1f10aa20b0abeaa56517ec96b63679a808eda9545e2b",
+      "examples": [
+        {
+          "connection_ref": "<approved-connection-ref>"
+        }
+      ],
+      "execution_mode": "BACKGROUND",
+      "handler_key": "connection_status",
+      "handler_version": "1",
+      "help_key": "step.connection_status.help",
+      "help_text": "اتصال تأییدشده را در پس‌زمینه فراخوانی می‌کند و وضعیت آن را برمی‌گرداند.",
+      "name": "وضعیت اتصال",
+      "name_key": "step.connection_status.name",
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "status_code",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "integer"
+          }
+        }
+      ],
+      "required_capabilities": [
+        "integration.connection.use"
+      ]
+    },
+    {
+      "bindings": [],
+      "code": "DECISION",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "expression": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "title": "Expression",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expression"
+        ],
+        "title": "DecisionConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "146e96fe7d941fb3c5920391d1ad346590ecd6551ce3ac0e68fb38ed446eb23d",
+      "examples": [],
+      "execution_mode": "SYNC",
+      "handler_key": "decision",
+      "handler_version": "1",
+      "help_key": null,
+      "help_text": null,
+      "name": "Decision",
+      "name_key": null,
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "data",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "not": {
+              "type": "null"
+            },
+            "type": "object"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "outcome",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "string"
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [],
+      "code": "EVENT_WAIT",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "event_type": {
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "Event Type",
+            "type": "string"
+          },
+          "expires_in_seconds": {
+            "anyOf": [
+              {
+                "maximum": 31536000,
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Expires In Seconds"
+          }
+        },
+        "required": [
+          "event_type"
+        ],
+        "title": "EventWaitConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "d0637cadaf3151d4e4ffea90ac320be2bd87464dd6c739a4f1b99fdd63206cdd",
+      "examples": [],
+      "execution_mode": "WAIT",
+      "handler_key": "event_wait",
+      "handler_version": "1",
+      "help_key": null,
+      "help_text": null,
+      "name": "Event wait",
+      "name_key": null,
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "correlation_key",
+          "required": true,
+          "value_schema": {
+            "maxLength": 512,
+            "minLength": 1,
+            "not": {
+              "type": "null"
+            },
+            "type": "string"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "payload",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "not": {
+              "type": "null"
+            },
+            "type": "object"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "outcome",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "string"
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [],
+      "code": "FINISH",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "title": "EmptyConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "9269703c32f2d1777c739f144ed46addf926af23129dfe972519c2d7b6f35860",
+      "examples": [],
+      "execution_mode": "SYNC",
+      "handler_key": "finish",
+      "handler_version": "1",
+      "help_key": null,
+      "help_text": null,
+      "name": "Finish",
+      "name_key": null,
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [],
+      "code": "FUNCTION",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "$defs": {
+          "Reference": {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "function_key": {
+            "$ref": "#/$defs/Reference"
+          }
+        },
+        "required": [
+          "function_key"
+        ],
+        "title": "FunctionConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "5a48953f4f570c7df4b46059b5ca7e537fecac470b1724587c19346883e83104",
+      "examples": [],
+      "execution_mode": "SYNC",
+      "handler_key": "function",
+      "handler_version": "1",
+      "help_key": null,
+      "help_text": null,
+      "name": "Function",
+      "name_key": null,
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "arguments",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "not": {
+              "type": "null"
+            },
+            "type": "object"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": true,
+          "port_key": "result",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "anyOf": [
+              {
+                "$ref": "#/$defs/JsonValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [
+        {
+          "pinned": true,
+          "pointer": "/form_version_ref",
+          "scope": "published_form",
+          "secret_reference": false,
+          "selector_kind": "form_versions"
+        }
+      ],
+      "code": "HUMAN_TASK",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "$defs": {
+          "Reference": {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "form_version_ref": {
+            "$ref": "#/$defs/Reference"
+          }
+        },
+        "required": [
+          "form_version_ref"
+        ],
+        "title": "HumanConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "046c8decb4a1668966bf11be084af056c0a69fe8e40e52ddbab810125dfc9ae4",
+      "examples": [],
+      "execution_mode": "HUMAN",
+      "handler_key": "human_task",
+      "handler_version": "1",
+      "help_key": null,
+      "help_text": null,
+      "name": "کار انسانی",
+      "name_key": null,
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "initial_data",
+          "required": false,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "not": {
+              "type": "null"
+            },
+            "type": "object"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "submission",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "not": {
+              "type": "null"
+            },
+            "type": "object"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "outcome",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "string"
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [
+        {
+          "pinned": false,
+          "pointer": "/connection_ref",
+          "scope": "connection_use",
+          "secret_reference": true,
+          "selector_kind": "connections"
+        }
+      ],
+      "code": "NOTIFICATION",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "$defs": {
+          "Reference": {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "connection_ref": {
+            "$ref": "#/$defs/Reference"
+          },
+          "template_key": {
+            "$ref": "#/$defs/Reference"
+          }
+        },
+        "required": [
+          "connection_ref",
+          "template_key"
+        ],
+        "title": "NotificationConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "d1863bcdba002f27a038a955a7d1a59a8a496b5dba7987748314093edaf2e28e",
+      "examples": [],
+      "execution_mode": "BACKGROUND",
+      "handler_key": "notification",
+      "handler_version": "1",
+      "help_key": null,
+      "help_text": null,
+      "name": "Notification",
+      "name_key": null,
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "LIST",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "recipients",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "Reference": {
+                "maxLength": 512,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "items": {
+              "$ref": "#/$defs/Reference"
+            },
+            "not": {
+              "type": "null"
+            },
+            "type": "array",
+            "x-reference-kind": "user"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "data",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "not": {
+              "type": "null"
+            },
+            "type": "object"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "notification",
+          "required": true,
+          "value_schema": {
+            "maxLength": 512,
+            "minLength": 1,
+            "not": {
+              "type": "null"
+            },
+            "type": "string",
+            "x-reference-kind": "notification"
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [
+        {
+          "pinned": false,
+          "pointer": "/connection_ref",
+          "scope": "connection_use",
+          "secret_reference": true,
+          "selector_kind": "connections"
+        }
+      ],
+      "code": "NOTIFICATION",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "$defs": {
+          "Reference": {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "channel": {
+            "const": "EMAIL",
+            "default": "EMAIL",
+            "title": "Channel",
+            "type": "string"
+          },
+          "connection_ref": {
+            "$ref": "#/$defs/Reference"
+          },
+          "locale": {
+            "default": "en",
+            "enum": [
+              "en",
+              "fa"
+            ],
+            "title": "Locale",
+            "type": "string"
+          },
+          "template_key": {
+            "$ref": "#/$defs/Reference"
+          },
+          "template_version": {
+            "default": "1",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Template Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "connection_ref",
+          "template_key"
+        ],
+        "title": "NotificationConfigV2",
+        "type": "object"
+      },
+      "contract_fingerprint": "eb49ad17b204cba60b093c09ac2da8941266aba95bf9f80d378b9952a0aa6525",
+      "examples": [],
+      "execution_mode": "BACKGROUND",
+      "handler_key": "notification",
+      "handler_version": "2",
+      "help_key": null,
+      "help_text": null,
+      "name": "Notification",
+      "name_key": null,
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "LIST",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "recipients",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "Reference": {
+                "maxLength": 512,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "items": {
+              "$ref": "#/$defs/Reference"
+            },
+            "not": {
+              "type": "null"
+            },
+            "type": "array",
+            "x-reference-kind": "user"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "data",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "not": {
+              "type": "null"
+            },
+            "type": "object"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "notification",
+          "required": true,
+          "value_schema": {
+            "maxLength": 512,
+            "minLength": 1,
+            "not": {
+              "type": "null"
+            },
+            "type": "string",
+            "x-reference-kind": "notification"
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [],
+      "code": "PERMISSION_CHECK",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "permission_key": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Permission Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "permission_key"
+        ],
+        "title": "PermissionConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "44490c4eb7acd18f8e443d98f504d0d6b8d4dc383b412f441f4b0b0d08e84f4d",
+      "examples": [
+        {
+          "permission_key": "workflows.manage"
+        }
+      ],
+      "execution_mode": "SYNC",
+      "handler_key": "permission_check",
+      "handler_version": "1",
+      "help_key": "step.permission_check.help",
+      "help_text": "مجوز عامل اجرای جاری را بدون اعطای دسترسی بررسی می‌کند.",
+      "name": "بررسی مجوز",
+      "name_key": "step.permission_check.name",
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "allowed",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "boolean"
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [],
+      "code": "REQUEST_PRIORITY",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "title": "EmptyConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "f76c606a60fbe96422f32e8769d66c06c2cead2b0bbeffadc6e5675382507ec7",
+      "examples": [
+        {}
+      ],
+      "execution_mode": "SYNC",
+      "handler_key": "request_priority",
+      "handler_version": "1",
+      "help_key": "step.request_priority.help",
+      "help_text": "اولویت درخواست جاری را می‌خواند.",
+      "name": "اولویت درخواست",
+      "name_key": "step.request_priority.name",
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "priority",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "integer"
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [
+        {
+          "pinned": false,
+          "pointer": "/connection_ref",
+          "scope": "connection_use",
+          "secret_reference": true,
+          "selector_kind": "connections"
+        }
+      ],
+      "code": "SERVICE_TASK",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "$defs": {
+          "Reference": {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "connection_ref": {
+            "$ref": "#/$defs/Reference"
+          },
+          "operation_key": {
+            "$ref": "#/$defs/Reference"
+          }
+        },
+        "required": [
+          "connection_ref",
+          "operation_key"
+        ],
+        "title": "ServiceConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "62f825f6102a3255d83b892d6ff1c3b5b747b9a64ee3f5673266e7e67843fb8d",
+      "examples": [],
+      "execution_mode": "BACKGROUND",
+      "handler_key": "service_task",
+      "handler_version": "1",
+      "help_key": null,
+      "help_text": null,
+      "name": "Service task",
+      "name_key": null,
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "payload",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "not": {
+              "type": "null"
+            },
+            "type": "object"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": true,
+          "port_key": "result",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "anyOf": [
+              {
+                "$ref": "#/$defs/JsonValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [],
+      "code": "START",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "title": "EmptyConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "b6846271e2768910632e3951a4c0a6c5450a06d9c1edf479724cbf2f2a9f25d0",
+      "examples": [],
+      "execution_mode": "SYNC",
+      "handler_key": "start",
+      "handler_version": "1",
+      "help_key": null,
+      "help_text": null,
+      "name": "Start",
+      "name_key": null,
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [],
+      "code": "SUBPROCESS",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "title": "EmptyConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "8e8e7054c549d4d6582e4150048a4836d66706c4c12dfaf877e9cad9145e5788",
+      "examples": [],
+      "execution_mode": "WAIT",
+      "handler_key": "subprocess",
+      "handler_version": "1",
+      "help_key": null,
+      "help_text": null,
+      "name": "Subprocess call",
+      "name_key": null,
+      "outcome_source": "handler",
+      "outcomes": [
+        "success",
+        "failure"
+      ],
+      "ports": [],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [],
+      "code": "TIMER",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "delay_seconds": {
+            "maximum": 31536000,
+            "minimum": 1,
+            "title": "Delay Seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "delay_seconds"
+        ],
+        "title": "TimerConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "589f287cf924db232ff41ae06594d4bbc107fbd62e1b1ca689ad1f13677714c1",
+      "examples": [],
+      "execution_mode": "WAIT",
+      "handler_key": "timer",
+      "handler_version": "1",
+      "help_key": null,
+      "help_text": null,
+      "name": "Timer",
+      "name_key": null,
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "outcome",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "string"
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [],
+      "code": "TRANSFORM",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "$defs": {
+          "Reference": {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "conversion_key": {
+            "$ref": "#/$defs/Reference"
+          }
+        },
+        "required": [
+          "conversion_key"
+        ],
+        "title": "TransformConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "aa4b6cff764e887c7781e507674d9ec1aadca7e1d8754a86acbeed2cf789e1b4",
+      "examples": [],
+      "execution_mode": "SYNC",
+      "handler_key": "transform",
+      "handler_version": "1",
+      "help_key": null,
+      "help_text": null,
+      "name": "Transform",
+      "name_key": null,
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": true,
+          "port_key": "value",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "anyOf": [
+              {
+                "$ref": "#/$defs/JsonValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": true,
+          "port_key": "result",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "anyOf": [
+              {
+                "$ref": "#/$defs/JsonValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [],
+      "code": "TRANSFORM",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": false,
+        "properties": {
+          "conversion_key": {
+            "enum": [
+              "string",
+              "integer",
+              "decimal",
+              "boolean",
+              "date",
+              "date_time",
+              "array",
+              "object"
+            ],
+            "title": "Conversion Key",
+            "type": "string"
+          },
+          "default": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/JsonValue"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "format": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Format"
+          },
+          "null_behavior": {
+            "default": "error",
+            "enum": [
+              "error",
+              "preserve",
+              "default"
+            ],
+            "title": "Null Behavior",
+            "type": "string"
+          },
+          "projection": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "maxProperties": 64,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Projection"
+          }
+        },
+        "required": [
+          "conversion_key"
+        ],
+        "title": "TransformConfigV2",
+        "type": "object"
+      },
+      "contract_fingerprint": "a5d8d16806456d6cf0cb350f68bbb9afcf43cb7b509866a35a18fc65692df9b6",
+      "examples": [],
+      "execution_mode": "SYNC",
+      "handler_key": "transform",
+      "handler_version": "2",
+      "help_key": null,
+      "help_text": null,
+      "name": "Transform",
+      "name_key": null,
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": true,
+          "port_key": "value",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "anyOf": [
+              {
+                "$ref": "#/$defs/JsonValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": true,
+          "port_key": "result",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "anyOf": [
+              {
+                "$ref": "#/$defs/JsonValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      ],
+      "required_capabilities": []
+    }
+  ],
+  "preview_policy": "bounded-pure-synthetic-only",
+  "schema_version": 1
+}

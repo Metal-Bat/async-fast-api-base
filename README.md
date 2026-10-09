@@ -316,17 +316,31 @@ mise run shell
 
 ## 🗄️ Database
 
-The migration history is consolidated into
-`src/migrations/versions/b13a0c7d2e44_initial_schema.py`. This single root/head revision creates
-the complete schema, seed data, indexes and PostgreSQL triggers. Its ID is the previous chain's
-head, so a database already at `b13a0c7d2e44` remains current without stamping or replaying DDL.
+The migration history has exactly two revisions:
 
-For an existing database at an earlier revision, first run `alembic upgrade head` using the
-previous code and its complete migration chain, then deploy this consolidated version. The
-removed intermediate revision IDs cannot be upgraded directly by this checkout. Do not stamp an
-incomplete schema as current. Fresh databases can use the normal upgrade command below.
-`alembic downgrade base` now removes the entire application schema; intermediate downgrade
-targets no longer exist. Historical changelog entries retain the former revision IDs for context.
+1. `src/migrations/versions/0001_schema.py` creates all current application tables, history
+   tables, indexes, constraints, functions and PostgreSQL guards. It inserts no rows.
+2. `src/migrations/versions/0002_required_data.py` installs the built-in step/operation handler
+   contracts and ports (including all deployed extension handlers), permission definitions and two
+   maintenance schedules. An initial admin
+   is created only when both `INITIAL_ADMIN_USERNAME` and `INITIAL_ADMIN_PASSWORD` are configured.
+   Demo data, roles, user assignments and integration credentials remain explicit setup actions.
+   Operations such as `connection.status` are code registries, not separately persisted records.
+
+Fresh databases use `alembic upgrade head`. To install only tables, use
+`alembic upgrade 0001_schema`. Data-only downgrade is refused because published handlers can
+already be referenced by workflows; full `alembic downgrade base` removes application tables
+and is intended only for disposable databases or an explicitly approved teardown.
+
+**Existing databases on the old chain need a transition before deploying this checkout.**
+The new revision IDs deliberately reject old revision markers without replaying DDL. Keep the
+previous migration files available outside this checkout for upgrading an old database to its
+previous head first. Back up the database, rehearse the transition on a restored copy, verify
+its schema/guards against the complete new baseline, reconcile missing permission definitions
+without changing grants, and verify catalogs and application checks before an operator changes
+its revision marker to the new head. Do not stamp an incomplete schema or rerun required seed
+inserts over retained immutable catalogs. This change does not reset or stamp any project database.
+See [DB-002](docs/changes/DB-002.md) for verification and compatibility details.
 
 ### Run migrations
 

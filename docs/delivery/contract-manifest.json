@@ -1,0 +1,91 @@
+{
+  "backend_commit": "995829eebd9483ac6b589c1648fc799c650ad464",
+  "peer_commit": "afe4bbe5f566c80e7eb45f6ef9f12c041d60139d",
+  "migration_root": "b13a0c7d2e44",
+  "migration_head": "c24f913ab601",
+  "lock_sha256": "4c23cc5a60e0f913471df1a80dcba273c29c22d8878f9d8a75a573cfe35eecf4",
+  "schemas": {
+    "en": {
+      "path": "openapi-en.json",
+      "sha256": "428a570d38a026b3146ab2fc6cc66d28fe18e7ee8cde2192deb1815599df86cc"
+    },
+    "fa": {
+      "path": "openapi-fa.json",
+      "sha256": "e33322ddec30ff91311ef11001e09d56afda0cb1cfd198dc5ca899c5febdfa07"
+    }
+  },
+  "permissions": {
+    "integrations.manage": [
+      "src/apps/integrations/presentation/routes.py"
+    ],
+    "workflows.manage": [
+      "src/apps/integrations/presentation/routes.py",
+      "src/apps/designer/presentation/routes.py",
+      "src/apps/step_types/presentation/routes.py",
+      "src/apps/ai/presentation/routes.py",
+      "src/apps/workflows/presentation/routes.py"
+    ],
+    "admin.tasks.manage": [
+      "src/apps/tasks/presentation/routes.py"
+    ],
+    "forms.manage": [
+      "src/apps/clients/presentation/routes.py",
+      "src/apps/forms/presentation/routes.py",
+      "src/apps/forms/presentation/library_routes.py"
+    ],
+    "requests.manage": [
+      "src/apps/requests/presentation/routes.py"
+    ],
+    "requests.start": [
+      "src/apps/requests/presentation/routes.py",
+      "src/apps/processes/presentation/routes.py",
+      "src/apps/work_items/presentation/routes.py",
+      "src/apps/ai/presentation/routes.py"
+    ],
+    "processes.recover": [
+      "src/apps/processes/presentation/routes.py"
+    ],
+    "admin.work_groups.manage": [
+      "src/apps/work_groups/presentation/routes.py"
+    ],
+    "admin.users.manage": [
+      "src/apps/users/presentation/admin.py"
+    ],
+    "admin.permissions.manage": [
+      "src/apps/users/presentation/admin.py"
+    ],
+    "admin.history.read": [
+      "src/apps/users/presentation/history.py"
+    ]
+  },
+  "installed_versions": {
+    "python": "3.14.7",
+    "fastapi": "0.143.0",
+    "pydantic": "2.13.5",
+    "sqlmodel": "0.0.48",
+    "sqlalchemy": "2.0.54",
+    "celery": "5.6.3",
+    "pydantic-ai-slim": "2.54.0",
+    "ruff": "0.16.10",
+    "ty": "0.0.85",
+    "pytest": "9.1.1"
+  },
+  "locked_versions": {
+    "celery": "5.6.3",
+    "fastapi": "0.143.0",
+    "pydantic": "2.13.5",
+    "pydantic-ai-slim": "2.54.0",
+    "pytest": "9.1.1",
+    "ruff": "0.16.10",
+    "sqlalchemy": "2.0.54",
+    "sqlmodel": "0.0.48",
+    "ty": "0.0.85"
+  },
+  "peer_comparison": {
+    "base_operations": 302,
+    "platform_operations": 314,
+    "current_operations": 314,
+    "platform_shared_schema_changes": 0,
+    "consumer_verified": false
+  }
+}

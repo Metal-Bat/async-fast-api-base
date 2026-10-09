@@ -1,5 +1,4 @@
 import json
-import traceback as traceback_module
 from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -15,6 +14,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlmodel import col
 from structlog.contextvars import bound_contextvars
 
+from apps.support.application.recorder import record_failure
 from apps.tasks.application.idempotency import acquire_task, complete_task, release_task
 from apps.tasks.domain.entity import TaskExecutionEntity
 from core.celery_runtime import run_async
@@ -124,6 +124,7 @@ def task_lifecycle(
         status = "FAILURE"
         result: Any = None
         traceback_text: str | None = None
+        support_required = True
         try:
             logger.info("task.started", retries=request.retries, lease_seconds=lease_seconds)
             record_execution(
@@ -132,8 +133,8 @@ def task_lifecycle(
                 status="STARTED",
                 result=None,
                 traceback=None,
-                args=json_value(list(args)),
-                kwargs=json_value(kwargs),
+                args=None,
+                kwargs=None,
                 queue=(request.delivery_info or {}).get("routing_key"),
                 worker=request.hostname,
                 retries=request.retries,
@@ -147,12 +148,29 @@ def task_lifecycle(
             status = "SUCCESS"
             logger.info("task.succeeded", duration_seconds=monotonic() - clock)
         except BaseException as exc:
+            from starlette.exceptions import HTTPException
+
+            from utils.exception_handlers import EXCEPTION_ERRORS
+
+            classification = next(
+                (
+                    EXCEPTION_ERRORS[cls]
+                    for cls in type(exc).__mro__
+                    if issubclass(cls, Exception) and cls in EXCEPTION_ERRORS
+                ),
+                None,
+            )
+            support_required = (classification is None or classification[1] >= 500) and (
+                not isinstance(exc, HTTPException) or exc.status_code >= 500
+            )
             if isinstance(exc, Retry):
                 status = "RETRY"
             elif isinstance(exc, (Ignore, Reject)):
                 status = "IGNORED" if isinstance(exc, Ignore) else "REJECTED"
-            result = {"exception_type": type(exc).__name__, "message": str(exc)}
-            traceback_text = traceback_module.format_exc()
+            result = {
+                "exception_type": type(exc).__name__,
+                "code": classification[0].number if classification is not None else 1099,
+            }
             logger.warning("task.interrupted", status=status, error_type=type(exc).__name__)
             raise
         finally:
@@ -177,3 +195,21 @@ def task_lifecycle(
                 finished_at=get_datetime_utc(),
                 duration_seconds=monotonic() - clock,
             )
+            if status == "FAILURE" and support_required:
+                # Never project task arguments, provider text, results or traceback into support.
+                run_async(
+                    record_failure(
+                        category="notification"
+                        if task.name
+                        in {
+                            "bpms.deliver_notification",
+                            "bpms.fanout_application_notice",
+                            "bpms.fanout_support_incident",
+                            "bpms.fire_calendar_reminder",
+                        }
+                        else "technical",
+                        error_code=1099,
+                        operation=task.name,
+                        request_id=_idempotency_uuid(task.name, task_id),
+                    )
+                )

@@ -1,0 +1,670 @@
+{
+  "favorite_input": {
+    "$defs": {
+      "ResourceKind": {
+        "enum": [
+          "users",
+          "work_groups",
+          "clients",
+          "client_releases",
+          "forms",
+          "form_versions",
+          "workflows",
+          "workflow_versions",
+          "step_versions",
+          "request_types",
+          "connections",
+          "agent_versions",
+          "components",
+          "component_versions",
+          "data_types",
+          "data_type_versions"
+        ],
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "description": "Only existing resource-link kinds; work items retain their own pin state.",
+    "properties": {
+      "kind": {
+        "$ref": "#/$defs/ResourceKind",
+        "description": "Code-owned resource kind; never a table or URL."
+      },
+      "ref_id": {
+        "description": "Opaque resource reference.",
+        "maxLength": 512,
+        "minLength": 1,
+        "title": "Ref Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "kind",
+      "ref_id"
+    ],
+    "title": "FavoriteInput",
+    "type": "object"
+  },
+  "saved_view_input": {
+    "$defs": {
+      "JsonValue": {},
+      "ViewScope": {
+        "enum": [
+          "forms",
+          "workflows",
+          "business_requests",
+          "work_items"
+        ],
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "examples": [
+      {
+        "column_keys": [
+          "title",
+          "status"
+        ],
+        "command_key": "preset-create-1",
+        "name": "My active requests",
+        "page_size": 20,
+        "query": {
+          "filters": [
+            {
+              "field_name": "status",
+              "operation": "equal",
+              "value": "RUNNING"
+            }
+          ],
+          "scope": "mine"
+        },
+        "resource_kind": "business_requests",
+        "schema_version": 1
+      }
+    ],
+    "properties": {
+      "column_keys": {
+        "items": {
+          "type": "string"
+        },
+        "maxItems": 30,
+        "title": "Column Keys",
+        "type": "array"
+      },
+      "command_key": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Command Key",
+        "type": "string"
+      },
+      "name": {
+        "maxLength": 120,
+        "minLength": 1,
+        "title": "Name",
+        "type": "string"
+      },
+      "page_size": {
+        "default": 20,
+        "maximum": 100,
+        "minimum": 1,
+        "title": "Page Size",
+        "type": "integer"
+      },
+      "query": {
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "description": "Version-one query document validated against the named list DTO. No page/size, result bodies, credentials, actor identifiers or reference-valued filters. At most 8 KiB, 20 filters and 10 sort orders. Cartable scopes retain only their supported typed query fields.",
+        "title": "Query",
+        "type": "object"
+      },
+      "resource_kind": {
+        "$ref": "#/$defs/ViewScope"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "name",
+      "resource_kind",
+      "command_key"
+    ],
+    "title": "SavedViewInput",
+    "type": "object"
+  },
+  "schema_version": 1,
+  "scopes": {
+    "business_requests": {
+      "column_keys": [
+        "closed_at",
+        "created_at",
+        "priority",
+        "status",
+        "submitted_at"
+      ],
+      "permission": "requests.start",
+      "query_schema": {
+        "$defs": {
+          "FilterCriteria": {
+            "additionalProperties": false,
+            "description": "One filter in the shared search wire format.",
+            "properties": {
+              "field_name": {
+                "minLength": 1,
+                "title": "Field Name",
+                "type": "string"
+              },
+              "operation": {
+                "$ref": "#/$defs/FilterOperation"
+              },
+              "value": {
+                "default": null,
+                "title": "Value"
+              }
+            },
+            "required": [
+              "field_name",
+              "operation"
+            ],
+            "title": "FilterCriteria",
+            "type": "object"
+          },
+          "FilterOperation": {
+            "description": "Filter operators exposed by the shared search contract.",
+            "enum": [
+              "equal",
+              "notEqual",
+              "startWith",
+              "endsWith",
+              "contains",
+              "notContains",
+              "between",
+              "isNull",
+              "isNotNull",
+              "gt",
+              "gte",
+              "lt",
+              "lte",
+              "in",
+              "nin"
+            ],
+            "title": "FilterOperation",
+            "type": "string"
+          },
+          "SortOperation": {
+            "description": "Sort direction for one field or a sequence of fields.",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "title": "SortOperation",
+            "type": "string"
+          },
+          "SortOrder": {
+            "additionalProperties": false,
+            "description": "Sort one field or multiple fields using the same direction.",
+            "properties": {
+              "field_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Field Name"
+              },
+              "multi_field": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Multi Field",
+                "type": "array"
+              },
+              "operation": {
+                "$ref": "#/$defs/SortOperation",
+                "default": "asc"
+              }
+            },
+            "title": "SortOrder",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "filters": {
+            "items": {
+              "$ref": "#/$defs/FilterCriteria"
+            },
+            "title": "Filters",
+            "type": "array"
+          },
+          "page": {
+            "default": 1,
+            "minimum": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "scope": {
+            "default": "visible",
+            "description": "Visible uses current read policy; mine additionally requires requester ownership.",
+            "enum": [
+              "visible",
+              "mine"
+            ],
+            "title": "Scope",
+            "type": "string"
+          },
+          "size": {
+            "default": 20,
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Size",
+            "type": "integer"
+          },
+          "sort_orders": {
+            "items": {
+              "$ref": "#/$defs/SortOrder"
+            },
+            "title": "Sort Orders",
+            "type": "array"
+          }
+        },
+        "title": "BusinessRequestQuery",
+        "type": "object"
+      }
+    },
+    "forms": {
+      "column_keys": [
+        "code",
+        "created_at",
+        "is_active",
+        "name"
+      ],
+      "permission": "forms.manage",
+      "query_schema": {
+        "$defs": {
+          "FilterCriteria": {
+            "additionalProperties": false,
+            "description": "One filter in the shared search wire format.",
+            "properties": {
+              "field_name": {
+                "minLength": 1,
+                "title": "Field Name",
+                "type": "string"
+              },
+              "operation": {
+                "$ref": "#/$defs/FilterOperation"
+              },
+              "value": {
+                "default": null,
+                "title": "Value"
+              }
+            },
+            "required": [
+              "field_name",
+              "operation"
+            ],
+            "title": "FilterCriteria",
+            "type": "object"
+          },
+          "FilterOperation": {
+            "description": "Filter operators exposed by the shared search contract.",
+            "enum": [
+              "equal",
+              "notEqual",
+              "startWith",
+              "endsWith",
+              "contains",
+              "notContains",
+              "between",
+              "isNull",
+              "isNotNull",
+              "gt",
+              "gte",
+              "lt",
+              "lte",
+              "in",
+              "nin"
+            ],
+            "title": "FilterOperation",
+            "type": "string"
+          },
+          "SortOperation": {
+            "description": "Sort direction for one field or a sequence of fields.",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "title": "SortOperation",
+            "type": "string"
+          },
+          "SortOrder": {
+            "additionalProperties": false,
+            "description": "Sort one field or multiple fields using the same direction.",
+            "properties": {
+              "field_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Field Name"
+              },
+              "multi_field": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Multi Field",
+                "type": "array"
+              },
+              "operation": {
+                "$ref": "#/$defs/SortOperation",
+                "default": "asc"
+              }
+            },
+            "title": "SortOrder",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "filters": {
+            "items": {
+              "$ref": "#/$defs/FilterCriteria"
+            },
+            "title": "Filters",
+            "type": "array"
+          },
+          "page": {
+            "default": 1,
+            "minimum": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "size": {
+            "default": 20,
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Size",
+            "type": "integer"
+          },
+          "sort_orders": {
+            "items": {
+              "$ref": "#/$defs/SortOrder"
+            },
+            "title": "Sort Orders",
+            "type": "array"
+          }
+        },
+        "title": "FormQuery",
+        "type": "object"
+      }
+    },
+    "work_items": {
+      "column_keys": [
+        "closed_at",
+        "created_at",
+        "due_at",
+        "kind",
+        "priority",
+        "status"
+      ],
+      "permission": "requests.start",
+      "query_schema": {
+        "$defs": {
+          "CartableKind": {
+            "enum": [
+              "available",
+              "claimed",
+              "completed",
+              "watching",
+              "submitted",
+              "unread"
+            ],
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "after": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Inclusive UTC instant lower bound.",
+            "title": "After"
+          },
+          "before": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Exclusive UTC instant upper bound.",
+            "title": "Before"
+          },
+          "cartable": {
+            "$ref": "#/$defs/CartableKind"
+          },
+          "overdue_before": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Only items with a non-null deadline strictly before this instant.",
+            "title": "Overdue Before"
+          },
+          "page": {
+            "default": 1,
+            "minimum": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "size": {
+            "default": 20,
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Size",
+            "type": "integer"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "OPEN",
+                  "CLAIMED",
+                  "IN_PROGRESS",
+                  "COMPLETED",
+                  "REJECTED",
+                  "RETURNED",
+                  "CANCELLED",
+                  "EXPIRED"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "time_field": {
+            "default": "created_at",
+            "description": "Timestamp used by optional half-open date bounds.",
+            "enum": [
+              "created_at",
+              "closed_at"
+            ],
+            "title": "Time Field",
+            "type": "string"
+          }
+        },
+        "required": [
+          "cartable"
+        ],
+        "title": "CartableQueryDTO",
+        "type": "object"
+      }
+    },
+    "workflows": {
+      "column_keys": [
+        "code",
+        "created_at",
+        "is_active",
+        "name"
+      ],
+      "permission": "workflows.manage",
+      "query_schema": {
+        "$defs": {
+          "FilterCriteria": {
+            "additionalProperties": false,
+            "description": "One filter in the shared search wire format.",
+            "properties": {
+              "field_name": {
+                "minLength": 1,
+                "title": "Field Name",
+                "type": "string"
+              },
+              "operation": {
+                "$ref": "#/$defs/FilterOperation"
+              },
+              "value": {
+                "default": null,
+                "title": "Value"
+              }
+            },
+            "required": [
+              "field_name",
+              "operation"
+            ],
+            "title": "FilterCriteria",
+            "type": "object"
+          },
+          "FilterOperation": {
+            "description": "Filter operators exposed by the shared search contract.",
+            "enum": [
+              "equal",
+              "notEqual",
+              "startWith",
+              "endsWith",
+              "contains",
+              "notContains",
+              "between",
+              "isNull",
+              "isNotNull",
+              "gt",
+              "gte",
+              "lt",
+              "lte",
+              "in",
+              "nin"
+            ],
+            "title": "FilterOperation",
+            "type": "string"
+          },
+          "SortOperation": {
+            "description": "Sort direction for one field or a sequence of fields.",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "title": "SortOperation",
+            "type": "string"
+          },
+          "SortOrder": {
+            "additionalProperties": false,
+            "description": "Sort one field or multiple fields using the same direction.",
+            "properties": {
+              "field_name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Field Name"
+              },
+              "multi_field": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Multi Field",
+                "type": "array"
+              },
+              "operation": {
+                "$ref": "#/$defs/SortOperation",
+                "default": "asc"
+              }
+            },
+            "title": "SortOrder",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "filters": {
+            "items": {
+              "$ref": "#/$defs/FilterCriteria"
+            },
+            "title": "Filters",
+            "type": "array"
+          },
+          "page": {
+            "default": 1,
+            "minimum": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "size": {
+            "default": 20,
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Size",
+            "type": "integer"
+          },
+          "sort_orders": {
+            "items": {
+              "$ref": "#/$defs/SortOrder"
+            },
+            "title": "Sort Orders",
+            "type": "array"
+          }
+        },
+        "title": "WorkflowQuery",
+        "type": "object"
+      }
+    }
+  }
+}

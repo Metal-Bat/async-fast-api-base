@@ -214,6 +214,12 @@ OPERATORS = {
 }
 
 
+def live_record_criteria(model: type[SQLModel]) -> tuple[Any, ...]:
+    """Exclude soft deletion at live collection seams without altering history resolution."""
+    deleted_at = getattr(model, "deleted_at", None)
+    return () if deleted_at is None else (deleted_at.is_(None),)
+
+
 def apply_query[SelectType: Select[Any]](
     query: SelectType,
     model: Any,
@@ -266,8 +272,11 @@ async def paginate_entities[EntityType: SQLModel](
     *,
     criteria: tuple[Any, ...] = (),
     default_ordering: tuple[str, ...] = ("id",),
+    live_only: bool = True,
 ) -> Page[EntityType]:
-    """Return a filtered page for one SQLModel entity and optional base criteria."""
+    """Page live rows; only an explicitly authorized lifecycle collection may opt out."""
+    if live_only:
+        criteria = (*live_record_criteria(model), *criteria)
     item_query = apply_query(
         select(model).where(*criteria),
         model,

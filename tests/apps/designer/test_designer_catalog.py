@@ -46,7 +46,7 @@ async def test_catalog_is_stable_searchable_and_bounded(monkeypatch) -> None:
         for item in first.items
     )
     running = next(item for item in first.items if item.key == "RUNNING")
-    assert running.metadata["compatible_next_values"] == [
+    assert running.model_dump(mode="json")["metadata"]["compatible_next_values"] == [
         "WAITING",
         "PAUSED",
         "COMPLETED",

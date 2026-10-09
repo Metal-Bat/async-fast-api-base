@@ -766,7 +766,9 @@ class RequestService:
             )
         )
 
-    def visibility_criteria(self, actor: UserEntity):
+    def visibility_criteria(self, actor: UserEntity, *, mine: bool = False):
+        if mine:
+            return (BusinessRequestEntity.requester_user_id == actor.id,)
         if actor.is_superuser:
             return ()
         active_groups = (

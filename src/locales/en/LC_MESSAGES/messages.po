@@ -126,8 +126,7 @@ msgstr ""
 msgid "SHA-256 digest of the opaque refresh token."
 msgstr ""
 
-#: src/apps/users/domain/dto.py:14 src/apps/users/domain/dto.py:28
-#: src/apps/users/domain/dto.py:54
+#: src/apps/users/domain/dto.py:14 src/apps/users/domain/dto.py:28 src/apps/users/domain/dto.py:54
 msgid "Unique username."
 msgstr ""
 
@@ -139,18 +138,15 @@ msgstr ""
 msgid "Grant administrative privileges."
 msgstr ""
 
-#: src/apps/users/domain/dto.py:17 src/apps/users/domain/dto.py:29
-#: src/apps/users/domain/dto.py:55
+#: src/apps/users/domain/dto.py:17 src/apps/users/domain/dto.py:29 src/apps/users/domain/dto.py:55
 msgid "Unique email address."
 msgstr ""
 
-#: src/apps/users/domain/dto.py:18 src/apps/users/domain/dto.py:34
-#: src/apps/users/domain/dto.py:61
+#: src/apps/users/domain/dto.py:18 src/apps/users/domain/dto.py:34 src/apps/users/domain/dto.py:61
 msgid "Given name."
 msgstr ""
 
-#: src/apps/users/domain/dto.py:19 src/apps/users/domain/dto.py:35
-#: src/apps/users/domain/dto.py:62
+#: src/apps/users/domain/dto.py:19 src/apps/users/domain/dto.py:35 src/apps/users/domain/dto.py:62
 msgid "Family name."
 msgstr ""
 
@@ -174,8 +170,7 @@ msgstr ""
 msgid "UTC creation timestamp."
 msgstr ""
 
-#: src/apps/users/domain/dto.py:58 src/core/base_entity.py:55
-#: src/core/common_dto.py:15
+#: src/apps/users/domain/dto.py:58 src/core/base_entity.py:55 src/core/common_dto.py:15
 msgid "UTC timestamp of the most recent update."
 msgstr ""
 
@@ -227,9 +222,8 @@ msgstr ""
 msgid "UTC soft-deletion timestamp; null means the row is active."
 msgstr ""
 
-#: src/core/common_dto.py:22 src/core/common_dto.py:30
-#: src/core/common_dto.py:43 src/core/common_dto.py:51
-#: src/core/common_entity.py:12 src/core/common_entity.py:46
+#: src/core/common_dto.py:22 src/core/common_dto.py:30 src/core/common_dto.py:43
+#: src/core/common_dto.py:51 src/core/common_entity.py:12 src/core/common_entity.py:46
 msgid "Human-readable title."
 msgstr ""
 
@@ -237,9 +231,8 @@ msgstr ""
 msgid "URL-safe identifier."
 msgstr ""
 
-#: src/core/common_dto.py:24 src/core/common_dto.py:32
-#: src/core/common_dto.py:44 src/core/common_dto.py:52
-#: src/core/common_entity.py:26 src/core/common_entity.py:51
+#: src/core/common_dto.py:24 src/core/common_dto.py:32 src/core/common_dto.py:44
+#: src/core/common_dto.py:52 src/core/common_entity.py:26 src/core/common_entity.py:51
 msgid "Optional long-form description."
 msgstr ""
 
@@ -260,9 +253,7 @@ msgid "User-controlled position used as the primary default sort key."
 msgstr ""
 
 #: src/core/settings.py:25
-msgid ""
-"Async API with versioned references, background tasks, private media, and"
-" observability."
+msgid "Async API with versioned references, background tasks, private media, and observability."
 msgstr ""
 
 #: src/core/settings.py:37
@@ -385,13 +376,6 @@ msgstr ""
 msgid "The uploaded content is not a supported file."
 msgstr ""
 
-#~ msgid "Authentication and user account operations."
-#~ msgstr ""
-
-#~ msgid "Private file and WebP image operations."
-#~ msgstr ""
-
-
 msgid "Form definition operations."
 msgstr "Form definition operations."
 
@@ -485,23 +469,1110 @@ msgstr "Trusted workflow step type versions."
 msgid "Search deployed step type versions"
 msgstr "Search deployed step type versions"
 
-msgid "Requires workflows.manage. Includes draft and historical versions; is_available is false when the exact deployed handler is missing or changed."
-msgstr "Requires workflows.manage. Includes draft and historical versions; is_available is false when the exact deployed handler is missing or changed."
+msgid ""
+"Requires workflows.manage. Includes draft and historical versions; is_available is false when the"
+" exact deployed handler is missing or changed."
+msgstr ""
+"Requires workflows.manage. Includes draft and historical versions; is_available is false when the"
+" exact deployed handler is missing or changed."
 
 msgid "Inspect one pinned step type version"
 msgstr "Inspect one pinned step type version"
 
-msgid "Requires workflows.manage. Historical metadata remains readable if its code extension is no longer deployed."
-msgstr "Requires workflows.manage. Historical metadata remains readable if its code extension is no longer deployed."
+msgid ""
+"Requires workflows.manage. Historical metadata remains readable if its code extension is no "
+"longer deployed."
+msgstr ""
+"Requires workflows.manage. Historical metadata remains readable if its code extension is no "
+"longer deployed."
 
 msgid "Publish a reconciled step type draft"
 msgstr "Publish a reconciled step type draft"
 
-msgid "Requires workflows.manage. Only a draft whose persisted schema exactly matches deployed trusted code can be published. Published contracts are immutable."
-msgstr "Requires workflows.manage. Only a draft whose persisted schema exactly matches deployed trusted code can be published. Published contracts are immutable."
+msgid ""
+"Requires workflows.manage. Only a draft whose persisted schema exactly matches deployed trusted "
+"code can be published. Published contracts are immutable."
+msgstr ""
+"Requires workflows.manage. Only a draft whose persisted schema exactly matches deployed trusted "
+"code can be published. Published contracts are immutable."
 
 msgid "Select executable published step types"
 msgstr "Select executable published step types"
 
-msgid "Requires workflows.manage. Returns only currently registered, matching published versions as key/value choices. response_format=items returns the same bounded page without its envelope."
-msgstr "Requires workflows.manage. Returns only currently registered, matching published versions as key/value choices. response_format=items returns the same bounded page without its envelope."
+msgid ""
+"Requires workflows.manage. Returns only currently registered, matching published versions as "
+"key/value choices. response_format=items returns the same bounded page without its envelope."
+msgstr ""
+"Requires workflows.manage. Returns only currently registered, matching published versions as "
+"key/value choices. response_format=items returns the same bounded page without its envelope."
+
+# Wave-four contracts
+msgid "Aggregate authorized business metrics"
+msgstr "Aggregate authorized business metrics"
+
+# Wave-four contracts
+msgid "Allowlisted frontend route key; no arbitrary navigation URL."
+msgstr "Allowlisted frontend route key; no arbitrary navigation URL."
+
+# Wave-four contracts
+msgid "Allowlisted landing route key; a preference grants no screen permission."
+msgstr "Allowlisted landing route key; a preference grants no screen permission."
+
+# Wave-four contracts
+msgid "Appearance mode; system follows the device preference."
+msgstr "Appearance mode; system follows the device preference."
+
+# Wave-four contracts
+msgid "Appearance settings."
+msgstr "Appearance settings."
+
+# Wave-four contracts
+msgid "Apply personal profile changes"
+msgstr "Apply personal profile changes"
+
+# Wave-four contracts
+msgid "Apply personal workspace preferences"
+msgstr "Apply personal workspace preferences"
+
+# Wave-four contracts
+msgid "Approved workspace palette key, shared with the frontend."
+msgstr "Approved workspace palette key, shared with the frontend."
+
+# Wave-four contracts
+msgid ""
+"Atomically update self settings with the current ref_id from GET. Omitted groups and nested "
+"fields are preserved; null resets an entire supplied group to documented defaults. Nested scalar "
+"nulls and unknown keys are rejected with 422. Wrong-owner references return non-disclosing 404; "
+"stale references return 409 without applying changes. A no-op keeps the current reference. "
+"Returns a fresh reference after change. Locale supports en/fa, Gregorian calendar and valid IANA "
+"zones; settings never grant screen permissions."
+msgstr ""
+"Atomically update self settings with the current ref_id from GET. Omitted groups and nested "
+"fields are preserved; null resets an entire supplied group to documented defaults. Nested scalar "
+"nulls and unknown keys are rejected with 422. Wrong-owner references return non-disclosing 404; "
+"stale references return 409 without applying changes. A no-op keeps the current reference. "
+"Returns a fresh reference after change. Locale supports en/fa, Gregorian calendar and valid IANA "
+"zones; settings never grant screen permissions."
+
+# Wave-four contracts
+msgid "Authoritative saved state; null for an incompatible or unavailable release."
+msgstr "Authoritative saved state; null for an incompatible or unavailable release."
+
+# Wave-four contracts
+msgid ""
+"Call only after the user actually opens this help revision in the supplied locale. Ownership and "
+"timestamps are server-derived. An atomic tuple upsert preserves first_viewed_at and updates "
+"last_viewed_at; another locale/revision is independent. Missing/stale metadata returns "
+"saved=false with a compatibility reason and writes nothing. Maximum 512 records per actor; "
+"deliberate self reset frees this small state. No content, duration, form values, actor "
+"identifiers or arbitrary event payloads are accepted. Static help must still render if this save "
+"fails."
+msgstr ""
+"Call only after the user actually opens this help revision in the supplied locale. Ownership and "
+"timestamps are server-derived. An atomic tuple upsert preserves first_viewed_at and updates "
+"last_viewed_at; another locale/revision is independent. Missing/stale metadata returns "
+"saved=false with a compatibility reason and writes nothing. Maximum 512 records per actor; "
+"deliberate self reset frees this small state. No content, duration, form values, actor "
+"identifiers or arbitrary event payloads are accepted. Static help must still render if this save "
+"fails."
+
+# Wave-four contracts
+msgid "Code-owned resource kind; never a table or URL."
+msgstr "Code-owned resource kind; never a table or URL."
+
+# Wave-four contracts
+msgid "Configured frontend metadata release, or null when unavailable."
+msgstr "Configured frontend metadata release, or null when unavailable."
+
+# Wave-four contracts
+msgid "Create an authorized stable resource link"
+msgstr "Create an authorized stable resource link"
+
+# Wave-four contracts
+msgid "Current private owned image reference, or null; download uses the existing authorized media route."
+msgstr "Current private owned image reference, or null; download uses the existing authorized media route."
+
+# Wave-four contracts
+msgid "Current selection eligibility; does not grant execution authority."
+msgstr "Current selection eligibility; does not grant execution authority."
+
+# Wave-four contracts
+msgid "Current self-owned optimistic reference; version zero represents unsaved defaults."
+msgstr "Current self-owned optimistic reference; version zero represents unsaved defaults."
+
+# Wave-four contracts
+msgid "Current self-profile reference from the identity owner."
+msgstr "Current self-profile reference from the identity owner."
+
+# Wave-four contracts
+msgid "Default list page size, from 1 through 100 items."
+msgstr "Default list page size, from 1 through 100 items."
+
+# Wave-four contracts
+msgid ""
+"Deliberately remove only the authenticated actor's help acknowledgment metadata. The body must be"
+" an empty object; actor fields are forbidden. Repeat is safe and returns zero removed records. "
+"Preferences, profiles, accounts and business data survive. This command does not restore "
+"definitions or reset an installation."
+msgstr ""
+"Deliberately remove only the authenticated actor's help acknowledgment metadata. The body must be"
+" an empty object; actor fields are forbidden. Repeat is safe and returns zero removed records. "
+"Preferences, profiles, accounts and business data survive. This command does not restore "
+"definitions or reset an installation."
+
+# Wave-four contracts
+msgid "Exact content revision supplied by the paired frontend release."
+msgstr "Exact content revision supplied by the paired frontend release."
+
+# Wave-four contracts
+msgid "Exact frontend content revision; stale revisions are not persisted."
+msgstr "Exact frontend content revision; stale revisions are not persisted."
+
+# Wave-four contracts
+msgid "Exact version number, when applicable."
+msgstr "Exact version number, when applicable."
+
+# Wave-four contracts
+msgid "Exclusive civil date; at most 366 days after start_date."
+msgstr "Exclusive civil date; at most 366 days after start_date."
+
+# Wave-four contracts
+msgid "Existing authorized selector; selection does not grant use permission."
+msgstr "Existing authorized selector; selection does not grant use permission."
+
+# Wave-four contracts
+msgid "Expected reference from the latest preferences read; stale writes return a conflict."
+msgstr "Expected reference from the latest preferences read; stale writes return a conflict."
+
+# Wave-four contracts
+msgid "Expected self-profile reference; no actor or privilege fields are accepted."
+msgstr "Expected self-profile reference; no actor or privilege fields are accepted."
+
+# Wave-four contracts
+msgid "First explicit dismissal in UTC, or null."
+msgstr "First explicit dismissal in UTC, or null."
+
+# Wave-four contracts
+msgid "First explicit open in UTC, preserved on repeats; null if only dismissed."
+msgstr "First explicit open in UTC, preserved on repeats; null if only dismissed."
+
+# Wave-four contracts
+msgid "Fresh version-bearing reference; replace cached mutation refs."
+msgstr "Fresh version-bearing reference; replace cached mutation refs."
+
+# Wave-four contracts
+msgid "Gregorian calendar only; Persian language does not select a different calendar."
+msgstr "Gregorian calendar only; Persian language does not select a different calendar."
+
+# Wave-four contracts
+msgid "Help actually opened or dismissed by this authenticated user."
+msgstr "Help actually opened or dismissed by this authenticated user."
+
+# Wave-four contracts
+msgid "Inclusive civil date in the requested IANA timezone."
+msgstr "Inclusive civil date in the requested IANA timezone."
+
+# Wave-four contracts
+msgid "JSON pointer within the handler configuration."
+msgstr "JSON pointer within the handler configuration."
+
+# Wave-four contracts
+msgid "Language, timezone, calendar and display digits."
+msgstr "Language, timezone, calendar and display digits."
+
+# Wave-four contracts
+msgid "Latest explicit open in UTC; list reads never update it."
+msgstr "Latest explicit open in UTC; list reads never update it."
+
+# Wave-four contracts
+msgid "Locale actually opened or dismissed; locales are acknowledged independently."
+msgstr "Locale actually opened or dismissed; locales are acknowledged independently."
+
+# Wave-four contracts
+msgid "Locales shipped for this exact help revision."
+msgstr "Locales shipped for this exact help revision."
+
+# Wave-four contracts
+msgid "Number of self help-state records removed; preferences and business data are preserved."
+msgstr "Number of self help-state records removed; preferences and business data are preserved."
+
+# Wave-four contracts
+msgid "Omitted preserves appearance; null resets this group; an object merges only supplied fields."
+msgstr "Omitted preserves appearance; null resets this group; an object merges only supplied fields."
+
+# Wave-four contracts
+msgid "Omitted preserves locale; null resets this group; an object merges only supplied fields."
+msgstr "Omitted preserves locale; null resets this group; an object merges only supplied fields."
+
+# Wave-four contracts
+msgid ""
+"Omitted preserves the avatar; null detaches it; a reference must name a current private image "
+"owned by this user."
+msgstr ""
+"Omitted preserves the avatar; null detaches it; a reference must name a current private image "
+"owned by this user."
+
+# Wave-four contracts
+msgid "Omitted preserves the family name; null clears it."
+msgstr "Omitted preserves the family name; null clears it."
+
+# Wave-four contracts
+msgid "Omitted preserves the given name; null clears it."
+msgstr "Omitted preserves the given name; null clears it."
+
+# Wave-four contracts
+msgid "Omitted preserves workspace; null resets this group; an object merges only supplied fields."
+msgstr "Omitted preserves workspace; null resets this group; an object merges only supplied fields."
+
+# Wave-four contracts
+msgid "Only the authenticated user's bounded help-state page."
+msgstr "Only the authenticated user's bounded help-state page."
+
+# Wave-four contracts
+msgid "Opaque resource reference."
+msgstr "Opaque resource reference."
+
+# Wave-four contracts
+msgid "Opaque stable locator previously returned by the server."
+msgstr "Opaque stable locator previously returned by the server."
+
+# Wave-four contracts
+msgid "Optional locale filter; omitted returns both locales."
+msgstr "Optional locale filter; omitted returns both locales."
+
+# Wave-four contracts
+msgid "Owning service eligibility policy applied again at publication."
+msgstr "Owning service eligibility policy applied again at publication."
+
+# Wave-four contracts
+msgid "Personal workspace defaults."
+msgstr "Personal workspace defaults."
+
+# Wave-four contracts
+msgid "Preferred display digits; stored numbers keep their canonical format."
+msgstr "Preferred display digits; stored numbers keep their canonical format."
+
+# Wave-four contracts
+msgid "Preferred presentation language; canonical data stays unchanged."
+msgstr "Preferred presentation language; canonical data stays unchanged."
+
+# Wave-four contracts
+msgid "Private personal profile, settings and help state."
+msgstr "Private personal profile, settings and help state."
+
+# Wave-four contracts
+msgid "Read eligible selected values outside search pages"
+msgstr "Read eligible selected values outside search pages"
+
+# Wave-four contracts
+msgid ""
+"Read only the authenticated user's preferences. Missing settings return typed defaults and a "
+"version-zero reference without inserting a row. No other actor identifier is accepted. Returns "
+"private, no-store JSON. Authentication and user deactivation follow existing auth rules."
+msgstr ""
+"Read only the authenticated user's preferences. Missing settings return typed defaults and a "
+"version-zero reference without inserting a row. No other actor identifier is accepted. Returns "
+"private, no-store JSON. Authentication and user deactivation follow existing auth rules."
+
+# Wave-four contracts
+msgid ""
+"Read only this authenticated user's acknowledgment metadata with page/size bounds and optional "
+"en/fa locale filter. Ordered by help_key, revision, locale. This read records no seen or "
+"dismissal action and grants no business access. release_key is null when paired frontend metadata"
+" is unavailable. Help content remains frontend-owned and is never stored here."
+msgstr ""
+"Read only this authenticated user's acknowledgment metadata with page/size bounds and optional "
+"en/fa locale filter. Ordered by help_key, revision, locale. This read records no seen or "
+"dismissal action and grants no business access. release_key is null when paired frontend metadata"
+" is unavailable. Help content remains frontend-owned and is never stored here."
+
+# Wave-four contracts
+msgid "Read personal multilingual help state"
+msgstr "Read personal multilingual help state"
+
+# Wave-four contracts
+msgid "Read personal profile"
+msgstr "Read personal profile"
+
+# Wave-four contracts
+msgid "Read personal workspace preferences"
+msgstr "Read personal workspace preferences"
+
+# Wave-four contracts
+msgid "Read the registered business metric dictionary"
+msgstr "Read the registered business metric dictionary"
+
+# Wave-four contracts
+msgid "Read versioned authoring inspector contracts"
+msgstr "Read versioned authoring inspector contracts"
+
+# Wave-four contracts
+msgid ""
+"Reads at most 50 selected values in request order, independent of page or search. Uses existing "
+"selector permissions and owner policies, not detail authorization: workflow designers may read "
+"only safe user/group labels and use-granted connection labels. Forms must be actor-owned or "
+"superuser-visible; versions must be published. Selection grants no execution permission. A "
+"revoked/deleted/ineligible value fails the whole request with a safe 404, without partial titles."
+" Unknown kinds or excess items return 422. Private no-store success envelope contains current "
+"references."
+msgstr ""
+"Reads at most 50 selected values in request order, independent of page or search. Uses existing "
+"selector permissions and owner policies, not detail authorization: workflow designers may read "
+"only safe user/group labels and use-granted connection labels. Forms must be actor-owned or "
+"superuser-visible; versions must be published. Selection grants no execution permission. A "
+"revoked/deleted/ineligible value fails the whole request with a safe 404, without partial titles."
+" Unknown kinds or excess items return 422. Private no-store success envelope contains current "
+"references."
+
+# Wave-four contracts
+msgid ""
+"Record a deliberate dismissal for this authenticated actor and exact frontend help "
+"key/revision/locale. Repeats preserve the first dismissed_at. Dismissing unopened help leaves "
+"viewed timestamps null; it does not pretend the content was read. Compatibility and bounded-state"
+" behavior match seen. Neither dismissal nor acknowledgment changes business permissions or "
+"workflow state."
+msgstr ""
+"Record a deliberate dismissal for this authenticated actor and exact frontend help "
+"key/revision/locale. Repeats preserve the first dismissed_at. Dismissing unopened help leaves "
+"viewed timestamps null; it does not pretend the content was read. Compatibility and bounded-state"
+" behavior match seen. Neither dismissal nor acknowledgment changes business permissions or "
+"workflow state."
+
+# Wave-four contracts
+msgid "Record an explicit help dismissal"
+msgstr "Record an explicit help dismissal"
+
+# Wave-four contracts
+msgid "Record an explicit help open"
+msgstr "Record an explicit help open"
+
+# Wave-four contracts
+msgid ""
+"Requires an authenticated live user and the target's existing read permission. Owner/grant "
+"policies are rechecked on every call; locators grant no access. Missing, deleted, forged and "
+"forbidden targets return the same safe 404 envelope. Inactive or retired readable records report "
+"available=false. A version link remains bound to that exact version, while ref_id refreshes to "
+"its current optimistic revision. Only code-owned route keys are returned, never arbitrary URLs or"
+" table names. Signing-key replacement invalidates locators. Responses use private no-store "
+"headers."
+msgstr ""
+"Requires an authenticated live user and the target's existing read permission. Owner/grant "
+"policies are rechecked on every call; locators grant no access. Missing, deleted, forged and "
+"forbidden targets return the same safe 404 envelope. Inactive or retired readable records report "
+"available=false. A version link remains bound to that exact version, while ref_id refreshes to "
+"its current optimistic revision. Only code-owned route keys are returned, never arbitrary URLs or"
+" table names. Signing-key replacement invalidates locators. Responses use private no-store "
+"headers."
+
+# Wave-four contracts
+msgid ""
+"Requires requests.start and a live actor. Uses the registered metric's owner predicates before "
+"aggregation, never a first result page. Requests are requester-owned; work uses the same "
+"direct/group/archive cartable policy as list search. Accepts an exclusive end civil date, 1–366 "
+"day window, valid IANA timezone, day granularity and only none/status dimensions. DST boundaries "
+"are exact UTC instants; nonexistent midnights fail 422. Returns unit, as_of, generated_at, typed "
+"buckets and drill-down descriptors accepted by existing request/work-item searches. Current-state"
+" metrics are snapshots, not historical occupancy. Live soft-deleted records are excluded. Null or"
+" negative terminal timing is unknown and excluded from mean; unknown_count remains explicit. "
+"Integration receipts and business outcomes without configured mappings return unavailable with "
+"null totals, never false zeros. No shared cache, credentials or private submission values. Empty "
+"count populations return zero; empty duration populations return null. Private no-store envelope."
+msgstr ""
+"Requires requests.start and a live actor. Uses the registered metric's owner predicates before "
+"aggregation, never a first result page. Requests are requester-owned; work uses the same "
+"direct/group/archive cartable policy as list search. Accepts an exclusive end civil date, 1–366 "
+"day window, valid IANA timezone, day granularity and only none/status dimensions. DST boundaries "
+"are exact UTC instants; nonexistent midnights fail 422. Returns unit, as_of, generated_at, typed "
+"buckets and drill-down descriptors accepted by existing request/work-item searches. Current-state"
+" metrics are snapshots, not historical occupancy. Live soft-deleted records are excluded. Null or"
+" negative terminal timing is unknown and excluded from mean; unknown_count remains explicit. "
+"Integration receipts and business outcomes without configured mappings return unavailable with "
+"null totals, never false zeros. No shared cache, credentials or private submission values. Empty "
+"count populations return zero; empty duration populations return null. Private no-store envelope."
+
+# Wave-four contracts
+msgid ""
+"Requires requests.start. Returns versioned units, exact populations, timestamp and explicit "
+"unavailable reasons. No arbitrary SQL, monetary sum or inferred business approval is exposed. "
+"Private no-store success envelope."
+msgstr ""
+"Requires requests.start. Returns versioned units, exact populations, timestamp and explicit "
+"unavailable reasons. No arbitrary SQL, monetary sum or inferred business approval is exposed. "
+"Private no-store success envelope."
+
+# Wave-four contracts
+msgid ""
+"Requires workflows.manage. Accepts a deployed handler key/version and at most 128 configuration "
+"properties within 16 KiB. Performs typed configuration validation only; never invokes handlers, "
+"connections, providers or pure previews. Unknown handler returns valid=false with "
+"handler_unavailable; wrong unions, nulls and unknown fields return safe JSON-pointer diagnostics "
+"without echoed values or exception details. Unknown field names are omitted from diagnostics. "
+"Success does not imply publication or use authorization. Excess or malformed request bodies fail "
+"422. Private no-store success envelope."
+msgstr ""
+"Requires workflows.manage. Accepts a deployed handler key/version and at most 128 configuration "
+"properties within 16 KiB. Performs typed configuration validation only; never invokes handlers, "
+"connections, providers or pure previews. Unknown handler returns valid=false with "
+"handler_unavailable; wrong unions, nulls and unknown fields return safe JSON-pointer diagnostics "
+"without echoed values or exception details. Unknown field names are omitted from diagnostics. "
+"Success does not imply publication or use authorization. Excess or malformed request bodies fail "
+"422. Private no-store success envelope."
+
+# Wave-four contracts
+msgid ""
+"Requires workflows.manage. Returns the deployed handler/version configuration schemas, ports, "
+"exact fingerprints, outcomes, capabilities and twenty primitive field contracts. This is code "
+"discovery, not a list of operator-published versions or permission to use a connection, agent or "
+"form. Existing selectors and publication policies still apply. Configuration dialect is JSON "
+"Schema 2020-12; diagnostics use JSON pointers. Examples are synthetic and contain no credentials."
+" Preview permits bounded pure evaluation only; this read never executes a handler or changes a "
+"published checksum. Unknown configuration must be validated against its exact handler version. "
+"Private no-store response uses the existing success envelope; authentication and permission "
+"failures use the existing 401/403 error envelopes."
+msgstr ""
+"Requires workflows.manage. Returns the deployed handler/version configuration schemas, ports, "
+"exact fingerprints, outcomes, capabilities and twenty primitive field contracts. This is code "
+"discovery, not a list of operator-published versions or permission to use a connection, agent or "
+"form. Existing selectors and publication policies still apply. Configuration dialect is JSON "
+"Schema 2020-12; diagnostics use JSON pointers. Examples are synthetic and contain no credentials."
+" Preview permits bounded pure evaluation only; this read never executes a handler or changes a "
+"published checksum. Unknown configuration must be validated against its exact handler version. "
+"Private no-store response uses the existing success envelope; authentication and permission "
+"failures use the existing 401/403 error envelopes."
+
+# Wave-four contracts
+msgid "Reset only personal help state"
+msgstr "Reset only personal help state"
+
+# Wave-four contracts
+msgid "Resolve a stable link to a current reference"
+msgstr "Resolve a stable link to a current reference"
+
+# Wave-four contracts
+msgid ""
+"Return editable given/family names and the current owned private image reference. No public URL "
+"is returned. Contact details, passwords and sessions use the existing /auth APIs. Missing or "
+"removed image bindings resolve to null. This read does not modify preferences or media."
+msgstr ""
+"Return editable given/family names and the current owned private image reference. No public URL "
+"is returned. Contact details, passwords and sessions use the existing /auth APIs. Missing or "
+"removed image bindings resolve to null. This read does not modify preferences or media."
+
+# Wave-four contracts
+msgid "Safe compatibility result; failure to save never authorizes or completes business work."
+msgstr "Safe compatibility result; failure to save never authorizes or completes business work."
+
+# Wave-four contracts
+msgid "Safe current display name from the owning resource service."
+msgstr "Safe current display name from the owning resource service."
+
+# Wave-four contracts
+msgid "Selected values outside any search page; all must remain eligible."
+msgstr "Selected values outside any search page; all must remain eligible."
+
+# Wave-four contracts
+msgid "Selects a protected resource; never enter or return credentials."
+msgstr "Selects a protected resource; never enter or return credentials."
+
+# Wave-four contracts
+msgid "Stable encrypted identity; invalid after signing-key replacement."
+msgstr "Stable encrypted identity; invalid after signing-key replacement."
+
+# Wave-four contracts
+msgid "Stable frontend-owned help key; no content or route authority."
+msgstr "Stable frontend-owned help key; no content or route authority."
+
+# Wave-four contracts
+msgid "True only when the explicit help action was persisted."
+msgstr "True only when the explicit help action was persisted."
+
+# Wave-four contracts
+msgid ""
+"Update only self given/family names and an owned private avatar using the current profile ref_id."
+" Omitted fields survive; null clears a name or detaches the avatar. Upload images through the "
+"existing authenticated media image endpoint, which enforces size/type and strips metadata. An "
+"avatar reference must identify an existing live image owned by this actor; missing, stale, wrong-"
+"kind and outsider images return non-disclosing 404. Detachment preserves the private upload "
+"because it may be referenced by retained case data. Security/privilege fields are rejected. Stale"
+" profile references return 409. Returns the authoritative current profile reference."
+msgstr ""
+"Update only self given/family names and an owned private avatar using the current profile ref_id."
+" Omitted fields survive; null clears a name or detaches the avatar. Upload images through the "
+"existing authenticated media image endpoint, which enforces size/type and strips metadata. An "
+"avatar reference must identify an existing live image owned by this actor; missing, stale, wrong-"
+"kind and outsider images return non-disclosing 404. Detachment preserves the private upload "
+"because it may be referenced by retained case data. Security/privilege fields are rejected. Stale"
+" profile references return 409. Returns the authoritative current profile reference."
+
+# Wave-four contracts
+msgid "User-editable family name, or null."
+msgstr "User-editable family name, or null."
+
+# Wave-four contracts
+msgid "User-editable given name, or null."
+msgstr "User-editable given name, or null."
+
+# Wave-four contracts
+msgid "Valid IANA timezone for presentation; timestamps remain UTC."
+msgstr "Valid IANA timezone for presentation; timestamps remain UTC."
+
+# Wave-four contracts
+msgid "Validate an exact handler configuration without execution"
+msgstr "Validate an exact handler configuration without execution"
+
+# Wave-four contracts
+msgid "Version of the typed personal settings contract."
+msgstr "Version of the typed personal settings contract."
+
+# Wave-four contracts
+msgid "Whether the field selects an exact immutable version."
+msgstr "Whether the field selects an exact immutable version."
+
+# Wave-four contracts
+msgid "Workspace control density."
+msgstr "Workspace control density."
+
+msgid "Authorized stable resource links and selected summaries."
+msgstr "Authorized stable resource links and selected summaries."
+
+msgid "Authorized chart-neutral business metric definitions and queries."
+msgstr "Authorized chart-neutral business metric definitions and queries."
+
+msgid "Create a private saved view"
+msgstr "Create a private saved view"
+
+msgid "Create an authorized private favorite"
+msgstr "Create an authorized private favorite"
+
+msgid "Private authorized canonical resource favorites."
+msgstr "Private authorized canonical resource favorites."
+
+msgid "Private versioned list presets and explicit personal defaults."
+msgstr "Private versioned list presets and explicit personal defaults."
+
+msgid "Read a private saved view"
+msgstr "Read a private saved view"
+
+msgid "Read an authorized private favorite"
+msgstr "Read an authorized private favorite"
+
+msgid "Replace a private saved view"
+msgstr "Replace a private saved view"
+
+msgid "Resolve a saved view without executing its query"
+msgstr "Resolve a saved view without executing its query"
+
+msgid "Search private favorites"
+msgstr "Search private favorites"
+
+msgid "Search private saved views"
+msgstr "Search private saved views"
+
+msgid "Select the personal default view"
+msgstr "Select the personal default view"
+
+msgid ""
+"Self-only favorites for the exact resource-link kind allowlist. Create accepts kind and current "
+"target ref_id, authorizes through its existing owner and stores canonical UUID identity, never a "
+"revision reference or target label. Repeated creation converges to one favorite; recreating an "
+"explicitly removed favorite restores that personal item only. At most 100 per kind and 500 live "
+"favorites per user. Search resolves current authorization and live targets before paging/count; "
+"forbidden/deleted targets are omitted without titles. Version favorites remain pinned to the "
+"named version. Possession grants no authority. Detail rechecks target permission; history returns"
+" only safe metadata. DELETE accepts the favorite's current ref, remains available after target "
+"revocation and never deletes the target. Wrong owner/missing is 404; stale delete is 409. Work-"
+"item favorites continue using the existing work-item personal pin state and are not duplicated "
+"here. Report aliases search; no archive generation, sharing, public URL or shared cache. Private "
+"no-store envelopes."
+msgstr ""
+"Self-only favorites for the exact resource-link kind allowlist. Create accepts kind and current "
+"target ref_id, authorizes through its existing owner and stores canonical UUID identity, never a "
+"revision reference or target label. Repeated creation converges to one favorite; recreating an "
+"explicitly removed favorite restores that personal item only. At most 100 per kind and 500 live "
+"favorites per user. Search resolves current authorization and live targets before paging/count; "
+"forbidden/deleted targets are omitted without titles. Version favorites remain pinned to the "
+"named version. Possession grants no authority. Detail rechecks target permission; history returns"
+" only safe metadata. DELETE accepts the favorite's current ref, remains available after target "
+"revocation and never deletes the target. Wrong owner/missing is 404; stale delete is 409. Work-"
+"item favorites continue using the existing work-item personal pin state and are not duplicated "
+"here. Report aliases search; no archive generation, sharing, public URL or shared cache. Private "
+"no-store envelopes."
+
+msgid ""
+"Self-only saved list presets for forms, workflows, business_requests and work_items. Current live"
+" actor and list permission are checked on every read/apply. Creation and full PUT use "
+"schema_version=1, name 1–120, command_key 1–128, an at most 8 KiB validated query, up to 20 "
+"filters/10 sorts, distinct allowlisted columns and page_size 1–100. Page offsets, result bodies, "
+"actor/privilege fields, reference-valued filters and unknown fields are rejected. 100 live views "
+"per scope; unique name per self/scope. Creation keys bind the original payload; a changed replay "
+"conflicts 409. PUT is a full replacement and requires the current path ref; scope is immutable "
+"and the last identical update-key replay is safe. Default selection is explicit, serializes on "
+"the user and preserves exactly one default per scope. GET/search preserve an incompatible "
+"original preset with compatible=false; apply then returns no query, never a broadened query. "
+"Compatible apply returns page=1 and the stored size but executes no search. DELETE is idempotent "
+"for the same owned item, including after permission revocation. Wrong owner/missing is non-"
+"disclosing 404; stale write is 409, invalid contract is 422. History returns only safe self "
+"metadata, not private filters or historical identities. Report aliases search, not an archive "
+"job. Private no-store envelopes; no sharing or cache."
+msgstr ""
+"Self-only saved list presets for forms, workflows, business_requests and work_items. Current live"
+" actor and list permission are checked on every read/apply. Creation and full PUT use "
+"schema_version=1, name 1–120, command_key 1–128, an at most 8 KiB validated query, up to 20 "
+"filters/10 sorts, distinct allowlisted columns and page_size 1–100. Page offsets, result bodies, "
+"actor/privilege fields, reference-valued filters and unknown fields are rejected. 100 live views "
+"per scope; unique name per self/scope. Creation keys bind the original payload; a changed replay "
+"conflicts 409. PUT is a full replacement and requires the current path ref; scope is immutable "
+"and the last identical update-key replay is safe. Default selection is explicit, serializes on "
+"the user and preserves exactly one default per scope. GET/search preserve an incompatible "
+"original preset with compatible=false; apply then returns no query, never a broadened query. "
+"Compatible apply returns page=1 and the stored size but executes no search. DELETE is idempotent "
+"for the same owned item, including after permission revocation. Wrong owner/missing is non-"
+"disclosing 404; stale write is 409, invalid contract is 422. History returns only safe self "
+"metadata, not private filters or historical identities. Report aliases search, not an archive "
+"job. Private no-store envelopes; no sharing or cache."
+
+msgid ""
+"Version-one query document validated against the named list DTO. No page/size, result bodies, "
+"credentials, actor identifiers or reference-valued filters. At most 8 KiB, 20 filters and 10 sort"
+" orders. Cartable scopes retain only their supported typed query fields."
+msgstr ""
+"Version-one query document validated against the named list DTO. No page/size, result bodies, "
+"credentials, actor identifiers or reference-valued filters. At most 8 KiB, 20 filters and 10 sort"
+" orders. Cartable scopes retain only their supported typed query fields."
+
+msgid "Inspect development installation readiness"
+msgstr "Inspect development installation readiness"
+
+msgid "Inspect exact definition dependencies and repair guidance"
+msgstr "Inspect exact definition dependencies and repair guidance"
+
+msgid "Search unified notifications"
+msgstr "Search unified notifications"
+
+msgid "Report unified notifications"
+msgstr "Report unified notifications"
+
+msgid "Read unified unread total"
+msgstr "Read unified unread total"
+
+msgid "Read unified notification"
+msgstr "Read unified notification"
+
+msgid "Mark unified notification read"
+msgstr "Mark unified notification read"
+
+msgid "Private administrative installation readiness."
+msgstr "Private administrative installation readiness."
+
+msgid "Recipient-owned unified application notifications."
+msgstr "Recipient-owned unified application notifications."
+
+msgid "Opt in to optional application email; mandatory security and approval notices remain enabled."
+msgstr "Opt in to optional application email; mandatory security and approval notices remain enabled."
+
+msgid "Omitted preserves notification preferences; null resets optional email to disabled."
+msgstr "Omitted preserves notification preferences; null resets optional email to disabled."
+
+msgid "Notification unavailable"
+msgstr "Notification unavailable"
+
+msgid "Request"
+msgstr "Request"
+
+msgid "Human task"
+msgstr "Human task"
+
+msgid "Read-only approval"
+msgstr "Read-only approval"
+
+msgid "Report"
+msgstr "Report"
+
+msgid "Account"
+msgstr "Account"
+
+msgid "Resource"
+msgstr "Resource"
+
+msgid ""
+"Requires a current superuser; ordinary administrators and requesters receive 403. Bounded read-"
+"only database facts and internal connectivity probes return ready, blocked, unknown or "
+"not_applicable. Required unknown checks prevent green overall readiness. Worker and scheduler "
+"execution remain unknown until separately verified by an explicit operator command; broker "
+"connectivity is insufficient. This read never installs roles, grants access, publishes "
+"definitions, enqueues tasks or invokes live providers. Repair keys identify owning screens; "
+"operations requires an operator. Refresh after 30 seconds and display checked_at UTC. Results "
+"contain no hosts, DSNs, credentials, user lists or raw errors. Private no-store success envelope;"
+" authenticated 401/403 errors use existing public codes."
+msgstr ""
+"Requires a current superuser; ordinary administrators and requesters receive 403. Bounded read-"
+"only database facts and internal connectivity probes return ready, blocked, unknown or "
+"not_applicable. Required unknown checks prevent green overall readiness. Worker and scheduler "
+"execution remain unknown until separately verified by an explicit operator command; broker "
+"connectivity is insufficient. This read never installs roles, grants access, publishes "
+"definitions, enqueues tasks or invokes live providers. Repair keys identify owning screens; "
+"operations requires an operator. Refresh after 30 seconds and display checked_at UTC. Results "
+"contain no hosts, DSNs, credentials, user lists or raw errors. Private no-store success envelope;"
+" authenticated 401/403 errors use existing public codes."
+
+msgid ""
+"Requires workflows.manage and ownership of the workflow, or a superuser. Validates the exact "
+"current saved workflow version through the publication validator and workspace promotion policy. "
+"Stale references fail 409; inaccessible versions fail 404. Returns at most 256 safe code/pointer "
+"issues with selected node keys and allowlisted owning repair destinations, plus authorized exact "
+"version pins. Inaccessible dependencies expose no title, reference or content. Retired pins are "
+"preserved for deliberate repair; no dependency is replaced with latest. Empty candidate groups "
+"are reported. Author readiness never establishes requester or service-principal eligibility. "
+"Client eligibility is checked by the existing request/form publication and runtime contracts. "
+"This bounded private no-store projection never writes, grants, promotes, publishes, executes a "
+"handler or calls a provider. Re-read after each repair using refreshed current refs; malformed "
+"bodies fail 422."
+msgstr ""
+"Requires workflows.manage and ownership of the workflow, or a superuser. Validates the exact "
+"current saved workflow version through the publication validator and workspace promotion policy. "
+"Stale references fail 409; inaccessible versions fail 404. Returns at most 256 safe code/pointer "
+"issues with selected node keys and allowlisted owning repair destinations, plus authorized exact "
+"version pins. Inaccessible dependencies expose no title, reference or content. Retired pins are "
+"preserved for deliberate repair; no dependency is replaced with latest. Empty candidate groups "
+"are reported. Author readiness never establishes requester or service-principal eligibility. "
+"Client eligibility is checked by the existing request/form publication and runtime contracts. "
+"This bounded private no-store projection never writes, grants, promotes, publishes, executes a "
+"handler or calls a provider. Re-read after each repair using refreshed current refs; malformed "
+"bodies fail 422."
+
+msgid ""
+"Authenticated recipient-only unified inbox version 1. Case, work_item, ai_approval, report and "
+"account destinations resolve current owner-authorized references on every read. "
+"Calendar/support/operation targets are reserved and unavailable until their producers exist. An "
+"unavailable, deleted, revoked, expired or cancelled target exposes no private subject, content or"
+" reference. Stored labels never confer authority. Search is bounded and deterministic with "
+"existing filters/order/page/size plus unread=true/false; report is the same paginated search, not"
+" a queued archive. Unread totals count live ACTIVE unread inbox rows, including redacted "
+"unavailable destinations. Mark-read changes only read metadata, requires a current optimistic ref"
+" (409 when stale), and never decides or acts on a workflow. Non-owned refs fail 403; "
+"missing/deleted refs fail 404. Null read bodies are rejected; actions accept an empty object. UTC"
+" timestamps; en/fa template locale is chosen when staged with en fallback. Private no-store "
+"success/page envelopes, existing 401/403/404/409/422 errors. Refresh refs from mutation "
+"responses. Optional email defaults off; mandatory notices ignore optional opt-out. No delivery is"
+" performed by these reads."
+msgstr ""
+"Authenticated recipient-only unified inbox version 1. Case, work_item, ai_approval, report and "
+"account destinations resolve current owner-authorized references on every read. "
+"Calendar/support/operation targets are reserved and unavailable until their producers exist. An "
+"unavailable, deleted, revoked, expired or cancelled target exposes no private subject, content or"
+" reference. Stored labels never confer authority. Search is bounded and deterministic with "
+"existing filters/order/page/size plus unread=true/false; report is the same paginated search, not"
+" a queued archive. Unread totals count live ACTIVE unread inbox rows, including redacted "
+"unavailable destinations. Mark-read changes only read metadata, requires a current optimistic ref"
+" (409 when stale), and never decides or acts on a workflow. Non-owned refs fail 403; "
+"missing/deleted refs fail 404. Null read bodies are rejected; actions accept an empty object. UTC"
+" timestamps; en/fa template locale is chosen when staged with en fallback. Private no-store "
+"success/page envelopes, existing 401/403/404/409/422 errors. Refresh refs from mutation "
+"responses. Optional email defaults off; mandatory notices ignore optional opt-out. No delivery is"
+" performed by these reads."
+
+msgid ""
+"Requires workflows.manage and ownership of the workflow, or a superuser. Validates the exact "
+"current saved workflow version through the publication validator and workspace promotion policy. "
+"Stale references fail 409; inaccessible versions fail 404. Returns at most 256 safe code/pointer "
+"issues with selected node keys and allowlisted owning repair destinations, plus authorized exact "
+"version pins. Inaccessible dependencies expose no title, reference or content. Retired pins are "
+"preserved for deliberate repair; no dependency is replaced with latest. Empty candidate groups "
+"are reported. Author readiness never establishes requester or service-principal eligibility. An "
+"optional exact client_release_ref_id checks renderer compatibility through the existing form "
+"resolver; omitted/null remains not_checked. Requester eligibility still belongs to existing "
+"request/runtime contracts. This bounded private no-store projection never writes, grants, "
+"promotes, publishes, executes a handler or calls a provider. Re-read after each repair using "
+"refreshed current refs; malformed bodies fail 422."
+msgstr ""
+"Requires workflows.manage and ownership of the workflow, or a superuser. Validates the exact "
+"current saved workflow version through the publication validator and workspace promotion policy. "
+"Stale references fail 409; inaccessible versions fail 404. Returns at most 256 safe code/pointer "
+"issues with selected node keys and allowlisted owning repair destinations, plus authorized exact "
+"version pins. Inaccessible dependencies expose no title, reference or content. Retired pins are "
+"preserved for deliberate repair; no dependency is replaced with latest. Empty candidate groups "
+"are reported. Author readiness never establishes requester or service-principal eligibility. An "
+"optional exact client_release_ref_id checks renderer compatibility through the existing form "
+"resolver; omitted/null remains not_checked. Requester eligibility still belongs to existing "
+"request/runtime contracts. This bounded private no-store projection never writes, grants, "
+"promotes, publishes, executes a handler or calls a provider. Re-read after each repair using "
+"refreshed current refs; malformed bodies fail 422."
+
+msgid "Acknowledge a support incident"
+msgstr "Acknowledge a support incident"
+
+msgid ""
+"Authenticated Gregorian calendar. Personal events belong to their creator; a team event is "
+"visible only to current active members of its explicitly selected active work group. Only the "
+"creator can update/delete. No superuser bypass grants another person's calendar. Timed events use"
+" aware ISO-8601 instants and an IANA timezone; storage/output are UTC. A supplied non-UTC offset "
+"must match the named local wall time, rejecting DST gaps; explicit offsets disambiguate folds. "
+"All-day events retain start_date/end_date, exclusive end, without conversion into timed events. "
+"Each event spans at most 366 days. command_key binds exact create/update intent; same-key replay "
+"returns the current result, another intent conflicts. Updates/deletes require a current revision "
+"ref (409 stale); unavailable source is 404. Search/report require a half-open Gregorian date "
+"range of 1–93 days and IANA timezone, size 1–100, at most 20 filters and 10 sorts. Actual live "
+"work_item.due_at values appear as read-only deadline points only with requests.start and current "
+"available/claimed cartable authority. Live visibility and overlap precede filtering, count, "
+"ordering and pagination. Derived items link to work_items and cannot be edited as calendar "
+"events. Manual links use calendar_events. History returns only transition timestamps/operations, "
+"at most 1000, without private snapshots. Delete is soft and cancels pending reminders in the same"
+" transaction. Up to three distinct reminder offsets of 0–2592000 seconds are supported. Existing "
+"envelopes, snake_case, en/fa localization, and private no-store apply."
+msgstr ""
+"Authenticated Gregorian calendar. Personal events belong to their creator; a team event is "
+"visible only to current active members of its explicitly selected active work group. Only the "
+"creator can update/delete. No superuser bypass grants another person's calendar. Timed events use"
+" aware ISO-8601 instants and an IANA timezone; storage/output are UTC. A supplied non-UTC offset "
+"must match the named local wall time, rejecting DST gaps; explicit offsets disambiguate folds. "
+"All-day events retain start_date/end_date, exclusive end, without conversion into timed events. "
+"Each event spans at most 366 days. command_key binds exact create/update intent; same-key replay "
+"returns the current result, another intent conflicts. Updates/deletes require a current revision "
+"ref (409 stale); unavailable source is 404. Search/report require a half-open Gregorian date "
+"range of 1–93 days and IANA timezone, size 1–100, at most 20 filters and 10 sorts. Actual live "
+"work_item.due_at values appear as read-only deadline points only with requests.start and current "
+"available/claimed cartable authority. Live visibility and overlap precede filtering, count, "
+"ordering and pagination. Derived items link to work_items and cannot be edited as calendar "
+"events. Manual links use calendar_events. History returns only transition timestamps/operations, "
+"at most 1000, without private snapshots. Delete is soft and cancels pending reminders in the same"
+" transaction. Up to three distinct reminder offsets of 0–2592000 seconds are supported. Existing "
+"envelopes, snake_case, en/fa localization, and private no-store apply."
+
+msgid ""
+"Authenticated safe client failure intake. Only screen_key from "
+"calendar/work_items/requests/designer/reports/preferences/support, build 1–80 ASCII version "
+"characters, one of client.render_failed/client.network_failed/client.unexpected_error and a UUID "
+"request_id are accepted; unknown fields, text, HTML, stack and arbitrary error codes are rejected"
+" 422. The actor comes from authentication. Ten new reports per actor per UTC calendar minute, "
+"serialized on the user; replay among the last 100 episode correlations does not increment. Excess"
+" is 429. The returned support_ref is a correlation identity, never an authorization capability. "
+"persisted=false and support_ref=null explicitly report sink failure. No business operation is "
+"executed. Private no-store, existing envelope and en/fa messages."
+msgstr ""
+"Authenticated safe client failure intake. Only screen_key from "
+"calendar/work_items/requests/designer/reports/preferences/support, build 1–80 ASCII version "
+"characters, one of client.render_failed/client.network_failed/client.unexpected_error and a UUID "
+"request_id are accepted; unknown fields, text, HTML, stack and arbitrary error codes are rejected"
+" 422. The actor comes from authentication. Ten new reports per actor per UTC calendar minute, "
+"serialized on the user; replay among the last 100 episode correlations does not increment. Excess"
+" is 429. The returned support_ref is a correlation identity, never an authorization capability. "
+"persisted=false and support_ref=null explicitly report sink failure. No business operation is "
+"executed. Private no-store, existing envelope and en/fa messages."
+
+msgid ""
+"Authenticated source-owned reminder state. Manual configuration is part of event create/update; "
+"work reminders require requests.start and current available/claimed cartable responsibility, a "
+"current source revision ref, and an actual due_at. Configure one to three distinct offsets "
+"0–2592000 seconds; command_key binds exact intent, changed intent conflicts 409. DELETE cancels "
+"this actor's work reminders without changing the workflow deadline. Read exposes at most the "
+"latest 100 owned reminder states, never another recipient's schedule or destination. Existing "
+"database clocked one-off scheduling, durable outbox and MAP-10/11 own delivery. Event "
+"edits/deletes and terminal/forwarded work changes cancel old state in the source transaction; "
+"recipient authority and source revision/deadline are checked again at fire and delivery. Replays "
+"cannot create duplicate notices. Late reminders deliver once within 24 hours if still relevant; "
+"older occurrences expire and record bounded support lag. This never changes business state, "
+"guarantees provider receipt, or creates a second timer loop. Private no-store, existing "
+"snake_case envelopes and en/fa localization apply."
+msgstr ""
+"Authenticated source-owned reminder state. Manual configuration is part of event create/update; "
+"work reminders require requests.start and current available/claimed cartable responsibility, a "
+"current source revision ref, and an actual due_at. Configure one to three distinct offsets "
+"0–2592000 seconds; command_key binds exact intent, changed intent conflicts 409. DELETE cancels "
+"this actor's work reminders without changing the workflow deadline. Read exposes at most the "
+"latest 100 owned reminder states, never another recipient's schedule or destination. Existing "
+"database clocked one-off scheduling, durable outbox and MAP-10/11 own delivery. Event "
+"edits/deletes and terminal/forwarded work changes cancel old state in the source transaction; "
+"recipient authority and source revision/deadline are checked again at fire and delivery. Replays "
+"cannot create duplicate notices. Late reminders deliver once within 24 hours if still relevant; "
+"older occurrences expire and record bounded support lag. This never changes business state, "
+"guarantees provider receipt, or creates a second timer loop. Private no-store, existing "
+"snake_case envelopes and en/fa localization apply."
+
+msgid "Correlation identity only; support.incidents.manage is still required for inspection."
+msgstr "Correlation identity only; support.incidents.manage is still required for inspection."
+
+msgid "Create a calendar event"
+msgstr "Create a calendar event"
+
+msgid "Current authorized team reference; null creates a personal event."
+msgstr "Current authorized team reference; null creates a personal event."
+
+msgid "Exclusive Gregorian end date."
+msgstr "Exclusive Gregorian end date."
+
+msgid "Exclusive aware instant after start_at, normalized to UTC."
+msgstr "Exclusive aware instant after start_at, normalized to UTC."
+
+msgid "IANA timezone for local presentation; canonical dates remain Gregorian."
+msgstr "IANA timezone for local presentation; canonical dates remain Gregorian."
+
+msgid "Inclusive Gregorian date; no conversion into a timed event."
+msgstr "Inclusive Gregorian date; no conversion into a timed event."
+
+msgid "Inclusive aware instant, normalized to UTC."
+msgstr "Inclusive aware instant, normalized to UTC."
+
+msgid "Personal/team Gregorian events and authorized workflow deadlines."
+msgstr "Personal/team Gregorian events and authorized workflow deadlines."
+
+msgid "Read a support incident"
+msgstr "Read a support incident"
+
+msgid "Record a safe client failure"
+msgstr "Record a safe client failure"
+
+msgid "Resolve a support incident"
+msgstr "Resolve a support incident"
+
+msgid "Resolve an authorized support correlation"
+msgstr "Resolve an authorized support correlation"
+
+msgid "Sanitized support episodes and safe client failure intake."
+msgstr "Sanitized support episodes and safe client failure intake."
+
+msgid "Search calendar events and deadlines"
+msgstr "Search calendar events and deadlines"
+
+msgid "Search support incidents"
+msgstr "Search support incidents"
+
+msgid ""
+"Seconds before start; up to three distinct integers from zero to thirty days. Empty disables "
+"reminders."
+msgstr ""
+"Seconds before start; up to three distinct integers from zero to thirty days. Empty disables "
+"reminders."
+
+msgid ""
+"Support incidents require the current support.incidents.manage capability or superuser authority."
+" Possession of a support_ref grants no access. Search/report apply live records and thirty-day "
+"retention before count and paging (size 1–100). Safe fields contain category, numeric public "
+"error code, registered operation, episode state/count and timestamps; no body, stack, prompt, "
+"credential or provider message is stored or returned. Identical operation episodes coalesce for "
+"one day, count is capped at 1000000 and the last 100 correlation identities deduplicate replay. A"
+" resolved recurrence starts a new episode. Acknowledge requires OPEN; resolve accepts OPEN or "
+"ACKNOWLEDGED. Both require the current revision ref and audit the transition. A stale or invalid "
+"transition conflicts 409; outsider is 403, absent/expired is 404. History returns at most 1000 "
+"safe state transitions through page/size, not diagnostic snapshots. Report aliases search. "
+"Failure persistence uses an independent transaction after business rollback; a sink outage "
+"returns support_persisted=false with correlation only. No recursive alert: one bounded MAP-13 "
+"fanout per episode, excluding notification failures. Private no-store."
+msgstr ""
+"Support incidents require the current support.incidents.manage capability or superuser authority."
+" Possession of a support_ref grants no access. Search/report apply live records and thirty-day "
+"retention before count and paging (size 1–100). Safe fields contain category, numeric public "
+"error code, registered operation, episode state/count and timestamps; no body, stack, prompt, "
+"credential or provider message is stored or returned. Identical operation episodes coalesce for "
+"one day, count is capped at 1000000 and the last 100 correlation identities deduplicate replay. A"
+" resolved recurrence starts a new episode. Acknowledge requires OPEN; resolve accepts OPEN or "
+"ACKNOWLEDGED. Both require the current revision ref and audit the transition. A stale or invalid "
+"transition conflicts 409; outsider is 403, absent/expired is 404. History returns at most 1000 "
+"safe state transitions through page/size, not diagnostic snapshots. Report aliases search. "
+"Failure persistence uses an independent transaction after business rollback; a sink outage "
+"returns support_persisted=false with correlation only. No recursive alert: one bounded MAP-13 "
+"fanout per episode, excluding notification failures. Private no-store."
+
+msgid "True only after independent incident commit; false means durability is unavailable."
+msgstr "True only after independent incident commit; false means durability is unavailable."
+
+msgid "UUID correlation identity; do not send stack, message or request body."
+msgstr "UUID correlation identity; do not send stack, message or request body."
+
+msgid "Update a calendar event"
+msgstr "Update a calendar event"
+
+msgid "Preview a workflow default restoration"
+msgstr "Preview a workflow default restoration"
+
+msgid "Reset draft workspace layout"
+msgstr "Reset draft workspace layout"
+
+msgid ""
+"Requires workflows.manage and current DRAFT/workspace revisions. Clears positions, routes, "
+"collapsed nodes and viewport; preserves graph and promotion checksum. This never restores a "
+"definition, discards server graph changes, publishes or resets environment data. Local unsaved-"
+"edit discard belongs to the client. Private no-store."
+msgstr ""
+"Requires workflows.manage and current DRAFT/workspace revisions. Clears positions, routes, "
+"collapsed nodes and viewport; preserves graph and promotion checksum. This never restores a "
+"definition, discards server graph changes, publishes or resets environment data. Local unsaved-"
+"edit discard belongs to the client. Private no-store."
+
+msgid "Apply the reviewed workflow default"
+msgstr "Apply the reviewed workflow default"
+
+msgid ""
+"Requires live workflows.manage and current template visibility. Preview freezes the exact "
+"target/workspace revisions, published template checksum and symbolic reference bindings for ten "
+"minutes. An unassociated workflow requires explicit source_ref_id. Dependencies are validated "
+"through existing publication rules; blockers return no plan_token. replace_draft changes only "
+"DRAFT; successor creates a new DRAFT for any live target including PUBLISHED/RETIRED. Apply "
+"requires the reviewed token and command_key; replay returns the same result and changed-plan key "
+"reuse conflicts. Stale target/workspace, expired plan or changed dependencies conflict 409; "
+"unavailable source is 404 and invalid bindings/graph are 422. Graph/workspace and the replay "
+"receipt commit atomically. No automatic publication, request-type retargeting, form edit, "
+"execution-pin change, secret/grant reset or provider operation occurs. Existing private no-store "
+"snake_case success envelopes and en/fa localization apply."
+msgstr ""
+"Requires live workflows.manage and current template visibility. Preview freezes the exact "
+"target/workspace revisions, published template checksum and symbolic reference bindings for ten "
+"minutes. An unassociated workflow requires explicit source_ref_id. Dependencies are validated "
+"through existing publication rules; blockers return no plan_token. replace_draft changes only "
+"DRAFT; successor creates a new DRAFT for any live target including PUBLISHED/RETIRED. Apply "
+"requires the reviewed token and command_key; replay returns the same result and changed-plan key "
+"reuse conflicts. Stale target/workspace, expired plan or changed dependencies conflict 409; "
+"unavailable source is 404 and invalid bindings/graph are 422. Graph/workspace and the replay "
+"receipt commit atomically. No automatic publication, request-type retargeting, form edit, "
+"execution-pin change, secret/grant reset or provider operation occurs. Existing private no-store "
+"snake_case success envelopes and en/fa localization apply."
+
+msgid ""
+"Exact immutable published/retired template version; omit only when the target has recorded "
+"provenance."
+msgstr ""
+"Exact immutable published/retired template version; omit only when the target has recorded "
+"provenance."
+
+msgid ""
+"replace_draft replaces only the target DRAFT; successor creates a new editable version without "
+"publishing."
+msgstr ""
+"replace_draft replaces only the target DRAFT; successor creates a new editable version without "
+"publishing."
+
+msgid "Current independent workspace reference; null is valid only when no saved workspace exists."
+msgstr "Current independent workspace reference; null is valid only when no saved workspace exists."
+
+msgid ""
+"At most 128 exact dependency replacements. Keys are kind:step_key, or "
+"user/work_group:step_key:target_index. Supported kinds: form, step_type, user, work_group, "
+"connection, agent, subprocess. Omitted bindings retain the associated installation mapping when "
+"source_ref_id is omitted."
+msgstr ""
+"At most 128 exact dependency replacements. Keys are kind:step_key, or "
+"user/work_group:step_key:target_index. Supported kinds: form, step_type, user, work_group, "
+"connection, agent, subprocess. Omitted bindings retain the associated installation mapping when "
+"source_ref_id is omitted."
+
+msgid "Safe changed top-level definition paths; no embedded config or private values."
+msgstr "Safe changed top-level definition paths; no embedded config or private values."
+
+msgid ""
+"Client-generated restore intent identity. Reuse with the identical reviewed token to replay; a "
+"different token conflicts."
+msgstr ""
+"Client-generated restore intent identity. Reuse with the identical reviewed token to replay; a "
+"different token conflicts."
+
+msgid ""
+"Opaque signed preview token. New application expires after 600 seconds; a committed command can "
+"replay after expiry subject to current authorization."
+msgstr ""
+"Opaque signed preview token. New application expires after 600 seconds; a committed command can "
+"replay after expiry subject to current authorization."
+
+#~ msgid "Authentication and user account operations."
+#~ msgstr ""
+
+#~ msgid "Private file and WebP image operations."
+#~ msgstr ""

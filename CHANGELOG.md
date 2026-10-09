@@ -2,6 +2,45 @@
 
 ## Unreleased
 
+Migration deployment now uses exactly `0001_schema -> 0002_required_data`: complete schema
+first, required handlers, permissions and schedules second. Older revision markers require a
+reviewed database transition before this checkout is deployed. The additive IDs below describe
+the previous delivery history; fresh installations use the new two-revision baseline.
+See [DB-002](docs/changes/DB-002.md).
+
+Delivery through APP-BE-020 adds safe support, calendar/reminders, verified analytics and
+runtime form fixes alongside private installation/dependency readiness and
+a unified inbox with transaction-owned notifications and verified local email-gateway
+worker delivery. The complete gate passed with the two owner-approved SDK exceptions.
+Apply the additive migration chain through `j016_calendar_events` before use. See [APP-BE-011](docs/changes/APP-BE-011.md),
+[APP-BE-012](docs/changes/APP-BE-012.md) and [APP-BE-014](docs/changes/APP-BE-014.md).
+
+### Added
+
+- Added reviewed workflow default restoration with expiring previews, atomic command
+  replay, unpublished successors and separate layout reset. Apply additive migration
+  `k026_workflow_restore` before use. Existing cases and published dependencies retain
+  their pins. See [APP-BE-026](docs/changes/APP-BE-026.md).
+
+- Added safe support episodes, private personal/team calendar, actual workflow deadline
+  projections and one-off reminders using the existing scheduler/outbox/notification pipeline.
+  Apply additive migrations through j016_calendar_events and explicitly grant reviewed
+  support.incidents.manage access. See [APP-BE-015](docs/changes/APP-BE-015.md),
+  [APP-BE-016](docs/changes/APP-BE-016.md) and [APP-BE-017](docs/changes/APP-BE-017.md).
+
+- Added private saved views and canonical favorites with optimistic references,
+  idempotent creation, serialized defaults and schema-drift recovery. Work-item pins
+  remain their existing personal state. Generic admin history no longer exposes
+  private personal documents. See [APP-BE-009](docs/changes/APP-BE-009.md).
+
+- Added self profile/preferences and minimal multilingual help state, stable
+  authorized resource links, business metrics and typed designer inspectors.
+  Additive migrations preserve both applied revisions. Supported guarded bootstrap
+  and private transfer/report bounds are documented in the
+  [wave-four handoff](docs/delivery/wave-four-handoff.md). Profile/help/resource-link/inspector completion is recorded in
+  [verification](docs/delivery/through-014-verification.md); additional prepared task scopes
+  retain their individual backlog records.
+
 ### Documentation
 
 - Added an English user handbook and framework-neutral frontend walkthrough with checked
@@ -11,6 +50,12 @@
   See [DOCS-001](docs/changes/DOCS-001.md).
 
 ### Fixed
+
+- Attachment mutations now immediately refresh canonical runtime values and current upload
+  references. Partial return/correction actions correctly validate formatted values.
+  See [APP-BE-020](docs/changes/APP-BE-020.md).
+- New task failures retain safe class/code metadata instead of raw inputs, exception text
+  and traceback copies. Historical rows are retained. See [APP-BE-015](docs/changes/APP-BE-015.md).
 
 - Restore local cache startup with bounded Dragonfly threads and authenticated health gates,
   defer Celery scheduler cleanup during signal interruption, and constrain SQLAlchemy to the

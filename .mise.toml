@@ -1,8 +1,8 @@
 [tools]
 python = "3.14.7"
 uv = "0.12.9"
-ruff = "0.16.6"
-ty = "0.0.78"
+ruff = "0.16.10"
+ty = "0.0.85"
 pre-commit = "4.6.2"
 rtk = "0.47.0"
 "pipx:graphifyy" = "0.9.53"
@@ -62,6 +62,26 @@ uv run pytest \
 description = "Run the complete purchase workflow against a fresh disposable local PostgreSQL database"
 run = "uv run --env-file .envs/.backend python scripts/run_flow_test.py"
 
+[tasks.delivery-foundation-test]
+description = "Verify wave-three seeds, authorization, live queries and migration preservation in an owned disposable database"
+run = "FLOW_TEST_PROFILE=delivery-foundation uv run --env-file .envs/.backend python scripts/run_flow_test.py"
+
+[tasks.delivery-wave-four-test]
+description = "Verify wave-four application contracts in an owned disposable database"
+run = "FLOW_TEST_PROFILE=delivery-wave-four uv run --env-file .envs/.backend python scripts/run_flow_test.py"
+
+[tasks.delivery-transfer-test]
+description = "Verify the paired private transfer boundary and actual owned reporting worker/storage"
+run = "FLOW_TEST_PROFILE=delivery-transfers uv run --env-file .envs/.backend python scripts/run_flow_test.py"
+
+[tasks.catalog-check]
+description = "Read-only report of missing code-owned permission definitions"
+run = "PYTHONPATH=src uv run --env-file .envs/.backend python scripts/reconcile_system_catalog.py --check"
+
+[tasks.catalog-reconcile]
+description = "Create missing system definitions; never assign roles or reset existing grants"
+run = "PYTHONPATH=src uv run --env-file .envs/.backend python scripts/reconcile_system_catalog.py"
+
 [tasks.graphify]
 description = "Generate the project knowledge graph"
 run = "graphify ."
@@ -102,7 +122,11 @@ description = "Run repository hooks against all tracked files"
 run = "uv run pre-commit run --all-files"
 
 [tasks.check]
-description = "Run the complete local validation gate in a stable order"
+description = "Run the complete strict gate with native warnings-as-errors and structured evidence"
+run = "uv run python scripts/run_check.py"
+
+[tasks.check-baseline]
+description = "Run the historical gate; SDK exception filters mean this is not strict readiness"
 run = """
 set -e
 mise run lock-check
@@ -195,3 +219,11 @@ run = """
 docker compose down -v
 docker compose up -d
 """
+
+[tasks.delivery-through-020-test]
+description = "Verify rollback-safe support, calendar/reminders and the twenty-control form matrix in an owned database"
+run = "FLOW_TEST_PROFILE=delivery-through-020 uv run --env-file .envs/.backend python scripts/run_flow_test.py"
+
+[tasks.delivery-completion-test]
+description = "Verify final delivery contracts and restoration against an owned disposable database"
+run = "FLOW_TEST_PROFILE=delivery-completion uv run --env-file .envs/.backend python scripts/run_flow_test.py"

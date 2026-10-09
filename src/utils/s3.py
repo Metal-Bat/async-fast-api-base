@@ -1,4 +1,4 @@
-from collections.abc import AsyncGenerator, AsyncIterator
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from hashlib import sha256
@@ -65,14 +65,19 @@ async def object_info(key: str) -> ObjectInfo:
         )
 
 
-async def put_file(key: str, path: Path, content_type: str) -> None:
+async def put_file(
+    key: str, path: Path, content_type: str, *, checksum_sha256: str | None = None
+) -> None:
     """Upload a private file without buffering the complete artifact in memory."""
     async with s3_client() as client:
+        extra = {"ContentType": content_type, "ACL": "private"}
+        if checksum_sha256 is not None:
+            extra["Metadata"] = {"sha256": checksum_sha256}
         await client.upload_file(
             str(path),
             settings.S3_BUCKET,
             key,
-            ExtraArgs={"ContentType": content_type, "ACL": "private"},
+            ExtraArgs=extra,
         )
 
 
@@ -88,7 +93,7 @@ async def get_object(key: str) -> bytes:
             return data
 
 
-async def stream_object(key: str, chunk_size: int = 64 * 1024) -> AsyncIterator[bytes]:
+async def stream_object(key: str, chunk_size: int = 64 * 1024) -> AsyncGenerator[bytes]:
     """Stream an object without buffering the complete download in memory."""
     async with s3_client() as client:
         response = await client.get_object(Bucket=settings.S3_BUCKET, Key=key)

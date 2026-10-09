@@ -73,6 +73,9 @@ async def test_admin_reset_revokes_credentials_and_audits_actor(monkeypatch) -> 
     session.get = AsyncMock(return_value=target)
     session.exec = AsyncMock()
     session.commit = AsyncMock()
+    session.flush = AsyncMock()
+    notice = AsyncMock()
+    monkeypatch.setattr("apps.notifications.application.events.stage_notice", notice)
     monkeypatch.setattr(
         "apps.users.application.auth_service.hash_password", AsyncMock(return_value="new-hash")
     )
@@ -95,6 +98,10 @@ async def test_admin_reset_revokes_credentials_and_audits_actor(monkeypatch) -> 
     assert audit.user_id == actor.id
     assert audit.details == {"target_user_id": str(target.id)}
     session.commit.assert_awaited_once()
+
+    assert notice.await_args is not None
+    assert notice.await_args.kwargs["recipient_id"] == target.id
+    assert notice.await_args.kwargs["target_id"] == target.id
 
 
 @pytest.mark.anyio

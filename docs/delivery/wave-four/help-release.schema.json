@@ -1,0 +1,76 @@
+{
+  "$defs": {
+    "HelpReleaseItem": {
+      "additionalProperties": false,
+      "properties": {
+        "help_key": {
+          "description": "Stable frontend-owned help key; no content or route authority.",
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "title": "Help Key",
+          "type": "string"
+        },
+        "locales": {
+          "description": "Locales shipped for this exact help revision.",
+          "items": {
+            "enum": [
+              "en",
+              "fa"
+            ],
+            "type": "string"
+          },
+          "maxItems": 2,
+          "minItems": 1,
+          "title": "Locales",
+          "type": "array"
+        },
+        "revision": {
+          "description": "Exact content revision supplied by the paired frontend release.",
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.-]+$",
+          "title": "Revision",
+          "type": "string"
+        }
+      },
+      "required": [
+        "help_key",
+        "revision",
+        "locales"
+      ],
+      "title": "HelpReleaseItem",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "items": {
+      "items": {
+        "$ref": "#/$defs/HelpReleaseItem"
+      },
+      "maxItems": 128,
+      "title": "Items",
+      "type": "array"
+    },
+    "release_key": {
+      "maxLength": 64,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_.-]+$",
+      "title": "Release Key",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "release_key",
+    "items"
+  ],
+  "title": "HelpReleaseMetadata",
+  "type": "object"
+}

@@ -76,3 +76,9 @@ class UploadRateLimitException(Exception):
     """Raised when a user exceeds the configured upload rate."""
 
     status_code = 429
+
+
+class RateLimitedException(Exception):
+    """Raised when a bounded application intake exceeds its per-actor limit."""
+
+    status_code = 429

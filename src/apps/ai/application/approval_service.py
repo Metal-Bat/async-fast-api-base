@@ -98,6 +98,18 @@ class AIToolApprovalService:
             item, None, "CREATE", f"ai-approval:{attempt_id}"
         )
         await self.session.flush()
+        from apps.notifications.application.events import stage_notice
+
+        await stage_notice(
+            self.session,
+            map_id="MAP-12",
+            event_id=row.id,
+            recipient_id=actor_id,
+            target_kind="ai_approval",
+            target_id=item.id,
+            request_id=request.id,
+            process_id=execution.process_instance_id,
+        )
         task_id = uuid5(attempt_id, "ai-approval-expiry")
         message = enqueue_task(
             self.session,

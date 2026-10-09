@@ -1,0 +1,261 @@
+{
+  "started_at": "2026-10-09T09:20:56.014941+00:00",
+  "finished_at": "2026-10-09T09:28:04.061012+00:00",
+  "status": "VERIFIED_WITH_EXCEPTION",
+  "git_head": "995829eebd9483ac6b589c1648fc799c650ad464",
+  "tools": {
+    "python": "3.14.7 (main, Sep  1 2026, 14:18:09) [Clang 22.1.3 ]",
+    "installed": {
+      "ruff": "0.16.10",
+      "ty": "0.0.85",
+      "pre-commit": "4.6.2"
+    },
+    "locked": {
+      "pre-commit": "4.6.2",
+      "ruff": "0.16.10",
+      "ty": "0.0.85"
+    },
+    "mismatches": []
+  },
+  "approved_warning_exceptions": [
+    "ignore:'asyncio\\.iscoroutinefunction' is deprecated and slated for removal in Python 3\\.16; use inspect\\.iscoroutinefunction\\(\\) instead:DeprecationWarning:cohere\\.client$",
+    "ignore:'_UnionGenericAlias' is deprecated and slated for removal in Python 3\\.17:DeprecationWarning:google\\.genai\\.types$"
+  ],
+  "task": "DB-002",
+  "schema_head": "0002_required_data",
+  "source_tree_sha256": "759b869a5765b5508a8e69a1118b4c8171a61bc6d6b56ebc7b8fcae7bc2704e1",
+  "tested_code_sha256": "9637f887a0a8440c4d6f27c6dc90eb8bde0bf7eab818e76e4cef0a2af0a95085",
+  "final_code_unchanged": true,
+  "revision_count": 2,
+  "migrations": [
+    {
+      "file": "src/migrations/versions/0001_schema.py",
+      "sha256": "f688e9e4b9d583ff8e5d709c2eade5de618966c5eed9bd01c977278f8ac7aa80"
+    },
+    {
+      "file": "src/migrations/versions/0002_required_data.py",
+      "sha256": "f45708b53b3396b49b2fc784cf51fac5c59abd5327989df4a676a7134ba449fb"
+    }
+  ],
+  "stages": [
+    {
+      "stage": "lock-check",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "stage": "fmt-check",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "stage": "lint",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "stage": "docstrings",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "stage": "typecheck",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "stage": "security",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "stage": "doctest",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "stage": "test",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 809,
+        "failed": 0,
+        "skipped": 175
+      }
+    },
+    {
+      "stage": "flow-test",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "stage": "delivery-foundation-test",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 18,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "stage": "delivery-wave-four-test",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 29,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "stage": "delivery-transfer-test",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "stage": "delivery-through-020-test",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 9,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "stage": "delivery-completion-test",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 12,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "stage": "precommit-check",
+      "returncode": 0,
+      "status": "PASSED",
+      "diagnostics": [],
+      "tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      }
+    }
+  ],
+  "schema_and_catalog_comparison": {
+    "comparisons": {
+      "columns": {
+        "count": 1721,
+        "identical": true,
+        "sha256": "8fcb447e70563a9f682c48a016ec516f0ad09023e42d26709f859463c7a94555"
+      },
+      "constraints": {
+        "count": 1163,
+        "identical": true,
+        "sha256": "039c27cb165748f215a9d687ca43515ae1237972a5a806b594a38abd64f87b3f"
+      },
+      "indexes": {
+        "count": 525,
+        "identical": true,
+        "sha256": "54672a9ca09ec16f65d7d3c887968b45d48811f4b5a852d158e803e18839179b"
+      },
+      "triggers": {
+        "count": 22,
+        "identical": true,
+        "sha256": "495c4c9eee6c36e8f53c84da544ac3494d54e52fde0a2cf5d769c60499edc2e0"
+      },
+      "functions": {
+        "count": 15,
+        "identical": true,
+        "sha256": "7ebacd21a03cc4e4f5e46c1706c116b5d164dee0a69846148906ac833cad92f2"
+      },
+      "comments": {
+        "count": 1721,
+        "identical": true,
+        "sha256": "15833714813be3934bc6971eeeb583240a927c4f34e56cf4ae4d6a835ef92457"
+      },
+      "catalog": {
+        "count": 26,
+        "identical": true,
+        "sha256": "27785c053a28f74a96b20c69bb4286fd151c4b803d25d54b247536339350230a"
+      },
+      "schedules": {
+        "count": 2,
+        "identical": true,
+        "sha256": "bc385d4c8461719b525feef6914dd2758779d42d0a6f245a0ab3444a6d674537"
+      }
+    },
+    "tables": 103,
+    "retained_legacy_catalog_rows": 26,
+    "additional_catalog_rows": 7,
+    "additional_handler_codes": [
+      "AI_DECISION",
+      "CONNECTION_STATUS",
+      "PERMISSION_CHECK",
+      "REQUEST_PRIORITY"
+    ]
+  },
+  "verification_scope": "Owned disposable local PostgreSQL and required worker/storage profiles; no project database reset, teardown, stamp or legacy transition. Default opt-in exclusions are separate from required integration passes. Documentation closure does not change tested code."
+}

@@ -9,7 +9,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from core.base_entity import BaseEntity
 from utils.date_utils import get_datetime_utc
 from utils.exceptions import VersionConflictException
-from utils.pagination import SearchRequest, apply_query
+from utils.pagination import SearchRequest, apply_query, live_record_criteria
 
 
 class BaseCrudRepository[EntityType: BaseEntity]:
@@ -53,7 +53,7 @@ class BaseCrudRepository[EntityType: BaseEntity]:
         Returns:
             Matching entities.
         """
-        query = select(self.model)
+        query = select(self.model).where(*live_record_criteria(self.model))
         query = apply_query(
             query=query,
             model=self.model,
@@ -69,7 +69,9 @@ class BaseCrudRepository[EntityType: BaseEntity]:
         Pagination (page / size) is intentionally ignored so the caller
         gets the full count regardless of the current page.
         """
-        query = select(func.count()).select_from(self.model)
+        query = (
+            select(func.count()).select_from(self.model).where(*live_record_criteria(self.model))
+        )
         query = apply_query(
             query=query, model=self.model, query_params=query_params, paginate=False
         )

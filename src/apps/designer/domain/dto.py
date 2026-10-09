@@ -2,8 +2,11 @@
 
 from typing import Any, Literal
 
-from pydantic import ConfigDict, Field
+from pydantic import ConfigDict, Field, JsonValue
 
+from apps.forms.domain.fields import FieldContract
+from apps.step_types.domain.dto import ExecutionMode, PortDTO
+from apps.workflows.domain.subprocess import SubprocessInterface
 from core.base_dto import BaseDTO
 from utils.select import SelectQuery
 
@@ -26,14 +29,48 @@ class DesignerQuery(SelectQuery):
     model_config = ConfigDict(extra="forbid")
 
 
+class EmptyCatalogMetadata(BaseDTO):
+    model_config = ConfigDict(extra="forbid")
+
+
+class StepCatalogMetadata(EmptyCatalogMetadata):
+    code: str
+    ref_id: str
+    number: int
+    handler_key: str
+    handler_version: str
+    execution_mode: ExecutionMode
+    ports: list[PortDTO]
+    runtime_available: bool
+
+
+class SubprocessCatalogMetadata(EmptyCatalogMetadata):
+    workflow_version_ref: str
+    interface: SubprocessInterface
+    runtime_available: bool
+    call_step_type: Literal["SUBPROCESS"]
+
+
+class ProcessStatusMetadata(EmptyCatalogMetadata):
+    compatible_next_values: list[
+        Literal["RUNNING", "WAITING", "PAUSED", "COMPLETED", "FAILED", "CANCELLED"]
+    ]
+
+
 class CatalogItemDTO(BaseDTO):
     model_config = ConfigDict(extra="forbid")
 
     key: str
     title: str
     category: str
-    type_schema: dict[str, Any] = Field(default_factory=dict)
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    type_schema: dict[str, JsonValue] = Field(default_factory=dict)
+    metadata: (
+        StepCatalogMetadata
+        | SubprocessCatalogMetadata
+        | FieldContract
+        | ProcessStatusMetadata
+        | EmptyCatalogMetadata
+    ) = Field(default_factory=EmptyCatalogMetadata)
 
 
 class CompletionQuery(DesignerQuery):
