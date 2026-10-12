@@ -51,6 +51,7 @@ from apps.workflows.domain.entity import (
     WorkflowStepEntity,
     WorkflowStepTargetEntity,
     WorkflowTransitionEntity,
+    WorkflowVersionEntity,
 )
 from core.ref_id import create_ref_id, open_ref_id
 from utils.date_utils import get_datetime_utc
@@ -623,6 +624,7 @@ class WorkItemService:
             comment=comment,
             details={"payload_hash": payload_hash},
         )
+        await self.session.flush()
         await ProcessService(self.session).resume_execution(
             process.id,
             execution.id,
@@ -991,21 +993,15 @@ class WorkItemService:
             scopes = allowed_view_scopes(view, step.field_policy or {})
             purpose = view.purpose
             language = get_language()
-            title = view.title.fa if language == "fa" and bool(view.title.fa) else view.title.en
+            title = view.title.localized(language)
             actions = [
                 {
                     "key": action.key,
                     "kind": action.kind,
                     "outcome_key": action.outcome_key,
-                    "title": action.title.fa
-                    if language == "fa" and bool(action.title.fa)
-                    else action.title.en,
+                    "title": action.title.localized(language),
                     "confirmation": (
-                        action.confirmation.fa
-                        if language == "fa" and action.confirmation and bool(action.confirmation.fa)
-                        else action.confirmation.en
-                        if action.confirmation
-                        else None
+                        action.confirmation.localized(language) if action.confirmation else None
                     ),
                     "required_scopes": action.required_scopes,
                     "require_comment": action.require_comment,
@@ -1232,7 +1228,7 @@ class WorkItemService:
             if editable or view.purpose != "edit"
             else "observer",
             resolved_locale=locale,
-            direction="rtl" if locale == "fa" else "ltr",
+            direction="rtl" if locale in {"fa", "ar"} else "ltr",
             actions=[
                 action
                 for action in view.actions
@@ -1702,6 +1698,42 @@ class WorkItemService:
         comment: str | None = None,
         details: dict[str, Any] | None = None,
     ) -> None:
+        if action == "COMPLETE" and outcome == "approve" and submission is not None:
+            from apps.integrations.domain.orders import PROTECTED_ORDER_OPERATION, payload_hash
+            from apps.workflows.application.protected_effects import has_approval_action
+
+            step = await self._step(item)
+            contract = (
+                HumanTaskContract.model_validate(step.task_contract)
+                if bool(step.task_contract)
+                else None
+            )
+            if has_approval_action(contract):
+                effects = (
+                    await self.session.exec(
+                        select(WorkflowStepEntity).where(
+                            WorkflowStepEntity.workflow_version_id == step.workflow_version_id
+                        )
+                    )
+                ).all()
+                if any(
+                    effect.config.get("operation_key") == PROTECTED_ORDER_OPERATION
+                    for effect in effects
+                ):
+                    version = await self.session.get(
+                        WorkflowVersionEntity, step.workflow_version_id
+                    )
+                    if version is None or not bool(version.graph_checksum):
+                        raise VersionConflictException("Protected approval version is unavailable")
+                    details = {
+                        **(details or {}),
+                        "protected_approval": {
+                            "workflow_version_id": str(version.id),
+                            "graph_checksum": version.graph_checksum,
+                            "approval_step_id": str(step.id),
+                            "payload_hash": payload_hash(submission.data),
+                        },
+                    }
         self.session.add(
             WorkItemActionEntity(
                 work_item_id=item.id,

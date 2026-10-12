@@ -1,1 +1,1 @@
-"""Code-owned application notification map."""
+"""Adapters for ephemeral notification signals over the existing cache."""

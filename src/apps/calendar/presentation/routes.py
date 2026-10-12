@@ -47,7 +47,7 @@ DESCRIPTION = _(
     "calendar_events. History returns only transition timestamps/operations, at most 1000, "
     "without private snapshots. Delete is soft and cancels pending reminders in the same "
     "transaction. Up to three distinct reminder offsets of 0–2592000 seconds are supported. "
-    "Existing envelopes, snake_case, en/fa localization, and private no-store apply."
+    "Existing envelopes, snake_case, en/fa/ar localization, and private no-store apply."
 )
 router = APIRouter(prefix="/calendar", tags=["calendar-events"], responses=response_schema())
 
@@ -177,7 +177,7 @@ REMINDER_DESCRIPTION = _(
     "delivery. Replays cannot create duplicate notices. Late reminders deliver once within 24 "
     "hours if still relevant; older occurrences expire and record bounded support lag. This "
     "never changes business state, guarantees provider receipt, or creates a second timer loop. "
-    "Private no-store, existing snake_case envelopes and en/fa localization apply."
+    "Private no-store, existing snake_case envelopes and en/fa/ar localization apply."
 )
 
 

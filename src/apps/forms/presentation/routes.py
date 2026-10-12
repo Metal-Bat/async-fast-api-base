@@ -53,11 +53,11 @@ router = APIRouter(prefix="/forms", tags=["forms"], responses=response_schema())
 versions_router = APIRouter(
     prefix="/form-versions", tags=["form-versions"], responses=response_schema()
 )
-FORM_LOCALE_DESCRIPTION = "Preferred English/Persian language, including regional tags such as fa-IR. Preview locale overrides this header for form content; envelope Content-Language follows the header. Canonical keys and submitted values do not change."
+FORM_LOCALE_DESCRIPTION = "Preferred English/Persian/Arabic language, including regional tags such as fa-IR and ar-SA. Preview locale overrides this header for form content; envelope Content-Language follows the header. Canonical keys and submitted values do not change."
 LocalizedHeader = Annotated[
     str | None, Header(alias="Accept-Language", max_length=256, description=FORM_LOCALE_DESCRIPTION)
 ]
-LOCALIZATION_DESCRIPTION = "Versioned bpms.messages/1 catalogs support en/fa, named typed parameters and one/other plurals. Draft validation reports missing or stale translations in warnings and returns source_revisions for translation acknowledgement. Publication requires every required-locale message and matching parameter types. Default text hashes track stale translations; published versions remain immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA timezone, Latin/Persian digits and exact decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values are rejected."
+LOCALIZATION_DESCRIPTION = "Versioned bpms.messages/1 catalogs support en/fa/ar, named typed parameters and one/other plurals, with optional zero/two/few/many Arabic branches. Draft validation reports missing or stale translations in warnings and returns source_revisions for translation acknowledgement. Publication requires every required-locale message and matching parameter types. Default text hashes track stale translations; published versions remain immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA timezone, Latin/Persian/Arabic digits and exact decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values are rejected."
 
 FormAdmin = Annotated[UserEntity, Depends(RequirePermission("forms.manage"))]
 
@@ -281,7 +281,7 @@ def validate_form(
         "Evaluation errors or missing required renderer capabilities fail selection; they do not "
         "silently choose another branch. Preview does not publish or modify an interaction. "
         "Resolves message roles and option labels into a presentation copy using locale or Accept-Language. "
-        "Regional tags use en/fa; unsupported locales fall back to the package default. Missing optional "
+        "Regional tags use en/fa/ar; unsupported locales fall back to the package default. Missing optional "
         "translations fall back to default then English; resolved locale is reported per message. "
         "format_values contains up to 32 node_pointer/value samples: returns exact canonical/display "
         "strings without changing data. Bad samples return valid false with localization.format_value. "

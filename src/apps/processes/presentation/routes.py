@@ -5,6 +5,9 @@ from typing import Annotated, Literal, cast
 from fastapi import APIRouter, Depends, Path, Request
 from sqlmodel import col, select
 
+from apps.ai.application.process_evidence import AIProcessEvidenceService
+from apps.ai.domain.evidence import AIProcessEvidenceDTO
+from apps.processes.application.order_recovery import OrderRecoveryService
 from apps.processes.application.recovery import ProcessRecoveryService
 from apps.processes.application.service import ProcessService
 from apps.processes.application.timeline import ProcessTimelineService
@@ -21,6 +24,11 @@ from apps.processes.domain.dto import (
     ResumeProcessDTO,
     ScheduledActionDTO,
 )
+from apps.processes.domain.dtos.orders import (
+    OrderReconciliationDTO,
+    SandboxCancellationRecoveryDTO,
+    SandboxOperationDTO,
+)
 from apps.processes.domain.entity import ExecutionTokenEntity, StepExecutionEntity
 from apps.processes.domain.state import ProcessCommand
 from apps.requests.application.service import RequestService
@@ -33,7 +41,7 @@ from core.ref_id import create_ref_id
 from utils.base_schema import response_schema
 from utils.exceptions import NotAllowedException, NotFoundException
 from utils.pagination import Page, PageRequest
-from utils.presenter import SuccessResponse, success_response
+from utils.presenter import PageResponse, SuccessResponse, page_response, success_response
 
 router = APIRouter(prefix="/processes", tags=["processes"], responses=response_schema())
 events_router = APIRouter(
@@ -139,6 +147,120 @@ async def authorized(service: ProcessService, ref_id: str, actor: UserEntity, *,
     return process
 
 
+@router.post(
+    "/{ref_id}/orders/search",
+    response_model=PageResponse[Page[SandboxOperationDTO]],
+    summary="Inspect sandbox operation receipts",
+    description=(
+        "Requires an authenticated active session, requests.start and request participant view "
+        "authorization. Returns one latest attempt per sandbox order, ordered by step creation "
+        "time and ID. page defaults to 1; size defaults to 20 and is bounded to 100. "
+        "PREPARED means staged, DISPATCHING means a request may be in flight, UNKNOWN requires "
+        "operator lookup, and CONFIRMED includes an actual validated provider receipt. Queued "
+        "does not mean completed. The opaque step_execution_ref_id is current; operation_id "
+        "is the stable external idempotency identity. No inputs, approval records, credentials "
+        "or private URLs are exposed. Outsiders receive 404; missing permission receives 403. "
+        "This inspection never dispatches an order."
+    ),
+)
+async def search_sandbox_orders(
+    request: Request, ref_id: str, query: PageRequest, actor: ProcessUser, session: SessionDep
+) -> PageResponse[Page[SandboxOperationDTO]]:
+    process = await authorized(ProcessService(session), ref_id, actor, control=False)
+    return page_response(request, await OrderRecoveryService().search(session, process.id, query))
+
+
+@router.post(
+    "/{ref_id}/ai-evidence/search",
+    response_model=PageResponse[Page[AIProcessEvidenceDTO]],
+    summary="Inspect supervised AI process evidence",
+    description=(
+        "Requires an authenticated active session, requests.start and request participant view "
+        "authorization. Returns the latest AI attempt per execution, ordered by creation time "
+        "and ID; page defaults to 1, size defaults to 20 and is bounded to 100. Exposes the "
+        "historical agent pin, available model identity, allowed input field names, typed "
+        "recommendation and existing task budget/unknown usage. No input values, prompt, "
+        "checkpoint, raw response trace, secret, private URL or connection credential is returned. "
+        "Human outcomes remain in the authorized work-item/process timeline. A normal/high-confidence "
+        "recommendation never authorizes a protected order; that requires the exact committed "
+        "human approval. Missing historical agent metadata is marked unavailable, never replaced "
+        "with a latest agent. Missing/expired authentication returns 401, missing permission 403, "
+        "outsider or wrong process 404, invalid pagination 422. This read makes no model call. "
+        "Deterministic tests are not live-model quality or calibration evidence."
+    ),
+)
+async def search_process_ai_evidence(
+    request: Request, ref_id: str, query: PageRequest, actor: ProcessUser, session: SessionDep
+) -> PageResponse[Page[AIProcessEvidenceDTO]]:
+    process = await authorized(ProcessService(session), ref_id, actor, control=False)
+    return page_response(request, await AIProcessEvidenceService(session).search(process.id, query))
+
+
+@router.post(
+    "/{ref_id}/orders/reconcile",
+    response_model=SuccessResponse[SandboxOperationDTO],
+    summary="Reconcile an uncertain sandbox order",
+    description=(
+        "Requires an authenticated active session, processes.recover and superuser recovery "
+        "authorization. Supply current process and step execution refs, a 1–128 character "
+        "command_key and a 1–64 character incident reason code. Receipt lookup uses the "
+        "original pinned publisher, connection, credential version and operation identity; "
+        "revoked authority or rotated pins fail closed. Never sends another create request. "
+        "UNKNOWN can be queried immediately; DISPATCHING must be at least 20 seconds old. "
+        "A matching receipt confirms the existing operation and applies the ordinary idempotent "
+        "completion callback. Missing receipt remains UNKNOWN and does not authorize retry. "
+        "Same command and intent return current evidence even with old refs; changed intent "
+        "conflicts. Failed/uncertain lookup requires a fresh lookup command, never an effect replay. "
+        "Errors: 401 missing/expired session, 403 non-superuser, 404 wrong process/step, "
+        "409 stale refs, wrong state, changed command intent or revoked pins, 422 invalid input, "
+        "503 unavailable lookup. No DB session is held across HTTPS; no production purchase is made."
+    ),
+)
+async def reconcile_sandbox_order(
+    request: Request,
+    ref_id: str,
+    data: OrderReconciliationDTO,
+    actor: ProcessOperator,
+    session: SessionDep,
+) -> SuccessResponse[SandboxOperationDTO]:
+    actor_id = actor.id
+    await session.close()
+    return success_response(request, await OrderRecoveryService().reconcile(ref_id, data, actor_id))
+
+
+@router.post(
+    "/{ref_id}/orders/reconcile-cancellation",
+    response_model=SuccessResponse[SandboxCancellationRecoveryDTO],
+    summary="Reconcile an uncertain sandbox cancellation",
+    description=(
+        "Requires an authenticated active session, processes.recover and superuser authorization. "
+        "Supply current process/step execution refs, command_key and an incident reason code. "
+        "Requeues only a previously dispatched sandbox reversal through the existing outbox/worker. "
+        "The worker uses receipt lookup with the original connection, credential and stable reversal "
+        "identity; it never resends cancellation or creates an order. Failed records are eligible "
+        "immediately; EXECUTING records must be at least 20 seconds old. Current publisher/grant/pin "
+        "revocation fails closed. RUNNING means queued, not provider-confirmed success. Inspect the "
+        "ordinary process timeline for compensation.receipt_confirmed and compensation.completed. "
+        "Same command/intent returns current state; changed intent conflicts. Errors: 401 missing "
+        "authentication, 403 non-superuser, 404 wrong process/step or missing reversal, 409 stale refs, "
+        "revoked pins, changed intent or wrong state, 422 invalid input. A missing receipt remains "
+        "failed/manual intervention; no blind effect replay is permitted."
+    ),
+)
+async def reconcile_sandbox_cancellation(
+    request: Request,
+    ref_id: str,
+    data: OrderReconciliationDTO,
+    actor: ProcessOperator,
+    session: SessionDep,
+) -> SuccessResponse[SandboxCancellationRecoveryDTO]:
+    actor_id = actor.id
+    await session.close()
+    return success_response(
+        request, await OrderRecoveryService().reconcile_cancellation(ref_id, data, actor_id)
+    )
+
+
 @router.get("/{ref_id}", response_model=SuccessResponse[ProcessDTO])
 async def get_process(request: Request, ref_id: str, actor: ProcessUser, session: SessionDep):
     service = ProcessService(session)
@@ -180,7 +302,24 @@ async def report_process_timeline(
     return await get_process_timeline(request, ref_id, query, actor, session)
 
 
-@router.post("/{ref_id}/resume", response_model=SuccessResponse[ProcessDTO])
+@router.post(
+    "/{ref_id}/resume",
+    response_model=SuccessResponse[ProcessDTO],
+    summary="Resume a supported single process wait",
+    description=(
+        "Requires an authenticated active session, requests.start, request participant view "
+        "and requester control (or superuser). Supply a current process ref, command_key, "
+        "declared outcome and handler-valid outputs for an eligible single wait. Existing "
+        "unprotected wait semantics are retained. Subprocess results are settled by their "
+        "owning worker. A sandbox.order.create/1 wait cannot accept caller-supplied receipts: "
+        "only the protected worker or authorized receipt lookup may confirm it. Human business "
+        "approval must use the actual eligible work-item completion action. Replay follows the "
+        "existing command-key behavior; this is not an arbitrary effect executor. Errors: 401 "
+        "missing/expired authentication, 403 missing permission/control, 404 outsider/missing "
+        "process, 409 stale ref, ambiguous/ineligible wait or invented protected receipt, "
+        "422 invalid input. Queued sandbox work is never confirmed by this command."
+    ),
+)
 async def resume_process(
     request: Request,
     ref_id: str,

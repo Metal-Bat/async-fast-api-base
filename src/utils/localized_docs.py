@@ -55,7 +55,7 @@ SHARED_INPUT_HEADERS: dict[str, dict[str, Any]] = {
     },
     "Accept-Language": {
         "description": _(
-            "Optional preferred response language. English and Farsi are supported; regional tags use their base language and unsupported values fall back to English."
+            "Optional preferred response language. English, Persian and Arabic are supported; regional tags use their base language and unsupported values fall back to English."
         ),
         "schema": {"type": "string"},
         "example": "fa-IR",

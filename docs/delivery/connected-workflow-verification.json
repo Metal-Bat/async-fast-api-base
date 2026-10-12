@@ -1,0 +1,277 @@
+{
+  "scope": [
+    "APP-BE-023",
+    "APP-BE-028",
+    "APP-BE-029"
+  ],
+  "status": "VERIFIED_WITH_EXCEPTION",
+  "final_gate": "VERIFIED_WITH_EXCEPTION",
+  "paired_browser": "PASS_EN_FA_CONNECTED_APPROVAL_RECEIPT_AND_LOST_REPLY",
+  "hosted": "NOT_RUN",
+  "live_ai": "NOT_ACCEPTED",
+  "source_attestation": {
+    "start_source_sha256": "ce068154402a8a67511a56435180b76898ad427ba4ecb6c1b7951ff602b27173",
+    "end_source_sha256": "ce068154402a8a67511a56435180b76898ad427ba4ecb6c1b7951ff602b27173",
+    "source_identical": true
+  },
+  "observed_runs": [
+    {
+      "database": "bpms_flow_a4134f0406d0426992931007e780fe99",
+      "result": "FAIL",
+      "passed": 0,
+      "failed": 2,
+      "cause": "Read-only human contract publication required a writable field."
+    },
+    {
+      "database": "bpms_flow_de902210b63a492aa2f50407cdea405a",
+      "result": "FAIL",
+      "passed": 0,
+      "failed": 2,
+      "cause": "Generic nullable service result was not assignable to human initial_data."
+    },
+    {
+      "database": "bpms_flow_6d003361d7884af5b7622deef6b99e47",
+      "result": "FAIL",
+      "passed": 0,
+      "failed": 2,
+      "cause": "Rejected incomplete object transform fixture; removed rather than relaxing transform validation."
+    },
+    {
+      "database": "bpms_flow_013a59aea0b244efa759cdcd0bd597e6",
+      "result": "FAIL",
+      "passed": 0,
+      "failed": 2,
+      "cause": "Test treated field_metadata list as mapping."
+    },
+    {
+      "database": "bpms_flow_b655159494ef465689362bedc6e5067a",
+      "result": "PASS",
+      "passed": 2,
+      "failed": 0,
+      "scope": "Real order receipt, recipient denial, read-only enforcement, acknowledgment, duplicate dispatch; en/fa."
+    },
+    {
+      "database": "bpms_flow_b744ca39dc854305ba6dbcfe45e5b791",
+      "result": "FAIL",
+      "passed": 2,
+      "failed": 2,
+      "cause": "Test omitted explicit child settlement before selecting root approval."
+    },
+    {
+      "database": "bpms_flow_cdad95380d674cd996f8b9fa46684f83",
+      "result": "PASS",
+      "passed": 4,
+      "failed": 0,
+      "scope": "Adds two same-case pinned parallel child reviews and root approval after join; no AI stage in this candidate."
+    },
+    {
+      "database": "bpms_flow_8569a7d5706147a184b2d3135b0ca536",
+      "result": "FAIL",
+      "passed": 0,
+      "failed": 1,
+      "cause": "Test AI budget join was ambiguous; not evidence of a missing behavior."
+    },
+    {
+      "database": "bpms_flow_51356addc02e4e97997e4e374490eed5",
+      "result": "FAIL",
+      "passed": 2,
+      "failed": 2,
+      "cause": "Test selected human and AI WAITING attempts together; selection now uses AI task budget."
+    },
+    {
+      "scope": "Policy, binding refinement, read-only enforcement and database ownership guards",
+      "result": "PASS",
+      "passed": 68,
+      "failed": 0
+    },
+    {
+      "scope": "Database ownership and threaded startup tests",
+      "result": "PASS",
+      "passed": 23,
+      "failed": 0
+    },
+    {
+      "database": "bpms_flow_527d89ec2d544881a22172460718f268",
+      "result": "PASS",
+      "passed": 4,
+      "failed": 0,
+      "scope": "Same-case budgeted scripted AI, explicit human supervision, pinned parallel reviews, root approval, real order, read-only receipt, duplicate dispatch; en/fa."
+    },
+    {
+      "database": "bpms_flow_eaea9178d0af4234a9928c0603d8dc5d",
+      "result": "INTERRUPTED_FAILURE",
+      "cause": "Receipt assignment fanout was checked after acknowledgment; obsolete OPEN-only assignment intents are correctly suppressed. At least two cases had failed when interrupted.",
+      "cleanup": "Verified ownership labels for token 64d511083b2a4d79883cddcedc81a661 and removed its exact two containers and recorded database. No worker was signaled: the previously observed PID had already exited."
+    },
+    {
+      "database": "bpms_flow_fb175e8927864684bc42dd6961f0ed7a",
+      "result": "FAIL",
+      "passed": 0,
+      "failed": 4,
+      "cause": "Synthetic participants lacked requests.start; InboxService correctly denied work-item targets. Fixture grants now match ordinary HTTP access.",
+      "cleanup": "Runner removed its database and owned services."
+    },
+    {
+      "database": "bpms_flow_85fe206e8fba46f6bd16e23b28b8d6d7",
+      "result": "PASS",
+      "passed": 4,
+      "failed": 0,
+      "scope": "Scripted budgeted AI, human supervision, two pinned parallel reviews, root approval, real worker sandbox order, persisted receipt-task notice while open, en/fa and RTL receipt form, outsider denial, tampering denial, acknowledgment replay, duplicate dispatch."
+    },
+    {
+      "database": "bpms_flow_d6ef853adeda478d8369a3c67917cbd1",
+      "result": "FAIL",
+      "passed": 4,
+      "failed": 2,
+      "cause": "Correction test omitted required scoped feedback; service correctly rejected the return."
+    },
+    {
+      "database": "bpms_flow_736d7e40118e4f8391dbe9091f2589de",
+      "result": "PASS",
+      "passed": 6,
+      "failed": 0,
+      "scope": "Connected approval and correction require fresh human approval for quantity 3, with actual order receipts and recipient notices; en/fa and existing simple receipt path."
+    },
+    {
+      "database": "bpms_flow_096167e2dac6471e92d1b528fc522f4e",
+      "result": "PASS",
+      "passed": 8,
+      "failed": 0,
+      "scope": "Adds post-review rejection in both languages; no order or receipt execution is staged."
+    },
+    {
+      "database": "bpms_flow_695494745eff42e9aabe3ae824f66f0e",
+      "result": "PASS",
+      "passed": 8,
+      "failed": 0,
+      "scope": "Connected approve/correction/reject, actual worker child settlement and duplicate queue delivery, real sandbox order and persisted recipient notice; scripted AI only."
+    },
+    {
+      "database": "bpms_flow_c376337832c54a628e41bf817f6d177b",
+      "result": "PASS",
+      "passed": 8,
+      "failed": 0,
+      "scope": "Reuses saved nested purchase form with actual private upload/attachment storage in the same connected case."
+    },
+    {
+      "database": "bpms_flow_f4d6e89d12934954ba4f693c0e15f953",
+      "result": "PASS",
+      "passed": 8,
+      "failed": 0,
+      "scope": "Asserts saved nested rows and row identities, private evidence object digest/owner access, reviewer download denial, hidden task projection, every manifest stage and both completed children."
+    },
+    {
+      "database": "bpms_flow_2119d012121b4e36a7384b4deaac3181",
+      "result": "FAIL",
+      "exit_code": 2,
+      "cause": "Test harness imported Asyncer, which is not a project dependency. Replaced with existing AnyIO; no dependency change.",
+      "cleanup": "Runner removed its database and owned services."
+    },
+    {
+      "database": "bpms_flow_5ff81b5bafb24b18bad333f412fbd70c",
+      "result": "PASS",
+      "passed": 10,
+      "failed": 0,
+      "duration_seconds": 209.87,
+      "scope": "Prior eight connected cases plus authenticated HTTP claim races in en/fa: one eligible ordinary reviewer wins; unchanged winner command replay succeeds. Successor/default coverage was added afterward."
+    },
+    {
+      "database": "bpms_flow_3f10afe554dc4b1f80f934f89bbfff29",
+      "result": "PASS",
+      "passed": 10,
+      "failed": 0,
+      "duration_seconds": 217.26,
+      "scope": "Adds real successor form/root/child publication and explicit default-successor restoration with unchanged replay while the connected case waits. Original published graph/checksums and active pins remain unchanged; completion uses original child versions."
+    },
+    {
+      "database": "bpms_flow_694394a0797b42a8b9df2828bd6e2b9b",
+      "result": "PASS",
+      "passed": 10,
+      "failed": 0,
+      "duration_seconds": 248.52,
+      "scope": "Connected workflow variants, committed exact approval replay, changed-key/payload denial, claim race, pins, real worker receipt and acknowledgment; en/fa."
+    },
+    {
+      "database": "bpms_flow_d93d76e0971546aea5b4b141f87d83fe",
+      "result": "FAIL",
+      "passed": 4,
+      "failed": 3,
+      "scope": "Connected reconciliation extension",
+      "cause": "Fixture committed inside transaction and combined receipt view with reversible EVENT_WAIT fixture."
+    },
+    {
+      "database": "bpms_flow_f5ee64c849ce4bc9a6f39b3497139143",
+      "result": "PASS",
+      "passed": 7,
+      "failed": 0,
+      "duration_seconds": 91.23,
+      "scope": "Real worker lost-order reply lookup, cancellation and lost cancellation reply, including same connected human/AI/parallel case; intentionally unknown pre-send case remains fail-closed."
+    },
+    {
+      "database": "bpms_flow_7b92642a509240868196eca45fd3918e",
+      "result": "FAIL",
+      "passed": 0,
+      "failed": 4,
+      "duration_seconds": 221.51,
+      "cause": "Browser test counted child processes as roots; connection-drop fault allowed transparent browser retry."
+    },
+    {
+      "database": "bpms_flow_540602da5d03405cb6b6f17a2f036f23",
+      "result": "PASS",
+      "passed": 4,
+      "failed": 0,
+      "duration_seconds": 147.85,
+      "scope": "Actual paired browser en/fa, shared connected profile, ordinary authentication, fresh approval, real worker order, read-only receipt, acknowledgment and lost approval response recovery. Full actual localized paths/components/security compared before browser."
+    }
+  ],
+  "limitations": [
+    "Prior runs lack contemporaneous start/end source attestations and are focused development evidence only.",
+    "Scripted AI is not a live-provider quality or spend acceptance.",
+    "Guarded demo commands, hosted/image/pair acceptance and expanded restore are unfinished.",
+    "Full paired browser/fault variants, guarded demo rehearsal and final source-attested gates remain required."
+  ],
+  "current_full_gate": "VERIFIED_WITH_EXCEPTION",
+  "current_full_gate_evidence": "main-tasks-final-verification.json",
+  "current_pair": {
+    "schema_version": 1,
+    "backend_head": "9999641f8e37077829ebbe7159a6cd794fb94b91",
+    "producer_origin_head": "9999641f8e37077829ebbe7159a6cd794fb94b91",
+    "backend_source_sha256": "dd3ec9595a1153c663970b07266c0e69a9abc5ffd50214928a56db45a6c9c0de",
+    "frontend_head": "95f88dce6f1a48da87294929041378c174e6b39c",
+    "frontend_tree_sha256": "1a4ab78efbc7b9c2ff956c71c731772d617e7661218d9a5f3e3994c8becb0c7d",
+    "contracts": {
+      "en": "78c06495ea694face5563620c11f13e1c981d046fc276046a2601640fbcdd6c6",
+      "fa": "dc1cec356e0a1c47bcfa5ded878e6f53bceba28349aa1c56a9069283849f5cce"
+    },
+    "migration_chain": [
+      "0001_schema",
+      "0002_required_data"
+    ],
+    "backend_lock_sha256": "4c23cc5a60e0f913471df1a80dcba273c29c22d8878f9d8a75a573cfe35eecf4",
+    "frontend_lock_sha256": "22c36b3108eeb245c791f3ccb230fa4f9a272a81f4851a886e5aeb3fb22ddca7",
+    "scenario": "purchase-connected/1",
+    "ai_mode": "scripted_no_network",
+    "worktrees": "Exact dirty source identity required in final gate evidence; HEAD alone is not the candidate",
+    "snapshot_comparison": "PASS",
+    "live_http_browser": "NOT_ATTESTED_BY_THIS_COMMAND",
+    "hosted": "NOT_RUN",
+    "deployed": "NOT_ATTESTED",
+    "user_accepted": "NOT_ATTESTED"
+  },
+  "current_pair_receipt_browser": {
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 147.46,
+    "owned_database": "bpms_flow_d5605ac77ea44157a29de744ba460cce",
+    "cleanup": "REMOVED",
+    "scenario": "purchase-connected/1",
+    "languages": [
+      "en",
+      "fa"
+    ],
+    "lost_approval_reply": true,
+    "command": "rtk proxy env UV_CACHE_DIR=/tmp/app-be-uv-cache PYTHONPATH=src:. TRANSFER_FRONTEND_ROOT=/tmp/app-be-repaired-peer-d18s0age uv run --env-file .envs/.backend python /tmp/app-be-current-receipt-check.py",
+    "runner": "Existing owned delivery-transfers runner with only tests/integration/test_receipt_browser.py selected for this supplemental run; mandatory full suite unchanged."
+  }
+}

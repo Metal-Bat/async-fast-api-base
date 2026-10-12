@@ -697,5 +697,46 @@
       "id": "u2"
     },
     "option_source": "custom_in_pinned_form"
+  },
+  "connected_profile": {
+    "id": "purchase-connected/1",
+    "labels": {
+      "en": "Synthetic purchasing demonstration",
+      "fa": "نمایش آزمایشی خرید"
+    },
+    "ai_mode": "scripted_no_network",
+    "order_payload": {
+      "item_code": "DEMO",
+      "quantity": 2
+    },
+    "corrected_order_payload": {
+      "item_code": "DEMO",
+      "quantity": 3
+    },
+    "required_stages": [
+      "triage",
+      "recommend",
+      "supervision",
+      "fork",
+      "finance",
+      "procurement",
+      "approve",
+      "order",
+      "receipt",
+      "finish"
+    ],
+    "child_policy": "Unprotected pinned reviews; root-local approval alone authorizes the exact sandbox payload.",
+    "variants": [
+      "approve",
+      "reject",
+      "correction"
+    ],
+    "receipt_fields": [
+      "operation_id",
+      "receipt_id",
+      "state",
+      "payload_hash"
+    ],
+    "acceptance_note": "This manifest describes required behavior. Coverage is recorded separately; its presence does not certify any stage."
   }
 }

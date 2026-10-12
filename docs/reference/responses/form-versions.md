@@ -12,7 +12,7 @@ Used by: `GET /api/v1/form-versions/{ref_id}`, `POST /api/v1/form-versions`, `PO
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `text` | `string | PluralMessage` | Yes | Plain text with named {parameters}, or exactly one/other branches selected by integer count. No HTML, ICU, format specifiers or executable templates. |
+| `text` | `string | PluralMessage` | Yes | Plain text with named {parameters}, or required one/other plural branches with optional zero/two/few/many branches for Arabic. Missing branches fall back to other. No HTML, ICU, format specifiers or executable templates. |
 | `parameters` | `object` | No | — |
 | `source_revision` | `string | null` | No | Translation acknowledgement of the default message SHA-256 revision returned by validation/preview. Missing or old acknowledgements are draft gaps and block required-locale publication. |
 
@@ -202,6 +202,10 @@ Used by: `GET /api/v1/form-versions/{ref_id}`, `POST /api/v1/form-versions`, `PO
 | --- | --- | --- | --- |
 | `one` | `string` | Yes | — |
 | `other` | `string` | Yes | — |
+| `zero` | `string | null` | No | — |
+| `two` | `string | null` | No | — |
+| `few` | `string | null` | No | — |
+| `many` | `string | null` | No | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 

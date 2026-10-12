@@ -1,5 +1,5 @@
 import secrets
-from collections.abc import AsyncIterator
+from collections.abc import AsyncGenerator
 from datetime import timedelta
 from uuid import UUID, uuid7
 
@@ -99,7 +99,7 @@ class ReportService:
             raise NotFoundException("Report not found")
         return report
 
-    async def download(self, report: ReportEntity) -> AsyncIterator[bytes]:
+    async def download(self, report: ReportEntity) -> AsyncGenerator[bytes]:
         """Record access and return a private S3 stream for a ready report."""
         now = get_datetime_utc()
         if (
@@ -124,7 +124,8 @@ class ReportService:
         report.last_downloaded_at = now
         self.session.add(report)
         await self.session.commit()
-        return stream_object(report.storage_key)
+        await self.session.close()
+        return stream_object(report.storage_key, expected_size=report.file_size)
 
     async def delete(self, report: ReportEntity) -> None:
         """Cooperatively cancel work and remove any stored artifact."""

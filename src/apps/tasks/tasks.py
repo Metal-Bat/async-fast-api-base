@@ -3,6 +3,7 @@ from uuid import UUID
 
 from celery import Task
 from celery.exceptions import SoftTimeLimitExceeded
+from redis.exceptions import RedisError
 from sqlalchemy.exc import OperationalError
 
 from core.celery_runtime import run_async
@@ -14,6 +15,9 @@ from utils.exceptions import ServiceUnavailableException
 _BACKGROUND_POLICY = TaskPolicy(queue=settings.CELERY_AUTOMATION_QUEUE, retry_for=(), max_retries=5)
 _SUBPROCESS_POLICY = TaskPolicy(
     queue=settings.CELERY_AUTOMATION_QUEUE, retry_for=(OperationalError,), max_retries=5
+)
+_INBOX_PUSH_POLICY = TaskPolicy(
+    queue=settings.CELERY_AUTOMATION_QUEUE, retry_for=(RedisError, OSError), max_retries=5
 )
 
 
@@ -91,11 +95,15 @@ def execute_bpms_compensation(_task: Task, record_id: str) -> dict[str, str]:
     )
 
     identifier = UUID(record_id)
+    from apps.integrations.application.orders import OrderOutcomeUnknown
+
     try:
-        run_async(execute_compensation(identifier))
-        return {"status": "completed"}
+        disposition = run_async(execute_compensation(identifier))
+        return {"status": disposition or "completed"}
     except ServiceUnavailableException:
         run_async(fail_compensation(identifier, "compensation.provider.unavailable"))
+    except OrderOutcomeUnknown:
+        run_async(fail_compensation(identifier, "compensation.outcome.unknown"))
     except SoftTimeLimitExceeded:
         run_async(fail_compensation(identifier, "compensation.task.timeout"))
     except Exception:  # noqa: BLE001 -- boundary records a stable redacted failure
@@ -131,6 +139,14 @@ def fanout_application_notice(event_id: str, after_user_id: str | None = None) -
             fanout_event(UUID(event_id), UUID(after_user_id) if after_user_id is not None else None)
         )
     }
+
+
+@register_task("bpms.push_inbox_notification", policy=_INBOX_PUSH_POLICY)
+def push_inbox_notification(notification_id: str) -> dict[str, bool]:
+    """Publish a committed inbox invalidation; offline rows survive exhausted live retries."""
+    from apps.notifications.application.live import publish_notification
+
+    return {"published": run_async(publish_notification(UUID(notification_id)))}
 
 
 @register_task("bpms.fire_scheduled_action", policy=_BACKGROUND_POLICY)

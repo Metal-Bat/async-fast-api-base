@@ -1,0 +1,2087 @@
+{
+  "tasks": {
+    "APP-BE-021": {
+      "status": "DONE",
+      "verification": "VERIFIED_WITH_EXCEPTION"
+    },
+    "APP-BE-022": {
+      "status": "DONE",
+      "verification": "VERIFIED_WITH_EXCEPTION"
+    },
+    "APP-BE-023": {
+      "status": "BLOCKED",
+      "verification": "IMPLEMENTED"
+    },
+    "APP-BE-024": {
+      "status": "DONE",
+      "verification": "VERIFIED_WITH_EXCEPTION"
+    },
+    "APP-BE-025": {
+      "status": "DONE",
+      "verification": "VERIFIED_WITH_EXCEPTION"
+    }
+  },
+  "review_date": "2026-10-10",
+  "scope": "Backend and owned real-service acceptance; no browser, deployed or named-provider acceptance.",
+  "backend_gate": {
+    "command": "rtk proxy env UV_CACHE_DIR=/tmp/app-be-uv-cache mise run check",
+    "returncode": 0,
+    "status": "VERIFIED_WITH_EXCEPTION",
+    "git_head": "9999641f8e37077829ebbe7159a6cd794fb94b91",
+    "source_sha256": "30cfbd89fa4427cc05cf6ec40bbc7b1b04e0cb07bcd11d7692eafd74eed74472",
+    "start_end_source_identical": true,
+    "started_at": "2026-10-10T04:28:53.436586+00:00",
+    "finished_at": "2026-10-10T04:39:55.977163+00:00",
+    "tools": {
+      "python": "3.14.7 (main, Sep  1 2026, 14:18:09) [Clang 22.1.3 ]",
+      "installed": {
+        "ruff": "0.16.10",
+        "ty": "0.0.85",
+        "pre-commit": "4.6.2"
+      },
+      "locked": {
+        "pre-commit": "4.6.2",
+        "ruff": "0.16.10",
+        "ty": "0.0.85"
+      },
+      "mismatches": []
+    },
+    "lock_sha256": "4c23cc5a60e0f913471df1a80dcba273c29c22d8878f9d8a75a573cfe35eecf4",
+    "stages": [
+      {
+        "stage": "lock-check",
+        "command": [
+          "mise",
+          "run",
+          "lock-check"
+        ],
+        "started_at": "2026-10-10T04:28:53.754899+00:00",
+        "finished_at": "2026-10-10T04:28:53.856279+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 0,
+          "failed": 0,
+          "missing": true
+        },
+        "skip_count": 0
+      },
+      {
+        "stage": "fmt-check",
+        "command": [
+          "mise",
+          "run",
+          "fmt-check"
+        ],
+        "started_at": "2026-10-10T04:28:53.856319+00:00",
+        "finished_at": "2026-10-10T04:28:54.043208+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 0,
+          "failed": 0,
+          "missing": true
+        },
+        "skip_count": 0
+      },
+      {
+        "stage": "lint",
+        "command": [
+          "mise",
+          "run",
+          "lint"
+        ],
+        "started_at": "2026-10-10T04:28:54.043271+00:00",
+        "finished_at": "2026-10-10T04:28:54.192260+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 0,
+          "failed": 0,
+          "missing": true
+        },
+        "skip_count": 0
+      },
+      {
+        "stage": "docstrings",
+        "command": [
+          "mise",
+          "run",
+          "docstrings"
+        ],
+        "started_at": "2026-10-10T04:28:54.192325+00:00",
+        "finished_at": "2026-10-10T04:28:54.339762+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 0,
+          "failed": 0,
+          "missing": true
+        },
+        "skip_count": 0
+      },
+      {
+        "stage": "typecheck",
+        "command": [
+          "mise",
+          "run",
+          "typecheck"
+        ],
+        "started_at": "2026-10-10T04:28:54.339801+00:00",
+        "finished_at": "2026-10-10T04:28:56.482658+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 0,
+          "failed": 0,
+          "missing": true
+        },
+        "skip_count": 0
+      },
+      {
+        "stage": "security",
+        "command": [
+          "mise",
+          "run",
+          "security"
+        ],
+        "started_at": "2026-10-10T04:28:56.482677+00:00",
+        "finished_at": "2026-10-10T04:29:04.400793+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 0,
+          "failed": 0,
+          "missing": true
+        },
+        "skip_count": 0
+      },
+      {
+        "stage": "doctest",
+        "command": [
+          "mise",
+          "run",
+          "doctest"
+        ],
+        "started_at": "2026-10-10T04:29:04.400857+00:00",
+        "finished_at": "2026-10-10T04:29:05.769511+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 1,
+          "failed": 0,
+          "missing": false
+        },
+        "skip_count": 0
+      },
+      {
+        "stage": "test",
+        "command": [
+          "mise",
+          "run",
+          "test"
+        ],
+        "started_at": "2026-10-10T04:29:05.769561+00:00",
+        "finished_at": "2026-10-10T04:30:16.233073+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 943,
+          "failed": 0,
+          "missing": false
+        },
+        "skip_count": 198
+      },
+      {
+        "stage": "flow-test",
+        "command": [
+          "mise",
+          "run",
+          "flow-test"
+        ],
+        "started_at": "2026-10-10T04:30:16.233146+00:00",
+        "finished_at": "2026-10-10T04:30:52.757274+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 4,
+          "failed": 0,
+          "missing": false
+        },
+        "skip_count": 0
+      },
+      {
+        "stage": "delivery-foundation-test",
+        "command": [
+          "mise",
+          "run",
+          "delivery-foundation-test"
+        ],
+        "started_at": "2026-10-10T04:30:52.757319+00:00",
+        "finished_at": "2026-10-10T04:31:57.050417+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 18,
+          "failed": 0,
+          "missing": false
+        },
+        "skip_count": 0
+      },
+      {
+        "stage": "delivery-wave-four-test",
+        "command": [
+          "mise",
+          "run",
+          "delivery-wave-four-test"
+        ],
+        "started_at": "2026-10-10T04:31:57.050469+00:00",
+        "finished_at": "2026-10-10T04:33:50.808740+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 29,
+          "failed": 0,
+          "missing": false
+        },
+        "skip_count": 0
+      },
+      {
+        "stage": "delivery-transfer-test",
+        "command": [
+          "mise",
+          "run",
+          "delivery-transfer-test"
+        ],
+        "started_at": "2026-10-10T04:33:50.808771+00:00",
+        "finished_at": "2026-10-10T04:38:20.785896+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 37,
+          "failed": 0,
+          "missing": false
+        },
+        "skip_count": 0
+      },
+      {
+        "stage": "delivery-through-020-test",
+        "command": [
+          "mise",
+          "run",
+          "delivery-through-020-test"
+        ],
+        "started_at": "2026-10-10T04:38:20.785946+00:00",
+        "finished_at": "2026-10-10T04:38:31.760208+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 9,
+          "failed": 0,
+          "missing": false
+        },
+        "skip_count": 0
+      },
+      {
+        "stage": "delivery-completion-test",
+        "command": [
+          "mise",
+          "run",
+          "delivery-completion-test"
+        ],
+        "started_at": "2026-10-10T04:38:31.760376+00:00",
+        "finished_at": "2026-10-10T04:39:53.941896+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 12,
+          "failed": 0,
+          "missing": false
+        },
+        "skip_count": 0
+      },
+      {
+        "stage": "precommit-check",
+        "command": [
+          "mise",
+          "run",
+          "precommit-check"
+        ],
+        "started_at": "2026-10-10T04:39:53.941914+00:00",
+        "finished_at": "2026-10-10T04:39:55.977143+00:00",
+        "returncode": 0,
+        "status": "PASSED",
+        "diagnostics": [],
+        "tests": {
+          "passed": 0,
+          "failed": 0,
+          "missing": true
+        },
+        "skip_count": 0
+      }
+    ],
+    "required_service_passes": 109,
+    "required_service_skips": 0,
+    "default_passes": 943,
+    "default_opt_in_exclusions": [
+      {
+        "name": "test_publication_pins_authorized_price_and_immutable_definition",
+        "classname": "tests.integration.test_ai_agents",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_reservation_survives_restart_and_blocks_excess_dispatch",
+        "classname": "tests.integration.test_ai_budget",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_concurrent_duplicate_reservations_allow_only_one_dispatch",
+        "classname": "tests.integration.test_ai_budget",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_ai_connection_model_allowlist_and_rotation_are_rechecked",
+        "classname": "tests.integration.test_ai_connections",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_saved_lookup_is_bounded_projected_and_authorized",
+        "classname": "tests.integration.test_ai_query_lookup",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_seed_check_repeat_and_operator_edits_are_preserved",
+        "classname": "tests.integration.test_application_seed",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_concurrent_seed_converges_and_does_not_rewrite_published_catalogs",
+        "classname": "tests.integration.test_application_seed",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_seeded_requester_can_read_self_but_cannot_manage_users_or_restore",
+        "classname": "tests.integration.test_application_seed",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_mixed_collection_order_immutability_authorization_and_cleanup",
+        "classname": "tests.integration.test_attachments",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL and S3"
+      },
+      {
+        "name": "test_empty_runtime_has_a_zero_operational_snapshot",
+        "classname": "tests.integration.test_bpms_operations",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_recovery_replays_once_and_rejects_changed_intent_and_unsafe_states",
+        "classname": "tests.integration.test_bpms_recovery",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_failed_timer_recovery_keeps_dispatch_sequence_and_is_atomic",
+        "classname": "tests.integration.test_bpms_recovery",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_concurrent_duplicate_recovery_has_one_audit_event",
+        "classname": "tests.integration.test_bpms_recovery",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_failed_wait_can_retry_without_duplicating_registered_identity[TIMER]",
+        "classname": "tests.integration.test_bpms_recovery",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_failed_wait_can_retry_without_duplicating_registered_identity[EVENT_WAIT]",
+        "classname": "tests.integration.test_bpms_recovery",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_restore_preserves_pins_private_attachments_and_secret_versions",
+        "classname": "tests.integration.test_bpms_restore",
+        "type": "pytest.skip",
+        "reason": "requires disposable PostgreSQL/S3 and Docker CLI"
+      },
+      {
+        "name": "test_retention_only_removes_old_terminal_unreferenced_work",
+        "classname": "tests.integration.test_bpms_retention",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_application_sql_logging_never_emits_bound_business_values",
+        "classname": "tests.integration.test_bpms_retention",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_retention_preserves_referenced_execution_and_old_configuration_audit",
+        "classname": "tests.integration.test_bpms_retention",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_operational_queries_remain_bounded_at_volume",
+        "classname": "tests.integration.test_bpms_volume",
+        "type": "pytest.skip",
+        "reason": "loads disposable PostgreSQL volume fixtures"
+      },
+      {
+        "name": "test_worker_drains_then_consumes_committed_work_after_restart",
+        "classname": "tests.integration.test_bpms_worker_restart",
+        "type": "pytest.skip",
+        "reason": "requires disposable worker infrastructure"
+      },
+      {
+        "name": "test_metrics_match_live_owned_lists_and_actual_return_decisions",
+        "classname": "tests.integration.test_business_analytics",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_dst_half_open_status_buckets_cancelled_unknown_and_live_denial",
+        "classname": "tests.integration.test_business_analytics",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_calendar_overlap_exclusive_end_live_group_and_revision",
+        "classname": "tests.integration.test_calendar_events",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_work_deadline_is_actual_read_only_point_and_disappears",
+        "classname": "tests.integration.test_calendar_events",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_event_edit_cancel_replay_and_source_transaction_rollback",
+        "classname": "tests.integration.test_calendar_reminders",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_late_relevant_reminder_expires_without_notice",
+        "classname": "tests.integration.test_calendar_reminders",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_actual_work_due_change_and_completion_cancel_old_reminders",
+        "classname": "tests.integration.test_calendar_reminders",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_claim_race_retry_stale_release_and_success_replay",
+        "classname": "tests.integration.test_celery",
+        "type": "pytest.skip",
+        "reason": "requires disposable Celery test infrastructure"
+      },
+      {
+        "name": "test_expired_claim_recovers_unfinished_history",
+        "classname": "tests.integration.test_celery",
+        "type": "pytest.skip",
+        "reason": "requires disposable Celery test infrastructure"
+      },
+      {
+        "name": "test_only_one_scheduler_commits_one_off_occurrence",
+        "classname": "tests.integration.test_celery",
+        "type": "pytest.skip",
+        "reason": "requires disposable Celery test infrastructure"
+      },
+      {
+        "name": "test_outbox_survives_publish_then_commit_failure",
+        "classname": "tests.integration.test_celery",
+        "type": "pytest.skip",
+        "reason": "requires disposable Celery test infrastructure"
+      },
+      {
+        "name": "test_rolled_back_submission_never_reaches_outbox",
+        "classname": "tests.integration.test_celery",
+        "type": "pytest.skip",
+        "reason": "requires disposable Celery test infrastructure"
+      },
+      {
+        "name": "test_previous_attempt_cannot_overwrite_a_newer_attempt_history",
+        "classname": "tests.integration.test_celery",
+        "type": "pytest.skip",
+        "reason": "requires disposable Celery test infrastructure"
+      },
+      {
+        "name": "test_worker_retry_and_duplicate_execute_side_effect_once",
+        "classname": "tests.integration.test_celery_worker",
+        "type": "pytest.skip",
+        "reason": "requires disposable Celery test infrastructure"
+      },
+      {
+        "name": "test_actual_soft_timeout_releases_claim_and_records_failure",
+        "classname": "tests.integration.test_celery_worker",
+        "type": "pytest.skip",
+        "reason": "requires disposable Celery test infrastructure"
+      },
+      {
+        "name": "test_actual_hard_kill_is_recovered_after_lease_expiration",
+        "classname": "tests.integration.test_celery_worker",
+        "type": "pytest.skip",
+        "reason": "requires disposable Celery test infrastructure"
+      },
+      {
+        "name": "test_committed_outbox_reaches_real_worker",
+        "classname": "tests.integration.test_celery_worker",
+        "type": "pytest.skip",
+        "reason": "requires disposable Celery test infrastructure"
+      },
+      {
+        "name": "test_confidential_client_binding_ignores_forged_presentation_hints",
+        "classname": "tests.integration.test_clients",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_login_and_refresh_keep_server_bound_client_release",
+        "classname": "tests.integration.test_clients",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_grants_rotation_pin_and_revocation",
+        "classname": "tests.integration.test_connections",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_group_membership_and_provider_failure_are_rechecked_and_redacted",
+        "classname": "tests.integration.test_connections",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_schedule_concurrent_write_and_noop",
+        "classname": "tests.integration.test_consistency_live",
+        "type": "pytest.skip",
+        "reason": "requires disposable reporting worker and storage"
+      },
+      {
+        "name": "test_owned_swagger_browser",
+        "classname": "tests.integration.test_consistency_live",
+        "type": "pytest.skip",
+        "reason": "requires disposable reporting worker and storage"
+      },
+      {
+        "name": "test_schedule_http_and_actual_scheduler_worker",
+        "classname": "tests.integration.test_consistency_live",
+        "type": "pytest.skip",
+        "reason": "requires disposable reporting worker and storage"
+      },
+      {
+        "name": "test_library_search_paginates_grants_and_nested_dependency_usage",
+        "classname": "tests.integration.test_definition_library",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_template_is_independent_and_incompatible_bulk_apply_is_rejected",
+        "classname": "tests.integration.test_definition_library",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_workflow_template_keeps_call_pin_and_rejects_incompatible_upgrade",
+        "classname": "tests.integration.test_definition_library",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_form_explanation_reports_translation_gap_without_input_values",
+        "classname": "tests.integration.test_definition_library",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_demo_assets_real_storage_is_idempotent",
+        "classname": "tests.integration.test_demo_assets",
+        "type": "pytest.skip",
+        "reason": "requires disposable paired transfer services"
+      },
+      {
+        "name": "test_demo_groups_are_owned_and_do_not_restore_revoked_members",
+        "classname": "tests.integration.test_demo_groups",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_demo_publishes_two_templates_and_preserves_operator_changes",
+        "classname": "tests.integration.test_demo_seed",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_installation_converges_and_does_not_regrant_revoked_access",
+        "classname": "tests.integration.test_demo_seed",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_failed_installation_rolls_back_and_can_be_repaired",
+        "classname": "tests.integration.test_demo_seed",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_private_selectors_and_completion_hide_forward_steps",
+        "classname": "tests.integration.test_designer",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_exact_draft_and_form_snapshot_denies_other_user_and_stale_revision",
+        "classname": "tests.integration.test_field_inventory",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_resolved_component_pin_is_reported_with_exact_checksum",
+        "classname": "tests.integration.test_field_inventory",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_published_component_resolves_two_pinned_form_instances",
+        "classname": "tests.integration.test_form_library",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_component_grant_is_required_and_revocation_closes_new_use",
+        "classname": "tests.integration.test_form_library",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_nested_type_dependency_stays_pinned_when_new_type_version_is_published",
+        "classname": "tests.integration.test_form_library",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_published_component_snapshot_is_database_immutable",
+        "classname": "tests.integration.test_form_library",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_bilingual_component_publication_pins_instance_catalogs",
+        "classname": "tests.integration.test_form_library",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_draft_upgrade_preview_reports_schema_incompatibility_without_writing",
+        "classname": "tests.integration.test_form_library",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_concurrent_publication_has_one_winner_and_immutable_snapshot",
+        "classname": "tests.integration.test_form_library",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_work_group_grant_tracks_current_membership",
+        "classname": "tests.integration.test_form_library",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_nested_published_component_pins_transitive_version",
+        "classname": "tests.integration.test_form_library",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_component_publication_rejects_undeclared_customization_interface",
+        "classname": "tests.integration.test_form_library",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_domain_options_filter_before_pagination_and_recheck_revocations",
+        "classname": "tests.integration.test_form_options",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_form_publish_is_immutable_and_pins_exact_documents",
+        "classname": "tests.integration.test_forms",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_concurrent_form_publication_has_one_winner",
+        "classname": "tests.integration.test_forms",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_published_form_variants_are_persisted_and_database_immutable",
+        "classname": "tests.integration.test_forms",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_localization_draft_publish_history_and_historical_reads",
+        "classname": "tests.integration.test_forms",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_documented_http_login_submit_approve_track_and_session_lifecycle",
+        "classname": "tests.integration.test_frontend_journey",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_full_purchase_request_flow_preserves_pins_and_human_approvals",
+        "classname": "tests.integration.test_full_workflow",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_help_http_requires_an_explicit_action_and_self_ownership",
+        "classname": "tests.integration.test_help_state",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_help_repeat_revision_locale_isolation_and_deliberate_self_reset",
+        "classname": "tests.integration.test_help_state",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_normal_pages_and_counts_exclude_deleted_entities[UserEntity-UserQuery-username]",
+        "classname": "tests.integration.test_live_query_policy",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_normal_pages_and_counts_exclude_deleted_entities[RoleEntity-RoleQuery-name]",
+        "classname": "tests.integration.test_live_query_policy",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_normal_pages_and_counts_exclude_deleted_entities[WorkGroupEntity-WorkGroupQuery-code]",
+        "classname": "tests.integration.test_live_query_policy",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_normal_pages_and_counts_exclude_deleted_entities[FormDefinitionEntity-FormQuery-code]",
+        "classname": "tests.integration.test_live_query_policy",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_normal_pages_and_counts_exclude_deleted_entities[WorkflowDefinitionEntity-WorkflowQuery-code]",
+        "classname": "tests.integration.test_live_query_policy",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_normal_pages_and_counts_exclude_deleted_entities[RequestTypeEntity-RequestTypeQuery-code]",
+        "classname": "tests.integration.test_live_query_policy",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_real_cache_refreshes_after_authorized_delete_and_restore",
+        "classname": "tests.integration.test_live_query_policy",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_alembic_empty_upgrade_downgrade_upgrade_round_trip",
+        "classname": "tests.integration.test_migrations",
+        "type": "pytest.skip",
+        "reason": "uses the configured disposable integration database"
+      },
+      {
+        "name": "test_schema_revision_has_no_rows_and_data_revision_installs_required_catalogs",
+        "classname": "tests.integration.test_migrations",
+        "type": "pytest.skip",
+        "reason": "uses the configured disposable integration database"
+      },
+      {
+        "name": "test_legacy_revision_is_rejected_without_replaying_schema",
+        "classname": "tests.integration.test_migrations",
+        "type": "pytest.skip",
+        "reason": "uses the configured disposable integration database"
+      },
+      {
+        "name": "test_populated_initial_head_upgrade_preserves_pins_media_and_history",
+        "classname": "tests.integration.test_migrations",
+        "type": "pytest.skip",
+        "reason": "uses the configured disposable integration database"
+      },
+      {
+        "name": "test_actual_report_cartable_worker_push_duplicate_and_offline_resync",
+        "classname": "tests.integration.test_notification_push",
+        "type": "pytest.skip",
+        "reason": "requires disposable reporting worker and storage"
+      },
+      {
+        "name": "test_actual_heartbeat_lifetime_renewal_and_cleanup",
+        "classname": "tests.integration.test_notification_push",
+        "type": "pytest.skip",
+        "reason": "requires disposable reporting worker and storage"
+      },
+      {
+        "name": "test_committed_only_signals_outsider_revocation_limits_and_disconnect",
+        "classname": "tests.integration.test_notification_push",
+        "type": "pytest.skip",
+        "reason": "requires disposable reporting worker and storage"
+      },
+      {
+        "name": "test_crash_before_http_has_unknown_lookup_and_cannot_claim_compensated",
+        "classname": "tests.integration.test_operation_reconciliation",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_acknowledgment_loss_reconciles_same_receipt_without_replaying_order",
+        "classname": "tests.integration.test_operation_reconciliation",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_explicit_compensation_records_actual_separate_cancellation_receipt[False]",
+        "classname": "tests.integration.test_operation_reconciliation",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_explicit_compensation_records_actual_separate_cancellation_receipt[True]",
+        "classname": "tests.integration.test_operation_reconciliation",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_scheduler_reload_broker_recovery_and_real_worker_deduplicate",
+        "classname": "tests.integration.test_owned_calendar_worker",
+        "type": "pytest.skip",
+        "reason": "requires owned worker and HTTPS email gateway"
+      },
+      {
+        "name": "test_cancel_after_enqueue_is_safe_at_the_actual_worker",
+        "classname": "tests.integration.test_owned_calendar_worker",
+        "type": "pytest.skip",
+        "reason": "requires owned worker and HTTPS email gateway"
+      },
+      {
+        "name": "test_owned_worker_notification_receipt_and_duplicate",
+        "classname": "tests.integration.test_owned_notification_worker",
+        "type": "pytest.skip",
+        "reason": "requires owned worker and HTTPS email gateway"
+      },
+      {
+        "name": "test_actual_worker_owned_report_download_and_delete",
+        "classname": "tests.integration.test_owned_report_worker",
+        "type": "pytest.skip",
+        "reason": "requires disposable reporting worker and storage"
+      },
+      {
+        "name": "test_self_settings_http_contract_and_avatar_ownership",
+        "classname": "tests.integration.test_personal_preferences",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_settings_persist_conflict_and_isolate_self",
+        "classname": "tests.integration.test_personal_preferences",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_concurrent_setting_edits_have_one_explicit_conflict",
+        "classname": "tests.integration.test_personal_preferences",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_avatar_binding_is_self_owned_and_removal_preserves_private_media",
+        "classname": "tests.integration.test_personal_preferences",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_restrictions_round_trip_and_eligibility_rechecked_at_creation",
+        "classname": "tests.integration.test_platform_foundation",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_current_grant_reads_enforce_connection_manage_authority",
+        "classname": "tests.integration.test_platform_foundation",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_committed_upload_retains_actual_object_after_refresh_failure",
+        "classname": "tests.integration.test_private_transfers",
+        "type": "pytest.skip",
+        "reason": "requires disposable paired transfer services"
+      },
+      {
+        "name": "test_private_download_releases_database_before_actual_storage_stream",
+        "classname": "tests.integration.test_private_transfers",
+        "type": "pytest.skip",
+        "reason": "requires disposable paired transfer services"
+      },
+      {
+        "name": "test_maximum_private_transfer_crosses_actual_session_boundary",
+        "classname": "tests.integration.test_private_transfers",
+        "type": "pytest.skip",
+        "reason": "requires disposable paired transfer services"
+      },
+      {
+        "name": "test_process_events_are_atomic_ordered_immutable_and_project_all_positions",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_event_wait_consumes_once_and_beats_claimed_deadline",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_timer_wait_recovers_expired_lease_and_fires_once",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_event_registration_rolls_back_atomically_and_cancel_closes_waits",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_exhausted_timer_delivery_fails_the_waiting_process",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_runtime_executes_once_and_invalid_resume_never_advances",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_parallel_join_and_compensation_are_durable_and_idempotent",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_background_outbox_and_callback_are_atomic_and_idempotent",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_notifications_are_atomic_owned_retryable_and_idempotent",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_registered_sync_steps_publish_and_execute_with_scoped_services",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_registered_background_step_uses_pinned_connection_and_outbox",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_human[none]",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_human[approve]",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_human[deny]",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_human[expire]",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_human[cancel]",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_client_branch_uses_saved_origin_after_restart[DESKTOP-2.10-desktop]",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_client_branch_uses_saved_origin_after_restart[DESKTOP-2.9-finish]",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_client_branch_uses_saved_origin_after_restart[DESKTOP-2.10-rc.1-finish]",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_client_branch_uses_saved_origin_after_restart[ANDROID-1.0-android]",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_client_branch_uses_saved_origin_after_restart[B2B-None-finish]",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_client_branch_uses_saved_origin_after_restart[None-None-finish]",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_two_pinned_subprocess_calls_have_distinct_children_and_resume_once",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_subprocess_timer_wait_uses_existing_scheduler_and_resumes_parent",
+        "classname": "tests.integration.test_processes",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_request_submit_is_validated_pinned_idempotent_and_database_sealed",
+        "classname": "tests.integration.test_requests",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_receipt_and_ai_inspection_use_real_sessions_and_participant_authorization",
+        "classname": "tests.integration.test_required_human_approval",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_committed_human_approval_dispatches_actual_worker_order_receipt",
+        "classname": "tests.integration.test_required_human_approval",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_rolled_back_approval_has_no_dispatch_or_completed_human_action",
+        "classname": "tests.integration.test_required_human_approval",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_current_authority_and_approval_are_rechecked_before_dispatch[offboarded]",
+        "classname": "tests.integration.test_required_human_approval",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_current_authority_and_approval_are_rechecked_before_dispatch[role_revoked]",
+        "classname": "tests.integration.test_required_human_approval",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_current_authority_and_approval_are_rechecked_before_dispatch[grant_revoked]",
+        "classname": "tests.integration.test_required_human_approval",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_current_authority_and_approval_are_rechecked_before_dispatch[connection_rotated]",
+        "classname": "tests.integration.test_required_human_approval",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_current_authority_and_approval_are_rechecked_before_dispatch[payload_changed]",
+        "classname": "tests.integration.test_required_human_approval",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_current_authority_and_approval_are_rechecked_before_dispatch[cancelled]",
+        "classname": "tests.integration.test_required_human_approval",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_direct_process_resume_cannot_fabricate_human_approval",
+        "classname": "tests.integration.test_required_human_approval",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_direct_resume_cannot_invent_order_receipt_after_real_human_approval",
+        "classname": "tests.integration.test_required_human_approval",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_resource_links_refresh_and_hide_deleted_or_revoked_targets",
+        "classname": "tests.integration.test_resource_links",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_selected_summary_is_not_limited_to_first_search_page",
+        "classname": "tests.integration.test_resource_links",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_saved_view_http_contract_is_private_and_strict",
+        "classname": "tests.integration.test_saved_views_favorites",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_presets_replay_roundtrip_isolation_schema_drift_and_favorite_refresh",
+        "classname": "tests.integration.test_saved_views_favorites",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_concurrent_default_selection_leaves_one_default",
+        "classname": "tests.integration.test_saved_views_favorites",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_postgresql_and_dragonfly_are_available",
+        "classname": "tests.integration.test_services",
+        "type": "pytest.skip",
+        "reason": "set RUN_INTEGRATION=1 with Docker Compose services running"
+      },
+      {
+        "name": "test_minio_upload_download_delete_round_trip",
+        "classname": "tests.integration.test_services",
+        "type": "pytest.skip",
+        "reason": "set RUN_INTEGRATION=1 with Docker Compose services running"
+      },
+      {
+        "name": "test_postgresql_upload_access_is_owner_only_and_revocable",
+        "classname": "tests.integration.test_services",
+        "type": "pytest.skip",
+        "reason": "set RUN_INTEGRATION=1 with Docker Compose services running"
+      },
+      {
+        "name": "test_rabbitmq_celery_worker_executes_task",
+        "classname": "tests.integration.test_services",
+        "type": "pytest.skip",
+        "reason": "set RUN_INTEGRATION=1 with Docker Compose services running"
+      },
+      {
+        "name": "test_concurrent_task_idempotency_has_one_winner",
+        "classname": "tests.integration.test_services",
+        "type": "pytest.skip",
+        "reason": "set RUN_INTEGRATION=1 with Docker Compose services running"
+      },
+      {
+        "name": "test_full_authentication_rotation_logout_and_password_flow",
+        "classname": "tests.integration.test_services",
+        "type": "pytest.skip",
+        "reason": "set RUN_INTEGRATION=1 with Docker Compose services running"
+      },
+      {
+        "name": "test_concurrent_optimistic_lock_detects_stale_writer",
+        "classname": "tests.integration.test_services",
+        "type": "pytest.skip",
+        "reason": "set RUN_INTEGRATION=1 with Docker Compose services running"
+      },
+      {
+        "name": "test_history_is_created_and_rolled_back_with_business_transaction",
+        "classname": "tests.integration.test_services",
+        "type": "pytest.skip",
+        "reason": "set RUN_INTEGRATION=1 with Docker Compose services running"
+      },
+      {
+        "name": "test_setup_and_dependency_facts_do_not_write_or_grant",
+        "classname": "tests.integration.test_setup_dependency_readiness",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_definition_exact_pins_missing_form_client_and_empty_candidates",
+        "classname": "tests.integration.test_setup_dependency_readiness",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_seed_catalog_and_disabled_historical_resolution",
+        "classname": "tests.integration.test_step_types",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_trusted_class_reconciliation_is_idempotent_and_requires_publication",
+        "classname": "tests.integration.test_step_types",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_metadata_tampering_cannot_be_published_and_retirement_preserves_history",
+        "classname": "tests.integration.test_step_types",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_draft_publication_rejects_stale_updates_and_freezes_ports",
+        "classname": "tests.integration.test_step_types",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_duplicate_ports_and_parent_versions_are_rejected",
+        "classname": "tests.integration.test_step_types",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_published_contract_rejects_direct_sql_mutations[UPDATE \"STEP_TYPE_PORT\" SET \"REQUIRED\" = false\\n       WHERE \"STEP_TYPE_VERSION_ID\" = :id]",
+        "classname": "tests.integration.test_step_types",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_published_contract_rejects_direct_sql_mutations[INSERT INTO \"STEP_TYPE_PORT\"\\n       (\"STEP_TYPE_VERSION_ID\", \"DIRECTION\", \"PORT_KEY\", \"VALUE_SCHEMA\", \"REQUIRED\",\\n        \"NULLABLE\", \"CARDINALITY\", \"CREATED_AT\")\\n       VALUES (:id, 'INPUT', 'injected', '{}', true, false, 'SCALAR', now())]",
+        "classname": "tests.integration.test_step_types",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_published_contract_rejects_direct_sql_mutations[UPDATE \"STEP_TYPE_VERSION\" SET \"DELETED_AT\" = now() WHERE \"ID\" = :id]",
+        "classname": "tests.integration.test_step_types",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_published_contract_rejects_direct_sql_mutations[UPDATE \"STEP_TYPE_VERSION\" SET \"STATUS\" = 'DRAFT', \"PUBLISHED_AT\" = NULL WHERE \"ID\" = :id]",
+        "classname": "tests.integration.test_step_types",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_concurrent_publication_has_one_winner",
+        "classname": "tests.integration.test_step_types",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_registered_catalog_search_filters_and_historical_detail",
+        "classname": "tests.integration.test_step_types",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_concurrent_registry_reconciliation_creates_one_version",
+        "classname": "tests.integration.test_step_types",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_workspace_reopen_conflict_promotion_and_immutable_publication",
+        "classname": "tests.integration.test_studio_workspace",
+        "type": "pytest.skip",
+        "reason": "uses isolated PostgreSQL"
+      },
+      {
+        "name": "test_author_preview_filters_simulated_policy_and_uses_runtime_metadata",
+        "classname": "tests.integration.test_studio_workspace",
+        "type": "pytest.skip",
+        "reason": "uses isolated PostgreSQL"
+      },
+      {
+        "name": "test_published_subprocess_is_pinned_and_retirement_does_not_change_parent",
+        "classname": "tests.integration.test_subprocess_authoring",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_unpublished_or_self_referencing_child_is_rejected",
+        "classname": "tests.integration.test_subprocess_authoring",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_call_rejects_type_mismatch_and_inaccessible_published_version",
+        "classname": "tests.integration.test_subprocess_authoring",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_nested_published_calls_validate_transitive_dependencies",
+        "classname": "tests.integration.test_subprocess_authoring",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_publication_and_child_retirement_serialize_without_stale_new_pin",
+        "classname": "tests.integration.test_subprocess_authoring",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_business_rollback_persists_only_safe_incident_and_episodes",
+        "classname": "tests.integration.test_support_failures",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_http_failure_rolls_back_then_returns_the_durable_correlation",
+        "classname": "tests.integration.test_support_failures",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_client_intake_dedupe_and_rate_limit_are_durable",
+        "classname": "tests.integration.test_support_failures",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_repeated_correction_rounds_pin_data_feedback_and_reject_stale_writes",
+        "classname": "tests.integration.test_task_corrections",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_security_notice_atomic_replay_locale_read_and_legacy_exclusion",
+        "classname": "tests.integration.test_unified_notifications",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_claim_release_and_forward_notices_follow_committed_assignments",
+        "classname": "tests.integration.test_unified_notifications",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_committed_process_fanout_dedupe_current_links_and_revocation",
+        "classname": "tests.integration.test_unified_notifications",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_twenty_control_runtime_request_review_print_and_correction",
+        "classname": "tests.integration.test_visual_runtime_conformance",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_wave_four_contracts_use_actual_permissions_and_list_queries",
+        "classname": "tests.integration.test_wave_four_http",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_group_membership_lifecycle_and_history",
+        "classname": "tests.integration.test_work_groups",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_concurrent_duplicate_member_add_creates_one_row",
+        "classname": "tests.integration.test_work_groups",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_multi_user_claim_forward_attachment_and_completion_are_atomic",
+        "classname": "tests.integration.test_work_items",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL and S3"
+      },
+      {
+        "name": "test_successor_restore_replays_one_draft_and_preserves_published_source",
+        "classname": "tests.integration.test_workflow_defaults",
+        "type": "pytest.skip",
+        "reason": "uses isolated PostgreSQL"
+      },
+      {
+        "name": "test_stale_workspace_invalidates_restore_and_layout_reset_preserves_graph",
+        "classname": "tests.integration.test_workflow_defaults",
+        "type": "pytest.skip",
+        "reason": "uses isolated PostgreSQL"
+      },
+      {
+        "name": "test_mixed_template_restoration_preserves_cases_and_rolls_back_partial_failure",
+        "classname": "tests.integration.test_workflow_defaults",
+        "type": "pytest.skip",
+        "reason": "uses isolated PostgreSQL"
+      },
+      {
+        "name": "test_restore_requires_explicit_source_and_rechecks_live_permissions",
+        "classname": "tests.integration.test_workflow_defaults",
+        "type": "pytest.skip",
+        "reason": "uses isolated PostgreSQL"
+      },
+      {
+        "name": "test_retired_baseline_restores_successor_without_republishing_it",
+        "classname": "tests.integration.test_workflow_defaults",
+        "type": "pytest.skip",
+        "reason": "uses isolated PostgreSQL"
+      },
+      {
+        "name": "test_preview_blocks_template_that_cannot_fit_the_bounded_workspace",
+        "classname": "tests.integration.test_workflow_defaults",
+        "type": "pytest.skip",
+        "reason": "uses isolated PostgreSQL"
+      },
+      {
+        "name": "test_workflow_publish_pins_dependencies_grants_access_and_freezes_graph",
+        "classname": "tests.integration.test_workflows",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_workflow_publication_accepts_explicit_typed_transform_chain",
+        "classname": "tests.integration.test_workflows",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      },
+      {
+        "name": "test_concurrent_workflow_publication_has_one_winner",
+        "classname": "tests.integration.test_workflows",
+        "type": "pytest.skip",
+        "reason": "uses PostgreSQL"
+      }
+    ],
+    "approved_warning_exceptions": [
+      "ignore:'asyncio\\.iscoroutinefunction' is deprecated and slated for removal in Python 3\\.16; use inspect\\.iscoroutinefunction\\(\\) instead:DeprecationWarning:cohere\\.client$",
+      "ignore:'_UnionGenericAlias' is deprecated and slated for removal in Python 3\\.17:DeprecationWarning:google\\.genai\\.types$"
+    ],
+    "approval_record": "docs/delivery/approved-decisions.json#D07",
+    "private_evidence_directory": "/tmp/app-be-check-wpdk2yrh",
+    "source_scope": "Unchanged full nonignored source excluding graphify-out during gate. Subsequent closure edits are documentation only and verified separately."
+  },
+  "required_test_cases": {
+    "flow-test": [
+      {
+        "class": "tests.integration.test_full_workflow",
+        "name": "test_full_purchase_request_flow_preserves_pins_and_human_approvals"
+      },
+      {
+        "class": "tests.integration.test_frontend_journey",
+        "name": "test_documented_http_login_submit_approve_track_and_session_lifecycle"
+      },
+      {
+        "class": "tests.integration.test_platform_foundation",
+        "name": "test_restrictions_round_trip_and_eligibility_rechecked_at_creation"
+      },
+      {
+        "class": "tests.integration.test_platform_foundation",
+        "name": "test_current_grant_reads_enforce_connection_manage_authority"
+      }
+    ],
+    "delivery-foundation-test": [
+      {
+        "class": "tests.integration.test_migrations",
+        "name": "test_alembic_empty_upgrade_downgrade_upgrade_round_trip"
+      },
+      {
+        "class": "tests.integration.test_migrations",
+        "name": "test_schema_revision_has_no_rows_and_data_revision_installs_required_catalogs"
+      },
+      {
+        "class": "tests.integration.test_migrations",
+        "name": "test_legacy_revision_is_rejected_without_replaying_schema"
+      },
+      {
+        "class": "tests.integration.test_migrations",
+        "name": "test_populated_initial_head_upgrade_preserves_pins_media_and_history"
+      },
+      {
+        "class": "tests.integration.test_full_workflow",
+        "name": "test_full_purchase_request_flow_preserves_pins_and_human_approvals"
+      },
+      {
+        "class": "tests.integration.test_frontend_journey",
+        "name": "test_documented_http_login_submit_approve_track_and_session_lifecycle"
+      },
+      {
+        "class": "tests.integration.test_platform_foundation",
+        "name": "test_restrictions_round_trip_and_eligibility_rechecked_at_creation"
+      },
+      {
+        "class": "tests.integration.test_platform_foundation",
+        "name": "test_current_grant_reads_enforce_connection_manage_authority"
+      },
+      {
+        "class": "tests.integration.test_live_query_policy",
+        "name": "test_normal_pages_and_counts_exclude_deleted_entities[UserEntity-UserQuery-username]"
+      },
+      {
+        "class": "tests.integration.test_live_query_policy",
+        "name": "test_normal_pages_and_counts_exclude_deleted_entities[RoleEntity-RoleQuery-name]"
+      },
+      {
+        "class": "tests.integration.test_live_query_policy",
+        "name": "test_normal_pages_and_counts_exclude_deleted_entities[WorkGroupEntity-WorkGroupQuery-code]"
+      },
+      {
+        "class": "tests.integration.test_live_query_policy",
+        "name": "test_normal_pages_and_counts_exclude_deleted_entities[FormDefinitionEntity-FormQuery-code]"
+      },
+      {
+        "class": "tests.integration.test_live_query_policy",
+        "name": "test_normal_pages_and_counts_exclude_deleted_entities[WorkflowDefinitionEntity-WorkflowQuery-code]"
+      },
+      {
+        "class": "tests.integration.test_live_query_policy",
+        "name": "test_normal_pages_and_counts_exclude_deleted_entities[RequestTypeEntity-RequestTypeQuery-code]"
+      },
+      {
+        "class": "tests.integration.test_live_query_policy",
+        "name": "test_real_cache_refreshes_after_authorized_delete_and_restore"
+      },
+      {
+        "class": "tests.integration.test_application_seed",
+        "name": "test_seed_check_repeat_and_operator_edits_are_preserved"
+      },
+      {
+        "class": "tests.integration.test_application_seed",
+        "name": "test_concurrent_seed_converges_and_does_not_rewrite_published_catalogs"
+      },
+      {
+        "class": "tests.integration.test_application_seed",
+        "name": "test_seeded_requester_can_read_self_but_cannot_manage_users_or_restore"
+      }
+    ],
+    "delivery-wave-four-test": [
+      {
+        "class": "tests.integration.test_full_workflow",
+        "name": "test_full_purchase_request_flow_preserves_pins_and_human_approvals"
+      },
+      {
+        "class": "tests.integration.test_frontend_journey",
+        "name": "test_documented_http_login_submit_approve_track_and_session_lifecycle"
+      },
+      {
+        "class": "tests.integration.test_platform_foundation",
+        "name": "test_restrictions_round_trip_and_eligibility_rechecked_at_creation"
+      },
+      {
+        "class": "tests.integration.test_platform_foundation",
+        "name": "test_current_grant_reads_enforce_connection_manage_authority"
+      },
+      {
+        "class": "tests.integration.test_demo_seed",
+        "name": "test_demo_publishes_two_templates_and_preserves_operator_changes"
+      },
+      {
+        "class": "tests.integration.test_demo_seed",
+        "name": "test_installation_converges_and_does_not_regrant_revoked_access"
+      },
+      {
+        "class": "tests.integration.test_demo_seed",
+        "name": "test_failed_installation_rolls_back_and_can_be_repaired"
+      },
+      {
+        "class": "tests.integration.test_demo_groups",
+        "name": "test_demo_groups_are_owned_and_do_not_restore_revoked_members"
+      },
+      {
+        "class": "tests.integration.test_personal_preferences",
+        "name": "test_self_settings_http_contract_and_avatar_ownership"
+      },
+      {
+        "class": "tests.integration.test_personal_preferences",
+        "name": "test_settings_persist_conflict_and_isolate_self"
+      },
+      {
+        "class": "tests.integration.test_personal_preferences",
+        "name": "test_concurrent_setting_edits_have_one_explicit_conflict"
+      },
+      {
+        "class": "tests.integration.test_personal_preferences",
+        "name": "test_avatar_binding_is_self_owned_and_removal_preserves_private_media"
+      },
+      {
+        "class": "tests.integration.test_help_state",
+        "name": "test_help_http_requires_an_explicit_action_and_self_ownership"
+      },
+      {
+        "class": "tests.integration.test_help_state",
+        "name": "test_help_repeat_revision_locale_isolation_and_deliberate_self_reset"
+      },
+      {
+        "class": "tests.integration.test_resource_links",
+        "name": "test_resource_links_refresh_and_hide_deleted_or_revoked_targets"
+      },
+      {
+        "class": "tests.integration.test_resource_links",
+        "name": "test_selected_summary_is_not_limited_to_first_search_page"
+      },
+      {
+        "class": "tests.integration.test_business_analytics",
+        "name": "test_metrics_match_live_owned_lists_and_actual_return_decisions"
+      },
+      {
+        "class": "tests.integration.test_business_analytics",
+        "name": "test_dst_half_open_status_buckets_cancelled_unknown_and_live_denial"
+      },
+      {
+        "class": "tests.integration.test_wave_four_http",
+        "name": "test_wave_four_contracts_use_actual_permissions_and_list_queries"
+      },
+      {
+        "class": "tests.integration.test_saved_views_favorites",
+        "name": "test_saved_view_http_contract_is_private_and_strict"
+      },
+      {
+        "class": "tests.integration.test_saved_views_favorites",
+        "name": "test_presets_replay_roundtrip_isolation_schema_drift_and_favorite_refresh"
+      },
+      {
+        "class": "tests.integration.test_saved_views_favorites",
+        "name": "test_concurrent_default_selection_leaves_one_default"
+      },
+      {
+        "class": "tests.integration.test_setup_dependency_readiness",
+        "name": "test_setup_and_dependency_facts_do_not_write_or_grant"
+      },
+      {
+        "class": "tests.integration.test_setup_dependency_readiness",
+        "name": "test_definition_exact_pins_missing_form_client_and_empty_candidates"
+      },
+      {
+        "class": "tests.integration.test_unified_notifications",
+        "name": "test_security_notice_atomic_replay_locale_read_and_legacy_exclusion"
+      },
+      {
+        "class": "tests.integration.test_unified_notifications",
+        "name": "test_claim_release_and_forward_notices_follow_committed_assignments"
+      },
+      {
+        "class": "tests.integration.test_unified_notifications",
+        "name": "test_committed_process_fanout_dedupe_current_links_and_revocation"
+      },
+      {
+        "class": "tests.integration.test_processes",
+        "name": "test_notifications_are_atomic_owned_retryable_and_idempotent"
+      },
+      {
+        "class": "tests.integration.test_task_corrections",
+        "name": "test_repeated_correction_rounds_pin_data_feedback_and_reject_stale_writes"
+      }
+    ],
+    "delivery-transfer-test": [
+      {
+        "class": "tests.integration.test_consistency_live",
+        "name": "test_schedule_concurrent_write_and_noop"
+      },
+      {
+        "class": "tests.integration.test_consistency_live",
+        "name": "test_owned_swagger_browser"
+      },
+      {
+        "class": "tests.integration.test_consistency_live",
+        "name": "test_schedule_http_and_actual_scheduler_worker"
+      },
+      {
+        "class": "tests.integration.test_notification_push",
+        "name": "test_actual_report_cartable_worker_push_duplicate_and_offline_resync"
+      },
+      {
+        "class": "tests.integration.test_notification_push",
+        "name": "test_actual_heartbeat_lifetime_renewal_and_cleanup"
+      },
+      {
+        "class": "tests.integration.test_notification_push",
+        "name": "test_committed_only_signals_outsider_revocation_limits_and_disconnect"
+      },
+      {
+        "class": "tests.integration.test_owned_report_worker",
+        "name": "test_actual_worker_owned_report_download_and_delete"
+      },
+      {
+        "class": "tests.integration.test_owned_notification_worker",
+        "name": "test_owned_worker_notification_receipt_and_duplicate"
+      },
+      {
+        "class": "tests.integration.test_owned_calendar_worker",
+        "name": "test_scheduler_reload_broker_recovery_and_real_worker_deduplicate"
+      },
+      {
+        "class": "tests.integration.test_owned_calendar_worker",
+        "name": "test_cancel_after_enqueue_is_safe_at_the_actual_worker"
+      },
+      {
+        "class": "tests.integration.test_private_transfers",
+        "name": "test_committed_upload_retains_actual_object_after_refresh_failure"
+      },
+      {
+        "class": "tests.integration.test_private_transfers",
+        "name": "test_private_download_releases_database_before_actual_storage_stream"
+      },
+      {
+        "class": "tests.integration.test_private_transfers",
+        "name": "test_maximum_private_transfer_crosses_actual_session_boundary"
+      },
+      {
+        "class": "tests.integration.test_demo_assets",
+        "name": "test_demo_assets_real_storage_is_idempotent"
+      },
+      {
+        "class": "tests.integration.test_required_human_approval",
+        "name": "test_receipt_and_ai_inspection_use_real_sessions_and_participant_authorization"
+      },
+      {
+        "class": "tests.integration.test_required_human_approval",
+        "name": "test_committed_human_approval_dispatches_actual_worker_order_receipt"
+      },
+      {
+        "class": "tests.integration.test_required_human_approval",
+        "name": "test_rolled_back_approval_has_no_dispatch_or_completed_human_action"
+      },
+      {
+        "class": "tests.integration.test_required_human_approval",
+        "name": "test_current_authority_and_approval_are_rechecked_before_dispatch[offboarded]"
+      },
+      {
+        "class": "tests.integration.test_required_human_approval",
+        "name": "test_current_authority_and_approval_are_rechecked_before_dispatch[role_revoked]"
+      },
+      {
+        "class": "tests.integration.test_required_human_approval",
+        "name": "test_current_authority_and_approval_are_rechecked_before_dispatch[grant_revoked]"
+      },
+      {
+        "class": "tests.integration.test_required_human_approval",
+        "name": "test_current_authority_and_approval_are_rechecked_before_dispatch[connection_rotated]"
+      },
+      {
+        "class": "tests.integration.test_required_human_approval",
+        "name": "test_current_authority_and_approval_are_rechecked_before_dispatch[payload_changed]"
+      },
+      {
+        "class": "tests.integration.test_required_human_approval",
+        "name": "test_current_authority_and_approval_are_rechecked_before_dispatch[cancelled]"
+      },
+      {
+        "class": "tests.integration.test_required_human_approval",
+        "name": "test_direct_process_resume_cannot_fabricate_human_approval"
+      },
+      {
+        "class": "tests.integration.test_required_human_approval",
+        "name": "test_direct_resume_cannot_invent_order_receipt_after_real_human_approval"
+      },
+      {
+        "class": "tests.integration.test_operation_reconciliation",
+        "name": "test_crash_before_http_has_unknown_lookup_and_cannot_claim_compensated"
+      },
+      {
+        "class": "tests.integration.test_operation_reconciliation",
+        "name": "test_acknowledgment_loss_reconciles_same_receipt_without_replaying_order"
+      },
+      {
+        "class": "tests.integration.test_operation_reconciliation",
+        "name": "test_explicit_compensation_records_actual_separate_cancellation_receipt[False]"
+      },
+      {
+        "class": "tests.integration.test_operation_reconciliation",
+        "name": "test_explicit_compensation_records_actual_separate_cancellation_receipt[True]"
+      },
+      {
+        "class": "tests.integration.test_processes",
+        "name": "test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_human[none]"
+      },
+      {
+        "class": "tests.integration.test_processes",
+        "name": "test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_human[approve]"
+      },
+      {
+        "class": "tests.integration.test_processes",
+        "name": "test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_human[deny]"
+      },
+      {
+        "class": "tests.integration.test_processes",
+        "name": "test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_human[expire]"
+      },
+      {
+        "class": "tests.integration.test_processes",
+        "name": "test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_human[cancel]"
+      },
+      {
+        "class": "tests.integration.test_ai_connections",
+        "name": "test_ai_connection_model_allowlist_and_rotation_are_rechecked"
+      },
+      {
+        "class": "tests.integration.test_ai_budget",
+        "name": "test_reservation_survives_restart_and_blocks_excess_dispatch"
+      },
+      {
+        "class": "tests.integration.test_ai_budget",
+        "name": "test_concurrent_duplicate_reservations_allow_only_one_dispatch"
+      }
+    ],
+    "delivery-through-020-test": [
+      {
+        "class": "tests.integration.test_support_failures",
+        "name": "test_business_rollback_persists_only_safe_incident_and_episodes"
+      },
+      {
+        "class": "tests.integration.test_support_failures",
+        "name": "test_http_failure_rolls_back_then_returns_the_durable_correlation"
+      },
+      {
+        "class": "tests.integration.test_support_failures",
+        "name": "test_client_intake_dedupe_and_rate_limit_are_durable"
+      },
+      {
+        "class": "tests.integration.test_calendar_events",
+        "name": "test_calendar_overlap_exclusive_end_live_group_and_revision"
+      },
+      {
+        "class": "tests.integration.test_calendar_events",
+        "name": "test_work_deadline_is_actual_read_only_point_and_disappears"
+      },
+      {
+        "class": "tests.integration.test_calendar_reminders",
+        "name": "test_event_edit_cancel_replay_and_source_transaction_rollback"
+      },
+      {
+        "class": "tests.integration.test_calendar_reminders",
+        "name": "test_late_relevant_reminder_expires_without_notice"
+      },
+      {
+        "class": "tests.integration.test_calendar_reminders",
+        "name": "test_actual_work_due_change_and_completion_cancel_old_reminders"
+      },
+      {
+        "class": "tests.integration.test_visual_runtime_conformance",
+        "name": "test_twenty_control_runtime_request_review_print_and_correction"
+      }
+    ],
+    "delivery-completion-test": [
+      {
+        "class": "tests.integration.test_workflow_defaults",
+        "name": "test_successor_restore_replays_one_draft_and_preserves_published_source"
+      },
+      {
+        "class": "tests.integration.test_workflow_defaults",
+        "name": "test_stale_workspace_invalidates_restore_and_layout_reset_preserves_graph"
+      },
+      {
+        "class": "tests.integration.test_workflow_defaults",
+        "name": "test_mixed_template_restoration_preserves_cases_and_rolls_back_partial_failure"
+      },
+      {
+        "class": "tests.integration.test_workflow_defaults",
+        "name": "test_restore_requires_explicit_source_and_rechecks_live_permissions"
+      },
+      {
+        "class": "tests.integration.test_workflow_defaults",
+        "name": "test_retired_baseline_restores_successor_without_republishing_it"
+      },
+      {
+        "class": "tests.integration.test_workflow_defaults",
+        "name": "test_preview_blocks_template_that_cannot_fit_the_bounded_workspace"
+      },
+      {
+        "class": "tests.integration.test_studio_workspace",
+        "name": "test_workspace_reopen_conflict_promotion_and_immutable_publication"
+      },
+      {
+        "class": "tests.integration.test_studio_workspace",
+        "name": "test_author_preview_filters_simulated_policy_and_uses_runtime_metadata"
+      },
+      {
+        "class": "tests.integration.test_definition_library",
+        "name": "test_library_search_paginates_grants_and_nested_dependency_usage"
+      },
+      {
+        "class": "tests.integration.test_definition_library",
+        "name": "test_template_is_independent_and_incompatible_bulk_apply_is_rejected"
+      },
+      {
+        "class": "tests.integration.test_definition_library",
+        "name": "test_workflow_template_keeps_call_pin_and_rejects_incompatible_upgrade"
+      },
+      {
+        "class": "tests.integration.test_definition_library",
+        "name": "test_form_explanation_reports_translation_gap_without_input_values"
+      }
+    ]
+  },
+  "owned_service_databases": {
+    "flow-test": [
+      "bpms_flow_0b4509dec63d4a1db8ceacf5b9871172"
+    ],
+    "delivery-foundation-test": [
+      "bpms_flow_bfb639ecf92a45ab980cc424e7b8d727"
+    ],
+    "delivery-wave-four-test": [
+      "bpms_flow_e05d823455a74dbdb4186c8ab084e7fd"
+    ],
+    "delivery-transfer-test": [
+      "bpms_flow_5203160d6a6948b8b34110f126bb8d57"
+    ],
+    "delivery-through-020-test": [
+      "bpms_flow_6eeefb1fede24ee0acd9372c2fbf8e66"
+    ],
+    "delivery-completion-test": [
+      "bpms_flow_94128db6622a434fa0c735da36246b54"
+    ]
+  },
+  "producer_manifest": {
+    "path": "docs/delivery/consistency-2026-10-09/contracts/manifest.json",
+    "sha256": "e8a671a3b247cc13c55d4022bec64e1756b87608d23d10e7807e4764ef6c7d54"
+  },
+  "focused_owned_service_results": {
+    "protected_operations": 21,
+    "notification_push": 3,
+    "required_skips": 0
+  },
+  "peer_review": {
+    "head": "95f88dce6f1a48da87294929041378c174e6b39c",
+    "scope": "Read-only selected source; no frontend modifications or browser execution.",
+    "observations": [
+      "Existing SERVICE_TASK inspector accepts a generic operation_key configuration.",
+      "No sandbox.order, orders/search or ai-evidence consumer references found under src/app/features and src/app/core."
+    ]
+  },
+  "retained_failure_evidence": [
+    {
+      "gate": "app-be-check-jc5uxl5a",
+      "result": "FAILED",
+      "cause": "Sandbox SQLite connections were not closed; regression reproduced and fixed without warning suppression."
+    },
+    {
+      "gate": "app-be-check-ebrje8cg",
+      "result": "FAILED",
+      "cause": "Notification reconnect closed before the initial frame; no cause asserted. Actual status assertion added; focused and combined profiles passed without relaxed limits or retries."
+    },
+    {
+      "profile": "protected-operations before resume guard",
+      "passed": 19,
+      "failed": 2,
+      "cause": "Generic resume accepted an invented receipt after real human approval; lost-reply dispatch remained pending."
+    },
+    {
+      "profile": "protected-operations after resume guard",
+      "passed": 20,
+      "failed": 1,
+      "cause": "Lost-reply test assumed one outbox batch drained prior isolation work; successive actual scheduler-style dispatch batches resolved pending dispatch."
+    }
+  ],
+  "remaining_acceptance": [
+    "APP-BE-023 actual browser-triggered workflow and inspectable receipt; implemented backend is not browser acceptance.",
+    "D02 approved named vendor/model/price/permitted data and cost for live claims; no paid or production action executed.",
+    "APP-BE-027 peer repair and APP-BE-028/029/031/032 and assistant tasks retain their own scope; not completed by this gate."
+  ],
+  "documentation_closure": {
+    "docs_command": "rtk proxy env UV_CACHE_DIR=/tmp/app-be-uv-cache uv run pytest -q tests/docs",
+    "docs_passed": 18,
+    "docs_skipped": 0,
+    "security_command": "rtk proxy env UV_CACHE_DIR=/tmp/app-be-uv-cache mise run security",
+    "security_returncode": 0,
+    "security_findings": 0,
+    "precommit_returncode": 0,
+    "precommit_scope": [
+      "BACKLOG.md",
+      "CHANGELOG.md",
+      "docs/BACKEND-BACKLOG.md",
+      "docs/delivery/BACKEND-BACKLOG.md",
+      "docs/delivery/PROTECTED-OPERATIONS-HANDOFF.md",
+      "docs/delivery/protected-operations-verification.json",
+      "docs/changes/APP-BE-021.md",
+      "docs/changes/APP-BE-022.md",
+      "docs/changes/APP-BE-023.md",
+      "docs/changes/APP-BE-024.md",
+      "docs/changes/APP-BE-025.md"
+    ],
+    "hook_no_applicable_files": "JSON/TOML/XML/YAML/Python hooks had no applicable closure files; verification JSON separately parsed successfully.",
+    "backlog_mirror_identical": true,
+    "only_documentation_changed_after_frozen_gate": true,
+    "runtime_test_and_producer_sources_identical_to_gate": true,
+    "git_whitespace_review": {
+      "command": "rtk proxy git diff --check",
+      "returncode": 2,
+      "status": "INTENTIONAL_MARKDOWN_HARD_BREAKS",
+      "reported_locations": 42,
+      "scope": "Only two-space Markdown backlog metadata hard breaks, including preserved prior changes. No code whitespace findings; existing Markdown style and scanner/hook rules preserved."
+    }
+  }
+}

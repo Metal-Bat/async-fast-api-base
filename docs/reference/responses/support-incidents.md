@@ -12,16 +12,16 @@ Used by: `GET /api/v1/support/incidents/by-support/{support_ref}`, `GET /api/v1/
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
-| `support_ref` | `string` | Yes | — |
-| `category` | `string` | Yes | — |
-| `error_code` | `integer` | Yes | — |
-| `operation` | `string` | Yes | — |
-| `state` | `string` | Yes | — |
-| `occurrence_count` | `integer` | Yes | — |
-| `first_seen_at` | `string` | Yes | — |
-| `last_seen_at` | `string` | Yes | — |
-| `expires_at` | `string` | Yes | — |
+| `ref_id` | `string` | Yes | Opaque incident reference containing its current version. |
+| `support_ref` | `string` | Yes | Correlation UUID; inspection requires support.incidents.manage. |
+| `category` | `string` | Yes | Canonical incident category; localized labels do not change this value. |
+| `error_code` | `integer` | Yes | Stable safe error code; exception messages and stack traces are never accepted. |
+| `operation` | `string` | Yes | Safe operation identifier; contains no submitted business payload. |
+| `state` | `string` | Yes | Incident lifecycle state: OPEN, ACKNOWLEDGED or RESOLVED. |
+| `occurrence_count` | `integer` | Yes | Number of grouped occurrences retained for this incident. |
+| `first_seen_at` | `string` | Yes | Timezone-aware UTC instant of the first grouped occurrence. |
+| `last_seen_at` | `string` | Yes | Timezone-aware UTC instant of the latest grouped occurrence. |
+| `expires_at` | `string` | Yes | Timezone-aware UTC retention deadline; expired incidents may be removed. |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
@@ -31,10 +31,10 @@ Used by: `POST /api/v1/support/incidents/{ref_id}/history`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `changed_at` | `string` | Yes | — |
-| `operation` | `string` | Yes | — |
-| `from_state` | `string | null` | Yes | — |
-| `to_state` | `string | null` | Yes | — |
+| `changed_at` | `string` | Yes | Timezone-aware UTC instant of this lifecycle transition. |
+| `operation` | `string` | Yes | Safe operation identifier; contains no submitted business payload. |
+| `from_state` | `string | null` | Yes | Previous canonical state; null for the initial transition. |
+| `to_state` | `string | null` | Yes | Resulting canonical state; null when no destination state is recorded. |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 

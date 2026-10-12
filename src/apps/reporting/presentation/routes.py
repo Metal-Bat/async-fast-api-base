@@ -11,6 +11,7 @@ from apps.reporting.domain.dto import ReportDetailDTO, ReportDTO, ReportQuery
 from core.deps import CurrentUser, SessionDep
 from core.history_dto import HistoryQuery, HistoryRecordDTO
 from core.history_service import HistoryService
+from core.i18n import _
 from core.ref_id import open_ref_id
 from utils.base_schema import PRIVATE_NO_STORE_RESPONSES, response_schema
 from utils.pagination import Page
@@ -73,6 +74,16 @@ async def get_report(
 @router.get(
     "/{ref_id}/download",
     response_class=StreamingResponse,
+    description=_(
+        "Requires the authenticated report owner. Only ready, unexpired private archives "
+        "within the configured byte limit may download. Metadata preflight precedes recording "
+        "an authorized download start; download_count does not prove complete delivery. The "
+        "database session closes before streaming. Storage uses chunks of at most 64 KiB and "
+        "the final byte count must match preflight. A late storage failure, changed size or "
+        "disconnect closes the binary stream without a JSON success envelope. Report generation "
+        "status is independent of a browser download. The response is private, no-store, "
+        "nosniff and attachment-only with a server-selected filename; no direct storage URL."
+    ),
     responses={
         200: {
             "description": "Authorized private bytes; no JSON envelope. / محتوای خصوصی مجاز؛ بدون پوشش JSON.",

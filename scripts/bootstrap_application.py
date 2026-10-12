@@ -31,7 +31,9 @@ def validate_demo_environment(environment: str, host: str, database: str, enable
 
 
 @contextmanager
-def open_manifest(path: Path, *, database: str, create: bool) -> Generator[BootstrapManifest]:
+def open_manifest(
+    path: Path, *, database: str, create: bool, usernames: dict[str, str] | None = None
+) -> Generator[BootstrapManifest]:
     """Lock a private regular file; never follow links, replace inputs, or expose credentials."""
     flags = os.O_RDWR | os.O_NOFOLLOW | os.O_NONBLOCK
     try:
@@ -61,7 +63,9 @@ def open_manifest(path: Path, *, database: str, create: bool) -> Generator[Boots
                 accounts=[
                     BootstrapAccount(
                         persona=persona,
-                        username=f"demo-{marker.hex}-{persona}",
+                        username=usernames[persona]
+                        if usernames
+                        else f"demo-{marker.hex}-{persona}",
                         password=secrets.token_urlsafe(32),
                     )
                     for persona in ("requester", "reviewer", "designer")

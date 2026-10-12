@@ -164,7 +164,7 @@ class RequestService:
             view_key="request",
             purpose="edit" if editable else "summary",
             resolved_locale=locale,
-            direction="rtl" if locale == "fa" else "ltr",
+            direction="rtl" if locale in {"fa", "ar"} else "ltr",
             **projection,
         )
 
@@ -296,6 +296,8 @@ class RequestService:
         data: BusinessRequestCreateDTO,
         actor: UserEntity,
         client_context: ClientContext | None = None,
+        *,
+        identifier: UUID | None = None,
     ) -> tuple[BusinessRequestEntity, FormSubmissionEntity]:
         request_type = await self.get_type(data.request_type_ref_id)
         context = client_context or ClientContext.legacy()
@@ -310,6 +312,7 @@ class RequestService:
             else workflow_version.default_priority
         )
         request = BusinessRequestEntity(
+            **({"id": identifier} if identifier is not None else {}),
             request_type_id=request_type.id,
             requester_user_id=actor.id,
             workflow_version_id=workflow_version.id,

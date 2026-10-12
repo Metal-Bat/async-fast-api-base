@@ -40,6 +40,35 @@ def test_valid_linear_graph_has_canonical_checksum() -> None:
     assert GraphValidator().validate(graph().model_copy(deep=True)).checksum == result.checksum
 
 
+def test_trusted_output_refinement_preserves_declared_graph_and_rejects_wrong_types():
+    value = graph()
+    value.steps.insert(1, GraphStep(key="source", type_code="SERVICE_TASK"))
+    value.transitions[0].target = "source"
+    value.transitions.append(GraphTransition(source="source", target="review", outcome="next"))
+    value.bindings.append(
+        GraphBinding(
+            step="review",
+            target_port="initial_data",
+            target_schema={"type": "object"},
+            source_kind="STEP_OUTPUT",
+            source_step="source",
+            source_port="result",
+            source_schema={"anyOf": [{}, {"type": "null"}]},
+        )
+    )
+    declared = value.model_dump()
+    validator = GraphValidator()
+    assert not validator.validate(value).valid
+    trusted = {"source": {"result": {"type": "object"}}}
+    assert validator.validate(value, step_output_schemas=trusted).valid
+    assert value.model_dump() == declared
+    assert not validator.validate(
+        value, step_output_schemas={"source": {"result": {"type": "string"}}}
+    ).valid
+    value.bindings[0].source_kind = "CONSTANT"
+    assert not validator.validate(value, step_output_schemas=trusted).valid
+
+
 def test_checksum_uses_stable_identity_inside_optimistic_references() -> None:
     value = graph()
     entity_id = uuid7()

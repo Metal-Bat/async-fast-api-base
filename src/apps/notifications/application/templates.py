@@ -49,8 +49,12 @@ class NotificationTemplateRegistry:
                 key="workflow.notice",
                 version="1",
                 variables={"message": str},
-                subjects={"en": "Workflow notification", "fa": "اعلان گردش کار"},
-                contents={"en": "{message}", "fa": "{message}"},
+                subjects={
+                    "en": "Workflow notification",
+                    "fa": "اعلان گردش کار",
+                    "ar": "إشعار سير العمل",
+                },
+                contents={"en": "{message}", "fa": "{message}", "ar": "{message}"},
             ),
         ) + mapped
 

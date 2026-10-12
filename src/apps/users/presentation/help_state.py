@@ -29,7 +29,7 @@ HelpReleaseDep = Annotated[HelpReleaseMetadata | None, Depends(load_help_release
     response_model=SuccessResponse[HelpStatePage],
     summary=_("Read personal multilingual help state"),
     description=_(
-        "Read only this authenticated user's acknowledgment metadata with page/size bounds and optional en/fa locale filter. Ordered by help_key, revision, locale. This read records no seen or dismissal action and grants no business access. release_key is null when paired frontend metadata is unavailable. Help content remains frontend-owned and is never stored here."
+        "Read only this authenticated user's acknowledgment metadata with page/size bounds and optional en/fa/ar locale filter. Ordered by help_key, revision, locale. This read records no seen or dismissal action and grants no business access. release_key is null when paired frontend metadata is unavailable. Help content remains frontend-owned and is never stored here."
     ),
     responses=PRIVATE_NO_STORE_RESPONSES,
 )

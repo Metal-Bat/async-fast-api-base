@@ -32,7 +32,10 @@ class GraphStep(BaseDTO):
     config: dict[str, Any] = Field(default_factory=dict)
     flow: GraphFlow = Field(default_factory=GraphFlow)
     form_ref: str | None = None
-    field_policy: dict[str, list[str]] | None = None
+    field_policy: dict[str, list[str]] | None = Field(
+        default=None,
+        description="Pinned human-task read/write/required/hidden JSON Schema scopes. A nonempty read policy with an empty write list permits read-only acknowledgment; every changed field remains forbidden. Runtime writable_scopes is authoritative.",
+    )
     task_contract: HumanTaskContract | None = None
     subprocess: SubprocessCall | None = Field(
         default=None,
@@ -53,7 +56,10 @@ class GraphBinding(BaseDTO):
     source_path: str | None = None
     source_step: str | None = None
     source_port: str | None = None
-    source_schema: dict[str, Any] | None = None
+    source_schema: dict[str, Any] | None = Field(
+        default=None,
+        description="For STEP_OUTPUT, the exact pinned output-port schema, including generic service metadata. Registered sandbox receipt guarantees refine server-side compatibility without changing persisted port metadata or graph checksums. Caller-supplied schema assertions cannot replace the trusted operation contract.",
+    )
     constant_value: Any = None
 
 

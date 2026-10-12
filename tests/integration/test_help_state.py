@@ -25,10 +25,11 @@ pytestmark = [
 
 
 @pytest.mark.anyio
-async def test_help_http_requires_an_explicit_action_and_self_ownership(tmp_path):
+@pytest.mark.parametrize("locale", ["fa", "ar"])
+async def test_help_http_requires_an_explicit_action_and_self_ownership(tmp_path, locale):
     metadata = HelpReleaseMetadata(
         release_key="synthetic-http",
-        items=[{"help_key": "requests.start", "revision": "1", "locales": ["en", "fa"]}],
+        items=[{"help_key": "requests.start", "revision": "1", "locales": ["en", "fa", "ar"]}],
     )
     app.dependency_overrides[load_help_release] = lambda: metadata
     try:
@@ -56,7 +57,7 @@ async def test_help_http_requires_an_explicit_action_and_self_ownership(tmp_path
                 read = await client.get("/api/v1/me/help-state", headers=headers)
                 assert read.status_code == 200, read.text
                 assert read.json()["data"]["states"]["total"] == 0
-                action = {"help_key": "requests.start", "revision": "1", "locale": "fa"}
+                action = {"help_key": "requests.start", "revision": "1", "locale": locale}
                 seen = await client.post("/api/v1/me/help-state/seen", headers=headers, json=action)
                 assert seen.status_code == 200 and seen.json()["data"]["saved"]
                 assert seen.headers["Cache-Control"] == "private, no-store"

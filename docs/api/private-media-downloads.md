@@ -90,3 +90,16 @@ Downloads are streamed after object metadata preflight. An object that fails siz
 or digest-metadata verification returns 404 before streaming. These checks do not make the
 content malware-free. Generic files are still forced to attachment until the malware-scanning
 policy changes.
+
+Database authorization reads finish before the response stream begins; no database
+transaction is retained while the client downloads. Storage reads use chunks of at most
+64 KiB. The streamed byte count must match the preflight size: excess bytes are rejected
+before forwarding that chunk, and a short object fails at EOF. A late storage failure or
+size change closes the binary response after headers; it cannot return a JSON success
+envelope. Clients must treat a failed or incomplete transfer as unsuccessful and discard
+partial files. Explicit stream closure releases the storage body and client.
+
+Report downloads retain their separate owner/ready/expiry checks and archive limit.
+`download_count` records an authorized download start after preflight, not successful
+delivery. Report generation and persisted completion notifications remain independent
+of whether a browser finishes downloading the archive.

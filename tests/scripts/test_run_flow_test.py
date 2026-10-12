@@ -2,6 +2,7 @@
 
 import subprocess
 from unittest.mock import AsyncMock, Mock
+from uuid import uuid4
 
 import asyncpg
 import pytest
@@ -24,6 +25,52 @@ async def test_ready_database_needs_no_docker(environment, monkeypatch):
     await runner._ensure_postgres()
     probe.assert_awaited_once()
     docker.assert_not_called()
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(
+    "name,action,host",
+    [
+        ("production", "drop", "localhost"),
+        ("bpms_flow_shared", "drop", "localhost"),
+        ("bpms_flow_" + "a" * 32, "reset", "localhost"),
+        ("bpms_flow_" + "a" * 32, "drop", "remote.invalid"),
+        ('bpms_flow_"; DROP DATABASE postgres;--', "drop", "localhost"),
+    ],
+)
+async def test_database_mutation_refuses_unknown_identity_before_connect(
+    environment, monkeypatch, name, action, host
+):
+    monkeypatch.setenv("FLOW_TEST_POSTGRES_HOST", host)
+    connect = AsyncMock()
+    monkeypatch.setattr(runner.asyncpg, "connect", connect)
+    with pytest.raises(ValueError, match="owned local"):
+        await runner._database_command(name, action)
+    connect.assert_not_awaited()
+
+
+@pytest.mark.anyio
+async def test_only_created_database_can_be_dropped_at_unchanged_local_identity(
+    environment, monkeypatch
+):
+    name = "bpms_flow_" + uuid4().hex
+    connection = AsyncMock()
+    connect = AsyncMock(return_value=connection)
+    monkeypatch.setattr(runner.asyncpg, "connect", connect)
+    await runner._database_command(name, "create")
+    monkeypatch.setenv("POSTGRES_PORT", "5544")
+    with pytest.raises(ValueError, match="owned local"):
+        await runner._database_command(name, "drop")
+    assert connect.await_count == 1
+    monkeypatch.setenv("POSTGRES_PORT", "5432")
+    await runner._database_command(name, "drop")
+    assert [call.args[0] for call in connection.execute.await_args_list] == [
+        f'CREATE DATABASE "{name}"',
+        f'DROP DATABASE "{name}" WITH (FORCE)',
+    ]
+    with pytest.raises(ValueError, match="owned local"):
+        await runner._database_command(name, "drop")
+    assert connect.await_count == 2
 
 
 @pytest.mark.anyio
@@ -142,6 +189,16 @@ def test_delivery_profile_uses_owned_database_and_preserves_workflows(environmen
 
 def test_unknown_flow_profile_fails_before_creating_database(environment, monkeypatch):
     monkeypatch.setenv("FLOW_TEST_PROFILE", "arbitrary-tests")
+    startup = AsyncMock()
+    monkeypatch.setattr(runner, "_ensure_postgres", startup)
+    assert runner.main() == 2
+    startup.assert_not_awaited()
+
+
+@pytest.mark.parametrize("image", ["", "sample_backend", "app-be-runtime:bad tag"])
+def test_runtime_profile_requires_candidate_before_startup(environment, monkeypatch, image):
+    monkeypatch.setenv("FLOW_TEST_PROFILE", "runtime-image")
+    monkeypatch.setenv("APP_RUNTIME_IMAGE", image)
     startup = AsyncMock()
     monkeypatch.setattr(runner, "_ensure_postgres", startup)
     assert runner.main() == 2

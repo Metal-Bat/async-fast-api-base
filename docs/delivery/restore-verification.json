@@ -1,0 +1,135 @@
+{
+  "scope": "APP-BE-032",
+  "status": "VERIFIED_WITH_EXCEPTION",
+  "final_gate": "VERIFIED_WITH_EXCEPTION",
+  "observed_runs": [
+    {
+      "result": "FAIL",
+      "cause": "Owned source bucket had not been initialized.",
+      "database_prefix": "bpms_flow_128e4a"
+    },
+    {
+      "database": "bpms_flow_c3728465649a4a49b78299a7ded7e0c8",
+      "result": "PASS",
+      "passed": 1,
+      "duration_seconds": 8.04,
+      "scope": "Actual PostgreSQL/private-S3 restore, encrypted credentials, immutable pins and current personal/support access."
+    },
+    {
+      "database": "bpms_flow_0283ad1915684f21bd359ba39f4d753d",
+      "result": "FAIL",
+      "passed": 0,
+      "failed": 1,
+      "duration_seconds": 3.54,
+      "cause": "New protected restore seam did not yet exist."
+    },
+    {
+      "database": "bpms_flow_99337084a56a4d4b9bf3b9ee1be18ba9",
+      "result": "PASS",
+      "passed": 2,
+      "failed": 0,
+      "duration_seconds": 16.34,
+      "scope": "Expanded private/personal/support restore plus actual accepted-but-unacknowledged HTTPS order: restored worker duplicate remains UNKNOWN, generic resume/ordinary recovery denied, original identity lookup confirms same receipt and no second order."
+    }
+  ],
+  "limits": [
+    "Current mandatory full-gate restore remains required.",
+    "Restored outbox was not published before explicit provider reconciliation; no general production failover/RPO/RTO is claimed."
+  ],
+  "current_full_gate": "VERIFIED_WITH_EXCEPTION",
+  "current_full_gate_evidence": "main-tasks-final-verification.json",
+  "strict_resource_repair": {
+    "resource_lifetime_regression": {
+      "red_failed": 1,
+      "green_passed": 1,
+      "green_seconds": 1.97
+    },
+    "strict_restore": {
+      "command": [
+        "mise",
+        "run",
+        "delivery-restore-test"
+      ],
+      "warning_policy": [
+        "error",
+        "ignore:'asyncio\\.iscoroutinefunction' is deprecated and slated for removal in Python 3\\.16; use inspect\\.iscoroutinefunction\\(\\) instead:DeprecationWarning:cohere\\.client$",
+        "ignore:'_UnionGenericAlias' is deprecated and slated for removal in Python 3\\.17:DeprecationWarning:google\\.genai\\.types$"
+      ],
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 15.78
+    },
+    "typecheck": "PASS",
+    "all_file_precommit": "PASS",
+    "full_rerun": "PASS",
+    "fixture_naming": {
+      "before": "Explicit name-tests-test hook rejected fixture helper filenames.",
+      "after": "Seven helpers renamed to test_*_fixture.py and imports updated; helper functions and responsibilities preserved. No new hook exclusions or skips.",
+      "current_modules": [
+        "tests/integration/test_connected_fixture.py",
+        "tests/integration/test_purchase_fixture.py",
+        "tests/integration/test_purchase_pins_fixture.py",
+        "tests/integration/test_purchase_request_fixture.py",
+        "tests/integration/test_restore_personal_fixture.py",
+        "tests/integration/test_restore_protected_fixture.py",
+        "tests/integration/test_scripted_ai_fixture.py"
+      ]
+    },
+    "temporary_typecheck_diagnostic": "Missing @override on regression-test close method; fixed with typing.override, then typecheck passed.",
+    "strict_restore_after_fixture_rename": {
+      "command": [
+        "mise",
+        "run",
+        "delivery-restore-test"
+      ],
+      "warning_policy": [
+        "error",
+        "ignore:'asyncio\\.iscoroutinefunction' is deprecated and slated for removal in Python 3\\.16; use inspect\\.iscoroutinefunction\\(\\) instead:DeprecationWarning:cohere\\.client$",
+        "ignore:'_UnionGenericAlias' is deprecated and slated for removal in Python 3\\.17:DeprecationWarning:google\\.genai\\.types$"
+      ],
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 15.81
+    },
+    "tracked_and_untracked_hooks": {
+      "status": "PASS",
+      "candidate_file_count": 1226,
+      "command": "pre-commit run --files <all git-listed tracked and untracked nonignored regular files except graph outputs>",
+      "new_exclusions": false
+    },
+    "sse_reconnect_investigation": {
+      "full_gate_failure": "Stream closed before initial resync after admission/disconnect cleanup.",
+      "focused_profile": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0,
+        "seconds": 46.43
+      },
+      "change": "Added explicit HTTP 200 assertions before reading streams, preserving every recipient, rollback, revocation, expiry, admission, disconnect and resync assertion. No production timeout, warning or retry policy changes.",
+      "cause": "Not reproduced in isolated profile; no production cause asserted.",
+      "full_rerun": "REQUIRED",
+      "non_gate_equivalent_probe": {
+        "status": "FAILED",
+        "exit_code": 2,
+        "passed": 2,
+        "failed": 1,
+        "seconds": 85.56,
+        "failure": "Report/cartable dispatch did not finish within the existing 45-second deadline.",
+        "setup_difference": "Probe mistakenly supplied Python-level warning filters to worker subprocesses instead of applying the gate policy exclusively through PYTEST_ADDOPTS; not equivalent to the gate.",
+        "owned_database_cleanup": "Confirmed removed",
+        "follow_up": "Rerunning using scripts.run_check.approved_warning_filters via PYTEST_ADDOPTS and unchanged worker environment."
+      },
+      "gate_equivalent_strict_profile": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0,
+        "seconds": 47.78,
+        "exit_code": 0,
+        "policy": "PYTEST_ADDOPTS filterwarnings=error followed by exact scripts.run_check.approved_warning_filters; no worker environment override.",
+        "cleanup": "Confirmed owned database removed"
+      }
+    }
+  }
+}

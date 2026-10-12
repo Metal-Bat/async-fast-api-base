@@ -1,0 +1,575 @@
+{
+  "CalendarInput": {
+    "$defs": {
+      "AllDaySchedule": {
+        "additionalProperties": false,
+        "properties": {
+          "end_date": {
+            "description": "Exclusive Gregorian end date.",
+            "format": "date",
+            "title": "End Date",
+            "type": "string"
+          },
+          "kind": {
+            "const": "all_day",
+            "default": "all_day",
+            "title": "Kind",
+            "type": "string"
+          },
+          "start_date": {
+            "description": "Inclusive Gregorian date; no conversion into a timed event.",
+            "format": "date",
+            "title": "Start Date",
+            "type": "string"
+          },
+          "timezone": {
+            "description": "IANA timezone for local presentation; canonical dates remain Gregorian.",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "timezone",
+          "start_date",
+          "end_date"
+        ],
+        "title": "AllDaySchedule",
+        "type": "object"
+      },
+      "TimedSchedule": {
+        "additionalProperties": false,
+        "properties": {
+          "end_at": {
+            "description": "Exclusive aware instant after start_at, normalized to UTC.",
+            "format": "date-time",
+            "title": "End At",
+            "type": "string"
+          },
+          "kind": {
+            "const": "timed",
+            "default": "timed",
+            "title": "Kind",
+            "type": "string"
+          },
+          "start_at": {
+            "description": "Inclusive aware instant, normalized to UTC.",
+            "format": "date-time",
+            "title": "Start At",
+            "type": "string"
+          },
+          "timezone": {
+            "description": "IANA timezone for local presentation; canonical dates remain Gregorian.",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "timezone",
+          "start_at",
+          "end_at"
+        ],
+        "title": "TimedSchedule",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "examples": [
+      {
+        "command_key": "meeting-create-1",
+        "reminder_offsets": [
+          900
+        ],
+        "schedule": {
+          "end_at": "2028-02-29T11:00:00+04:00",
+          "kind": "timed",
+          "start_at": "2028-02-29T10:00:00+04:00",
+          "timezone": "Asia/Dubai"
+        },
+        "title": "Team meeting",
+        "work_group_ref_id": null
+      },
+      {
+        "command_key": "date-create-1",
+        "reminder_offsets": [],
+        "schedule": {
+          "end_date": "2028-03-01",
+          "kind": "all_day",
+          "start_date": "2028-02-29",
+          "timezone": "UTC"
+        },
+        "title": "Leap day"
+      }
+    ],
+    "properties": {
+      "command_key": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Command Key",
+        "type": "string"
+      },
+      "reminder_offsets": {
+        "description": "Seconds before start; up to three distinct integers from zero to thirty days. Empty disables reminders.",
+        "items": {
+          "maximum": 2592000,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "maxItems": 3,
+        "title": "Reminder Offsets",
+        "type": "array"
+      },
+      "schedule": {
+        "discriminator": {
+          "mapping": {
+            "all_day": "#/$defs/AllDaySchedule",
+            "timed": "#/$defs/TimedSchedule"
+          },
+          "propertyName": "kind"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/TimedSchedule"
+          },
+          {
+            "$ref": "#/$defs/AllDaySchedule"
+          }
+        ],
+        "title": "Schedule"
+      },
+      "title": {
+        "maxLength": 120,
+        "minLength": 1,
+        "title": "Title",
+        "type": "string"
+      },
+      "work_group_ref_id": {
+        "anyOf": [
+          {
+            "maxLength": 512,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Current authorized team reference; null creates a personal event.",
+        "title": "Work Group Ref Id"
+      }
+    },
+    "required": [
+      "command_key",
+      "title",
+      "schedule"
+    ],
+    "title": "CalendarInput",
+    "type": "object"
+  },
+  "CalendarItemDTO": {
+    "$defs": {
+      "AllDaySchedule": {
+        "additionalProperties": false,
+        "properties": {
+          "end_date": {
+            "description": "Exclusive Gregorian end date.",
+            "format": "date",
+            "title": "End Date",
+            "type": "string"
+          },
+          "kind": {
+            "const": "all_day",
+            "default": "all_day",
+            "title": "Kind",
+            "type": "string"
+          },
+          "start_date": {
+            "description": "Inclusive Gregorian date; no conversion into a timed event.",
+            "format": "date",
+            "title": "Start Date",
+            "type": "string"
+          },
+          "timezone": {
+            "description": "IANA timezone for local presentation; canonical dates remain Gregorian.",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "timezone",
+          "start_date",
+          "end_date"
+        ],
+        "title": "AllDaySchedule",
+        "type": "object"
+      },
+      "DeadlineSchedule": {
+        "properties": {
+          "due_at": {
+            "format": "date-time",
+            "title": "Due At",
+            "type": "string"
+          },
+          "kind": {
+            "const": "deadline",
+            "default": "deadline",
+            "title": "Kind",
+            "type": "string"
+          },
+          "timezone": {
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "due_at",
+          "timezone"
+        ],
+        "title": "DeadlineSchedule",
+        "type": "object"
+      },
+      "TimedSchedule": {
+        "additionalProperties": false,
+        "properties": {
+          "end_at": {
+            "description": "Exclusive aware instant after start_at, normalized to UTC.",
+            "format": "date-time",
+            "title": "End At",
+            "type": "string"
+          },
+          "kind": {
+            "const": "timed",
+            "default": "timed",
+            "title": "Kind",
+            "type": "string"
+          },
+          "start_at": {
+            "description": "Inclusive aware instant, normalized to UTC.",
+            "format": "date-time",
+            "title": "Start At",
+            "type": "string"
+          },
+          "timezone": {
+            "description": "IANA timezone for local presentation; canonical dates remain Gregorian.",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "timezone",
+          "start_at",
+          "end_at"
+        ],
+        "title": "TimedSchedule",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "editable": {
+        "title": "Editable",
+        "type": "boolean"
+      },
+      "ref_id": {
+        "title": "Ref Id",
+        "type": "string"
+      },
+      "route_key": {
+        "enum": [
+          "calendar_events",
+          "work_items"
+        ],
+        "title": "Route Key",
+        "type": "string"
+      },
+      "schedule": {
+        "discriminator": {
+          "mapping": {
+            "all_day": "#/$defs/AllDaySchedule",
+            "deadline": "#/$defs/DeadlineSchedule",
+            "timed": "#/$defs/TimedSchedule"
+          },
+          "propertyName": "kind"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/TimedSchedule"
+          },
+          {
+            "$ref": "#/$defs/AllDaySchedule"
+          },
+          {
+            "$ref": "#/$defs/DeadlineSchedule"
+          }
+        ],
+        "title": "Schedule"
+      },
+      "source_kind": {
+        "enum": [
+          "manual",
+          "work_item"
+        ],
+        "title": "Source Kind",
+        "type": "string"
+      },
+      "title": {
+        "title": "Title",
+        "type": "string"
+      },
+      "work_group_ref_id": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Work Group Ref Id"
+      }
+    },
+    "required": [
+      "ref_id",
+      "source_kind",
+      "title",
+      "schedule",
+      "editable",
+      "route_key"
+    ],
+    "title": "CalendarItemDTO",
+    "type": "object"
+  },
+  "CalendarQuery": {
+    "$defs": {
+      "FilterCriteria": {
+        "additionalProperties": false,
+        "description": "One filter in the shared search wire format.",
+        "properties": {
+          "field_name": {
+            "minLength": 1,
+            "title": "Field Name",
+            "type": "string"
+          },
+          "operation": {
+            "$ref": "#/$defs/FilterOperation"
+          },
+          "value": {
+            "default": null,
+            "title": "Value"
+          }
+        },
+        "required": [
+          "field_name",
+          "operation"
+        ],
+        "title": "FilterCriteria",
+        "type": "object"
+      },
+      "FilterOperation": {
+        "description": "Filter operators exposed by the shared search contract.",
+        "enum": [
+          "equal",
+          "notEqual",
+          "startWith",
+          "endsWith",
+          "contains",
+          "notContains",
+          "between",
+          "isNull",
+          "isNotNull",
+          "gt",
+          "gte",
+          "lt",
+          "lte",
+          "in",
+          "nin"
+        ],
+        "title": "FilterOperation",
+        "type": "string"
+      },
+      "SortOperation": {
+        "description": "Sort direction for one field or a sequence of fields.",
+        "enum": [
+          "asc",
+          "desc"
+        ],
+        "title": "SortOperation",
+        "type": "string"
+      },
+      "SortOrder": {
+        "additionalProperties": false,
+        "description": "Sort one field or multiple fields using the same direction.",
+        "properties": {
+          "field_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Field Name"
+          },
+          "multi_field": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Multi Field",
+            "type": "array"
+          },
+          "operation": {
+            "$ref": "#/$defs/SortOperation",
+            "default": "asc"
+          }
+        },
+        "title": "SortOrder",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "examples": [
+      {
+        "end_date": "2028-03-01",
+        "filters": [],
+        "include_work_deadlines": true,
+        "page": 1,
+        "size": 20,
+        "sort_orders": [],
+        "start_date": "2028-02-01",
+        "timezone": "Asia/Dubai"
+      }
+    ],
+    "properties": {
+      "end_date": {
+        "format": "date",
+        "title": "End Date",
+        "type": "string"
+      },
+      "filters": {
+        "items": {
+          "$ref": "#/$defs/FilterCriteria"
+        },
+        "title": "Filters",
+        "type": "array"
+      },
+      "include_work_deadlines": {
+        "default": true,
+        "title": "Include Work Deadlines",
+        "type": "boolean"
+      },
+      "page": {
+        "default": 1,
+        "minimum": 1,
+        "title": "Page",
+        "type": "integer"
+      },
+      "size": {
+        "default": 20,
+        "maximum": 100,
+        "minimum": 1,
+        "title": "Size",
+        "type": "integer"
+      },
+      "sort_orders": {
+        "items": {
+          "$ref": "#/$defs/SortOrder"
+        },
+        "title": "Sort Orders",
+        "type": "array"
+      },
+      "start_date": {
+        "format": "date",
+        "title": "Start Date",
+        "type": "string"
+      },
+      "timezone": {
+        "default": "UTC",
+        "maxLength": 64,
+        "title": "Timezone",
+        "type": "string"
+      }
+    },
+    "required": [
+      "start_date",
+      "end_date"
+    ],
+    "title": "CalendarQuery",
+    "type": "object"
+  },
+  "ReminderDTO": {
+    "properties": {
+      "due_at": {
+        "format": "date-time",
+        "title": "Due At",
+        "type": "string"
+      },
+      "ref_id": {
+        "title": "Ref Id",
+        "type": "string"
+      },
+      "status": {
+        "enum": [
+          "PENDING",
+          "SENT",
+          "CANCELLED",
+          "EXPIRED"
+        ],
+        "title": "Status",
+        "type": "string"
+      }
+    },
+    "required": [
+      "ref_id",
+      "due_at",
+      "status"
+    ],
+    "title": "ReminderDTO",
+    "type": "object"
+  },
+  "ReminderInput": {
+    "additionalProperties": false,
+    "examples": [
+      {
+        "command_key": "deadline-reminders-1",
+        "offsets": [
+          0,
+          3600
+        ]
+      }
+    ],
+    "properties": {
+      "command_key": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Command Key",
+        "type": "string"
+      },
+      "offsets": {
+        "items": {
+          "maximum": 2592000,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "maxItems": 3,
+        "minItems": 1,
+        "title": "Offsets",
+        "type": "array"
+      }
+    },
+    "required": [
+      "command_key",
+      "offsets"
+    ],
+    "title": "ReminderInput",
+    "type": "object"
+  }
+}

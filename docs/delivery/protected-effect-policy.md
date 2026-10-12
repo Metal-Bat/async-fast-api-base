@@ -17,6 +17,13 @@ until explicit child policy/evidence is supported; it must never be inferred. Ru
 checks current process state and matching committed evidence before staging and before
 protected provider dispatch. No self-approval prohibition or quorum is added.
 
+Root workflows may run unprotected pinned child reviews before their own human
+approval. Those reviews confer no protected authority. The protected payload still
+comes unchanged from the root approval step, on the same execution token, after
+all required child branches have joined. Child-owned effects and using a child
+result as human approval remain rejected. This clarifies the existing root-local
+policy; it adds no cross-process approval mapping.
+
 Execution authority: retain existing publisher-bound authority with a dedicated ordinary
 (non-superuser) demo publisher. Current capability, exact connection/version and secret
 pins are rechecked at dispatch. Offboarding/revocation/rotation fails closed; no substitute
@@ -26,6 +33,7 @@ Sandbox order creation and explicitly registered cancellation are local disposab
 operations with real receipts. Named vendors, production purchases and paid/live AI are
 separate opt-in approvals. This proposal does not authorize those actions.
 
-Owner approval: PENDING. APP-BE-021 requires the exact mapping to be frozen; APP-BE-022
-requires the explicit D04 principal decision. Independent template/review work proceeds
-while this decision is pending.
+Owner approval: ACCEPTED on 2026-10-10. Exact owner response: “Accept the exact documented policy”.
+The mapping and D04 publisher-bound principal decision are frozen in
+[approved-decisions.json](approved-decisions.json). Implementation and acceptance remain
+separate; this approval does not mark APP-BE-021/022 DONE or authorize live purchases/AI.

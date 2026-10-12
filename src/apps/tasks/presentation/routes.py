@@ -7,6 +7,7 @@ from sqlmodel import col, delete, select
 
 import apps.tasks.tasks  # noqa: F401 - register the application task catalog
 from apps.tasks.application.outbox import enqueue_task
+from apps.tasks.application.schedules import ScheduleService, validate_dispatch
 from apps.tasks.application.service import TaskCatalogService
 from apps.tasks.domain.dto import (
     ManualTaskDTO,
@@ -28,11 +29,10 @@ from core.celery_app import celery_app
 from core.deps import SessionDep
 from core.history_dto import HistoryQuery, HistoryRecordDTO
 from core.history_service import HistoryService
+from core.i18n import _
 from core.ref_id import open_ref_id
-from core.settings import settings
 from utils.base_schema import response_schema
-from utils.date_utils import get_datetime_utc
-from utils.exceptions import NotFoundException, VersionConflictException
+from utils.exceptions import NotFoundException
 from utils.pagination import Page, paginate_entities, paginate_models
 from utils.presenter import (
     PageResponse,
@@ -49,11 +49,7 @@ task_catalog = TaskCatalogService()
 
 
 async def _schedule(ref_id: str, session: SessionDep) -> PeriodicTaskEntity:
-    schedule_id, _ = open_ref_id(ref_id)
-    entity = await session.get(PeriodicTaskEntity, schedule_id)
-    if entity is None:
-        raise NotFoundException("Schedule not found")
-    return entity
+    return await ScheduleService(session).get(ref_id)
 
 
 async def _execution(ref_id: str, session: SessionDep) -> TaskExecutionEntity:
@@ -135,18 +131,19 @@ async def task_definition_history(
     )
 
 
-@router.post("/schedules", response_model=SuccessResponse[PeriodicTaskDTO], status_code=201)
+@router.post(
+    "/schedules",
+    response_model=SuccessResponse[PeriodicTaskDTO],
+    status_code=201,
+    description=_(
+        "Requires an active authenticated actor with admin.tasks.manage. Persists schedule configuration in one transaction; execution occurs later through the existing database scheduler and outbox. Only registered tasks and configured queues are accepted. Positional and keyword arguments must bind the task signature. Interval, crontab and clocked fields are mutually exclusive. Clocked schedules require one_off=true; instants include timezone and expiry follows start/clocked time. Invalid commands return 422, unknown task definitions 404 and denied actors 403. The 201 success/data response carries the current ref_id; no task result is returned."
+    ),
+)
 async def create_schedule(
     request: Request, data: PeriodicTaskCreateDTO, _: TaskAdmin, session: SessionDep
 ) -> SuccessResponse[PeriodicTaskDTO]:
     """Register a periodic task for pickup by the database scheduler."""
-    task_catalog.get_by_name(data.task_name)
-    values = data.model_dump()
-    values["queue"] = data.queue or settings.CELERY_DEFAULT_QUEUE
-    entity = PeriodicTaskEntity(**values)
-    session.add(entity)
-    await session.commit()
-    await session.refresh(entity)
+    entity = await ScheduleService(session).create(data)
     return success_response(
         request,
         TypeAdapter(PeriodicTaskDTO).validate_python(entity, from_attributes=True),
@@ -184,7 +181,13 @@ async def get_schedule(
     )
 
 
-@router.put("/schedules/{ref_id}", response_model=SuccessResponse[PeriodicTaskDTO])
+@router.put(
+    "/schedules/{ref_id}",
+    response_model=SuccessResponse[PeriodicTaskDTO],
+    description=_(
+        "Requires admin.tasks.manage and the current versioned ref_id. Omitted fields preserve stored values; queue/start_at/expires_at null clears the override, while enabled/interval_seconds explicit null is invalid. Interval changes belong to interval schedules. Enabling or changing configuration revalidates the merged schedule; disabling a retained legacy row remains possible. A no-op preserves its reference. Stale or concurrent writes return 409; invalid merged commands return 422. The success/data response contains the refreshed reference; history is retained."
+    ),
+)
 async def update_schedule(
     request: Request,
     ref_id: str,
@@ -193,14 +196,7 @@ async def update_schedule(
     session: SessionDep,
 ) -> SuccessResponse[PeriodicTaskDTO]:
     """Update, pause, or resume a periodic schedule with optimistic locking."""
-    version = open_ref_id(ref_id)[1]
-    entity = await _schedule(ref_id, session)
-    if entity.version != version:
-        raise VersionConflictException("Schedule version is stale")
-    entity.sqlmodel_update(data.model_dump(exclude_unset=True))
-    session.add(entity)
-    await session.commit()
-    await session.refresh(entity)
+    entity = await ScheduleService(session).update(ref_id, data)
     return success_response(
         request, TypeAdapter(PeriodicTaskDTO).validate_python(entity, from_attributes=True)
     )
@@ -211,14 +207,7 @@ async def delete_schedule(
     request: Request, ref_id: str, _: TaskAdmin, session: SessionDep
 ) -> SuccessResponse[None]:
     """Delete a scheduler configuration with optimistic locking."""
-    version = open_ref_id(ref_id)[1]
-    entity = await _schedule(ref_id, session)
-    if entity.version != version:
-        raise VersionConflictException("Schedule version is stale")
-    entity.deleted_at = get_datetime_utc()
-    entity.enabled = False
-    session.add(entity)
-    await session.commit()
+    await ScheduleService(session).delete(ref_id)
     return success_response(request, None, code=204)
 
 
@@ -241,7 +230,7 @@ async def run_task(
     request: Request, data: ManualTaskDTO, _: TaskAdmin, session: SessionDep
 ) -> SuccessResponse[TaskControlDTO]:
     """Durably queue a registered task after this transaction commits."""
-    task_catalog.get_by_name(data.task_name)
+    validate_dispatch(data.task_name, data.args, data.kwargs, data.queue)
     message = enqueue_task(
         session,
         data.task_name,

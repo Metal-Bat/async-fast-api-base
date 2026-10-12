@@ -93,26 +93,26 @@ Used by: `GET /api/v1/tasks/schedules/{ref_id}`, `POST /api/v1/tasks/schedules`,
 | `name` | `string` | Yes | Unique schedule name. |
 | `task_name` | `string` | Yes | Registered Celery task name. |
 | `queue` | `string | null` | No | Destination queue. |
-| `schedule_type` | `string` | Yes | — |
-| `interval_seconds` | `number | null` | No | — |
-| `cron_minute` | `string | null` | No | — |
-| `cron_hour` | `string | null` | No | — |
-| `cron_day_of_week` | `string | null` | No | — |
-| `cron_day_of_month` | `string | null` | No | — |
-| `cron_month_of_year` | `string | null` | No | — |
-| `clocked_at` | `string | null` | No | — |
-| `args` | `array[object]` | No | — |
-| `kwargs` | `object` | No | — |
-| `enabled` | `boolean` | No |  Default: `True`. |
-| `one_off` | `boolean` | No |  Default: `False`. |
-| `start_at` | `string | null` | No | — |
-| `expires_at` | `string | null` | No | — |
+| `schedule_type` | `string` | Yes | Schedule variant. Only fields belonging to this variant may be supplied on writes. |
+| `interval_seconds` | `number | null` | No | Positive interval in seconds; required only for interval schedules. Retained legacy reads may be null. |
+| `cron_minute` | `string | null` | No | Celery cron minute expression; null defaults to * for crontab schedules and must be absent for other variants. |
+| `cron_hour` | `string | null` | No | Celery cron hour expression; null defaults to * for crontab schedules and must be absent for other variants. |
+| `cron_day_of_week` | `string | null` | No | Celery cron day of week expression; null defaults to * for crontab schedules and must be absent for other variants. |
+| `cron_day_of_month` | `string | null` | No | Celery cron day of month expression; null defaults to * for crontab schedules and must be absent for other variants. |
+| `cron_month_of_year` | `string | null` | No | Celery cron month of year expression; null defaults to * for crontab schedules and must be absent for other variants. |
+| `clocked_at` | `string | null` | No | Timezone-aware execution instant; required only for clocked one-off schedules. |
+| `args` | `array[object]` | No | JSON positional arguments bound to the registered task signature before saving. |
+| `kwargs` | `object` | No | JSON keyword arguments bound to the registered task signature before saving. |
+| `enabled` | `boolean` | No | Whether the scheduler may dispatch this row; false pauses it without deleting history. Default: `True`. |
+| `one_off` | `boolean` | No | Whether the schedule disables itself after dispatch; clocked schedules require true. Default: `False`. |
+| `start_at` | `string | null` | No | Optional timezone-aware lower execution bound; omitted preserves it on update, null clears it. |
+| `expires_at` | `string | null` | No | Optional timezone-aware expiry after start and clocked instant; omitted preserves it on update, null clears it. |
 | `ref_id` | `string` | Yes | Opaque versioned schedule reference. |
-| `created_at` | `string` | Yes | — |
-| `updated_at` | `string | null` | Yes | — |
-| `deleted_at` | `string | null` | Yes | — |
-| `last_run_at` | `string | null` | Yes | — |
-| `total_run_count` | `integer` | Yes | — |
+| `created_at` | `string` | Yes | UTC creation instant of the persisted schedule. |
+| `updated_at` | `string | null` | Yes | UTC instant of the most recent change, or null before the first change. |
+| `deleted_at` | `string | null` | Yes | UTC soft-deletion instant, or null for a retained active configuration. |
+| `last_run_at` | `string | null` | Yes | UTC instant of the most recent scheduler dispatch, or null before any dispatch. |
+| `total_run_count` | `integer` | Yes | Number of scheduler dispatches recorded for this schedule. |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 

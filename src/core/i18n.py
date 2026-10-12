@@ -7,7 +7,7 @@ from pathlib import Path
 from babel.support import NullTranslations, Translations
 
 DEFAULT_LANGUAGE = "en"
-SUPPORTED_LANGUAGES = ("en", "fa")
+SUPPORTED_LANGUAGES = ("en", "fa", "ar")
 LOCALE_DIRECTORY = Path(__file__).resolve().parents[1] / "locales"
 
 _current_language: ContextVar[str] = ContextVar("current_language", default=DEFAULT_LANGUAGE)
@@ -16,7 +16,7 @@ _current_language: ContextVar[str] = ContextVar("current_language", default=DEFA
 def resolve_language(value: str | None) -> str:
     """Choose the supported language with the highest Accept-Language weight."""
     candidates: list[tuple[float, int, str]] = []
-    aliases = {"english": "en", "persian": "fa", "farsi": "fa"}
+    aliases = {"english": "en", "persian": "fa", "farsi": "fa", "arabic": "ar"}
     for position, item in enumerate((value or DEFAULT_LANGUAGE).split(",")):
         tag, *parameters = item.strip().casefold().split(";")
         quality = 1.0

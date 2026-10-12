@@ -123,3 +123,12 @@ For `work on backlog`, `next task`, or `continue` while backlog work is active:
 5. Select one coherent task and explain the dependency reason briefly before implementation.
 
 Never select the first task solely because of file order or priority label.
+
+## Current delivery decisions and verification
+
+Reconcile the current backend `docs/delivery/approved-decisions.json` and `docs/changes/DB-002.md` before schema or verification changes. DB-002 supersedes old migration-file policy; it does not authorize shared resets, blind stamping or repeated edits to applied revisions. D07 records two exact accepted SDK warnings; a result under that policy stays VERIFIED_WITH_EXCEPTION, never strict exception-free. New exceptions require approval. A local pass still does not prove paired/browser/demo/deployed/user acceptance.
+
+For implementation completion, run the complete final `mise run check` and task-required
+scenarios. Preserve exit codes and failure evidence. Accepted backend SDK exceptions do not
+excuse frontend warnings, required skipped tests, hidden output or fixture-only integration.
+Documentation package installation alone does not start or complete implementation tasks.

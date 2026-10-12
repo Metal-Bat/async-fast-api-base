@@ -33,7 +33,7 @@ async def read_preferences(
     response_model=SuccessResponse[PreferencesDTO],
     summary=_("Apply personal workspace preferences"),
     description=_(
-        "Atomically update self settings with the current ref_id from GET. Omitted groups and nested fields are preserved; null resets an entire supplied group to documented defaults. Nested scalar nulls and unknown keys are rejected with 422. Wrong-owner references return non-disclosing 404; stale references return 409 without applying changes. A no-op keeps the current reference. Returns a fresh reference after change. Locale supports en/fa, Gregorian calendar and valid IANA zones; settings never grant screen permissions."
+        "Atomically update self settings with the current ref_id from GET. Omitted groups and nested fields are preserved; null resets an entire supplied group to documented defaults. Nested scalar nulls and unknown keys are rejected with 422. Wrong-owner references return non-disclosing 404; stale references return 409 without applying changes. A no-op keeps the current reference. Returns a fresh reference after change. Locale supports en/fa/ar, Gregorian calendar and valid IANA zones; settings never grant screen permissions."
     ),
     responses=PRIVATE_NO_STORE_RESPONSES,
 )

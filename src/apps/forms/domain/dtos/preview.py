@@ -39,7 +39,7 @@ class OptionPreviewRequest(BaseDTO):
         description="Bounded canonical draft documents; validated before source resolution. The authenticated client selects the variant."
     )
     query: OptionQuery
-    locale: Literal["en", "fa"] | None = Field(
+    locale: Literal["en", "fa", "ar"] | None = Field(
         default=None,
         description="Author-only simulated option locale. Null uses Accept-Language; no canonical values or client identity change.",
     )

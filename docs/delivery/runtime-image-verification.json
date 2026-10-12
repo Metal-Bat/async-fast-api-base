@@ -1,0 +1,41 @@
+{
+  "scope": "APP-BE-031/032",
+  "status": "FOCUSED_VERIFIED_WITH_EXCEPTION",
+  "hosted": "NOT_RUN",
+  "final_gate": "NOT_RUN_FOR_CURRENT_SOURCE",
+  "image": "sha256:eb8d524f57ac1879c5fc04ee5c13522709705dc618c72a789593bff7e88d1f5a",
+  "build": "existing production Dockerfile; locked no-default-groups; minimal source-only temporary context",
+  "observed_runs": [
+    {
+      "database": "bpms_flow_bf8ef4d4fcbb457f8010f996c44efe59",
+      "result": "FAIL",
+      "cause": "Readiness invokes deprecated SQLModel execute; warnings-as-errors returns 503."
+    },
+    {
+      "database": "bpms_flow_d3cd9f7cffe048919da57ebc1033b2f6",
+      "result": "FAIL",
+      "cause": "Direct health probe confirms SQLModel execute DeprecationWarning."
+    },
+    {
+      "database": "bpms_flow_ba3a83d072bb4a4e95a50304bbe1a102",
+      "result": "PASS",
+      "passed": 1,
+      "duration_seconds": 19.68,
+      "scope": "Built image UID 1000, actual lifespan/S3/handler reconcile, HTTP liveness and PostgreSQL health, real SELECT 1 exported SQL span and HTTP route span."
+    },
+    {
+      "database": "bpms_flow_93a7f5a0afc24b50bc9afe35f672b98e",
+      "result": "PASS",
+      "passed": 1,
+      "failed": 0,
+      "duration_seconds": 17.52,
+      "scope": "Current automated source-only rebuilt runtime: actual UID1000/lifespan/S3/handler registry, PostgreSQL readiness and exported real SQL/HTTP spans."
+    }
+  ],
+  "warning_policy": "Only exact two approved D07 SDK filters; no new suppression.",
+  "source_attestation": null,
+  "limitations": [
+    "Full current candidate-pair gates remain required.",
+    "Hosted run, protected-effect restore and product-owner acceptance are not attested."
+  ]
+}

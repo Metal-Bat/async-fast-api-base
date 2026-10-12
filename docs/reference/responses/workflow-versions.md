@@ -20,7 +20,7 @@ Used by: `GET /api/v1/workflow-versions/{ref_id}/graph`
 | `source_path` | `string | null` | No | — |
 | `source_step` | `string | null` | No | — |
 | `source_port` | `string | null` | No | — |
-| `source_schema` | `object | null` | No | — |
+| `source_schema` | `object | null` | No | For STEP_OUTPUT, the exact pinned output-port schema, including generic service metadata. Registered sandbox receipt guarantees refine server-side compatibility without changing persisted port metadata or graph checksums. Caller-supplied schema assertions cannot replace the trusted operation contract. |
 | `constant_value` | `object` | No | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
@@ -84,7 +84,7 @@ Used by: `GET /api/v1/workflow-versions/{ref_id}/graph`
 | `config` | `object` | No | — |
 | `flow` | `GraphFlow` | No | — |
 | `form_ref` | `string | null` | No | — |
-| `field_policy` | `object | null` | No | — |
+| `field_policy` | `object | null` | No | Pinned human-task read/write/required/hidden JSON Schema scopes. A nonempty read policy with an empty write list permits read-only acknowledgment; every changed field remains forbidden. Runtime writable_scopes is authoritative. |
 | `task_contract` | `HumanTaskContract | null` | No | — |
 | `subprocess` | `SubprocessCall | null` | No | Pinned child call on a SUBPROCESS step. Execution uses the exact published version and isolated mapped inputs. |
 | `default_priority` | `integer | null` | No | — |
@@ -166,6 +166,7 @@ Used by: `GET /api/v1/workflow-versions/{ref_id}/graph`
 | --- | --- | --- | --- |
 | `en` | `string` | Yes | — |
 | `fa` | `string | null` | No | — |
+| `ar` | `string | null` | No | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
@@ -476,7 +477,7 @@ Used by: `GET /api/v1/workflow-versions/{ref_id}/workspace`, `POST /api/v1/workf
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `dialect` | `string` | No |  Default: `bpms.workspace/1`. |
-| `graph` | `object` | No | Incomplete authoring JSON, at most 256 KiB and depth 32. It is never executed; promotion validates GraphSnapshot and all dependencies. |
+| `graph` | `object` | No | Incomplete authoring JSON, at most 64 KiB, depth 24, 2048 nodes and lists of at most 256 items. It is never executed; promotion validates GraphSnapshot and all dependencies. |
 | `positions` | `object` | No | Positions keyed by stable authored step key, never database row IDs. |
 | `viewport` | `WorkspaceViewport` | No | — |
 | `collapsed` | `array[string]` | No | — |

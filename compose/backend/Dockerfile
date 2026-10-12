@@ -14,6 +14,16 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --locked --no-default-groups --no-install-project --active \
     && uv pip check --python /opt/venv/bin/python
 
+FROM builder AS development
+
+RUN uv sync --locked --no-install-project --active \
+    && uv pip check --python /opt/venv/bin/python
+COPY src/ ./src/
+COPY scripts/ ./scripts/
+ENV PYTHONPATH=/app/src:/app \
+    HOME=/tmp
+CMD ["python", "-m", "scripts.demo_seed"]
+
 FROM python:3.14.7-slim-trixie AS runtime
 
 ARG APP_USER=app
@@ -28,7 +38,7 @@ COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 COPY src/ ./src/
-RUN pybabel compile -d src/locales -l fa -D messages
+RUN pybabel compile -d src/locales -D messages
 COPY pyproject.toml ./
 COPY alembic.ini ./
 

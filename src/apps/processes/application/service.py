@@ -10,6 +10,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from apps.clients.domain.contracts import ClientContext, client_expression_schema
 from apps.expressions.application.language import ExpressionCompiler, ExpressionContext
+from apps.integrations.domain.orders import PROTECTED_ORDER_OPERATION
 from apps.processes.application.events import ProcessEventService
 from apps.processes.application.extension_services import ProcessStepServices
 from apps.processes.domain.advanced import decide_join
@@ -256,6 +257,8 @@ class ProcessService:
         step, kind, handler = await self._definition(execution.workflow_step_id)
         if kind == "SUBPROCESS":
             raise VersionConflictException("Subprocess results are settled by the child worker")
+        if step.config.get("operation_key") == PROTECTED_ORDER_OPERATION:
+            raise VersionConflictException("Sandbox orders require verified provider receipts")
         self._change(process, "resume")
         await ProcessEventService(self.session).append(
             process.id,

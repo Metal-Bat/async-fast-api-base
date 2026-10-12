@@ -1,14 +1,22 @@
 """Approved HTTP status adapter: credentials never cross its result boundary."""
 
 import re
-from typing import Protocol
+import ssl
+from typing import Protocol, runtime_checkable
 from urllib.parse import urlsplit
+from uuid import UUID
 
 import httpx
 from anyio import to_thread
 
 from apps.integrations.domain.contracts import AdapterResult, ConnectionPin, SecretStore
 from apps.integrations.domain.dto import AIConnectionConfig, ConnectionConfig
+from apps.integrations.domain.orders import (
+    SandboxCancellationReceipt,
+    SandboxOrderPayload,
+    SandboxOrderReceipt,
+)
+from core.settings import settings
 from utils.exceptions import ValidationDetailsException
 
 
@@ -17,6 +25,26 @@ class ConnectionProvider(Protocol):
         self, provider: str, kind: str, config: ConnectionConfig | AIConnectionConfig
     ) -> None: ...
     async def invoke(self, pin: ConnectionPin) -> AdapterResult: ...
+
+
+@runtime_checkable
+class OrderProvider(ConnectionProvider, Protocol):
+    async def create_order(
+        self, pin: ConnectionPin, identity: UUID, payload: SandboxOrderPayload
+    ) -> SandboxOrderReceipt: ...
+    async def lookup_order(
+        self, pin: ConnectionPin, identity: UUID
+    ) -> SandboxOrderReceipt | None: ...
+
+
+@runtime_checkable
+class CancellationProvider(OrderProvider, Protocol):
+    async def cancel_order(
+        self, pin: ConnectionPin, identity: UUID, original: SandboxOrderReceipt
+    ) -> SandboxCancellationReceipt: ...
+    async def lookup_cancellation(
+        self, pin: ConnectionPin, identity: UUID, original: SandboxOrderReceipt
+    ) -> SandboxCancellationReceipt | None: ...
 
 
 class StatusProvider:
@@ -79,7 +107,11 @@ class StatusProvider:
         parsed = urlsplit(endpoint)
         if (
             (provider, kind)
-            not in {("https_status", "SERVICE"), ("https_notification", "NOTIFICATION")}
+            not in {
+                ("https_status", "SERVICE"),
+                ("https_notification", "NOTIFICATION"),
+                ("https_sandbox_orders", "SERVICE"),
+            }
             or parsed.scheme != "https"
             or not bool(parsed.hostname)
             or bool(parsed.username)
@@ -109,9 +141,16 @@ class StatusProvider:
         credential = await to_thread.run_sync(
             self.secrets.resolve, pin.secret_ref, pin.secret_version
         )
+        tls = (
+            ssl.create_default_context(cafile=str(settings.INTEGRATION_TLS_CA_FILE))
+            if settings.INTEGRATION_TLS_CA_FILE is not None
+            else True
+        )
         # No redirects, provider body, headers, or exception text reach the domain result.
         async with (
-            httpx.AsyncClient(timeout=10, follow_redirects=False, trust_env=False) as client,
+            httpx.AsyncClient(
+                timeout=10, follow_redirects=False, trust_env=False, verify=tls
+            ) as client,
             client.stream(
                 "HEAD",
                 self.endpoints[pin.endpoint_key],
@@ -119,3 +158,41 @@ class StatusProvider:
             ) as response,
         ):
             return AdapterResult(status_code=response.status_code)
+
+    async def create_order(
+        self, pin: ConnectionPin, identity: UUID, payload: SandboxOrderPayload
+    ) -> SandboxOrderReceipt:
+        """Execute only the registered sandbox create family, with no automatic retry."""
+        from apps.integrations.application.orders import SandboxOrderTransport
+
+        self.validate(pin.provider, pin.kind, ConnectionConfig(endpoint_key=pin.endpoint_key))
+        return await SandboxOrderTransport(self.secrets, self.endpoints).create(
+            pin, identity, payload
+        )
+
+    async def lookup_order(self, pin: ConnectionPin, identity: UUID) -> SandboxOrderReceipt | None:
+        """Read an existing receipt using the original logical operation identity."""
+        from apps.integrations.application.orders import SandboxOrderTransport
+
+        self.validate(pin.provider, pin.kind, ConnectionConfig(endpoint_key=pin.endpoint_key))
+        return await SandboxOrderTransport(self.secrets, self.endpoints).lookup(pin, identity)
+
+    async def cancel_order(
+        self, pin: ConnectionPin, identity: UUID, original: SandboxOrderReceipt
+    ) -> SandboxCancellationReceipt:
+        from apps.integrations.application.orders import SandboxOrderTransport
+
+        self.validate(pin.provider, pin.kind, ConnectionConfig(endpoint_key=pin.endpoint_key))
+        return await SandboxOrderTransport(self.secrets, self.endpoints).cancel(
+            pin, identity, original
+        )
+
+    async def lookup_cancellation(
+        self, pin: ConnectionPin, identity: UUID, original: SandboxOrderReceipt
+    ) -> SandboxCancellationReceipt | None:
+        from apps.integrations.application.orders import SandboxOrderTransport
+
+        self.validate(pin.provider, pin.kind, ConnectionConfig(endpoint_key=pin.endpoint_key))
+        return await SandboxOrderTransport(self.secrets, self.endpoints).lookup_cancellation(
+            pin, identity, original
+        )

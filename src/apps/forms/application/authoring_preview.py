@@ -41,7 +41,7 @@ class SimulatedRuntimePreviewRequest(BaseDTO):
         max_length=256,
         description="Explicit synthetic prior keys for correction comparisons; never assume row indices identify the same item.",
     )
-    locale: Literal["en", "fa"] = "en"
+    locale: Literal["en", "fa", "ar"] = "en"
 
     @field_validator("data", "before_data", "item_identity", "before_item_identity")
     @classmethod
@@ -139,7 +139,7 @@ def runtime_preview(payload, context):
         view_key="simulated-" + payload.purpose,
         purpose=payload.purpose,
         resolved_locale=payload.locale,
-        direction="rtl" if payload.locale == "fa" else "ltr",
+        direction="rtl" if payload.locale in {"fa", "ar"} else "ltr",
         data=projected["data"],
         item_identity=projected["item_identity"],
         render_schema=projected["render_schema"],

@@ -51,7 +51,7 @@ CLIENT_DESCRIPTION = _(
     "on the user; replay among the last 100 episode correlations does not increment. Excess is 429. "
     "The returned support_ref is a correlation identity, never an authorization capability. "
     "persisted=false and support_ref=null explicitly report sink failure. No business operation "
-    "is executed. Private no-store, existing envelope and en/fa messages."
+    "is executed. Private no-store, existing envelope and en/fa/ar messages."
 )
 router = APIRouter(prefix="/support", tags=["support-incidents"], responses=response_schema())
 

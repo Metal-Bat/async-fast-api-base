@@ -286,3 +286,4 @@ graphify-out/
 
 # Private local Codex hooks
 /.codex/hooks.json
+.demo-seed/

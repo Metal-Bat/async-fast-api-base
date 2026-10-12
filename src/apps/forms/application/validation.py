@@ -15,6 +15,8 @@ from apps.forms.application.option_validation import (
     validate_source,
     validate_source_graph,
 )
+from apps.forms.domain.document_limits import InvalidDocument as _Invalid
+from apps.forms.domain.document_limits import bounded_document as _bounded
 from apps.forms.domain.dto import (
     DATA_DIALECT,
     RENDER_DIALECT,
@@ -69,34 +71,6 @@ _UNSET = object()
 
 def pointer(parts: Any) -> str:
     return "/" + "/".join(str(part).replace("~", "~0").replace("/", "~1") for part in parts)
-
-
-class _Invalid(Exception):
-    def __init__(self, path: str, code: str) -> None:
-        self.issue = ValidationIssue(pointer=path, code=code)
-
-
-def _bounded(value: Any, path: str) -> int:
-    count = 0
-    stack = [(value, 0)]
-    while stack:
-        item, depth = stack.pop()
-        count += 1
-        if depth > 24 or count > 2048:
-            raise _Invalid(path, "document.limit")
-        if isinstance(item, dict):
-            stack.extend((v, depth + 1) for v in item.values())
-        elif isinstance(item, list):
-            if len(item) > 256:
-                raise _Invalid(path, "document.limit")
-            stack.extend((v, depth + 1) for v in item)
-    try:
-        size = len(json.dumps(value, allow_nan=False).encode())
-    except ValueError, TypeError, RecursionError:
-        raise _Invalid(path, "document.invalid") from None
-    if size > 65536:
-        raise _Invalid(path, "document.limit")
-    return count
 
 
 def _resolve(root: dict[str, Any], scope: str) -> Any:

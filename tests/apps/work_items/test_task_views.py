@@ -103,6 +103,27 @@ def test_task_views_project_data_and_render_without_hidden_values():
     enforce_writes(data, {**data, "decision": "no"}, policy())
 
 
+def test_read_only_task_accepts_unchanged_acknowledgment_but_rejects_every_mutation():
+    read_only = {
+        "read": ["/properties/amount", "/properties/decision"],
+        "write": [],
+        "required": [],
+        "hidden": ["/properties/secret"],
+    }
+    validate_contract(
+        contract(), read_only, documents().data_schema, {"approve", "return"}, {"approve", "return"}
+    )
+    data = {"amount": 7, "decision": "yes", "secret": "private"}
+    enforce_writes(data, dict(data), read_only)
+    hidden_change = dict(data)
+    hidden_change["secret"] = data["secret"] + " changed"
+    for changed in ({**data, "amount": 8}, {**data, "decision": "no"}, hidden_change):
+        with pytest.raises(ValidationDetailsException):
+            enforce_writes(data, changed, read_only)
+    with pytest.raises(TaskPolicyError, match="task.policy.empty"):
+        validate_contract(contract(), {}, documents().data_schema, {"approve"}, {"approve"})
+
+
 def test_actions_reject_undeclared_outcomes_and_validate_profiles():
     with pytest.raises(ValidationDetailsException):
         action_for(contract(), "complete", "return")

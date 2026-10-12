@@ -31,7 +31,6 @@ dependencies = [
     "pyjwt==2.15.1",
     "redis>=8.1.0",
     "rich>=15.0.0",
-    # OpenTelemetry SQLAlchemy instrumentation currently requires SQLAlchemy <2.1.
     "sqlalchemy[asyncio]>=2.0.54,<2.1",
     "sqlparse>=0.6.0",
     "sqlmodel>=0.0.48",
@@ -49,6 +48,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "faker==40.41.0",
     "bandit>=1.9.4",
     "commitizen>=4.19.2",
     "coverage>=7.16.2",
@@ -143,15 +143,11 @@ output-format = "full"
 pythonpath = "src"
 minversion = "6.0"
 python_files = ["tests.py", "test_*.py"]
-# Upstream SDK deprecations on Python 3.14; keep all other warnings visible.
-# Remove these exact filters when Cohere/google-genai ship compatible fixes.
 filterwarnings = [
     "ignore:'asyncio\\.iscoroutinefunction' is deprecated and slated for removal in Python 3\\.16; use inspect\\.iscoroutinefunction\\(\\) instead:DeprecationWarning:cohere\\.client$",
     "ignore:'_UnionGenericAlias' is deprecated and slated for removal in Python 3\\.17:DeprecationWarning:google\\.genai\\.types$",
 ]
-markers = [
-    "integration: requires the Docker Compose infrastructure",
-]
+markers = ["integration: requires the Docker Compose infrastructure"]
 
 # ==== Coverage ====
 [tool.coverage.run]

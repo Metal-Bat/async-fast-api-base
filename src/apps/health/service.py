@@ -4,7 +4,8 @@ from urllib.parse import urlparse
 
 import anyio
 from redis.asyncio import Redis
-from sqlalchemy import text
+from sqlalchemy import literal
+from sqlmodel import select
 
 from core.base_dto import BaseDTO
 from core.deps import SessionFactory
@@ -44,7 +45,9 @@ async def _timed(check: Callable[[], Awaitable[None]]) -> DependencyHealth:
 async def check_postgres() -> None:
     """Verify a PostgreSQL connection and trivial statement."""
     async with SessionFactory() as session:
-        await super(type(session), session).execute(text("SELECT 1"))  # ty:ignore[deprecated]
+        result = await session.exec(select(literal(1)))
+        if result.one() != 1:
+            raise RuntimeError("Unexpected database probe result")
 
 
 async def check_cache() -> None:

@@ -15,7 +15,11 @@ class BaseDTO(BaseModel):
     @override
     def __pydantic_init_subclass__(cls, **kwargs: Any) -> None:
         super().__pydantic_init_subclass__(**kwargs)
-        invalid_names = [name for name in cls.model_fields if not _SNAKE_CASE_FIELD.fullmatch(name)]
+        invalid_names = [
+            name
+            for name in {*cls.model_fields, *cls.model_computed_fields}
+            if not _SNAKE_CASE_FIELD.fullmatch(name)
+        ]
         aliased_fields = [
             name
             for name, field in cls.model_fields.items()

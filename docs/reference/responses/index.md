@@ -33,7 +33,7 @@ Generated from the application's successful OpenAPI responses. Each topic lists 
 - [notifications](notifications.md) — 5 schemas
 - [permissions](permissions.md) — 10 schemas
 - [process-events](process-events.md) — 2 schemas
-- [processes](processes.md) — 18 schemas
+- [processes](processes.md) — 34 schemas
 - [reports](reports.md) — 9 schemas
 - [request-types](request-types.md) — 12 schemas
 - [resource-links](resource-links.md) — 5 schemas
@@ -41,7 +41,7 @@ Generated from the application's successful OpenAPI responses. Each topic lists 
 - [saved-views](saved-views.md) — 12 schemas
 - [sessions](sessions.md) — 5 schemas
 - [setup](setup.md) — 3 schemas
-- [step-types](step-types.md) — 11 schemas
+- [step-types](step-types.md) — 13 schemas
 - [support-incidents](support-incidents.md) — 9 schemas
 - [task-definitions](task-definitions.md) — 10 schemas
 - [task-executions](task-executions.md) — 9 schemas

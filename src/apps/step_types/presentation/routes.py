@@ -4,9 +4,11 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
 
+from apps.step_types.application.automation import operation_catalog
 from apps.step_types.application.registry import get_registry
 from apps.step_types.application.service import StepTypeService
 from apps.step_types.domain.dto import StepTypeQuery, StepTypeVersionDTO
+from apps.step_types.domain.operations import BusinessOperationDTO
 from apps.users.application.authorization import RequirePermission
 from apps.users.domain.entity import UserEntity
 from core.deps import SessionDep
@@ -23,6 +25,28 @@ from utils.select import SelectOption, SelectQuery, SelectResponseFormat
 
 router = APIRouter(prefix="/step-types", tags=["step-types"], responses=response_schema())
 StepAdmin = Annotated[UserEntity, Depends(RequirePermission("workflows.manage"))]
+
+
+@router.get(
+    "/operations",
+    response_model=SuccessResponse[list[BusinessOperationDTO]],
+    summary="Inspect governed business operations",
+    description=(
+        "Requires an authenticated active session and workflows.manage. Returns the bounded "
+        "code-owned catalog (currently three operations), typed input/output JSON Schemas, "
+        "allowed provider/kind, publisher identity policy, approval policy and retry behavior. "
+        "Sandbox orders require an explicit committed human approve action covering the exact "
+        "workflow and input. Timeouts after dispatch require receipt lookup before retry. "
+        "Metadata is not proof of executable credentials: connections must separately be active, "
+        "authorized, verified and pinned to the exact revision and secret version. Endpoints and "
+        "secrets are never returned. This read has no business side effects. "
+        "Missing/expired/revoked authentication returns 401; missing permission returns 403."
+    ),
+)
+async def get_business_operations(
+    request: Request, _: StepAdmin
+) -> SuccessResponse[list[BusinessOperationDTO]]:
+    return success_response(request, operation_catalog())
 
 
 @router.post(

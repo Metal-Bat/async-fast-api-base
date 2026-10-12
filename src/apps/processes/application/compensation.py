@@ -9,6 +9,7 @@ from apps.processes.application.events import ProcessEventService
 from apps.processes.domain.entity import (
     CompensationRecordEntity,
     ProcessInstanceEntity,
+    StepExecutionAttemptEntity,
     StepExecutionEntity,
 )
 from apps.requests.domain.entity import BusinessRequestEntity
@@ -49,6 +50,45 @@ class CompensationService:
             return duplicate
         if process.status not in {"FAILED", "CANCELLED", "COMPENSATING", "COMPENSATION_FAILED"}:
             raise VersionConflictException("Process cannot be compensated from its current state")
+        operation = col(StepExecutionAttemptEntity.automation_snapshot).op("->>")("operation_key")
+        state = (
+            col(StepExecutionAttemptEntity.automation_snapshot)
+            .op("->")("order_dispatch")
+            .op("->>")("state")
+        )
+        base = (
+            select(StepExecutionAttemptEntity.id)
+            .join(
+                StepExecutionEntity,
+                col(StepExecutionEntity.id) == col(StepExecutionAttemptEntity.step_execution_id),
+            )
+            .where(
+                StepExecutionEntity.process_instance_id == process.id,
+                operation == "sandbox.order.create/1",
+            )
+        )
+        unknown = (
+            await self.session.exec(base.where(state.in_(["DISPATCHING", "UNKNOWN"])).limit(1))
+        ).one_or_none()
+        if unknown is not None:
+            raise VersionConflictException(
+                "Uncertain protected operations require reconciliation before compensation"
+            )
+        unsupported = (
+            await self.session.exec(
+                base.outerjoin(
+                    CompensationRecordEntity,
+                    col(CompensationRecordEntity.source_execution_id)
+                    == col(StepExecutionEntity.id),
+                )
+                .where(state == "CONFIRMED", col(CompensationRecordEntity.id).is_(None))
+                .limit(1)
+            )
+        ).one_or_none()
+        if unsupported is not None:
+            raise VersionConflictException(
+                "Confirmed sandbox order requires a registered reversal or manual intervention"
+            )
         if process.status == "COMPENSATION_FAILED":
             raise VersionConflictException("Failed compensation requires an explicit record retry")
         process.status = "COMPENSATING"
@@ -186,11 +226,26 @@ class CompensationService:
         process.last_error_code = None
 
 
-async def execute_compensation(record_id: UUID) -> None:
+async def execute_compensation(record_id: UUID) -> str | None:
     """Execute one claimed reversal, leaving external rollback explicit and idempotent."""
     from apps.integrations.application.service import ConnectionService
     from apps.processes.application.automation import _provider
     from apps.step_types.application.automation import resolve_operation
+
+    async with SessionFactory() as session:
+        candidate = await session.get(CompensationRecordEntity, record_id)
+        candidate_step = (
+            await session.get(WorkflowStepEntity, candidate.compensation_step_id)
+            if candidate
+            else None
+        )
+        operation_key = candidate_step.config.get("operation_key") if candidate_step else None
+    if operation_key == "sandbox.order.cancel/1":
+        from apps.processes.application.order_compensation import compensate_order
+
+        return await compensate_order(record_id, SessionFactory, _provider())
+    if operation_key == "sandbox.order.create/1":
+        raise VersionConflictException("Protected creation cannot execute as compensation")
 
     async with SessionFactory() as session, session.begin():
         record = await session.get(

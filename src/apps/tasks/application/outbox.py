@@ -3,6 +3,7 @@ from typing import Any
 from uuid import UUID, uuid7
 
 import structlog
+from anyio import to_thread
 from opentelemetry import context, propagate, trace
 from opentelemetry.trace import SpanKind
 from sqlmodel import col, select
@@ -133,7 +134,8 @@ async def dispatch_outbox(app: Any) -> int:
                 break
             message.attempts += 1
             try:
-                _publish(app, message)
+                # Wait for the bounded publish before releasing this row's transaction.
+                await to_thread.run_sync(_publish, app, message)
             except Exception as exc:  # noqa: BLE001 - boundary logs failure and retains recoverable state
                 delay = min(300, 2 ** min(message.attempts, 8))
                 message.available_at = get_datetime_utc() + timedelta(seconds=delay)

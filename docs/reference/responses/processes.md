@@ -6,6 +6,161 @@ tags: [api, dto, processes]
 
 These schemas are emitted by successful API responses in this topic. Reviewed examples are included only when a curated fixture exists. Required nullable fields must be present and may be null; optional fields may be omitted as allowed by the schema. See the [frontend journey](../../guides/frontend-journey.md) for lifecycle and call order. The live Swagger/OpenAPI document is authoritative.
 
+### `AIBudgetStatus`
+
+Used by: `POST /api/v1/processes/{ref_id}/ai-evidence/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `effective_limits` | `AITaskLimits-Output` | Yes | — |
+| `used` | `BudgetAmounts` | Yes | — |
+| `reserved` | `BudgetAmounts` | Yes | — |
+| `remaining` | `BudgetCapacity` | Yes | — |
+| `currency` | `string` | Yes | — |
+| `price_version` | `string` | Yes | — |
+| `unknown_usage` | `boolean` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `AIDecision`
+
+Used by: `POST /api/v1/processes/{ref_id}/ai-evidence/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `choice` | `string` | Yes | — |
+| `confidence` | `number` | Yes | — |
+| `needs_review` | `boolean` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `AIProcessEvidenceDTO`
+
+Used by: `POST /api/v1/processes/{ref_id}/ai-evidence/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `step_execution_ref_id` | `string` | Yes | Current opaque AI execution reference; this endpoint is read-only. |
+| `attempt_number` | `integer` | Yes | Latest persisted attempt number within the logical AI execution. |
+| `status` | `string` | Yes | Existing automation attempt state; queued or failed does not imply a recommendation. |
+| `agent_ref_id` | `string | null` | Yes | Exact historical agent pin; never a substituted latest agent. |
+| `agent_available` | `boolean` | Yes | Whether the exact pinned published/retired agent metadata remains available. |
+| `model_id` | `string | null` | Yes | Model identity from the exact agent pin, not a substituted latest model. |
+| `allowed_input_fields` | `array[string]` | Yes | Approved field names only; no copied input values. |
+| `recommendation` | `AIDecision | null` | Yes | Typed model recommendation; confidence never grants business approval. |
+| `budget` | `AIBudgetStatus | null` | Yes | Existing task-wide budget, reservation and unknown-usage evidence; no new provider call. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `AITaskLimits-Output`
+
+Used by: `POST /api/v1/processes/{ref_id}/ai-evidence/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `requests` | `integer` | Yes | — |
+| `tool_calls` | `integer` | Yes | — |
+| `input_tokens` | `integer` | Yes | — |
+| `output_tokens` | `integer` | Yes | — |
+| `total_tokens` | `integer` | Yes | — |
+| `elapsed_seconds` | `integer` | Yes | — |
+| `spend_usd` | `string` | Yes | — |
+| `strict_spend` | `boolean` | No |  Default: `True`. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `BudgetAmounts`
+
+Used by: `POST /api/v1/processes/{ref_id}/ai-evidence/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `requests` | `integer` | No |  Default: `0`. |
+| `tool_calls` | `integer` | No |  Default: `0`. |
+| `input_tokens` | `integer` | No |  Default: `0`. |
+| `output_tokens` | `integer` | No |  Default: `0`. |
+| `total_tokens` | `integer` | No |  Default: `0`. |
+| `spend_usd` | `string` | No |  Default: `0`. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `BudgetCapacity`
+
+Used by: `POST /api/v1/processes/{ref_id}/ai-evidence/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `requests` | `integer` | Yes | — |
+| `tool_calls` | `integer` | Yes | — |
+| `input_tokens` | `integer` | Yes | — |
+| `output_tokens` | `integer` | Yes | — |
+| `total_tokens` | `integer` | Yes | — |
+| `spend_usd` | `string` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `OrderDispatchState`
+
+Used by: `POST /api/v1/processes/{ref_id}/orders/reconcile`, `POST /api/v1/processes/{ref_id}/orders/search`
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `PageResponse_Page_AIProcessEvidenceDTO__`
+
+Used by: `POST /api/v1/processes/{ref_id}/ai-evidence/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `result` | `Page_AIProcessEvidenceDTO_` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `PageResponse_Page_SandboxOperationDTO__`
+
+Used by: `POST /api/v1/processes/{ref_id}/orders/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `result` | `Page_SandboxOperationDTO_` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `Page_AIProcessEvidenceDTO_`
+
+Used by: `POST /api/v1/processes/{ref_id}/ai-evidence/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `items` | `array[AIProcessEvidenceDTO]` | No | — |
+| `page` | `integer` | No |  Default: `1`. |
+| `size` | `integer` | No |  Default: `20`. |
+| `total` | `integer` | Yes | — |
+| `total_pages` | `integer` | Yes | Return the number of nonempty pages in the full result set. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `Page_SandboxOperationDTO_`
+
+Used by: `POST /api/v1/processes/{ref_id}/orders/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `items` | `array[SandboxOperationDTO]` | No | — |
+| `page` | `integer` | No |  Default: `1`. |
+| `size` | `integer` | No |  Default: `20`. |
+| `total` | `integer` | Yes | — |
+| `total_pages` | `integer` | Yes | Return the number of nonempty pages in the full result set. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `Page_ScheduledActionDTO_`
 
 Used by: `POST /api/v1/processes/{ref_id}/scheduled-actions/search`
@@ -82,6 +237,43 @@ Used by: `POST /api/v1/processes/{ref_id}/timeline`, `POST /api/v1/processes/{re
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `SandboxCancellationRecoveryDTO`
+
+Used by: `POST /api/v1/processes/{ref_id}/orders/reconcile-cancellation`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `step_execution_ref_id` | `string` | Yes | Current opaque reference of the original order execution. |
+| `status` | `string` | Yes | Existing compensation record state; RUNNING is queued, not confirmed cancellation. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `SandboxOperationDTO`
+
+Used by: `POST /api/v1/processes/{ref_id}/orders/reconcile`, `POST /api/v1/processes/{ref_id}/orders/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `step_execution_ref_id` | `string` | Yes | Current opaque execution reference for a subsequent operator command. |
+| `operation_id` | `string` | Yes | Stable external operation identity; never a permission or backend ref. |
+| `state` | `OrderDispatchState` | Yes | Persisted attempt evidence: PREPARED, DISPATCHING, UNKNOWN or CONFIRMED; queued is not completed. |
+| `receipt` | `SandboxOrderReceipt | null` | No | Validated provider receipt only when confirmed; never inferred from a timeout. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `SandboxOrderReceipt`
+
+Used by: `POST /api/v1/processes/{ref_id}/orders/reconcile`, `POST /api/v1/processes/{ref_id}/orders/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `operation_id` | `string` | Yes | Stable external create identity, unchanged across duplicate delivery and lookup. |
+| `receipt_id` | `string` | Yes | Durable sandbox receipt identity, not a private backend row reference. |
+| `state` | `string` | Yes | Actual provider order state; cancellation is separate from database rollback. |
+| `payload_hash` | `string` | Yes | SHA-256 of canonical typed sandbox payload including default note; no payload values. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `ScheduledActionDTO`
 
 Used by: `POST /api/v1/processes/{ref_id}/scheduled-actions/search`
@@ -137,6 +329,34 @@ Used by: `POST /api/v1/processes/{ref_id}/timeline`, `POST /api/v1/processes/{re
 | `error` | `null` | No | — |
 | `code` | `integer` | No |  Default: `200`. |
 | `data` | `ProcessTimelineDTO` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `SuccessResponse_SandboxCancellationRecoveryDTO_`
+
+Used by: `POST /api/v1/processes/{ref_id}/orders/reconcile-cancellation`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `data` | `SandboxCancellationRecoveryDTO` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `SuccessResponse_SandboxOperationDTO_`
+
+Used by: `POST /api/v1/processes/{ref_id}/orders/reconcile`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `data` | `SandboxOperationDTO` | Yes | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 

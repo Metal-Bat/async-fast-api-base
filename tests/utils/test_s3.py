@@ -151,3 +151,44 @@ async def test_dropped_download_closes_body_and_storage_client(monkeypatch) -> N
     assert await anext(stream) == b"ab"
     await stream.aclose()
     assert closed == ["body", "client"]
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize("expected_size", [5, 7])
+async def test_private_stream_rejects_changed_size_and_closes_resources(monkeypatch, expected_size):
+    closed = []
+
+    class TrackedBody(Body):
+        @override
+        async def __aexit__(self, *_args):
+            closed.append("body")
+
+    class TrackedClient(Client):
+        @override
+        async def get_object(self, **kwargs):
+            return {"Body": TrackedBody(b"abcdef")}
+
+    @asynccontextmanager
+    async def tracked_client():
+        try:
+            yield TrackedClient()
+        finally:
+            closed.append("client")
+
+    monkeypatch.setattr(s3, "s3_client", tracked_client)
+    received = bytearray()
+    with pytest.raises(OSError, match="size"):
+        async for block in s3.stream_object("synthetic", 2, expected_size=expected_size):
+            received.extend(block)
+    assert len(received) <= expected_size
+    assert closed == ["body", "client"]
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize("chunk_size", [0, -1, 65537])
+async def test_private_stream_rejects_unbounded_chunk_configuration(monkeypatch, chunk_size):
+    client = Client()
+    install_client(monkeypatch, client)
+    with pytest.raises(ValueError, match="chunk"):
+        await anext(s3.stream_object("synthetic", chunk_size))
+    assert client.calls == []

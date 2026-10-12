@@ -1,0 +1,199 @@
+{
+  "task": "APP-BE-014.4",
+  "date": "2026-10-09",
+  "status": "VERIFIED_WITH_EXCEPTION",
+  "endpoint": "GET /api/v1/inbox/events",
+  "gate_command": "rtk proxy env UV_CACHE_DIR=/tmp/app-be-uv-cache mise run check",
+  "started_at": "2026-10-09T13:13:57.864065+00:00",
+  "finished_at": "2026-10-09T13:28:59.286899+00:00",
+  "git_head": "9999641f8e37077829ebbe7159a6cd794fb94b91",
+  "source_start_sha256": "d8174c3e71d41e19a3552029b842fce9a5f0f7b05426142b5a80cb37a806acf9",
+  "source_end_sha256": "d8174c3e71d41e19a3552029b842fce9a5f0f7b05426142b5a80cb37a806acf9",
+  "source_identity_matched": true,
+  "completion_metadata_only_after_gate": true,
+  "private_evidence_directory_name": "app-be-check-2gkwbjz0",
+  "approved_warning_record": "docs/delivery/approved-decisions.json#D07",
+  "approved_warning_exceptions": [
+    "ignore:'asyncio\\.iscoroutinefunction' is deprecated and slated for removal in Python 3\\.16; use inspect\\.iscoroutinefunction\\(\\) instead:DeprecationWarning:cohere\\.client$",
+    "ignore:'_UnionGenericAlias' is deprecated and slated for removal in Python 3\\.17:DeprecationWarning:google\\.genai\\.types$"
+  ],
+  "new_warning_or_scanner_exceptions": 0,
+  "stages": [
+    {
+      "stage": "lock-check",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped_count": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "fmt-check",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped_count": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "lint",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped_count": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "docstrings",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped_count": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "typecheck",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped_count": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "security",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped_count": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "doctest",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 1,
+      "failed": 0,
+      "skipped_count": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 822,
+      "failed": 0,
+      "skipped_count": 178,
+      "diagnostics": []
+    },
+    {
+      "stage": "flow-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 4,
+      "failed": 0,
+      "skipped_count": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "delivery-foundation-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 18,
+      "failed": 0,
+      "skipped_count": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "delivery-wave-four-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 29,
+      "failed": 0,
+      "skipped_count": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "delivery-transfer-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 9,
+      "failed": 0,
+      "skipped_count": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "delivery-through-020-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 9,
+      "failed": 0,
+      "skipped_count": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "delivery-completion-test",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 12,
+      "failed": 0,
+      "skipped_count": 0,
+      "diagnostics": []
+    },
+    {
+      "stage": "precommit-check",
+      "status": "PASSED",
+      "returncode": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped_count": 0,
+      "diagnostics": []
+    }
+  ],
+  "focused_unit_tests_passed": 33,
+  "focused_service_tests_passed": 3,
+  "mandatory_service_cases_passed": 81,
+  "mandatory_service_skips": 0,
+  "default_opt_in_exclusions": 178,
+  "default_exclusions_note": "Reported opt-in exclusions are not integrated passes. All six mandatory service profiles ran without skips.",
+  "verified_behaviors": [
+    "real committed report completion",
+    "real cartable/work-item producer",
+    "rollback produces no signal or outbox row",
+    "duplicate worker publication deduplicated",
+    "offline persisted notifications and reconnect resync",
+    "recipient isolation and outsider denial",
+    "disconnect subscription and lease cleanup",
+    "session revocation and token expiry",
+    "inactive-user closure",
+    "cross-process recipient/global admission and stale lease pruning",
+    "heartbeat and lifetime renewal",
+    "bounded slow sends and malformed/private/oversized signal rejection",
+    "short authorization sessions closed before streaming waits",
+    "en/fa actual OpenAPI with SSE success and JSON errors"
+  ],
+  "preparation_history": [
+    "Missing-route/module seam tests failed before implementation.",
+    "Malformed reference test exposed newline injection risk; URL-safe validation corrected it.",
+    "Early integration collection failed on an unavailable Asyncer import; existing AnyIO was reused, with no dependency added.",
+    "Test token-pair assertion rejected integer expires_in; validation now uses the actual TokenPairDTO.",
+    "Real HTTP test exposed native generator routing discarding custom response headers; explicit bounded StreamingResponse fixed the transport.",
+    "An in-flight test dispatcher transaction was cancelled at shutdown; graceful stop now finishes the transaction.",
+    "One focused run omitted the existing env-file and failed before provisioning; the corrected owned profile passed.",
+    "Restricted sandbox thread tests were interrupted and rerun with the required capability.",
+    "An early hanging integration attempt was interrupted; its specifically owned database and containers were cleaned up."
+  ],
+  "limitations": [
+    "Browser and Node proxy acceptance not run; frontend unchanged.",
+    "Deployment and production startup acceptance not run.",
+    "Owned API tests disable lifespan after harness service initialization and accelerate heartbeat/resync/lifetime timers; production transport bounds have deterministic tests.",
+    "Signals are creation invalidations, with periodic query resync for later read/cancel/retention changes.",
+    "No live replay, exactly-once or ordering guarantee; persisted inbox is authoritative.",
+    "Admission uses the existing standalone cache, not a Redis Cluster contract."
+  ]
+}

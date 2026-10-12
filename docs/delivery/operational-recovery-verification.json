@@ -1,0 +1,40 @@
+{
+  "scope": "APP-BE-032",
+  "status": "VERIFIED_WITH_EXCEPTION",
+  "final_gate": "VERIFIED_WITH_EXCEPTION",
+  "observed_runs": [
+    {
+      "database": "bpms_flow_f3c9edc0ec154e62a97e40f14e672f3f",
+      "result": "FAIL",
+      "cause": "Test imported a nonexistent scheduler entity; corrected to existing PeriodicTaskEntity."
+    },
+    {
+      "database": "bpms_flow_9a2d8937be1844e8a879d171d4cd3776",
+      "result": "FAIL",
+      "passed": 0,
+      "failed": 1,
+      "duration_seconds": 11.53,
+      "cause": "Test-specific Celery write URL inherited application environment; now explicitly bound to owned broker."
+    },
+    {
+      "database": "bpms_flow_0d9c7243ce5b4c26a7266fac1a72eeb2",
+      "result": "PASS",
+      "passed": 1,
+      "duration_seconds": 14.76,
+      "scope": "Independent owned secondary-service interruption prototype."
+    },
+    {
+      "database": "bpms_flow_b777763a7b474259a0770eb3897615ca",
+      "result": "PASS",
+      "passed": 1,
+      "duration_seconds": 6.15,
+      "scope": "Exact existing owned broker Docker pause/unpause and worker SIGSTOP/SIGCONT after immutable label/process-start/parent checks; scheduler replacement, retained unpublished task ID, real recovery and one duplicate-safe persisted notice."
+    }
+  ],
+  "limitations": [
+    "Scheduler replacement uses actual fenced scheduler functions and new leader identity, not a production supervisor failover.",
+    "Full candidate gate remains required; no general production availability guarantee."
+  ],
+  "current_full_gate": "VERIFIED_WITH_EXCEPTION",
+  "current_full_gate_evidence": "main-tasks-final-verification.json"
+}

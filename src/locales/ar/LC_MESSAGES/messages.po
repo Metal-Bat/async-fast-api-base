@@ -1,0 +1,3451 @@
+# Arabic translations for fast-api-sample.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the fast-api-sample project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: fast-api-sample 0.1.0\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-11 22:24+0330\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ar\n"
+"Language-Team: ar <LL@li.org>\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : "
+"n%100>=0 && n%100<=2 ? 4 : 5);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: src/apps/media/domain/dto.py:12
+msgid "Opaque versioned upload reference."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:15
+msgid "User that owns the upload."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:26
+msgid "Either file or image."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:30
+msgid "Private S3 object key."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:40
+msgid "Client-provided filename."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:46
+msgid "Validated stored media type."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:52
+msgid "Stored object size in bytes."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:58
+msgid "SHA-256 digest of the stored bytes."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:69
+msgid "Image width in pixels."
+msgstr ""
+
+#: src/apps/media/domain/entity.py:74
+msgid "Image height in pixels."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:14 src/apps/tasks/domain/entity.py:19
+msgid "Unique schedule name."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:15 src/apps/tasks/domain/entity.py:25
+msgid "Registered Celery task name."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:16 src/apps/tasks/domain/entity.py:29
+msgid "Destination queue."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:47
+msgid "Opaque versioned schedule reference."
+msgstr ""
+
+#: src/apps/tasks/domain/dto.py:100
+msgid "Opaque versioned execution reference."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:35
+msgid "Schedule type."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:40
+msgid "Interval in seconds."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:288
+msgid "Unique scheduler lease name."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:299
+msgid "UUIDv7 of the scheduler process holding the lease."
+msgstr ""
+
+#: src/apps/tasks/domain/entity.py:309
+msgid "UTC deadline after which another scheduler may claim the lease."
+msgstr ""
+
+#: src/apps/users/domain/auth_dto.py:46
+msgid "Opaque versioned session reference."
+msgstr ""
+
+#: src/apps/users/domain/auth_dto.py:74
+msgid "Opaque versioned permission reference."
+msgstr ""
+
+#: src/apps/users/domain/auth_dto.py:120
+msgid "Opaque versioned audit-event reference."
+msgstr ""
+
+#: src/apps/users/domain/auth_dto.py:152
+msgid "Opaque versioned role reference."
+msgstr ""
+
+#: src/apps/users/domain/auth_entity.py:27
+msgid "User that owns this device session."
+msgstr ""
+
+#: src/apps/users/domain/auth_entity.py:38
+msgid "Refresh-token rotation family identifier."
+msgstr ""
+
+#: src/apps/users/domain/auth_entity.py:48
+msgid "SHA-256 digest of the opaque refresh token."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:14 src/apps/users/domain/dto.py:28 src/apps/users/domain/dto.py:54
+msgid "Unique username."
+msgstr "اسم مستخدم فريد."
+
+#: src/apps/users/domain/dto.py:15
+msgid "Plaintext password accepted only as input."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:16
+msgid "Grant administrative privileges."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:17 src/apps/users/domain/dto.py:29 src/apps/users/domain/dto.py:55
+msgid "Unique email address."
+msgstr "عنوان بريد إلكتروني فريد."
+
+#: src/apps/users/domain/dto.py:18 src/apps/users/domain/dto.py:34 src/apps/users/domain/dto.py:61
+msgid "Given name."
+msgstr "الاسم الأول."
+
+#: src/apps/users/domain/dto.py:19 src/apps/users/domain/dto.py:35 src/apps/users/domain/dto.py:62
+msgid "Family name."
+msgstr "اسم العائلة."
+
+#: src/apps/users/domain/dto.py:26 src/apps/users/domain/dto.py:52
+msgid "Opaque versioned user reference."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:31 src/apps/users/domain/dto.py:42
+msgid "Replacement plaintext password."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:33 src/apps/users/domain/dto.py:64
+msgid "Administrative privilege flag."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:41
+msgid "Current plaintext password."
+msgstr ""
+
+#: src/apps/users/domain/dto.py:57 src/core/common_dto.py:14
+msgid "UTC creation timestamp."
+msgstr "وقت الإنشاء بالتوقيت العالمي المنسق."
+
+#: src/apps/users/domain/dto.py:58 src/core/base_entity.py:55 src/core/common_dto.py:15
+msgid "UTC timestamp of the most recent update."
+msgstr "وقت آخر تحديث بالتوقيت العالمي المنسق."
+
+#: src/apps/users/domain/dto.py:59 src/core/common_dto.py:16
+msgid "UTC soft-deletion timestamp."
+msgstr "وقت الحذف المنطقي بالتوقيت العالمي المنسق."
+
+#: src/apps/users/domain/dto.py:65
+msgid "Whether the user is not soft-deleted."
+msgstr "ما إذا كان المستخدم غير محذوف منطقيًا."
+
+#: src/apps/users/domain/entity.py:14
+msgid "Unique username used to identify the user."
+msgstr "اسم مستخدم فريد لتحديد هوية المستخدم."
+
+#: src/apps/users/domain/entity.py:26
+msgid "Unique email address for the user."
+msgstr "عنوان بريد إلكتروني فريد للمستخدم."
+
+#: src/apps/users/domain/entity.py:37
+msgid "Whether the user has administrative privileges."
+msgstr "ما إذا كان المستخدم يمتلك صلاحيات إدارية."
+
+#: src/apps/users/domain/entity.py:48
+msgid "User's given name."
+msgstr "الاسم الأول للمستخدم."
+
+#: src/apps/users/domain/entity.py:53
+msgid "User's family name."
+msgstr "اسم عائلة المستخدم."
+
+#: src/apps/users/domain/entity.py:57
+msgid "One-way password hash; a plaintext password is never stored."
+msgstr ""
+
+#: src/core/base_entity.py:20 src/core/common_dto.py:12
+msgid "Time-sortable UUIDv7 primary key."
+msgstr "مفتاح أساسي UUIDv7 قابل للترتيب زمنيًا."
+
+#: src/core/base_entity.py:32 src/core/common_dto.py:13
+msgid "Optimistic-lock version number."
+msgstr "رقم إصدار القفل التفاؤلي."
+
+#: src/core/base_entity.py:44
+msgid "UTC timestamp at which the row was created."
+msgstr "وقت إنشاء السجل بالتوقيت العالمي المنسق."
+
+#: src/core/base_entity.py:66
+msgid "UTC soft-deletion timestamp; null means the row is active."
+msgstr ""
+
+#: src/core/common_dto.py:22 src/core/common_dto.py:30 src/core/common_dto.py:43
+#: src/core/common_dto.py:51 src/core/common_entity.py:12 src/core/common_entity.py:46
+msgid "Human-readable title."
+msgstr "عنوان قابل للقراءة."
+
+#: src/core/common_dto.py:23 src/core/common_dto.py:31
+msgid "URL-safe identifier."
+msgstr "معرّف صالح للاستخدام في الروابط."
+
+#: src/core/common_dto.py:24 src/core/common_dto.py:32 src/core/common_dto.py:44
+#: src/core/common_dto.py:52 src/core/common_entity.py:26 src/core/common_entity.py:51
+msgid "Optional long-form description."
+msgstr "وصف تفصيلي اختياري."
+
+#: src/core/common_dto.py:33 src/core/common_dto.py:54
+msgid "Version expected by the caller."
+msgstr "الإصدار المتوقع من المستدعي."
+
+#: src/core/common_dto.py:45 src/core/common_dto.py:53
+msgid "User-controlled ordering position."
+msgstr "موضع الترتيب الذي يحدده المستخدم."
+
+#: src/core/common_entity.py:16
+msgid "URL-safe identifier, unique among rows that are not soft-deleted."
+msgstr ""
+
+#: src/core/common_entity.py:57
+msgid "User-controlled position used as the primary default sort key."
+msgstr ""
+
+#: src/core/settings.py:25
+msgid "Async API with versioned references, background tasks, private media, and observability."
+msgstr ""
+
+#: src/core/settings.py:37
+msgid "File and WebP image upload and download operations."
+msgstr "عمليات رفع وتنزيل الملفات وصور WebP."
+
+#: src/core/settings.py:39
+msgid "Administrative background-task scheduling."
+msgstr "جدولة المهام الخلفية إداريًا."
+
+#: src/core/settings.py:42
+msgid "Administrative user and authorization operations."
+msgstr "عمليات إدارة المستخدمين والتفويض."
+
+#: src/core/settings.py:44
+msgid "Authentication and device-session operations."
+msgstr "عمليات المصادقة وجلسات الأجهزة."
+
+#: src/core/settings.py:45
+msgid "Liveness and dependency readiness probes."
+msgstr "فحوص التشغيل وجاهزية التبعيات."
+
+#: src/utils/base_schema.py:61
+msgid "UUIDv7 request correlation identifier."
+msgstr "معرّف ارتباط الطلب بتنسيق UUIDv7."
+
+#: src/utils/base_schema.py:106
+msgid "Optional UUIDv7 correlation ID; generated when omitted."
+msgstr ""
+
+#: src/utils/errors/auth.py:8
+msgid "Invalid authentication credentials."
+msgstr "بيانات المصادقة غير صالحة."
+
+#: src/utils/errors/auth.py:9
+msgid "You do not have permission to perform this action."
+msgstr "ليس لديك إذن لتنفيذ هذا الإجراء."
+
+#: src/utils/errors/auth.py:10
+msgid "The account is temporarily locked."
+msgstr "الحساب مقفل مؤقتًا."
+
+#: src/utils/errors/auth.py:11
+msgid "The token is invalid or expired."
+msgstr "الرمز غير صالح أو منتهي الصلاحية."
+
+#: src/utils/errors/auth.py:12
+msgid "User not found."
+msgstr "المستخدم غير موجود."
+
+#: src/utils/errors/auth.py:13
+msgid "The user account is inactive."
+msgstr "حساب المستخدم غير نشط."
+
+#: src/utils/errors/common.py:8
+msgid "Resource not found."
+msgstr "المورد غير موجود."
+
+#: src/utils/errors/common.py:9
+msgid "The request is invalid."
+msgstr "الطلب غير صالح."
+
+#: src/utils/errors/common.py:10
+msgid "Request validation failed."
+msgstr "فشل التحقق من صحة الطلب."
+
+#: src/utils/errors/common.py:11
+msgid "The resource was modified. Refresh and try again."
+msgstr "تم تعديل المورد. حدّث الصفحة وحاول مرة أخرى."
+
+#: src/utils/errors/common.py:12
+msgid "The resource reference is invalid."
+msgstr "مرجع المورد غير صالح."
+
+#: src/utils/errors/common.py:13
+msgid "An unexpected error occurred."
+msgstr "حدث خطأ غير متوقع."
+
+#: src/utils/errors/common.py:14
+msgid "The service is temporarily unavailable."
+msgstr "الخدمة غير متاحة مؤقتًا."
+
+#: src/utils/errors/common.py:15
+msgid "Too many requests. Try again later."
+msgstr "عدد الطلبات كبير جدًا. حاول لاحقًا."
+
+#: src/utils/errors/infrastructure.py:8
+msgid "The database is temporarily unavailable."
+msgstr "قاعدة البيانات غير متاحة مؤقتًا."
+
+#: src/utils/errors/infrastructure.py:9
+msgid "The operation conflicts with existing data."
+msgstr "تتعارض العملية مع البيانات الموجودة."
+
+#: src/utils/errors/infrastructure.py:10
+msgid "The cache service is temporarily unavailable."
+msgstr "خدمة التخزين المؤقت غير متاحة مؤقتًا."
+
+#: src/utils/errors/infrastructure.py:11
+msgid "The file storage service is temporarily unavailable."
+msgstr "خدمة تخزين الملفات غير متاحة مؤقتًا."
+
+#: src/utils/errors/infrastructure.py:12
+msgid "The task broker is temporarily unavailable."
+msgstr "وسيط المهام غير متاح مؤقتًا."
+
+#: src/utils/errors/media.py:8
+msgid "The upload exceeds the size limit."
+msgstr "حجم الملف المرفوع يتجاوز الحد المسموح."
+
+#: src/utils/errors/media.py:9
+msgid "The uploaded content is not a valid image."
+msgstr "المحتوى المرفوع ليس صورة صالحة."
+
+#: src/utils/errors/media.py:10
+msgid "The upload limit was exceeded. Try again later."
+msgstr "تم تجاوز حد الرفع. حاول لاحقًا."
+
+#: src/utils/errors/media.py:11
+msgid "The uploaded content is not a supported file."
+msgstr "نوع الملف المرفوع غير مدعوم."
+
+msgid "Form definition operations."
+msgstr "عمليات تعريف النماذج."
+
+msgid "Versioned form authoring operations."
+msgstr "عمليات تأليف النماذج ذات الإصدارات."
+
+msgid "Governed integration connection operations."
+msgstr "عمليات اتصالات التكامل المحكومة."
+
+#: src/apps/designer/application/service.py:110
+msgid "Draft"
+msgstr "مسودة"
+
+#: src/apps/designer/application/service.py:110
+msgid "Published"
+msgstr "منشور"
+
+#: src/apps/designer/application/service.py:110
+msgid "Retired"
+msgstr "متقاعد"
+
+#: src/apps/designer/application/service.py:111
+msgid "Submitted"
+msgstr "مُرسل"
+
+#: src/apps/designer/application/service.py:111
+msgid "Running"
+msgstr "قيد التنفيذ"
+
+#: src/apps/designer/application/service.py:111
+msgid "Waiting"
+msgstr "قيد الانتظار"
+
+#: src/apps/designer/application/service.py:112
+msgid "Paused"
+msgstr "متوقف مؤقتًا"
+
+#: src/apps/designer/application/service.py:112
+msgid "Completed"
+msgstr "مكتمل"
+
+#: src/apps/designer/application/service.py:112
+msgid "Failed"
+msgstr "فشل"
+
+#: src/apps/designer/application/service.py:113
+msgid "Cancelled"
+msgstr "ملغى"
+
+#: src/apps/designer/application/service.py:113
+msgid "Approve"
+msgstr "موافقة"
+
+#: src/apps/designer/application/service.py:113
+msgid "Reject"
+msgstr "رفض"
+
+#: src/apps/designer/application/service.py:114
+msgid "Next"
+msgstr "التالي"
+
+#: src/apps/designer/application/service.py:114
+msgid "Success"
+msgstr "نجاح"
+
+#: src/apps/designer/application/service.py:114
+msgid "Failure"
+msgstr "فشل"
+
+msgid ""
+"Optional client Date reading: available, unavailable, or invalid. No request is rejected for this"
+" diagnostic."
+msgstr ""
+
+msgid ""
+"Signed server receipt minus client Date in seconds; includes transit and generation delay, so it "
+"is not exact clock skew."
+msgstr ""
+
+msgid "Present as check-device-time only when the configured apparent difference threshold is reached."
+msgstr ""
+
+msgid ""
+"Server UTC receipt timestamp. Response Date, when present, is generated by the HTTP server or "
+"proxy."
+msgstr ""
+
+msgid ""
+"Optional RFC 9110 HTTP-date generated by native clients for advisory diagnostics. Browser "
+"JavaScript cannot set Date. Missing or invalid values do not reject the request."
+msgstr ""
+
+msgid ""
+"Optional preferred response language. English and Farsi are supported; regional tags use their "
+"base language and unsupported values fall back to English."
+msgstr ""
+
+msgid ""
+"Optional UUIDv7 correlation identifier. Missing or invalid values are replaced with a generated "
+"UUIDv7; the effective value is returned in X-Request-ID."
+msgstr ""
+
+msgid "Optional caller-supplied reason recorded in audit history. It is not an authorization credential."
+msgstr ""
+
+msgid ""
+"Optional caller-controlled client software identifier. Captured for diagnostics and audit, "
+"truncated to 1024 characters; never used for authorization or trusted client identity. Browsers "
+"supply their own value and may ignore manual overrides."
+msgstr ""
+
+msgid ""
+"Optional caller-controlled client software identifier for audit and diagnostics; captured up to "
+"1024 characters. Browsers supply their own value and may ignore manual Swagger overrides. Not "
+"trusted client identity or authorization."
+msgstr ""
+
+msgid "step.request_priority.name"
+msgstr ""
+
+msgid "step.request_priority.help"
+msgstr ""
+
+msgid "step.permission_check.name"
+msgstr ""
+
+msgid "step.permission_check.help"
+msgstr ""
+
+msgid "step.connection_status.name"
+msgstr ""
+
+msgid "step.connection_status.help"
+msgstr ""
+
+msgid "Trusted workflow step type versions."
+msgstr "إصدارات أنواع خطوات سير العمل الموثوقة."
+
+msgid "Search deployed step type versions"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage. Includes draft and historical versions; is_available is false when the"
+" exact deployed handler is missing or changed."
+msgstr ""
+
+msgid "Inspect one pinned step type version"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage. Historical metadata remains readable if its code extension is no "
+"longer deployed."
+msgstr ""
+
+msgid "Publish a reconciled step type draft"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage. Only a draft whose persisted schema exactly matches deployed trusted "
+"code can be published. Published contracts are immutable."
+msgstr ""
+
+msgid "Select executable published step types"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage. Returns only currently registered, matching published versions as "
+"key/value choices. response_format=items returns the same bounded page without its envelope."
+msgstr ""
+
+msgid "Versioned AI agents and governed model choices."
+msgstr "وكلاء ذكاء اصطناعي بإصدارات وخيارات نماذج محكومة."
+
+msgid "step.ai_decision.name"
+msgstr ""
+
+msgid "step.ai_decision.help"
+msgstr ""
+
+msgid "Search owned AI agent versions"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage. Returns versions owned by the actor, or all versions for a superuser. "
+"Search accepts bounded filters, sorting and pagination. Specs include the author's prompt and are"
+" visible only to authorized owners."
+msgstr ""
+
+msgid "Report owned AI agent versions"
+msgstr ""
+
+msgid "Requires workflows.manage. Uses the same bounded query and authorization as search."
+msgstr ""
+
+msgid "Create an AI agent draft"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage. Creates a new numbered draft for the code. The agent spec pins a model"
+" and approved connection reference, a versioned prompt, a static or input-bound decision "
+"contract, permitted fields and classifications, and user task limits. No model call occurs."
+msgstr ""
+
+msgid "Select executable AI agent versions"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage. Returns only published agent versions whose configured connection and "
+"model are currently authorized and usable. response_format=items returns the same bounded slice "
+"as plain key/value objects."
+msgstr ""
+
+msgid "Select installed AI provider adapters"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage. Lists currently importable trusted provider adapters, including "
+"registered custom adapters. Installed adapters still require an authorized verified connection."
+msgstr ""
+
+msgid "Inspect one trusted provider adapter"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage. Reports installed adapter capability and missing optional SDK state; "
+"this is not a credential or live model probe."
+msgstr ""
+
+msgid "Select authorized verified AI connections"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage and per-connection access. Lists active verified AI connections with an"
+" installed adapter; never returns credentials. response_format=items returns a bounded plain "
+"array."
+msgstr ""
+
+msgid "Select configured models for one authorized AI connection"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage and use access to the active verified connection. Models are "
+"administrator allowlisted per connection; no arbitrary URL or live provider discovery occurs. "
+"Model IDs absent from PydanticAI's known-name list remain valid when configured."
+msgstr ""
+
+msgid "Browse library and configured model suggestions"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage. Merges public PydanticAI known model names with models from authorized"
+" verified AI connections. Library names are non-executable suggestions; configured entries have a"
+" connection-scoped identity and source. Duplicate configured IDs are deduplicated within each "
+"connection. This endpoint does not probe provider networks."
+msgstr ""
+
+msgid "Inspect one connection-scoped model capability"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage and use access to the verified AI connection. Reports configured model,"
+" region, retention declaration and adapter capabilities without resolving or returning its "
+"secret."
+msgstr ""
+
+msgid "Inspect one AI step task budget"
+msgstr ""
+
+msgid ""
+"Requires requests.start and authorization to view the process request. The execution must belong "
+"to that process and have an AI task budget. Returns pinned effective limits, used, reserved and "
+"remaining amounts in USD with the price source/version. Unknown provider completion keeps a hold "
+"and sets unknown_usage; it never appears as zero cost."
+msgstr ""
+
+msgid "Inspect one AI agent version"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage and ownership or superuser status. The spec includes the versioned "
+"prompt and budget policy; published definitions are immutable. A ref_id carries an optimistic-"
+"lock version."
+msgstr ""
+
+msgid "Inspect one AI agent version history"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage and ownership or superuser status. History may include prior authored "
+"prompt text; use the same authorization as agent detail."
+msgstr ""
+
+msgid "Replace an AI agent draft"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage and ownership or superuser status. Only a current draft ref_id can be "
+"replaced; stale revisions and published definitions are rejected."
+msgstr ""
+
+msgid "Delete an AI agent draft"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage and ownership or superuser status. Only an unpublished draft may be "
+"soft deleted; published versions stay available for pinned executions."
+msgstr ""
+
+msgid "Publish a priced, authorized AI agent version"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage and ownership or superuser status. Publication pins the effective "
+"user/admin limits and price version, and checks the installed adapter, verified connection, model"
+" allowlist and retention declaration. No provider call occurs. Unsupported tool calls or hidden "
+"transport retries fail closed."
+msgstr ""
+
+msgid "Select pinned static decision choices"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage and ownership or superuser status. Returns stable keys and localized "
+"display labels from the published decision schema. Input-bound choice sets are resolved per "
+"attempt and have no definition-time select."
+msgstr ""
+
+msgid "Inspect a claimed AI tool approval"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Requires requests.start and the current eligible work-item claimant. Claim the form-less work "
+"item through /work-items/{ref_id}/claim first. Returns the exact registered read-only tool and "
+"validated arguments; never returns prompts, message history or ciphertext. Arguments become null "
+"after expiry or payload deletion. Unauthorized claimants receive 403; missing approval receives "
+"404. Responses are not cacheable."
+msgstr ""
+
+msgid "Approve or deny a claimed AI tool call"
+msgstr ""
+
+msgid ""
+"Requires requests.start and the current eligible claimant. Only a PENDING approval on a current "
+"CLAIMED/IN_PROGRESS work-item reference may change. approved=true atomically completes the work "
+"item and stages one worker resume in the existing outbox; it does not execute the tool in the "
+"HTTP request. approved=false rejects the item, deletes its encrypted payload and fails the AI "
+"attempt. A repeated identical command before process advancement is a no-op; a changed command "
+"payload, stale reference, terminal execution or expired approval returns 409. Approval uses the "
+"task's existing elapsed/token/USD budget. The worker rechecks execution state, connection and "
+"query permissions; unknown dispatch is fenced against replay. Tool approvals cannot be forwarded."
+msgstr ""
+
+msgid "Descending branch order; the first matching variant wins. Shared design is the final fallback."
+msgstr ""
+
+msgid ""
+"Optional boolean expression over the declared client namespace, combined with client/range "
+"targets. Uses version_in_range(client.release, minimum, maximum_exclusive) for numeric releases; "
+"bounds are literal versions or null. Missing releases do not match. Errors fail selection. No "
+"request data, scripts or authorization grants. Null preserves legacy targeting."
+msgstr ""
+
+msgid "One-based source line for an expression issue; null for document-only issues."
+msgstr ""
+
+msgid "Zero-based source column for an expression issue; null when unavailable."
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Validates all render variants and bounded client predicates, then selects "
+"the first matching variant in descending priority using authenticated session context. Conditions"
+" combine with client/range targets; version_in_range uses numeric release ordering. Shared design"
+" is the final fallback, including legacy clients unless a condition explicitly matches their null"
+" identity. Caller headers cannot replace the bound context or grant access. Returns page JSON, "
+"variant key and design revision. Expression issues include document pointer, one-based line and "
+"zero-based column. Evaluation errors or missing required renderer capabilities fail selection; "
+"they do not silently choose another branch. Preview does not publish or modify an interaction."
+msgstr ""
+
+msgid ""
+"Boolean expression over declared request/process/reachable outputs and saved origin client. Use "
+"version_in_range(client.release, literal_minimum, literal_maximum_exclusive) for releases. Null "
+"is unconditional; errors stop progression."
+msgstr ""
+
+msgid ""
+"Final else for this source/outcome, used only when no non-default matches. At most one; client-"
+"aware groups require an unconditional default below all branch priorities."
+msgstr ""
+
+msgid ""
+"Descending if/elif order within a source/outcome. Duplicate priorities are invalid. First "
+"matching non-default wins outside explicit parallel split policy."
+msgstr ""
+
+msgid ""
+"Optional bpms.messages/1 catalog pinned with this exact version. Null preserves legacy reads and "
+"checksums. Draft gaps are warnings; required translations and matching parameters are mandatory "
+"at publication."
+msgstr ""
+
+msgid ""
+"Bounded bpms.render/1 document; POST /forms/render-schema returns its complete typed JSON Schema "
+"including messages, option_messages and bpms.format/1 field formatting. Message roles resolve to "
+"localized_text, localized_options and compatibility label/placeholder/accessibility fields in "
+"runtime views."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Plain text with named {parameters}, or exactly one/other branches selected by integer count. No "
+"HTML, ICU, format specifiers or executable templates."
+msgstr ""
+
+msgid ""
+"Translation acknowledgement of the default message SHA-256 revision returned by "
+"validation/preview. Missing or old acknowledgements are draft gaps and block required-locale "
+"publication."
+msgstr ""
+
+msgid ""
+"Versioned administrator-authored catalogs, at most 256 messages per locale and 64 KiB in total. "
+"Regional requests fall back to their base language, then package default, then English."
+msgstr ""
+
+msgid ""
+"Exact named arguments. Dates/decimals are canonical strings; integers are JSON integers (never "
+"booleans or floating point)."
+msgstr ""
+
+msgid "Untranslated canonical enum value; never replaced by the label."
+msgstr ""
+
+msgid ""
+"Only Gregorian YYYY-MM-DD is supported by this profile. Other calendars are rejected, never "
+"inferred from Persian locale."
+msgstr ""
+
+msgid ""
+"IANA zone used for datetime display. Input datetime must carry an explicit UTC offset; canonical "
+"output is UTC."
+msgstr ""
+
+msgid "Optional fixed decimal scale. Values requiring rounding are rejected."
+msgstr ""
+
+msgid "ISO currency code displayed as a suffix; no conversion or currency rounding."
+msgstr ""
+
+msgid ""
+"JSON pointer within the selected render document, e.g. /root/children/0. The node must declare "
+"formatting."
+msgstr ""
+
+msgid ""
+"Localized input using the node's exact bpms.format/1 profile. No floats or locale-dependent "
+"implicit coercion."
+msgstr ""
+
+msgid "Preview locale override; regional tags use the base en/fa language. Omitted uses Accept-Language."
+msgstr ""
+
+msgid "Draft translation gaps. Publication promotes required gaps to errors."
+msgstr ""
+
+msgid "Default message hashes for translation acknowledgement."
+msgstr ""
+
+msgid ""
+"Pinned client variant and interaction revision with locale-resolved presentation text. Reads "
+"resolve the exact pinned form catalog using Accept-Language without rewriting audit snapshots or "
+"canonical data. localization reports resolved_locale, direction, catalog_revision and per-message"
+" locale/source_revision. Option values and outcomes remain canonical. Authorized responses are "
+"private, no-store; locale changes never select a different variant."
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Checks draft documents and optional canonical data without saving. Returns"
+" at most 32 issues and 32 warnings with JSON pointers; warnings do not make draft valid false. "
+"Locale and format_values are preview-only inputs. Versioned bpms.messages/1 catalogs support "
+"en/fa, named typed parameters and one/other plurals. Draft validation reports missing or stale "
+"translations in warnings and returns source_revisions for translation acknowledgement. "
+"Publication requires every required-locale message and matching parameter types. Default text "
+"hashes track stale translations; published versions remain immutable. Null catalogs preserve "
+"legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA "
+"timezone, Latin/Persian digits and exact decimal/currency formatting. Canonical submission "
+"strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values "
+"are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Validates all render variants and bounded client predicates, then selects "
+"the first matching variant in descending priority using authenticated session context. Conditions"
+" combine with client/range targets; version_in_range uses numeric release ordering. Shared design"
+" is the final fallback, including legacy clients unless a condition explicitly matches their null"
+" identity. Caller headers cannot replace the bound context or grant access. Returns page JSON, "
+"variant key and design revision. Expression issues include document pointer, one-based line and "
+"zero-based column. Evaluation errors or missing required renderer capabilities fail selection; "
+"they do not silently choose another branch. Preview does not publish or modify an interaction. "
+"Resolves message roles and option labels into a presentation copy using locale or Accept-"
+"Language. Regional tags use en/fa; unsupported locales fall back to the package default. Missing "
+"optional translations fall back to default then English; resolved locale is reported per message."
+" format_values contains up to 32 node_pointer/value samples: returns exact canonical/display "
+"strings without changing data. Bad samples return valid false with localization.format_value. "
+"Design revision is stable across locale switches; catalog_revision changes when content changes. "
+"Responses use Cache-Control: private, no-store. Versioned bpms.messages/1 catalogs support en/fa,"
+" named typed parameters and one/other plurals. Draft validation reports missing or stale "
+"translations in warnings and returns source_revisions for translation acknowledgement. "
+"Publication requires every required-locale message and matching parameter types. Default text "
+"hashes track stale translations; published versions remain immutable. Null catalogs preserve "
+"legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA "
+"timezone, Latin/Persian digits and exact decimal/currency formatting. Canonical submission "
+"strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values "
+"are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Creates a draft under an active form using its current revision-bearing "
+"ref_id. Invalid structure or parameters fail with VALIDATION_FAILED; translation gaps may be "
+"saved. Versioned bpms.messages/1 catalogs support en/fa, named typed parameters and one/other "
+"plurals. Draft validation reports missing or stale translations in warnings and returns "
+"source_revisions for translation acknowledgement. Publication requires every required-locale "
+"message and matching parameter types. Default text hashes track stale translations; published "
+"versions remain immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata "
+"declares direction, Gregorian calendar, IANA timezone, Latin/Persian digits and exact "
+"decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes "
+"and ungrouped decimals; localized or lossy values are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage and the current draft revision-bearing ref_id. Replaces all documents "
+"atomically; published/retired or stale versions return VERSION_CONFLICT. Localization changes are"
+" recorded in version history. Versioned bpms.messages/1 catalogs support en/fa, named typed "
+"parameters and one/other plurals. Draft validation reports missing or stale translations in "
+"warnings and returns source_revisions for translation acknowledgement. Publication requires every"
+" required-locale message and matching parameter types. Default text hashes track stale "
+"translations; published versions remain immutable. Null catalogs preserve legacy checksums. Field"
+" bpms.format/1 metadata declares direction, Gregorian calendar, IANA timezone, Latin/Persian "
+"digits and exact decimal/currency formatting. Canonical submission strings use Gregorian ISO "
+"dates, UTC datetimes and ungrouped decimals; localized or lossy values are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage and the current draft version ref_id under an active form. Locks the "
+"version and validates all required translations before checksum/publication. Missing/stale "
+"required messages or incompatible parameters return VALIDATION_FAILED with pointer issues; stale "
+"or immutable versions return VERSION_CONFLICT. Versioned bpms.messages/1 catalogs support en/fa, "
+"named typed parameters and one/other plurals. Draft validation reports missing or stale "
+"translations in warnings and returns source_revisions for translation acknowledgement. "
+"Publication requires every required-locale message and matching parameter types. Default text "
+"hashes track stale translations; published versions remain immutable. Null catalogs preserve "
+"legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA "
+"timezone, Latin/Persian digits and exact decimal/currency formatting. Canonical submission "
+"strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values "
+"are rejected."
+msgstr ""
+
+msgid ""
+"Preferred English/Persian language, including regional tags such as fa-IR. Preview locale "
+"overrides this header for form content; envelope Content-Language follows the header. Canonical "
+"keys and submitted values do not change."
+msgstr ""
+
+msgid "Arrange child fields vertically."
+msgstr "ترتيب الحقول الفرعية عموديًا."
+
+msgid "Arrange child fields horizontally."
+msgstr "ترتيب الحقول الفرعية أفقيًا."
+
+msgid "Arrange child fields in a bounded responsive grid."
+msgstr "ترتيب الحقول الفرعية في شبكة متجاوبة محدودة."
+
+msgid "Display presentation text without writing data."
+msgstr "عرض نص توضيحي دون كتابة بيانات."
+
+msgid "Select a declared canonical form outcome."
+msgstr "اختيار نتيجة نموذج معيارية معلنة."
+
+msgid "Edit one string value."
+msgstr "تعديل قيمة نصية واحدة."
+
+msgid "Edit a multiline string value."
+msgstr "تعديل نص متعدد الأسطر."
+
+msgid "Edit an integer value."
+msgstr "تعديل عدد صحيح."
+
+msgid "Edit a JSON numeric value."
+msgstr "تعديل قيمة رقمية بصيغة JSON."
+
+msgid "Edit a boolean value."
+msgstr "تعديل قيمة منطقية."
+
+msgid "Choose canonical keys from a declared option source."
+msgstr "اختيار مفاتيح معيارية من مصدر خيارات معلن."
+
+msgid "Edit a canonical Gregorian date."
+msgstr "تعديل تاريخ ميلادي معياري."
+
+msgid "Edit a canonical offset datetime."
+msgstr "تعديل تاريخ ووقت معياريين مع إزاحة زمنية."
+
+msgid "Choose a user using an opaque reference."
+msgstr "اختيار مستخدم باستخدام مرجع معتم."
+
+msgid "Choose a work group using an opaque reference."
+msgstr "اختيار مجموعة عمل باستخدام مرجع معتم."
+
+msgid "Edit repeated values using one item schema."
+msgstr "تعديل قيم متكررة باستخدام مخطط عنصر واحد."
+
+msgid "Edit a collection in a table presentation."
+msgstr "تعديل مجموعة في عرض جدولي."
+
+msgid "Display a value calculated by the registered contract."
+msgstr "عرض قيمة محسوبة وفق العقد المسجل."
+
+msgid "Select a private uploaded media reference."
+msgstr "اختيار مرجع وسائط مرفوعة خاصة."
+
+msgid "Manage bounded private submission attachments."
+msgstr "إدارة مرفقات الإرسال الخاصة ضمن الحدود المحددة."
+
+msgid "Discover versioned primitive field contracts"
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Returns the same code-owned types, allowed options, defaults and renderer "
+"contracts used by validation and preview. Descriptions follow Accept-Language. UI support "
+"describes the client contract, not an installed frontend renderer. No database mutation or "
+"arbitrary import is performed."
+msgstr ""
+
+msgid "Preview a field option source"
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Validates the draft, selects its authenticated client variant and resolves"
+" the requested node. Returns existing key/value items using reversible json-scalar/1 keys, "
+"generation and dependency fingerprint. Domain choices are filtered by current actor visibility "
+"before pagination. Remote sources return client-fetch metadata only; submitted keys still require"
+" pinned schema membership. No server HTTP fetch, arbitrary SQL or import is performed."
+msgstr ""
+
+msgid "Preview host navigation and atomic result mapping"
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Validates the form and authenticated client variant, then returns a host-"
+"approved route, typed arguments and data revision. With result and expected_data_revision, "
+"returns a fully validated data proposal; no data is persisted. Stale/invalid results fail "
+"atomically. cancelled preserves data. Mappings cannot target read-only/calculated fields or "
+"repeated items; collection editing is BPMS-029. No route is executed by the backend."
+msgstr ""
+
+msgid "Resolve options for a pinned request form"
+msgstr ""
+
+msgid ""
+"Requires requests.start and current request visibility. Uses the exact pinned form and "
+"interaction variant; caller data supplies unsaved dependency values only. Current user/group "
+"visibility and ref revisions are checked independently. Results carry source revision, dependency"
+" fingerprint and generation; stale responses must be discarded. Submission revalidates saved "
+"values. No shared cache or server-side URL fetching."
+msgstr ""
+
+msgid "Resolve options for a pinned human-task form"
+msgstr ""
+
+msgid ""
+"Requires requests.start and current work-item visibility. Uses the exact pinned form and "
+"interaction variant, with current actor-filtered domain membership. Input data supplies unsaved "
+"dependency values; completion rechecks persisted submission membership. Results echo generation "
+"and dependency fingerprint for stale-response rejection. No server URL fetch or shared cache."
+msgstr ""
+
+msgid "Search authoring capabilities"
+msgstr ""
+
+msgid ""
+"Lists bounded step and form catalog entries plus viewable published subprocess interfaces. "
+"Subprocess entries report runtime_available=false until execution support is delivered; "
+"visibility is not call authorization."
+msgstr ""
+
+msgid "Validate a workflow graph"
+msgstr ""
+
+msgid ""
+"Checks step types, bindings, reusable subprocess interfaces and pinned child calls. The caller "
+"needs workflows.manage; this preview has no parent version identity. Save and publication recheck"
+" dependencies and self-reference."
+msgstr ""
+
+msgid "Read a pinned workflow graph"
+msgstr ""
+
+msgid ""
+"Returns the exact saved graph, including its optional reusable subprocess interface and call "
+"pins. Requires workflows.manage."
+msgstr ""
+
+msgid "Replace a draft workflow graph"
+msgstr ""
+
+msgid ""
+"Validates and atomically replaces a draft graph. Subprocess calls require start access to an "
+"active published child version, typed input mappings and an explicit failure route. Stale or "
+"published versions cannot be changed."
+msgstr ""
+
+msgid "Publish a workflow version"
+msgstr ""
+
+msgid ""
+"Locks and revalidates draft dependencies before making the graph immutable. A published "
+"subprocess call pins the exact child version but cannot execute until BPMS-032."
+msgstr ""
+
+msgid "JSON Schema Draft 2020-12 type expected in the isolated child context."
+msgstr ""
+
+msgid "A call must map this input when true."
+msgstr ""
+
+msgid "Actor or group assignment reference carried as a string."
+msgstr ""
+
+msgid "Declared output schema matching the named child step output port."
+msgstr ""
+
+msgid "Child graph step producing this output."
+msgstr ""
+
+msgid "Output port on source_step."
+msgstr ""
+
+msgid "Named values copied into the child; parent context is not implicit."
+msgstr ""
+
+msgid "Named values returned from child step output ports."
+msgstr ""
+
+msgid "Business outcome name to child FINISH step key. The parent also handles failure."
+msgstr ""
+
+msgid "Source JSON Schema; publication checks compatibility with the child input."
+msgstr ""
+
+msgid "Exact published child workflow version ref_id. Existing pins survive retirement."
+msgstr ""
+
+msgid "Explicit source mapping for required child inputs and assignment references."
+msgstr ""
+
+msgid "Pinned child call on a SUBPROCESS step. Execution is unavailable until BPMS-032."
+msgstr ""
+
+msgid "Reusable published workflow interface; null preserves ordinary workflow behavior."
+msgstr ""
+
+msgid "Opaque child process reference for detailed inspection."
+msgstr ""
+
+msgid "Exact parent call visit that started this child."
+msgstr ""
+
+msgid "Pinned published child workflow version."
+msgstr ""
+
+msgid "Current child process status."
+msgstr ""
+
+msgid "Live child token positions, including human and timer waits."
+msgstr ""
+
+msgid "Nested child summaries without copied input or output data."
+msgstr ""
+
+msgid "Direct child call history with pinned versions and nested active positions."
+msgstr ""
+
+msgid ""
+"Returns the authorized process timeline and nested subprocess summaries. Each child includes its "
+"pinned version and current token positions without copied form, input, or output data. Request "
+"participants with view access can inspect the same request-root child history."
+msgstr ""
+
+msgid ""
+"Pinned child call on a SUBPROCESS step. Execution uses the exact published version and isolated "
+"mapped inputs."
+msgstr ""
+
+msgid ""
+"Locks and revalidates draft dependencies before making the graph immutable. A published "
+"subprocess call pins the exact child version for durable execution."
+msgstr ""
+
+msgid ""
+"Lists bounded step and form catalog entries plus viewable published subprocess interfaces. "
+"Subprocess entries report whether pinned execution is available; visibility is not call "
+"authorization."
+msgstr ""
+
+msgid ""
+"Returns exact published component, data type and viewable subprocess versions. Search is bounded,"
+" paginated and filters current owner/grant visibility. Omit kind only when the caller has both "
+"forms.manage and workflows.manage. Help and sample inputs are author-supplied metadata, never "
+"execution evidence."
+msgstr ""
+
+msgid ""
+"Lists exact direct and transitive pinned versions reachable from this version. Inaccessible "
+"dependencies are suppressed; no private document is copied into the response."
+msgstr ""
+
+msgid ""
+"Reports visible draft and published consumers of an exact version, including transitive form "
+"reuse. Result paths identify bindings and do not reveal inaccessible definitions."
+msgstr ""
+
+msgid ""
+"Compares two exact versions visible to the caller. Changed JSON pointers, capability and locale "
+"changes are descriptive; use upgrade-preview for draft compatibility and apply for mutation."
+msgstr ""
+
+msgid ""
+"Reports retirement as deprecation and the newest currently published version under the same "
+"definition as a possible replacement. It does not auto-upgrade existing pins."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Creates a new root and independent draft from an exact published form or workflow version. COPY "
+"embeds the source's resolved form document; REFERENCE retains exact reusable component or "
+"subprocess pins and revalidates current grants. Both modes persist source_ref_id, source_checksum"
+" and mode as provenance. Example: {\"kind\":\"form\",\"source_ref_id\":\"<exact-"
+"ref>\",\"code\":\"purchase_copy\",\"name\":\"Purchase copy\",\"mode\":\"COPY\"}. New references "
+"to retired or inaccessible dependencies fail."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Read-only bulk preview for draft form component bindings and workflow subprocess calls. "
+"Replacements map form instance_key or workflow step key to an exact published version ref. "
+"Reports affected bindings, translation gaps and incompatible schema/capability issues before any "
+"write. Example: {\"targets\":[{\"kind\":\"form\",\"version_ref_id\":\"<draft-"
+"ref>\",\"replacements\":{\"billing\":\"<published-component-ref>\"}}]}."
+msgstr ""
+
+msgid ""
+"Locks every named draft, recomputes the bulk preview, rejects the entire request when any "
+"replacement is incompatible, then updates the drafts in one transaction. Published snapshots are "
+"never changed. Example: use the same targets body as upgrade-preview after reviewing its report; "
+"a new preview is still required server-side."
+msgstr ""
+
+msgid ""
+"Returns draft translation missing/stale pointers and bounded static rule explanations (effect, "
+"source scope and operator). It does not evaluate or return protected form input values; runtime "
+"state still uses the normal authorized preview."
+msgstr ""
+
+msgid "Search reusable definitions"
+msgstr ""
+
+msgid "Authoring catalogs, selectors, completion, and workflow field analysis."
+msgstr ""
+
+msgid "Reusable definition discovery, dependencies, templates, and draft upgrades."
+msgstr ""
+
+msgid "definition-library"
+msgstr ""
+
+msgid "designer"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Creates a new root and independent draft from an exact published form or workflow version. COPY "
+"embeds the source's resolved form document; REFERENCE retains exact reusable component or "
+"subprocess pins and revalidates current grants. Both modes persist source_ref_id, source_checksum"
+" and mode as provenance. Example: {\"kind\":\"form\",\"source_ref_id\":\"<exact-"
+"ref>\",\"code\":\"purchase_copy\",\"name\":\"Purchase copy\",\"mode\":\"COPY\"}. REFERENCE "
+"example: {\"kind\":\"workflow\",\"source_ref_id\":\"<published-workflow-"
+"ref>\",\"code\":\"approval_draft\",\"name\":\"Approval draft\",\"mode\":\"REFERENCE\"}. New "
+"references to retired or inaccessible dependencies fail."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Locks every named draft, recomputes the bulk preview, rejects the entire request when any "
+"replacement is incompatible, then updates the drafts in one transaction. Published snapshots are "
+"never changed. Example: {\"targets\":[{\"kind\":\"workflow\",\"version_ref_id\":\"<draft-"
+"workflow-ref>\",\"replacements\":{\"manager_call\":\"<published-child-ref>\"}}]}. A new preview "
+"is still required server-side."
+msgstr ""
+
+msgid "Explain fields in an exact workflow snapshot"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Requires workflows.manage and forms.manage. Reads only the named workflow revision, the "
+"explicitly named start form version, pinned human forms and accessible pinned subprocesses. "
+"Returns a bounded, sorted field table with technical dependency evidence, source snapshots, "
+"diagnostics, summary counts and conservative review suggestions. No form is changed and no "
+"business handler, provider or submission is executed. A missing start form is excluded rather "
+"than resolved to a latest version. Stale version references fail; inaccessible workflow or "
+"subprocess detail is not exposed. Example request: {\"workflow_version_ref_id\":\"<exact-"
+"ref>\",\"start_form_version_ref_id\":\"<exact-ref>\",\"locale\":\"fa\",\"page\":1,\"size\":25}."
+msgstr ""
+
+msgid "Authentication and credential operations."
+msgstr "عمليات المصادقة وبيانات الاعتماد."
+
+msgid "Authenticated device-session operations."
+msgstr "عمليات جلسات الأجهزة المصادق عليها."
+
+msgid "Administrative user operations."
+msgstr "عمليات إدارة المستخدمين."
+
+msgid "Role and permission assignment operations."
+msgstr "عمليات إسناد الأدوار والصلاحيات."
+
+msgid "Permission discovery and administration operations."
+msgstr "عمليات استكشاف الصلاحيات وإدارتها."
+
+msgid "Operational work group administration."
+msgstr "إدارة مجموعات العمل التشغيلية."
+
+msgid "Authentication and authorization audit operations."
+msgstr "عمليات تدقيق المصادقة والتفويض."
+
+msgid "Cross-resource history operations."
+msgstr "عمليات السجل التاريخي عبر الموارد."
+
+msgid "Registered application clients."
+msgstr "عملاء التطبيق المسجلون."
+
+msgid "Client release capabilities."
+msgstr "قدرات إصدارات العملاء."
+
+msgid "Reusable form component definitions and grants."
+msgstr "تعريفات مكونات النماذج القابلة لإعادة الاستخدام ومنحها."
+
+msgid "Immutable published form component versions."
+msgstr "إصدارات مكونات النماذج المنشورة غير القابلة للتعديل."
+
+msgid "Reusable form data type definitions and grants."
+msgstr "تعريفات أنواع بيانات النماذج القابلة لإعادة الاستخدام ومنحها."
+
+msgid "Immutable published form data type versions."
+msgstr "إصدارات أنواع بيانات النماذج المنشورة غير القابلة للتعديل."
+
+msgid "Workflow definition operations."
+msgstr "عمليات تعريف سير العمل."
+
+msgid "Versioned workflow graph authoring operations."
+msgstr "عمليات تأليف مخططات سير العمل ذات الإصدارات."
+
+msgid "Request type definitions and workflow start rules."
+msgstr "تعريفات أنواع الطلبات وقواعد بدء سير العمل."
+
+msgid "Business request drafts, submissions, attachments, and lifecycle actions."
+msgstr ""
+
+msgid "Process status, timeline, recovery, and execution controls."
+msgstr ""
+
+msgid "External event delivery to waiting workflow processes."
+msgstr "تسليم الأحداث الخارجية لعمليات سير العمل المنتظرة."
+
+msgid "Human work and cartable operations."
+msgstr "عمليات المهام البشرية وصندوق العمل."
+
+msgid "Owned in-application notifications and delivery status."
+msgstr ""
+
+msgid "File upload and download operations."
+msgstr "عمليات رفع الملفات وتنزيلها."
+
+msgid "WebP image upload and download operations."
+msgstr "عمليات رفع صور WebP وتنزيلها."
+
+msgid "Owned asynchronous report status and downloads."
+msgstr "حالة التقارير غير المتزامنة المملوكة وتنزيلها."
+
+msgid "Registered background-task definition operations."
+msgstr "عمليات تعريف المهام الخلفية المسجلة."
+
+msgid "Periodic background-task scheduling operations."
+msgstr "عمليات جدولة المهام الخلفية الدورية."
+
+msgid "Background-task execution and control operations."
+msgstr "عمليات تنفيذ المهام الخلفية والتحكم بها."
+
+msgid ""
+"Optional private-download presentation preference. Send only `attachment` for files; send "
+"`inline` or `attachment` for normalized WebP images. Do not send filename or other parameters. "
+"Duplicate or unsupported values return 422. The server chooses the filename and always returns "
+"Cache-Control: private, no-store."
+msgstr ""
+
+msgid ""
+"Server-selected inline or attachment mode with a sanitized UTF-8 filename. Generic files are "
+"always attachments. Images omit this header by default."
+msgstr ""
+
+msgid "Private media is never cached; request Cache-Control is ignored."
+msgstr ""
+
+msgid "Prevents browsers from guessing a different content type."
+msgstr ""
+
+msgid "Download a private user file"
+msgstr ""
+
+msgid ""
+"Requires an authenticated owner or an explicit trusted access policy. Resolves the versioned "
+"upload reference and authorization before object storage. Streams verified passive-format bytes "
+"as an attachment with a server-owned filename, nosniff and Cache-Control: private, no-store. The "
+"optional Content-Disposition request value may only be attachment; inline, filenames, extra "
+"parameters and duplicates return 422. Missing and unauthorized uploads return the same 404."
+msgstr ""
+
+msgid "Verified private file bytes; content type matches the stored file."
+msgstr ""
+
+msgid "Download a private WebP image"
+msgstr ""
+
+msgid ""
+"Requires an authenticated owner or an explicit trusted access policy. Resolves the versioned "
+"upload reference and authorization before object storage. Streams verified normalized WebP bytes "
+"with nosniff and Cache-Control: private, no-store. By default the browser may display the image "
+"inline without a Content-Disposition header. Send Content-Disposition: inline or attachment to "
+"select a server-named response; filenames, extra parameters and duplicates return 422. Missing "
+"and unauthorized images return the same 404."
+msgstr ""
+
+msgid "Verified private WebP image bytes."
+msgstr ""
+
+msgid "Search request types this requester can start"
+msgstr ""
+
+msgid ""
+"Requires requests.start, not requests.manage or forms.manage. Server filters active "
+"types/dependencies, workflow start access, current published pins and trusted registered-"
+"client/release targets before one-based bounded pagination. Declared supported_render_dialects "
+"further narrows compatibility; empty capabilities return an empty page without disclosing "
+"inaccessible choices. Empty/incompatible/ineligible results all appear as no eligible choices; "
+"selection grants no authority. Draft creation independently repeats eligibility checks. Page/size"
+" default to 1/20, size <=100; private no-store response. Client identity comes from the "
+"authenticated session, never browser identity headers."
+msgstr ""
+
+msgid "Read an ordinary requester's pinned runtime form"
+msgstr ""
+
+msgid ""
+"Requires requests.start plus ownership/superuser and the pinned origin-client policy. No "
+"forms.manage is required. Returns bpms.runtime/1 with exact form/design identity, current "
+"request/submission refs, visible display/validation metadata, canonical values, row keys and "
+"effective writable/required scopes. DRAFT owners may edit; submitted/closed views are read-only. "
+"Accept-Language resolves the pinned catalog without changing the client variant. Incompatible "
+"dialects return 409; unauthorized forms return 404; private no-store response."
+msgstr ""
+
+msgid "Read the authorized versioned runtime form state"
+msgstr ""
+
+msgid ""
+"Requires requests.start and per-item visibility. Returns bpms.runtime/1 with exact pinned "
+"form/design and current owning/submission refs, visible schema metadata, canonical data, stable "
+"row keys, effective writable/required scopes and available actions. Named key selects an "
+"edit/summary/print view; non-claimants and closed items are explicitly noneditable. Hidden "
+"schema/default/value/provenance data stays server-only. Accept-Language resolves en/fa without "
+"repinning. Unknown render dialects return 409; inaccessible resources return 404; private no-"
+"store response."
+msgstr ""
+
+msgid "Read current workflow access grants"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage, matching the authoring grant-mutation boundary. Returns current "
+"nondeleted grants with current opaque workflow/grant/user/group refs and can_view/can_start. "
+"Shared filters allow only these capabilities; page/size default 1/20, maximum size 100. Does not "
+"reconstruct audit history or expose confidential assignment/configuration. Missing workflows "
+"return 404; private no-store response."
+msgstr ""
+
+msgid "Read current connection grants"
+msgstr ""
+
+msgid ""
+"Requires integrations.manage plus per-connection manage/owner/superuser authority. Returns "
+"current nondeleted grants with opaque grant/user/group refs and can_use/can_manage; no "
+"credentials or historical reconstruction. Shared filters allow only can_use/can_manage; one-based"
+" page/size defaults 1/20, maximum size 100. Unauthorized connections return 404. Private no-store"
+" response; grant visibility does not grant use/manage capability."
+msgstr ""
+
+msgid ""
+"Requires integrations.manage plus per-connection manage/owner/superuser authority. Returns "
+"current nondeleted grants with opaque grant/user/group refs and can_use/can_manage; no "
+"credentials or historical reconstruction. Shared filters allow only can_use/can_manage; one-based"
+" page/size defaults 1/20, maximum size 100. Missing connections return 404; denied manage "
+"authority returns 403. Private no-store response; grant visibility does not grant use/manage "
+"capability."
+msgstr ""
+
+msgid "Visible JSON Schema property/items scope."
+msgstr ""
+
+msgid ""
+"Bounded compiled schema of this visible field only. No defaults, examples, hidden properties or "
+"shared definitions; backend validates the full canonical document."
+msgstr ""
+
+msgid ""
+"Current opaque revision-bearing reference for the owning request/work item; replace after every "
+"mutation."
+msgstr ""
+
+msgid "Exact pinned client variant; locale changes cannot change this key."
+msgstr ""
+
+msgid "Locale selected by the pinned catalog, or negotiated en/fa fallback."
+msgstr ""
+
+msgid "Canonical actor-visible values. Hidden values are preserved only on the server."
+msgstr ""
+
+msgid "Stable row keys for visible collection paths only."
+msgstr ""
+
+msgid ""
+"Actor-filtered bounded bpms.render/1 display document. Server-evaluated calculation metadata and "
+"client expressions are omitted; writable_scopes is authoritative for editability."
+msgstr ""
+
+msgid "Visible override actor/reason/value/time only; input checksums remain server-only."
+msgstr ""
+
+msgid ""
+"Safe visible pointer/code pairs. Hidden canonical validation failures produce a generic "
+"task.validation issue."
+msgstr ""
+
+msgid "Pinned display-only page settings; no scripts, bindings or runtime values."
+msgstr ""
+
+msgid "Prior submitted data filtered through the same task view, or null when unavailable."
+msgstr ""
+
+msgid ""
+"Authoritative confidential-client/release restrictions. On PUT, omission preserves existing "
+"restrictions; an explicit empty list deliberately removes them."
+msgstr ""
+
+msgid ""
+"Real authorized root-process ref for tracking, or null for a draft/no process. Never derive a "
+"process ref from another entity reference."
+msgstr ""
+
+msgid "Aggregate authorized business metrics"
+msgstr ""
+
+msgid "Allowlisted frontend route key; no arbitrary navigation URL."
+msgstr ""
+
+msgid "Allowlisted landing route key; a preference grants no screen permission."
+msgstr ""
+
+msgid "Appearance mode; system follows the device preference."
+msgstr ""
+
+msgid "Appearance settings."
+msgstr ""
+
+msgid "Apply personal profile changes"
+msgstr ""
+
+msgid "Apply personal workspace preferences"
+msgstr ""
+
+msgid "Approved workspace palette key, shared with the frontend."
+msgstr ""
+
+msgid ""
+"Atomically update self settings with the current ref_id from GET. Omitted groups and nested "
+"fields are preserved; null resets an entire supplied group to documented defaults. Nested scalar "
+"nulls and unknown keys are rejected with 422. Wrong-owner references return non-disclosing 404; "
+"stale references return 409 without applying changes. A no-op keeps the current reference. "
+"Returns a fresh reference after change. Locale supports en/fa, Gregorian calendar and valid IANA "
+"zones; settings never grant screen permissions."
+msgstr ""
+
+msgid "Authoritative saved state; null for an incompatible or unavailable release."
+msgstr ""
+
+msgid ""
+"Call only after the user actually opens this help revision in the supplied locale. Ownership and "
+"timestamps are server-derived. An atomic tuple upsert preserves first_viewed_at and updates "
+"last_viewed_at; another locale/revision is independent. Missing/stale metadata returns "
+"saved=false with a compatibility reason and writes nothing. Maximum 512 records per actor; "
+"deliberate self reset frees this small state. No content, duration, form values, actor "
+"identifiers or arbitrary event payloads are accepted. Static help must still render if this save "
+"fails."
+msgstr ""
+
+msgid "Code-owned resource kind; never a table or URL."
+msgstr ""
+
+msgid "Configured frontend metadata release, or null when unavailable."
+msgstr ""
+
+msgid "Create an authorized stable resource link"
+msgstr ""
+
+msgid "Current private owned image reference, or null; download uses the existing authorized media route."
+msgstr ""
+
+msgid "Current selection eligibility; does not grant execution authority."
+msgstr ""
+
+msgid "Current self-owned optimistic reference; version zero represents unsaved defaults."
+msgstr ""
+
+msgid "Current self-profile reference from the identity owner."
+msgstr ""
+
+msgid "Default list page size, from 1 through 100 items."
+msgstr ""
+
+msgid ""
+"Deliberately remove only the authenticated actor's help acknowledgment metadata. The body must be"
+" an empty object; actor fields are forbidden. Repeat is safe and returns zero removed records. "
+"Preferences, profiles, accounts and business data survive. This command does not restore "
+"definitions or reset an installation."
+msgstr ""
+
+msgid "Exact content revision supplied by the paired frontend release."
+msgstr ""
+
+msgid "Exact frontend content revision; stale revisions are not persisted."
+msgstr ""
+
+msgid "Exact version number, when applicable."
+msgstr ""
+
+msgid "Exclusive civil date; at most 366 days after start_date."
+msgstr ""
+
+msgid "Existing authorized selector; selection does not grant use permission."
+msgstr ""
+
+msgid "Expected reference from the latest preferences read; stale writes return a conflict."
+msgstr ""
+
+msgid "Expected self-profile reference; no actor or privilege fields are accepted."
+msgstr ""
+
+msgid "First explicit dismissal in UTC, or null."
+msgstr ""
+
+msgid "First explicit open in UTC, preserved on repeats; null if only dismissed."
+msgstr ""
+
+msgid "Fresh version-bearing reference; replace cached mutation refs."
+msgstr ""
+
+msgid "Gregorian calendar only; Persian language does not select a different calendar."
+msgstr ""
+
+msgid "Help actually opened or dismissed by this authenticated user."
+msgstr ""
+
+msgid "Inclusive civil date in the requested IANA timezone."
+msgstr ""
+
+msgid "JSON pointer within the handler configuration."
+msgstr ""
+
+msgid "Language, timezone, calendar and display digits."
+msgstr ""
+
+msgid "Latest explicit open in UTC; list reads never update it."
+msgstr ""
+
+msgid "Locale actually opened or dismissed; locales are acknowledged independently."
+msgstr ""
+
+msgid "Locales shipped for this exact help revision."
+msgstr ""
+
+msgid "Number of self help-state records removed; preferences and business data are preserved."
+msgstr ""
+
+msgid "Omitted preserves appearance; null resets this group; an object merges only supplied fields."
+msgstr ""
+
+msgid "Omitted preserves locale; null resets this group; an object merges only supplied fields."
+msgstr ""
+
+msgid ""
+"Omitted preserves the avatar; null detaches it; a reference must name a current private image "
+"owned by this user."
+msgstr ""
+
+msgid "Omitted preserves the family name; null clears it."
+msgstr ""
+
+msgid "Omitted preserves the given name; null clears it."
+msgstr ""
+
+msgid "Omitted preserves workspace; null resets this group; an object merges only supplied fields."
+msgstr ""
+
+msgid "Only the authenticated user's bounded help-state page."
+msgstr ""
+
+msgid "Opaque resource reference."
+msgstr ""
+
+msgid "Opaque stable locator previously returned by the server."
+msgstr ""
+
+msgid "Optional locale filter; omitted returns both locales."
+msgstr ""
+
+msgid "Owning service eligibility policy applied again at publication."
+msgstr ""
+
+msgid "Personal workspace defaults."
+msgstr ""
+
+msgid "Preferred display digits; stored numbers keep their canonical format."
+msgstr ""
+
+msgid "Preferred presentation language; canonical data stays unchanged."
+msgstr ""
+
+msgid "Private personal profile, settings and help state."
+msgstr ""
+
+msgid "Read eligible selected values outside search pages"
+msgstr ""
+
+msgid ""
+"Read only the authenticated user's preferences. Missing settings return typed defaults and a "
+"version-zero reference without inserting a row. No other actor identifier is accepted. Returns "
+"private, no-store JSON. Authentication and user deactivation follow existing auth rules."
+msgstr ""
+
+msgid ""
+"Read only this authenticated user's acknowledgment metadata with page/size bounds and optional "
+"en/fa locale filter. Ordered by help_key, revision, locale. This read records no seen or "
+"dismissal action and grants no business access. release_key is null when paired frontend metadata"
+" is unavailable. Help content remains frontend-owned and is never stored here."
+msgstr ""
+
+msgid "Read personal multilingual help state"
+msgstr ""
+
+msgid "Read personal profile"
+msgstr ""
+
+msgid "Read personal workspace preferences"
+msgstr ""
+
+msgid "Read the registered business metric dictionary"
+msgstr ""
+
+msgid "Read versioned authoring inspector contracts"
+msgstr ""
+
+msgid ""
+"Reads at most 50 selected values in request order, independent of page or search. Uses existing "
+"selector permissions and owner policies, not detail authorization: workflow designers may read "
+"only safe user/group labels and use-granted connection labels. Forms must be actor-owned or "
+"superuser-visible; versions must be published. Selection grants no execution permission. A "
+"revoked/deleted/ineligible value fails the whole request with a safe 404, without partial titles."
+" Unknown kinds or excess items return 422. Private no-store success envelope contains current "
+"references."
+msgstr ""
+
+msgid ""
+"Record a deliberate dismissal for this authenticated actor and exact frontend help "
+"key/revision/locale. Repeats preserve the first dismissed_at. Dismissing unopened help leaves "
+"viewed timestamps null; it does not pretend the content was read. Compatibility and bounded-state"
+" behavior match seen. Neither dismissal nor acknowledgment changes business permissions or "
+"workflow state."
+msgstr ""
+
+msgid "Record an explicit help dismissal"
+msgstr ""
+
+msgid "Record an explicit help open"
+msgstr ""
+
+msgid ""
+"Requires an authenticated live user and the target's existing read permission. Owner/grant "
+"policies are rechecked on every call; locators grant no access. Missing, deleted, forged and "
+"forbidden targets return the same safe 404 envelope. Inactive or retired readable records report "
+"available=false. A version link remains bound to that exact version, while ref_id refreshes to "
+"its current optimistic revision. Only code-owned route keys are returned, never arbitrary URLs or"
+" table names. Signing-key replacement invalidates locators. Responses use private no-store "
+"headers."
+msgstr ""
+
+msgid ""
+"Requires requests.start and a live actor. Uses the registered metric's owner predicates before "
+"aggregation, never a first result page. Requests are requester-owned; work uses the same "
+"direct/group/archive cartable policy as list search. Accepts an exclusive end civil date, 1–366 "
+"day window, valid IANA timezone, day granularity and only none/status dimensions. DST boundaries "
+"are exact UTC instants; nonexistent midnights fail 422. Returns unit, as_of, generated_at, typed "
+"buckets and drill-down descriptors accepted by existing request/work-item searches. Current-state"
+" metrics are snapshots, not historical occupancy. Live soft-deleted records are excluded. Null or"
+" negative terminal timing is unknown and excluded from mean; unknown_count remains explicit. "
+"Integration receipts and business outcomes without configured mappings return unavailable with "
+"null totals, never false zeros. No shared cache, credentials or private submission values. Empty "
+"count populations return zero; empty duration populations return null. Private no-store envelope."
+msgstr ""
+
+msgid ""
+"Requires requests.start. Returns versioned units, exact populations, timestamp and explicit "
+"unavailable reasons. No arbitrary SQL, monetary sum or inferred business approval is exposed. "
+"Private no-store success envelope."
+msgstr ""
+
+msgid ""
+"Requires workflows.manage. Accepts a deployed handler key/version and at most 128 configuration "
+"properties within 16 KiB. Performs typed configuration validation only; never invokes handlers, "
+"connections, providers or pure previews. Unknown handler returns valid=false with "
+"handler_unavailable; wrong unions, nulls and unknown fields return safe JSON-pointer diagnostics "
+"without echoed values or exception details. Unknown field names are omitted from diagnostics. "
+"Success does not imply publication or use authorization. Excess or malformed request bodies fail "
+"422. Private no-store success envelope."
+msgstr ""
+
+msgid ""
+"Requires workflows.manage. Returns the deployed handler/version configuration schemas, ports, "
+"exact fingerprints, outcomes, capabilities and twenty primitive field contracts. This is code "
+"discovery, not a list of operator-published versions or permission to use a connection, agent or "
+"form. Existing selectors and publication policies still apply. Configuration dialect is JSON "
+"Schema 2020-12; diagnostics use JSON pointers. Examples are synthetic and contain no credentials."
+" Preview permits bounded pure evaluation only; this read never executes a handler or changes a "
+"published checksum. Unknown configuration must be validated against its exact handler version. "
+"Private no-store response uses the existing success envelope; authentication and permission "
+"failures use the existing 401/403 error envelopes."
+msgstr ""
+
+msgid "Reset only personal help state"
+msgstr ""
+
+msgid "Resolve a stable link to a current reference"
+msgstr ""
+
+msgid ""
+"Return editable given/family names and the current owned private image reference. No public URL "
+"is returned. Contact details, passwords and sessions use the existing /auth APIs. Missing or "
+"removed image bindings resolve to null. This read does not modify preferences or media."
+msgstr ""
+
+msgid "Safe compatibility result; failure to save never authorizes or completes business work."
+msgstr ""
+
+msgid "Safe current display name from the owning resource service."
+msgstr ""
+
+msgid "Selected values outside any search page; all must remain eligible."
+msgstr ""
+
+msgid "Selects a protected resource; never enter or return credentials."
+msgstr ""
+
+msgid "Stable encrypted identity; invalid after signing-key replacement."
+msgstr ""
+
+msgid "Stable frontend-owned help key; no content or route authority."
+msgstr ""
+
+msgid "True only when the explicit help action was persisted."
+msgstr ""
+
+msgid ""
+"Update only self given/family names and an owned private avatar using the current profile ref_id."
+" Omitted fields survive; null clears a name or detaches the avatar. Upload images through the "
+"existing authenticated media image endpoint, which enforces size/type and strips metadata. An "
+"avatar reference must identify an existing live image owned by this actor; missing, stale, wrong-"
+"kind and outsider images return non-disclosing 404. Detachment preserves the private upload "
+"because it may be referenced by retained case data. Security/privilege fields are rejected. Stale"
+" profile references return 409. Returns the authoritative current profile reference."
+msgstr ""
+
+msgid "User-editable family name, or null."
+msgstr ""
+
+msgid "User-editable given name, or null."
+msgstr ""
+
+msgid "Valid IANA timezone for presentation; timestamps remain UTC."
+msgstr ""
+
+msgid "Validate an exact handler configuration without execution"
+msgstr ""
+
+msgid "Version of the typed personal settings contract."
+msgstr ""
+
+msgid "Whether the field selects an exact immutable version."
+msgstr ""
+
+msgid "Workspace control density."
+msgstr ""
+
+msgid "Authorized stable resource links and selected summaries."
+msgstr ""
+
+msgid "Authorized chart-neutral business metric definitions and queries."
+msgstr ""
+
+msgid "Create a private saved view"
+msgstr ""
+
+msgid "Create an authorized private favorite"
+msgstr ""
+
+msgid "Private authorized canonical resource favorites."
+msgstr ""
+
+msgid "Private versioned list presets and explicit personal defaults."
+msgstr ""
+
+msgid "Read a private saved view"
+msgstr ""
+
+msgid "Read an authorized private favorite"
+msgstr ""
+
+msgid "Replace a private saved view"
+msgstr ""
+
+msgid "Resolve a saved view without executing its query"
+msgstr ""
+
+msgid "Search private favorites"
+msgstr ""
+
+msgid "Search private saved views"
+msgstr ""
+
+msgid "Select the personal default view"
+msgstr ""
+
+msgid ""
+"Self-only favorites for the exact resource-link kind allowlist. Create accepts kind and current "
+"target ref_id, authorizes through its existing owner and stores canonical UUID identity, never a "
+"revision reference or target label. Repeated creation converges to one favorite; recreating an "
+"explicitly removed favorite restores that personal item only. At most 100 per kind and 500 live "
+"favorites per user. Search resolves current authorization and live targets before paging/count; "
+"forbidden/deleted targets are omitted without titles. Version favorites remain pinned to the "
+"named version. Possession grants no authority. Detail rechecks target permission; history returns"
+" only safe metadata. DELETE accepts the favorite's current ref, remains available after target "
+"revocation and never deletes the target. Wrong owner/missing is 404; stale delete is 409. Work-"
+"item favorites continue using the existing work-item personal pin state and are not duplicated "
+"here. Report aliases search; no archive generation, sharing, public URL or shared cache. Private "
+"no-store envelopes."
+msgstr ""
+
+msgid ""
+"Self-only saved list presets for forms, workflows, business_requests and work_items. Current live"
+" actor and list permission are checked on every read/apply. Creation and full PUT use "
+"schema_version=1, name 1–120, command_key 1–128, an at most 8 KiB validated query, up to 20 "
+"filters/10 sorts, distinct allowlisted columns and page_size 1–100. Page offsets, result bodies, "
+"actor/privilege fields, reference-valued filters and unknown fields are rejected. 100 live views "
+"per scope; unique name per self/scope. Creation keys bind the original payload; a changed replay "
+"conflicts 409. PUT is a full replacement and requires the current path ref; scope is immutable "
+"and the last identical update-key replay is safe. Default selection is explicit, serializes on "
+"the user and preserves exactly one default per scope. GET/search preserve an incompatible "
+"original preset with compatible=false; apply then returns no query, never a broadened query. "
+"Compatible apply returns page=1 and the stored size but executes no search. DELETE is idempotent "
+"for the same owned item, including after permission revocation. Wrong owner/missing is non-"
+"disclosing 404; stale write is 409, invalid contract is 422. History returns only safe self "
+"metadata, not private filters or historical identities. Report aliases search, not an archive "
+"job. Private no-store envelopes; no sharing or cache."
+msgstr ""
+
+msgid ""
+"Version-one query document validated against the named list DTO. No page/size, result bodies, "
+"credentials, actor identifiers or reference-valued filters. At most 8 KiB, 20 filters and 10 sort"
+" orders. Cartable scopes retain only their supported typed query fields."
+msgstr ""
+
+msgid "Inspect development installation readiness"
+msgstr ""
+
+msgid "Inspect exact definition dependencies and repair guidance"
+msgstr ""
+
+msgid "Search unified notifications"
+msgstr ""
+
+msgid "Report unified notifications"
+msgstr ""
+
+msgid "Read unified unread total"
+msgstr ""
+
+msgid "Read unified notification"
+msgstr ""
+
+msgid "Mark unified notification read"
+msgstr ""
+
+msgid "Private administrative installation readiness."
+msgstr ""
+
+msgid "Recipient-owned unified application notifications."
+msgstr ""
+
+msgid "Opt in to optional application email; mandatory security and approval notices remain enabled."
+msgstr ""
+
+msgid "Omitted preserves notification preferences; null resets optional email to disabled."
+msgstr ""
+
+msgid "Notification unavailable"
+msgstr "الإشعار غير متاح"
+
+msgid "Request"
+msgstr "طلب"
+
+msgid "Human task"
+msgstr "مهمة بشرية"
+
+msgid "Read-only approval"
+msgstr "موافقة للقراءة فقط"
+
+msgid "Report"
+msgstr "تقرير"
+
+msgid "Account"
+msgstr "حساب"
+
+msgid "Resource"
+msgstr "مورد"
+
+msgid ""
+"Requires a current superuser; ordinary administrators and requesters receive 403. Bounded read-"
+"only database facts and internal connectivity probes return ready, blocked, unknown or "
+"not_applicable. Required unknown checks prevent green overall readiness. Worker and scheduler "
+"execution remain unknown until separately verified by an explicit operator command; broker "
+"connectivity is insufficient. This read never installs roles, grants access, publishes "
+"definitions, enqueues tasks or invokes live providers. Repair keys identify owning screens; "
+"operations requires an operator. Refresh after 30 seconds and display checked_at UTC. Results "
+"contain no hosts, DSNs, credentials, user lists or raw errors. Private no-store success envelope;"
+" authenticated 401/403 errors use existing public codes."
+msgstr ""
+
+msgid ""
+"Requires workflows.manage and ownership of the workflow, or a superuser. Validates the exact "
+"current saved workflow version through the publication validator and workspace promotion policy. "
+"Stale references fail 409; inaccessible versions fail 404. Returns at most 256 safe code/pointer "
+"issues with selected node keys and allowlisted owning repair destinations, plus authorized exact "
+"version pins. Inaccessible dependencies expose no title, reference or content. Retired pins are "
+"preserved for deliberate repair; no dependency is replaced with latest. Empty candidate groups "
+"are reported. Author readiness never establishes requester or service-principal eligibility. "
+"Client eligibility is checked by the existing request/form publication and runtime contracts. "
+"This bounded private no-store projection never writes, grants, promotes, publishes, executes a "
+"handler or calls a provider. Re-read after each repair using refreshed current refs; malformed "
+"bodies fail 422."
+msgstr ""
+
+msgid ""
+"Authenticated recipient-only unified inbox version 1. Case, work_item, ai_approval, report and "
+"account destinations resolve current owner-authorized references on every read. "
+"Calendar/support/operation targets are reserved and unavailable until their producers exist. An "
+"unavailable, deleted, revoked, expired or cancelled target exposes no private subject, content or"
+" reference. Stored labels never confer authority. Search is bounded and deterministic with "
+"existing filters/order/page/size plus unread=true/false; report is the same paginated search, not"
+" a queued archive. Unread totals count live ACTIVE unread inbox rows, including redacted "
+"unavailable destinations. Mark-read changes only read metadata, requires a current optimistic ref"
+" (409 when stale), and never decides or acts on a workflow. Non-owned refs fail 403; "
+"missing/deleted refs fail 404. Null read bodies are rejected; actions accept an empty object. UTC"
+" timestamps; en/fa template locale is chosen when staged with en fallback. Private no-store "
+"success/page envelopes, existing 401/403/404/409/422 errors. Refresh refs from mutation "
+"responses. Optional email defaults off; mandatory notices ignore optional opt-out. No delivery is"
+" performed by these reads."
+msgstr ""
+
+msgid ""
+"Requires workflows.manage and ownership of the workflow, or a superuser. Validates the exact "
+"current saved workflow version through the publication validator and workspace promotion policy. "
+"Stale references fail 409; inaccessible versions fail 404. Returns at most 256 safe code/pointer "
+"issues with selected node keys and allowlisted owning repair destinations, plus authorized exact "
+"version pins. Inaccessible dependencies expose no title, reference or content. Retired pins are "
+"preserved for deliberate repair; no dependency is replaced with latest. Empty candidate groups "
+"are reported. Author readiness never establishes requester or service-principal eligibility. An "
+"optional exact client_release_ref_id checks renderer compatibility through the existing form "
+"resolver; omitted/null remains not_checked. Requester eligibility still belongs to existing "
+"request/runtime contracts. This bounded private no-store projection never writes, grants, "
+"promotes, publishes, executes a handler or calls a provider. Re-read after each repair using "
+"refreshed current refs; malformed bodies fail 422."
+msgstr ""
+
+msgid "Acknowledge a support incident"
+msgstr ""
+
+msgid ""
+"Authenticated Gregorian calendar. Personal events belong to their creator; a team event is "
+"visible only to current active members of its explicitly selected active work group. Only the "
+"creator can update/delete. No superuser bypass grants another person's calendar. Timed events use"
+" aware ISO-8601 instants and an IANA timezone; storage/output are UTC. A supplied non-UTC offset "
+"must match the named local wall time, rejecting DST gaps; explicit offsets disambiguate folds. "
+"All-day events retain start_date/end_date, exclusive end, without conversion into timed events. "
+"Each event spans at most 366 days. command_key binds exact create/update intent; same-key replay "
+"returns the current result, another intent conflicts. Updates/deletes require a current revision "
+"ref (409 stale); unavailable source is 404. Search/report require a half-open Gregorian date "
+"range of 1–93 days and IANA timezone, size 1–100, at most 20 filters and 10 sorts. Actual live "
+"work_item.due_at values appear as read-only deadline points only with requests.start and current "
+"available/claimed cartable authority. Live visibility and overlap precede filtering, count, "
+"ordering and pagination. Derived items link to work_items and cannot be edited as calendar "
+"events. Manual links use calendar_events. History returns only transition timestamps/operations, "
+"at most 1000, without private snapshots. Delete is soft and cancels pending reminders in the same"
+" transaction. Up to three distinct reminder offsets of 0–2592000 seconds are supported. Existing "
+"envelopes, snake_case, en/fa localization, and private no-store apply."
+msgstr ""
+
+msgid ""
+"Authenticated safe client failure intake. Only screen_key from "
+"calendar/work_items/requests/designer/reports/preferences/support, build 1–80 ASCII version "
+"characters, one of client.render_failed/client.network_failed/client.unexpected_error and a UUID "
+"request_id are accepted; unknown fields, text, HTML, stack and arbitrary error codes are rejected"
+" 422. The actor comes from authentication. Ten new reports per actor per UTC calendar minute, "
+"serialized on the user; replay among the last 100 episode correlations does not increment. Excess"
+" is 429. The returned support_ref is a correlation identity, never an authorization capability. "
+"persisted=false and support_ref=null explicitly report sink failure. No business operation is "
+"executed. Private no-store, existing envelope and en/fa messages."
+msgstr ""
+
+msgid ""
+"Authenticated source-owned reminder state. Manual configuration is part of event create/update; "
+"work reminders require requests.start and current available/claimed cartable responsibility, a "
+"current source revision ref, and an actual due_at. Configure one to three distinct offsets "
+"0–2592000 seconds; command_key binds exact intent, changed intent conflicts 409. DELETE cancels "
+"this actor's work reminders without changing the workflow deadline. Read exposes at most the "
+"latest 100 owned reminder states, never another recipient's schedule or destination. Existing "
+"database clocked one-off scheduling, durable outbox and MAP-10/11 own delivery. Event "
+"edits/deletes and terminal/forwarded work changes cancel old state in the source transaction; "
+"recipient authority and source revision/deadline are checked again at fire and delivery. Replays "
+"cannot create duplicate notices. Late reminders deliver once within 24 hours if still relevant; "
+"older occurrences expire and record bounded support lag. This never changes business state, "
+"guarantees provider receipt, or creates a second timer loop. Private no-store, existing "
+"snake_case envelopes and en/fa localization apply."
+msgstr ""
+
+msgid "Correlation identity only; support.incidents.manage is still required for inspection."
+msgstr ""
+
+msgid "Create a calendar event"
+msgstr ""
+
+msgid "Current authorized team reference; null creates a personal event."
+msgstr ""
+
+msgid "Exclusive Gregorian end date."
+msgstr ""
+
+msgid "Exclusive aware instant after start_at, normalized to UTC."
+msgstr ""
+
+msgid "IANA timezone for local presentation; canonical dates remain Gregorian."
+msgstr ""
+
+msgid "Inclusive Gregorian date; no conversion into a timed event."
+msgstr ""
+
+msgid "Inclusive aware instant, normalized to UTC."
+msgstr ""
+
+msgid "Personal/team Gregorian events and authorized workflow deadlines."
+msgstr ""
+
+msgid "Read a support incident"
+msgstr ""
+
+msgid "Record a safe client failure"
+msgstr ""
+
+msgid "Resolve a support incident"
+msgstr ""
+
+msgid "Resolve an authorized support correlation"
+msgstr ""
+
+msgid "Sanitized support episodes and safe client failure intake."
+msgstr ""
+
+msgid "Search calendar events and deadlines"
+msgstr ""
+
+msgid "Search support incidents"
+msgstr ""
+
+msgid ""
+"Seconds before start; up to three distinct integers from zero to thirty days. Empty disables "
+"reminders."
+msgstr ""
+
+msgid ""
+"Support incidents require the current support.incidents.manage capability or superuser authority."
+" Possession of a support_ref grants no access. Search/report apply live records and thirty-day "
+"retention before count and paging (size 1–100). Safe fields contain category, numeric public "
+"error code, registered operation, episode state/count and timestamps; no body, stack, prompt, "
+"credential or provider message is stored or returned. Identical operation episodes coalesce for "
+"one day, count is capped at 1000000 and the last 100 correlation identities deduplicate replay. A"
+" resolved recurrence starts a new episode. Acknowledge requires OPEN; resolve accepts OPEN or "
+"ACKNOWLEDGED. Both require the current revision ref and audit the transition. A stale or invalid "
+"transition conflicts 409; outsider is 403, absent/expired is 404. History returns at most 1000 "
+"safe state transitions through page/size, not diagnostic snapshots. Report aliases search. "
+"Failure persistence uses an independent transaction after business rollback; a sink outage "
+"returns support_persisted=false with correlation only. No recursive alert: one bounded MAP-13 "
+"fanout per episode, excluding notification failures. Private no-store."
+msgstr ""
+
+msgid "True only after independent incident commit; false means durability is unavailable."
+msgstr ""
+
+msgid "UUID correlation identity; do not send stack, message or request body."
+msgstr ""
+
+msgid "Update a calendar event"
+msgstr ""
+
+msgid "Preview a workflow default restoration"
+msgstr ""
+
+msgid "Reset draft workspace layout"
+msgstr ""
+
+msgid ""
+"Requires workflows.manage and current DRAFT/workspace revisions. Clears positions, routes, "
+"collapsed nodes and viewport; preserves graph and promotion checksum. This never restores a "
+"definition, discards server graph changes, publishes or resets environment data. Local unsaved-"
+"edit discard belongs to the client. Private no-store."
+msgstr ""
+
+msgid "Apply the reviewed workflow default"
+msgstr ""
+
+msgid ""
+"Requires live workflows.manage and current template visibility. Preview freezes the exact "
+"target/workspace revisions, published template checksum and symbolic reference bindings for ten "
+"minutes. An unassociated workflow requires explicit source_ref_id. Dependencies are validated "
+"through existing publication rules; blockers return no plan_token. replace_draft changes only "
+"DRAFT; successor creates a new DRAFT for any live target including PUBLISHED/RETIRED. Apply "
+"requires the reviewed token and command_key; replay returns the same result and changed-plan key "
+"reuse conflicts. Stale target/workspace, expired plan or changed dependencies conflict 409; "
+"unavailable source is 404 and invalid bindings/graph are 422. Graph/workspace and the replay "
+"receipt commit atomically. No automatic publication, request-type retargeting, form edit, "
+"execution-pin change, secret/grant reset or provider operation occurs. Existing private no-store "
+"snake_case success envelopes and en/fa localization apply."
+msgstr ""
+
+msgid ""
+"Exact immutable published/retired template version; omit only when the target has recorded "
+"provenance."
+msgstr ""
+
+msgid ""
+"replace_draft replaces only the target DRAFT; successor creates a new editable version without "
+"publishing."
+msgstr ""
+
+msgid "Current independent workspace reference; null is valid only when no saved workspace exists."
+msgstr ""
+
+msgid ""
+"At most 128 exact dependency replacements. Keys are kind:step_key, or "
+"user/work_group:step_key:target_index. Supported kinds: form, step_type, user, work_group, "
+"connection, agent, subprocess. Omitted bindings retain the associated installation mapping when "
+"source_ref_id is omitted."
+msgstr ""
+
+msgid "Safe changed top-level definition paths; no embedded config or private values."
+msgstr ""
+
+msgid ""
+"Client-generated restore intent identity. Reuse with the identical reviewed token to replay; a "
+"different token conflicts."
+msgstr ""
+
+msgid ""
+"Opaque signed preview token. New application expires after 600 seconds; a committed command can "
+"replay after expiry subject to current authorization."
+msgstr ""
+
+#: src/apps/notifications/presentation/live.py
+msgid "Stream private inbox updates"
+msgstr ""
+
+#: src/apps/notifications/presentation/live.py
+msgid ""
+"Recipient-only SSE invalidations over the persisted unified inbox. Requires an active bearer "
+"access token, user, session and registered client. No query parameters or user_id are accepted. "
+"Native EventSource needs an authenticated Node proxy; direct clients use streaming fetch with "
+"Authorization. Subscribe then refresh inbox/search and inbox/unread on inbox.resync, on reconnect"
+" and at least every 60 seconds. Last-Event-ID is an optional bounded reconnect hint, not an "
+"authorized replay cursor. inbox.changed contains only schema_version and notification_ref_id; its"
+" SSE id is the same reference. Deduplicate ids and coalesce refreshes. No subject, business data,"
+" password, URL or error is streamed. Heartbeat and authorization checks have a 15-second cadence;"
+" authorization probes are bounded to 3 seconds and changed events recheck authorization before "
+"sending. A stream lasts at most 300 seconds, receives at most 256 signals, and times out blocked "
+"sends after 5 seconds. Limit 3 streams per recipient and 200 per configured cache namespace "
+"across processes. No stream-long database session. Offline/missed signals remain in persisted "
+"search. Authentication or service failure after headers closes the stream; pre-stream errors use "
+"existing JSON envelopes. Success is text/event-stream, never a JSON success envelope. Private no-"
+"store/no-transform; proxies must disable buffering/compression and propagate disconnects. This "
+"backend contract does not establish browser or Node proxy acceptance."
+msgstr ""
+
+#: src/apps/notifications/presentation/live.py
+msgid "Private SSE invalidations and heartbeat comments; no JSON envelope."
+msgstr ""
+
+#: src/apps/notifications/presentation/live.py
+msgid "Concurrent inbox stream limit reached. Retry after disconnecting another stream."
+msgstr ""
+
+#: src/apps/notifications/presentation/live.py
+msgid "Live signaling unavailable. Persisted inbox search remains authoritative."
+msgstr ""
+
+#: src/apps/notifications/presentation/live.py
+msgid "Reconnect hint only; always resynchronize from the persisted inbox."
+msgstr ""
+
+#: src/apps/notifications/presentation/live.py
+msgid "Pre-stream JSON error using the existing application envelope."
+msgstr ""
+
+msgid "Schedule variant. Only fields belonging to this variant may be supplied on writes."
+msgstr ""
+
+msgid ""
+"Positive interval in seconds; required only for interval schedules. Retained legacy reads may be "
+"null."
+msgstr ""
+
+msgid "Timezone-aware execution instant; required only for clocked one-off schedules."
+msgstr ""
+
+msgid "JSON positional arguments bound to the registered task signature before saving."
+msgstr ""
+
+msgid "JSON keyword arguments bound to the registered task signature before saving."
+msgstr ""
+
+msgid "Whether the scheduler may dispatch this row; false pauses it without deleting history."
+msgstr ""
+
+msgid "Whether the schedule disables itself after dispatch; clocked schedules require true."
+msgstr ""
+
+msgid "Optional timezone-aware lower execution bound; omitted preserves it on update, null clears it."
+msgstr ""
+
+msgid ""
+"Optional timezone-aware expiry after start and clocked instant; omitted preserves it on update, "
+"null clears it."
+msgstr ""
+
+msgid "UTC creation instant of the persisted schedule."
+msgstr ""
+
+msgid "UTC instant of the most recent change, or null before the first change."
+msgstr ""
+
+msgid "UTC soft-deletion instant, or null for a retained active configuration."
+msgstr ""
+
+msgid "UTC instant of the most recent scheduler dispatch, or null before any dispatch."
+msgstr ""
+
+msgid "Number of scheduler dispatches recorded for this schedule."
+msgstr ""
+
+msgid "Configured queue choice; omitted preserves it on update, null uses the scheduler default."
+msgstr ""
+
+msgid "Known client screen identifier; arbitrary paths are not accepted."
+msgstr ""
+
+msgid "Public build identifier, 1 to 80 ASCII letters, digits, dots, underscores or hyphens."
+msgstr ""
+
+msgid "Stable safe error code; exception messages and stack traces are never accepted."
+msgstr ""
+
+msgid "Opaque incident reference containing its current version."
+msgstr ""
+
+msgid "Correlation UUID; inspection requires support.incidents.manage."
+msgstr ""
+
+msgid "Canonical incident category; localized labels do not change this value."
+msgstr ""
+
+msgid "Safe operation identifier; contains no submitted business payload."
+msgstr ""
+
+msgid "Incident lifecycle state: OPEN, ACKNOWLEDGED or RESOLVED."
+msgstr ""
+
+msgid "Number of grouped occurrences retained for this incident."
+msgstr ""
+
+msgid "Timezone-aware UTC instant of the first grouped occurrence."
+msgstr ""
+
+msgid "Timezone-aware UTC instant of the latest grouped occurrence."
+msgstr ""
+
+msgid "Timezone-aware UTC retention deadline; expired incidents may be removed."
+msgstr ""
+
+msgid "Timezone-aware UTC instant of this lifecycle transition."
+msgstr ""
+
+msgid "Previous canonical state; null for the initial transition."
+msgstr ""
+
+msgid "Resulting canonical state; null when no destination state is recorded."
+msgstr ""
+
+msgid ""
+"Celery cron minute expression; null defaults to * for crontab schedules and must be absent for "
+"other variants."
+msgstr ""
+
+msgid ""
+"Celery cron hour expression; null defaults to * for crontab schedules and must be absent for "
+"other variants."
+msgstr ""
+
+msgid ""
+"Celery cron day of week expression; null defaults to * for crontab schedules and must be absent "
+"for other variants."
+msgstr ""
+
+msgid ""
+"Celery cron day of month expression; null defaults to * for crontab schedules and must be absent "
+"for other variants."
+msgstr ""
+
+msgid ""
+"Celery cron month of year expression; null defaults to * for crontab schedules and must be absent"
+" for other variants."
+msgstr ""
+
+msgid ""
+"Requires an active authenticated actor with admin.tasks.manage. Persists schedule configuration "
+"in one transaction; execution occurs later through the existing database scheduler and outbox. "
+"Only registered tasks and configured queues are accepted. Positional and keyword arguments must "
+"bind the task signature. Interval, crontab and clocked fields are mutually exclusive. Clocked "
+"schedules require one_off=true; instants include timezone and expiry follows start/clocked time. "
+"Invalid commands return 422, unknown task definitions 404 and denied actors 403. The 201 "
+"success/data response carries the current ref_id; no task result is returned."
+msgstr ""
+
+msgid ""
+"Requires admin.tasks.manage and the current versioned ref_id. Omitted fields preserve stored "
+"values; queue/start_at/expires_at null clears the override, while enabled/interval_seconds "
+"explicit null is invalid. Interval changes belong to interval schedules. Enabling or changing "
+"configuration revalidates the merged schedule; disabling a retained legacy row remains possible. "
+"A no-op preserves its reference. Stale or concurrent writes return 409; invalid merged commands "
+"return 422. The success/data response contains the refreshed reference; history is retained."
+msgstr ""
+
+msgid ""
+"Incomplete authoring JSON, at most 64 KiB, depth 24, 2048 nodes and lists of at most 256 items. "
+"It is never executed; promotion validates GraphSnapshot and all dependencies."
+msgstr ""
+
+msgid ""
+"Requires an authenticated owner or an explicit trusted access policy. Resolves the versioned "
+"upload reference and authorization before object storage. Streams verified passive-format bytes "
+"as an attachment with a server-owned filename, nosniff and Cache-Control: private, no-store. The "
+"optional Content-Disposition request value may only be attachment; inline, filenames, extra "
+"parameters and duplicates return 422. Missing and unauthorized uploads return the same 404. "
+"Database authorization reads finish before streaming. Storage is read in chunks of at most 64 KiB"
+" and the final byte count must match metadata preflight. A late storage failure, changed size or "
+"disconnect closes the binary stream; it cannot become a JSON success response."
+msgstr ""
+
+msgid ""
+"Requires an authenticated owner or an explicit trusted access policy. Resolves the versioned "
+"upload reference and authorization before object storage. Streams verified normalized WebP bytes "
+"with nosniff and Cache-Control: private, no-store. By default the browser may display the image "
+"inline without a Content-Disposition header. Send Content-Disposition: inline or attachment to "
+"select a server-named response; filenames, extra parameters and duplicates return 422. Missing "
+"and unauthorized images return the same 404. Database authorization reads finish before "
+"streaming. Storage is read in chunks of at most 64 KiB and the final byte count must match "
+"metadata preflight. A late storage failure, changed size or disconnect closes the binary stream; "
+"it cannot become a JSON success response."
+msgstr ""
+
+msgid ""
+"Requires the authenticated report owner. Only ready, unexpired private archives within the "
+"configured byte limit may download. Metadata preflight precedes recording an authorized download "
+"start; download_count does not prove complete delivery. The database session closes before "
+"streaming. Storage uses chunks of at most 64 KiB and the final byte count must match preflight. A"
+" late storage failure, changed size or disconnect closes the binary stream without a JSON success"
+" envelope. Report generation status is independent of a browser download. The response is "
+"private, no-store, nosniff and attachment-only with a server-selected filename; no direct storage"
+" URL."
+msgstr ""
+
+msgid "Inspect governed business operations"
+msgstr ""
+
+msgid "Inspect sandbox order receipts"
+msgstr ""
+
+msgid "Inspect supervised AI process evidence"
+msgstr ""
+
+msgid "Reconcile an uncertain sandbox order"
+msgstr ""
+
+msgid "Reconcile an uncertain sandbox cancellation"
+msgstr ""
+
+msgid "Exact historical agent pin; never a substituted latest agent."
+msgstr ""
+
+msgid "Approved field names only; no copied input values."
+msgstr ""
+
+msgid "Typed model recommendation; confidence never grants business approval."
+msgstr ""
+
+msgid "Code-owned JSON Schema, not authored HTTP configuration."
+msgstr ""
+
+msgid "Code-owned JSON Schema for the bounded result port."
+msgstr ""
+
+msgid "Current opaque step execution reference belonging to the path process."
+msgstr ""
+
+msgid "Safe incident/ticket code, not private free text."
+msgstr ""
+
+msgid "Existing compensation record state; RUNNING is queued, not confirmed cancellation."
+msgstr ""
+
+msgid ""
+"Requires an authenticated active session and workflows.manage. Returns the bounded code-owned "
+"catalog (currently three operations), typed input/output JSON Schemas, allowed provider/kind, "
+"publisher identity policy, approval policy and retry behavior. Sandbox orders require an explicit"
+" committed human approve action covering the exact workflow and input. Timeouts after dispatch "
+"require receipt lookup before retry. Metadata is not proof of executable credentials: connections"
+" must separately be active, authorized, verified and pinned to the exact revision and secret "
+"version. Endpoints and secrets are never returned. This read has no business side effects. "
+"Missing/expired/revoked authentication returns 401; missing permission returns 403."
+msgstr ""
+
+msgid ""
+"Requires an authenticated active session, requests.start and request participant view "
+"authorization. Returns the latest AI attempt per execution, ordered by creation time and ID; page"
+" defaults to 1, size defaults to 20 and is bounded to 100. Exposes the historical agent pin, "
+"available model identity, allowed input field names, typed recommendation and existing task "
+"budget/unknown usage. No input values, prompt, checkpoint, raw response trace, secret, private "
+"URL or connection credential is returned. Human outcomes remain in the authorized work-"
+"item/process timeline. A normal/high-confidence recommendation never authorizes a protected "
+"order; that requires the exact committed human approval. Missing historical agent metadata is "
+"marked unavailable, never replaced with a latest agent. Missing/expired authentication returns "
+"401, missing permission 403, outsider or wrong process 404, invalid pagination 422. This read "
+"makes no model call. Deterministic tests are not live-model quality or calibration evidence."
+msgstr ""
+
+msgid ""
+"Requires an authenticated active session, processes.recover and superuser recovery authorization."
+" Supply current process and step execution refs, a 1–128 character command_key and a 1–64 "
+"character incident reason code. Receipt lookup uses the original pinned publisher, connection, "
+"credential version and operation identity; revoked authority or rotated pins fail closed. Never "
+"sends another create request. UNKNOWN can be queried immediately; DISPATCHING must be at least 20"
+" seconds old. A matching receipt confirms the existing operation and applies the ordinary "
+"idempotent completion callback. Missing receipt remains UNKNOWN and does not authorize retry. "
+"Same command and intent return current evidence even with old refs; changed intent conflicts. "
+"Failed/uncertain lookup requires a fresh lookup command, never an effect replay. Errors: 401 "
+"missing/expired session, 403 non-superuser, 404 wrong process/step, 409 stale refs, wrong state, "
+"changed command intent or revoked pins, 422 invalid input, 503 unavailable lookup. No DB session "
+"is held across HTTPS; no production purchase is made."
+msgstr ""
+
+msgid ""
+"Requires an authenticated active session, processes.recover and superuser authorization. Supply "
+"current process/step execution refs, command_key and an incident reason code. Requeues only a "
+"previously dispatched sandbox reversal through the existing outbox/worker. The worker uses "
+"receipt lookup with the original connection, credential and stable reversal identity; it never "
+"resends cancellation or creates an order. Failed records are eligible immediately; EXECUTING "
+"records must be at least 20 seconds old. Current publisher/grant/pin revocation fails closed. "
+"RUNNING means queued, not provider-confirmed success. Inspect the ordinary process timeline for "
+"compensation.receipt_confirmed and compensation.completed. Same command/intent returns current "
+"state; changed intent conflicts. Errors: 401 missing authentication, 403 non-superuser, 404 wrong"
+" process/step or missing reversal, 409 stale refs, revoked pins, changed intent or wrong state, "
+"422 invalid input. A missing receipt remains failed/manual intervention; no blind effect replay "
+"is permitted."
+msgstr ""
+
+msgid "Inspect sandbox operation receipts"
+msgstr ""
+
+msgid ""
+"Requires an authenticated active session, requests.start and request participant view "
+"authorization. Returns one latest attempt per sandbox order, ordered by step creation time and "
+"ID. page defaults to 1; size defaults to 20 and is bounded to 100. PREPARED means staged, "
+"DISPATCHING means a request may be in flight, UNKNOWN requires operator lookup, and CONFIRMED "
+"includes an actual validated provider receipt. Queued does not mean completed. The opaque "
+"step_execution_ref_id is current; operation_id is the stable external idempotency identity. No "
+"inputs, approval records, credentials or private URLs are exposed. Outsiders receive 404; missing"
+" permission receives 403. This inspection never dispatches an order."
+msgstr ""
+
+msgid "Sandbox item identifier; no production catalog or monetary semantics."
+msgstr ""
+
+msgid "Positive sandbox quantity, bounded to 1000."
+msgstr ""
+
+msgid "Optional approved note; never copied into public receipt or timeline."
+msgstr ""
+
+msgid "Stable external create identity, unchanged across duplicate delivery and lookup."
+msgstr ""
+
+msgid "Durable sandbox receipt identity, not a private backend row reference."
+msgstr ""
+
+msgid "Actual provider order state; cancellation is separate from database rollback."
+msgstr ""
+
+msgid "SHA-256 of canonical typed sandbox payload including default note; no payload values."
+msgstr ""
+
+msgid "Stable reversal identity, distinct from the original create operation."
+msgstr ""
+
+msgid "Original order identity being deliberately reversed."
+msgstr ""
+
+msgid "Durable cancellation receipt identity from the sandbox."
+msgstr ""
+
+msgid "Provider-confirmed cancellation; queued or unknown reversal is not success."
+msgstr ""
+
+msgid "Original canonical order payload hash; reversal cannot substitute inputs."
+msgstr ""
+
+msgid "Current opaque execution reference for a subsequent operator command."
+msgstr ""
+
+msgid "Stable external operation identity; never a permission or backend ref."
+msgstr ""
+
+msgid "Persisted attempt evidence: PREPARED, DISPATCHING, UNKNOWN or CONFIRMED; queued is not completed."
+msgstr ""
+
+msgid "Validated provider receipt only when confirmed; never inferred from a timeout."
+msgstr ""
+
+msgid "Current opaque reference of the original order execution."
+msgstr ""
+
+msgid "Current opaque AI execution reference; this endpoint is read-only."
+msgstr ""
+
+msgid "Latest persisted attempt number within the logical AI execution."
+msgstr ""
+
+msgid "Existing automation attempt state; queued or failed does not imply a recommendation."
+msgstr ""
+
+msgid "Whether the exact pinned published/retired agent metadata remains available."
+msgstr ""
+
+msgid "Model identity from the exact agent pin, not a substituted latest model."
+msgstr ""
+
+msgid "Existing task-wide budget, reservation and unknown-usage evidence; no new provider call."
+msgstr ""
+
+msgid "Exact code-owned operation identifier and version; no arbitrary HTTP scripting."
+msgstr ""
+
+msgid "Required deployed step handler key."
+msgstr ""
+
+msgid "Required exact deployed handler version."
+msgstr ""
+
+msgid "Allowed execution contexts; sandbox cancellation is compensation-only."
+msgstr ""
+
+msgid "Compatible registered connection providers."
+msgstr ""
+
+msgid "Required connection kind; AI and notification connections are incompatible."
+msgstr ""
+
+msgid "Pinned workflow publisher; protected sandbox effects require an active ordinary publisher."
+msgstr ""
+
+msgid "Credential mode; secret values and references remain private."
+msgstr ""
+
+msgid "Endpoint resolved by an administrator-owned key, never an authored URL."
+msgstr ""
+
+msgid "Versioned required human approval policy for create, otherwise null; tool approval is distinct."
+msgstr ""
+
+msgid "Whether execution changes sandbox business state; metadata inspection has no effect."
+msgstr ""
+
+msgid "Total network deadline in seconds; a timeout does not prove provider rollback."
+msgstr ""
+
+msgid "Diagnostic retries or lookup-only recovery after uncertain business dispatch."
+msgstr ""
+
+msgid "Supported operation-specific receipt lookup, otherwise null."
+msgstr ""
+
+msgid "Supported explicit reversal family; null means no registered automated reversal."
+msgstr ""
+
+msgid "Resume a supported single process wait"
+msgstr ""
+
+msgid ""
+"Requires an authenticated active session, requests.start, request participant view and requester "
+"control (or superuser). Supply a current process ref, command_key, declared outcome and handler-"
+"valid outputs for an eligible single wait. Existing unprotected wait semantics are retained. "
+"Subprocess results are settled by their owning worker. A sandbox.order.create/1 wait cannot "
+"accept caller-supplied receipts: only the protected worker or authorized receipt lookup may "
+"confirm it. Human business approval must use the actual eligible work-item completion action. "
+"Replay follows the existing command-key behavior; this is not an arbitrary effect executor. "
+"Errors: 401 missing/expired authentication, 403 missing permission/control, 404 outsider/missing "
+"process, 409 stale ref, ambiguous/ineligible wait or invented protected receipt, 422 invalid "
+"input. Queued sandbox work is never confirmed by this command."
+msgstr ""
+
+#: src/apps/workflows/domain/dtos/graph.py
+msgid ""
+"Pinned human-task read/write/required/hidden JSON Schema scopes. A nonempty read policy with an "
+"empty write list permits read-only acknowledgment; every changed field remains forbidden. Runtime"
+" writable_scopes is authoritative."
+msgstr ""
+
+#: src/apps/workflows/domain/dtos/graph.py
+msgid ""
+"For STEP_OUTPUT, the exact pinned output-port schema, including generic service metadata. "
+"Registered sandbox receipt guarantees refine server-side compatibility without changing persisted"
+" port metadata or graph checksums. Caller-supplied schema assertions cannot replace the trusted "
+"operation contract."
+msgstr ""
+
+msgid "Proceed"
+msgstr "متابعة"
+
+msgid "Review"
+msgstr "مراجعة"
+
+msgid "Summary"
+msgstr "ملخص"
+
+msgid "Print"
+msgstr "طباعة"
+
+msgid "Edit"
+msgstr "تعديل"
+
+msgid "Return"
+msgstr "إرجاع"
+
+msgid "Workflow notification"
+msgstr "إشعار سير العمل"
+
+msgid "Access ends"
+msgstr "انتهاء الوصول"
+
+msgid "Access level"
+msgstr "مستوى الوصول"
+
+msgid "Affected service"
+msgstr "الخدمة المتأثرة"
+
+msgid "Affected system"
+msgstr "النظام المتأثر"
+
+msgid "Annual leave"
+msgstr "إجازة سنوية"
+
+msgid "Approve rollout"
+msgstr "الموافقة على الإطلاق"
+
+msgid "Batch number"
+msgstr "رقم الدفعة"
+
+msgid "Budget (USD)"
+msgstr "الميزانية (دولار أمريكي)"
+
+msgid "Business justification"
+msgstr "مبررات العمل"
+
+msgid "Business travel"
+msgstr "سفر عمل"
+
+msgid "Contact"
+msgstr "بيانات الاتصال"
+
+msgid "Contract legal review"
+msgstr "المراجعة القانونية للعقد"
+
+msgid "Contract number"
+msgstr "رقم العقد"
+
+msgid "Cost center"
+msgstr "مركز التكلفة"
+
+msgid "Counterparty"
+msgstr "الطرف المقابل"
+
+msgid "Cover image"
+msgstr "صورة الغلاف"
+
+msgid "Currency"
+msgstr "العملة"
+
+msgid "Days requested"
+msgstr "عدد الأيام المطلوبة"
+
+msgid "Delivery date"
+msgstr "تاريخ التسليم"
+
+msgid "Delivery team"
+msgstr "فريق التنفيذ"
+
+msgid "Department"
+msgstr "القسم"
+
+msgid "Departure"
+msgstr "المغادرة"
+
+msgid "Description"
+msgstr "الوصف"
+
+msgid "Destination"
+msgstr "الوجهة"
+
+msgid "Detected at"
+msgstr "وقت الاكتشاف"
+
+msgid "Effective date"
+msgstr "تاريخ السريان"
+
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+msgid "Employee"
+msgstr "الموظف"
+
+msgid "Employee onboarding"
+msgstr "تهيئة الموظف الجديد"
+
+msgid "Employment type"
+msgstr "نوع التوظيف"
+
+msgid "Equipment procurement"
+msgstr "شراء المعدات"
+
+msgid "Equipment reservation"
+msgstr "حجز المعدات"
+
+msgid "Estimated cost"
+msgstr "التكلفة التقديرية"
+
+msgid "Expected result"
+msgstr "النتيجة المتوقعة"
+
+msgid "Expense category"
+msgstr "فئة المصروف"
+
+msgid "Expense reimbursement"
+msgstr "تعويض المصروفات"
+
+msgid "First day"
+msgstr "اليوم الأول"
+
+msgid "Hours"
+msgstr "الساعات"
+
+msgid "IT service request"
+msgstr "طلب خدمة تقنية المعلومات"
+
+msgid "Impact"
+msgstr "الأثر"
+
+msgid "Incident triage"
+msgstr "فرز الحوادث"
+
+msgid "Inspection date"
+msgstr "تاريخ الفحص"
+
+msgid "Inspection notes"
+msgstr "ملاحظات الفحص"
+
+msgid "Invoice number"
+msgstr "رقم الفاتورة"
+
+msgid "Invoice reconciliation"
+msgstr "مطابقة الفواتير"
+
+msgid "Issue date"
+msgstr "تاريخ الإصدار"
+
+msgid "Job title"
+msgstr "المسمى الوظيفي"
+
+msgid "Last day"
+msgstr "اليوم الأخير"
+
+msgid "Leave type"
+msgstr "نوع الإجازة"
+
+msgid "Location"
+msgstr "الموقع"
+
+msgid "Merchant"
+msgstr "التاجر"
+
+msgid "Needed by"
+msgstr "التاريخ المطلوب"
+
+msgid "New employee"
+msgstr "الموظف الجديد"
+
+msgid "Number of requested items"
+msgstr "عدد العناصر المطلوبة"
+
+msgid "Project code"
+msgstr "رمز المشروع"
+
+msgid "Project lead"
+msgstr "قائد المشروع"
+
+msgid "Project manager"
+msgstr "مدير المشروع"
+
+msgid "Project rollout dossier"
+msgstr "ملف إطلاق المشروع"
+
+msgid "Quality acknowledgment"
+msgstr "إقرار الجودة"
+
+msgid "Quantity"
+msgstr "الكمية"
+
+msgid "Receipts"
+msgstr "الإيصالات"
+
+msgid "Release checklist"
+msgstr "قائمة تحقق الإصدار"
+
+msgid "Request title"
+msgstr "عنوان الطلب"
+
+msgid "Requested items"
+msgstr "العناصر المطلوبة"
+
+msgid "Reservation starts"
+msgstr "بدء الحجز"
+
+msgid "Review meeting"
+msgstr "اجتماع المراجعة"
+
+msgid "Rollout date"
+msgstr "تاريخ الإطلاق"
+
+msgid "Rollout readiness and supporting evidence"
+msgstr "جاهزية الإطلاق والأدلة الداعمة"
+
+msgid "Samples inspected"
+msgstr "العينات المفحوصة"
+
+msgid "Severity"
+msgstr "الخطورة"
+
+msgid "Start date"
+msgstr "تاريخ البدء"
+
+msgid "Supplier"
+msgstr "المورد"
+
+msgid "Supporting documents"
+msgstr "المستندات الداعمة"
+
+msgid "System"
+msgstr "النظام"
+
+msgid "System access approval"
+msgstr "الموافقة على الوصول للنظام"
+
+msgid "Tax included"
+msgstr "شامل الضريبة"
+
+msgid "Travelers"
+msgstr "المسافرون"
+
+msgid "Unit cost"
+msgstr "تكلفة الوحدة"
+
+msgid "Urgent"
+msgstr "عاجل"
+
+msgid "Workaround"
+msgstr "حل مؤقت"
+
+msgid "Request submitted"
+msgstr "تم إرسال الطلب"
+
+msgid "Human work available"
+msgstr "توجد مهمة بشرية متاحة"
+
+msgid "Assignment changed"
+msgstr "تم تغيير الإسناد"
+
+msgid "Correction required"
+msgstr "التصحيح مطلوب"
+
+msgid "Human decision recorded"
+msgstr "تم تسجيل القرار البشري"
+
+msgid "Workflow outcome recorded"
+msgstr "تم تسجيل نتيجة سير العمل"
+
+msgid "Operation requires attention"
+msgstr "العملية تتطلب الانتباه"
+
+msgid "Business receipt confirmed"
+msgstr "تم تأكيد إيصال العملية"
+
+msgid "Report status changed"
+msgstr "تم تغيير حالة التقرير"
+
+msgid "Calendar reminder"
+msgstr "تذكير التقويم"
+
+msgid "Work reminder"
+msgstr "تذكير بالمهمة"
+
+msgid "Read-only AI tool approval"
+msgstr "الموافقة على أداة ذكاء اصطناعي للقراءة فقط"
+
+msgid "Support failure requires attention"
+msgstr "خطأ الدعم يتطلب الانتباه"
+
+msgid "Account security event"
+msgstr "حدث أمان الحساب"
+
+msgid ""
+"Optional preferred response language. English, Persian and Arabic are supported; regional tags "
+"use their base language and unsupported values fall back to English."
+msgstr ""
+
+msgid ""
+"Preview locale override; regional tags use the base en/fa/ar language. Omitted uses Accept-"
+"Language."
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Checks draft documents and optional canonical data without saving. Returns"
+" at most 32 issues and 32 warnings with JSON pointers; warnings do not make draft valid false. "
+"Locale and format_values are preview-only inputs. Versioned bpms.messages/1 catalogs support "
+"en/fa/ar, named typed parameters and one/other plurals. Draft validation reports missing or stale"
+" translations in warnings and returns source_revisions for translation acknowledgement. "
+"Publication requires every required-locale message and matching parameter types. Default text "
+"hashes track stale translations; published versions remain immutable. Null catalogs preserve "
+"legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA "
+"timezone, Latin/Persian digits and exact decimal/currency formatting. Canonical submission "
+"strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values "
+"are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Validates all render variants and bounded client predicates, then selects "
+"the first matching variant in descending priority using authenticated session context. Conditions"
+" combine with client/range targets; version_in_range uses numeric release ordering. Shared design"
+" is the final fallback, including legacy clients unless a condition explicitly matches their null"
+" identity. Caller headers cannot replace the bound context or grant access. Returns page JSON, "
+"variant key and design revision. Expression issues include document pointer, one-based line and "
+"zero-based column. Evaluation errors or missing required renderer capabilities fail selection; "
+"they do not silently choose another branch. Preview does not publish or modify an interaction. "
+"Resolves message roles and option labels into a presentation copy using locale or Accept-"
+"Language. Regional tags use en/fa/ar; unsupported locales fall back to the package default. "
+"Missing optional translations fall back to default then English; resolved locale is reported per "
+"message. format_values contains up to 32 node_pointer/value samples: returns exact "
+"canonical/display strings without changing data. Bad samples return valid false with "
+"localization.format_value. Design revision is stable across locale switches; catalog_revision "
+"changes when content changes. Responses use Cache-Control: private, no-store. Versioned "
+"bpms.messages/1 catalogs support en/fa/ar, named typed parameters and one/other plurals. Draft "
+"validation reports missing or stale translations in warnings and returns source_revisions for "
+"translation acknowledgement. Publication requires every required-locale message and matching "
+"parameter types. Default text hashes track stale translations; published versions remain "
+"immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata declares "
+"direction, Gregorian calendar, IANA timezone, Latin/Persian digits and exact decimal/currency "
+"formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes and ungrouped "
+"decimals; localized or lossy values are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Creates a draft under an active form using its current revision-bearing "
+"ref_id. Invalid structure or parameters fail with VALIDATION_FAILED; translation gaps may be "
+"saved. Versioned bpms.messages/1 catalogs support en/fa/ar, named typed parameters and one/other "
+"plurals. Draft validation reports missing or stale translations in warnings and returns "
+"source_revisions for translation acknowledgement. Publication requires every required-locale "
+"message and matching parameter types. Default text hashes track stale translations; published "
+"versions remain immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata "
+"declares direction, Gregorian calendar, IANA timezone, Latin/Persian digits and exact "
+"decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes "
+"and ungrouped decimals; localized or lossy values are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage and the current draft revision-bearing ref_id. Replaces all documents "
+"atomically; published/retired or stale versions return VERSION_CONFLICT. Localization changes are"
+" recorded in version history. Versioned bpms.messages/1 catalogs support en/fa/ar, named typed "
+"parameters and one/other plurals. Draft validation reports missing or stale translations in "
+"warnings and returns source_revisions for translation acknowledgement. Publication requires every"
+" required-locale message and matching parameter types. Default text hashes track stale "
+"translations; published versions remain immutable. Null catalogs preserve legacy checksums. Field"
+" bpms.format/1 metadata declares direction, Gregorian calendar, IANA timezone, Latin/Persian "
+"digits and exact decimal/currency formatting. Canonical submission strings use Gregorian ISO "
+"dates, UTC datetimes and ungrouped decimals; localized or lossy values are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage and the current draft version ref_id under an active form. Locks the "
+"version and validates all required translations before checksum/publication. Missing/stale "
+"required messages or incompatible parameters return VALIDATION_FAILED with pointer issues; stale "
+"or immutable versions return VERSION_CONFLICT. Versioned bpms.messages/1 catalogs support "
+"en/fa/ar, named typed parameters and one/other plurals. Draft validation reports missing or stale"
+" translations in warnings and returns source_revisions for translation acknowledgement. "
+"Publication requires every required-locale message and matching parameter types. Default text "
+"hashes track stale translations; published versions remain immutable. Null catalogs preserve "
+"legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA "
+"timezone, Latin/Persian digits and exact decimal/currency formatting. Canonical submission "
+"strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values "
+"are rejected."
+msgstr ""
+
+msgid ""
+"Requires requests.start and per-item visibility. Returns bpms.runtime/1 with exact pinned "
+"form/design and current owning/submission refs, visible schema metadata, canonical data, stable "
+"row keys, effective writable/required scopes and available actions. Named key selects an "
+"edit/summary/print view; non-claimants and closed items are explicitly noneditable. Hidden "
+"schema/default/value/provenance data stays server-only. Accept-Language resolves en/fa/ar without"
+" repinning. Unknown render dialects return 409; inaccessible resources return 404; private no-"
+"store response."
+msgstr ""
+
+msgid "Locale selected by the pinned catalog, or negotiated en/fa/ar fallback."
+msgstr ""
+
+msgid ""
+"Atomically update self settings with the current ref_id from GET. Omitted groups and nested "
+"fields are preserved; null resets an entire supplied group to documented defaults. Nested scalar "
+"nulls and unknown keys are rejected with 422. Wrong-owner references return non-disclosing 404; "
+"stale references return 409 without applying changes. A no-op keeps the current reference. "
+"Returns a fresh reference after change. Locale supports en/fa/ar, Gregorian calendar and valid "
+"IANA zones; settings never grant screen permissions."
+msgstr ""
+
+msgid "Optional locale filter; omitted returns all supported locales."
+msgstr ""
+
+msgid ""
+"Read only this authenticated user's acknowledgment metadata with page/size bounds and optional "
+"en/fa/ar locale filter. Ordered by help_key, revision, locale. This read records no seen or "
+"dismissal action and grants no business access. release_key is null when paired frontend metadata"
+" is unavailable. Help content remains frontend-owned and is never stored here."
+msgstr ""
+
+msgid ""
+"Return editable given/family names and the current owned private image reference. No public "
+"URL is returned. Contact details, passwords and sessions use the existing /auth APIs. Missing or "
+"removed image bindings resolve to null. This read does not modify preferences or media."
+msgstr ""
+
+msgid ""
+"Update only self given/family names and an owned private avatar using the current profile "
+"ref_id. Omitted fields survive; null clears a name or detaches the avatar. Upload images through "
+"the existing authenticated media image endpoint, which enforces size/type and strips metadata. An"
+" avatar reference must identify an existing live image owned by this actor; missing, stale, "
+"wrong-kind and outsider images return non-disclosing 404. Detachment preserves the private upload"
+" because it may be referenced by retained case data. Security/privilege fields are rejected. "
+"Stale profile references return 409. Returns the authoritative current profile reference."
+msgstr ""
+
+msgid ""
+"Authenticated recipient-only unified inbox version 1. Case, work_item, ai_approval, report and "
+"account destinations resolve current owner-authorized references on every read. "
+"Calendar/support/operation targets are reserved and unavailable until their producers exist. An "
+"unavailable, deleted, revoked, expired or cancelled target exposes no private subject, content or"
+" reference. Stored labels never confer authority. Search is bounded and deterministic with "
+"existing filters/order/page/size plus unread=true/false; report is the same paginated search, not"
+" a queued archive. Unread totals count live ACTIVE unread inbox rows, including redacted "
+"unavailable destinations. Mark-read changes only read metadata, requires a current optimistic ref"
+" (409 when stale), and never decides or acts on a workflow. Non-owned refs fail 403; "
+"missing/deleted refs fail 404. Null read bodies are rejected; actions accept an empty object. UTC"
+" timestamps; en/fa/ar template locale is chosen when staged with en fallback. Private no-store "
+"success/page envelopes, existing 401/403/404/409/422 errors. Refresh refs from mutation "
+"responses. Optional email defaults off; mandatory notices ignore optional opt-out. No delivery is"
+" performed by these reads."
+msgstr ""
+
+msgid ""
+"Authenticated Gregorian calendar. Personal events belong to their creator; a team event is "
+"visible only to current active members of its explicitly selected active work group. Only the "
+"creator can update/delete. No superuser bypass grants another person's calendar. Timed events use"
+" aware ISO-8601 instants and an IANA timezone; storage/output are UTC. A supplied non-UTC offset "
+"must match the named local wall time, rejecting DST gaps; explicit offsets disambiguate folds. "
+"All-day events retain start_date/end_date, exclusive end, without conversion into timed events. "
+"Each event spans at most 366 days. command_key binds exact create/update intent; same-key replay "
+"returns the current result, another intent conflicts. Updates/deletes require a current revision "
+"ref (409 stale); unavailable source is 404. Search/report require a half-open Gregorian date "
+"range of 1–93 days and IANA timezone, size 1–100, at most 20 filters and 10 sorts. Actual live "
+"work_item.due_at values appear as read-only deadline points only with requests.start and current "
+"available/claimed cartable authority. Live visibility and overlap precede filtering, count, "
+"ordering and pagination. Derived items link to work_items and cannot be edited as calendar "
+"events. Manual links use calendar_events. History returns only transition timestamps/operations, "
+"at most 1000, without private snapshots. Delete is soft and cancels pending reminders in the same"
+" transaction. Up to three distinct reminder offsets of 0–2592000 seconds are supported. Existing "
+"envelopes, snake_case, en/fa/ar localization, and private no-store apply."
+msgstr ""
+
+msgid ""
+"Authenticated safe client failure intake. Only screen_key from "
+"calendar/work_items/requests/designer/reports/preferences/support, build 1–80 ASCII version "
+"characters, one of client.render_failed/client.network_failed/client.unexpected_error and a UUID "
+"request_id are accepted; unknown fields, text, HTML, stack and arbitrary error codes are rejected"
+" 422. The actor comes from authentication. Ten new reports per actor per UTC calendar minute, "
+"serialized on the user; replay among the last 100 episode correlations does not increment. Excess"
+" is 429. The returned support_ref is a correlation identity, never an authorization capability. "
+"persisted=false and support_ref=null explicitly report sink failure. No business operation is "
+"executed. Private no-store, existing envelope and en/fa/ar messages."
+msgstr ""
+
+msgid ""
+"Authenticated source-owned reminder state. Manual configuration is part of event create/update; "
+"work reminders require requests.start and current available/claimed cartable responsibility, a "
+"current source revision ref, and an actual due_at. Configure one to three distinct offsets "
+"0–2592000 seconds; command_key binds exact intent, changed intent conflicts 409. DELETE cancels "
+"this actor's work reminders without changing the workflow deadline. Read exposes at most the "
+"latest 100 owned reminder states, never another recipient's schedule or destination. Existing "
+"database clocked one-off scheduling, durable outbox and MAP-10/11 own delivery. Event "
+"edits/deletes and terminal/forwarded work changes cancel old state in the source transaction; "
+"recipient authority and source revision/deadline are checked again at fire and delivery. Replays "
+"cannot create duplicate notices. Late reminders deliver once within 24 hours if still relevant; "
+"older occurrences expire and record bounded support lag. This never changes business state, "
+"guarantees provider receipt, or creates a second timer loop. Private no-store, existing "
+"snake_case envelopes and en/fa/ar localization apply."
+msgstr ""
+
+msgid ""
+"Requires live workflows.manage and current template visibility. Preview freezes the exact "
+"target/workspace revisions, published template checksum and symbolic reference bindings for ten "
+"minutes. An unassociated workflow requires explicit source_ref_id. Dependencies are validated "
+"through existing publication rules; blockers return no plan_token. replace_draft changes only "
+"DRAFT; successor creates a new DRAFT for any live target including PUBLISHED/RETIRED. Apply "
+"requires the reviewed token and command_key; replay returns the same result and changed-plan key "
+"reuse conflicts. Stale target/workspace, expired plan or changed dependencies conflict 409; "
+"unavailable source is 404 and invalid bindings/graph are 422. Graph/workspace and the replay "
+"receipt commit atomically. No automatic publication, request-type retargeting, form edit, "
+"execution-pin change, secret/grant reset or provider operation occurs. Existing private no-store "
+"snake_case success envelopes and en/fa/ar localization apply."
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Checks draft documents and optional canonical data without saving. Returns"
+" at most 32 issues and 32 warnings with JSON pointers; warnings do not make draft valid false. "
+"Locale and format_values are preview-only inputs. Versioned bpms.messages/1 catalogs support "
+"en/fa, named typed parameters and one/other plurals, with optional zero/two/few/many Arabic "
+"branches. Draft validation reports missing or stale translations in warnings and returns "
+"source_revisions for translation acknowledgement. Publication requires every required-locale "
+"message and matching parameter types. Default text hashes track stale translations; published "
+"versions remain immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata "
+"declares direction, Gregorian calendar, IANA timezone, Latin/Persian/Arabic digits and exact "
+"decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes "
+"and ungrouped decimals; localized or lossy values are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Validates all render variants and bounded client predicates, then selects "
+"the first matching variant in descending priority using authenticated session context. Conditions"
+" combine with client/range targets; version_in_range uses numeric release ordering. Shared design"
+" is the final fallback, including legacy clients unless a condition explicitly matches their null"
+" identity. Caller headers cannot replace the bound context or grant access. Returns page JSON, "
+"variant key and design revision. Expression issues include document pointer, one-based line and "
+"zero-based column. Evaluation errors or missing required renderer capabilities fail selection; "
+"they do not silently choose another branch. Preview does not publish or modify an interaction. "
+"Resolves message roles and option labels into a presentation copy using locale or Accept-"
+"Language. Regional tags use en/fa; unsupported locales fall back to the package default. Missing "
+"optional translations fall back to default then English; resolved locale is reported per message."
+" format_values contains up to 32 node_pointer/value samples: returns exact canonical/display "
+"strings without changing data. Bad samples return valid false with localization.format_value. "
+"Design revision is stable across locale switches; catalog_revision changes when content changes. "
+"Responses use Cache-Control: private, no-store. Versioned bpms.messages/1 catalogs support en/fa,"
+" named typed parameters and one/other plurals, with optional zero/two/few/many Arabic branches. "
+"Draft validation reports missing or stale translations in warnings and returns source_revisions "
+"for translation acknowledgement. Publication requires every required-locale message and matching "
+"parameter types. Default text hashes track stale translations; published versions remain "
+"immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata declares "
+"direction, Gregorian calendar, IANA timezone, Latin/Persian/Arabic digits and exact "
+"decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes "
+"and ungrouped decimals; localized or lossy values are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Creates a draft under an active form using its current revision-bearing "
+"ref_id. Invalid structure or parameters fail with VALIDATION_FAILED; translation gaps may be "
+"saved. Versioned bpms.messages/1 catalogs support en/fa, named typed parameters and one/other "
+"plurals, with optional zero/two/few/many Arabic branches. Draft validation reports missing or "
+"stale translations in warnings and returns source_revisions for translation acknowledgement. "
+"Publication requires every required-locale message and matching parameter types. Default text "
+"hashes track stale translations; published versions remain immutable. Null catalogs preserve "
+"legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA "
+"timezone, Latin/Persian/Arabic digits and exact decimal/currency formatting. Canonical submission"
+" strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values"
+" are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage and the current draft revision-bearing ref_id. Replaces all documents "
+"atomically; published/retired or stale versions return VERSION_CONFLICT. Localization changes are"
+" recorded in version history. Versioned bpms.messages/1 catalogs support en/fa, named typed "
+"parameters and one/other plurals, with optional zero/two/few/many Arabic branches. Draft "
+"validation reports missing or stale translations in warnings and returns source_revisions for "
+"translation acknowledgement. Publication requires every required-locale message and matching "
+"parameter types. Default text hashes track stale translations; published versions remain "
+"immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata declares "
+"direction, Gregorian calendar, IANA timezone, Latin/Persian/Arabic digits and exact "
+"decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes "
+"and ungrouped decimals; localized or lossy values are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage and the current draft version ref_id under an active form. Locks the "
+"version and validates all required translations before checksum/publication. Missing/stale "
+"required messages or incompatible parameters return VALIDATION_FAILED with pointer issues; stale "
+"or immutable versions return VERSION_CONFLICT. Versioned bpms.messages/1 catalogs support en/fa, "
+"named typed parameters and one/other plurals, with optional zero/two/few/many Arabic branches. "
+"Draft validation reports missing or stale translations in warnings and returns source_revisions "
+"for translation acknowledgement. Publication requires every required-locale message and matching "
+"parameter types. Default text hashes track stale translations; published versions remain "
+"immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata declares "
+"direction, Gregorian calendar, IANA timezone, Latin/Persian/Arabic digits and exact "
+"decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes "
+"and ungrouped decimals; localized or lossy values are rejected."
+msgstr ""
+
+msgid ""
+"Preferred English/Persian/Arabic language, including regional tags such as fa-IR and ar-SA. "
+"Preview locale overrides this header for form content; envelope Content-Language follows the "
+"header. Canonical keys and submitted values do not change."
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Checks draft documents and optional canonical data without saving. Returns"
+" at most 32 issues and 32 warnings with JSON pointers; warnings do not make draft valid false. "
+"Locale and format_values are preview-only inputs. Versioned bpms.messages/1 catalogs support "
+"en/fa/ar, named typed parameters and one/other plurals, with optional zero/two/few/many Arabic "
+"branches. Draft validation reports missing or stale translations in warnings and returns "
+"source_revisions for translation acknowledgement. Publication requires every required-locale "
+"message and matching parameter types. Default text hashes track stale translations; published "
+"versions remain immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata "
+"declares direction, Gregorian calendar, IANA timezone, Latin/Persian/Arabic digits and exact "
+"decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes "
+"and ungrouped decimals; localized or lossy values are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Validates all render variants and bounded client predicates, then selects "
+"the first matching variant in descending priority using authenticated session context. Conditions"
+" combine with client/range targets; version_in_range uses numeric release ordering. Shared design"
+" is the final fallback, including legacy clients unless a condition explicitly matches their null"
+" identity. Caller headers cannot replace the bound context or grant access. Returns page JSON, "
+"variant key and design revision. Expression issues include document pointer, one-based line and "
+"zero-based column. Evaluation errors or missing required renderer capabilities fail selection; "
+"they do not silently choose another branch. Preview does not publish or modify an interaction. "
+"Resolves message roles and option labels into a presentation copy using locale or Accept-"
+"Language. Regional tags use en/fa/ar; unsupported locales fall back to the package default. "
+"Missing optional translations fall back to default then English; resolved locale is reported per "
+"message. format_values contains up to 32 node_pointer/value samples: returns exact "
+"canonical/display strings without changing data. Bad samples return valid false with "
+"localization.format_value. Design revision is stable across locale switches; catalog_revision "
+"changes when content changes. Responses use Cache-Control: private, no-store. Versioned "
+"bpms.messages/1 catalogs support en/fa/ar, named typed parameters and one/other plurals, with "
+"optional zero/two/few/many Arabic branches. Draft validation reports missing or stale "
+"translations in warnings and returns source_revisions for translation acknowledgement. "
+"Publication requires every required-locale message and matching parameter types. Default text "
+"hashes track stale translations; published versions remain immutable. Null catalogs preserve "
+"legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA "
+"timezone, Latin/Persian/Arabic digits and exact decimal/currency formatting. Canonical submission"
+" strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values"
+" are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage. Creates a draft under an active form using its current revision-bearing "
+"ref_id. Invalid structure or parameters fail with VALIDATION_FAILED; translation gaps may be "
+"saved. Versioned bpms.messages/1 catalogs support en/fa/ar, named typed parameters and one/other "
+"plurals, with optional zero/two/few/many Arabic branches. Draft validation reports missing or "
+"stale translations in warnings and returns source_revisions for translation acknowledgement. "
+"Publication requires every required-locale message and matching parameter types. Default text "
+"hashes track stale translations; published versions remain immutable. Null catalogs preserve "
+"legacy checksums. Field bpms.format/1 metadata declares direction, Gregorian calendar, IANA "
+"timezone, Latin/Persian/Arabic digits and exact decimal/currency formatting. Canonical submission"
+" strings use Gregorian ISO dates, UTC datetimes and ungrouped decimals; localized or lossy values"
+" are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage and the current draft revision-bearing ref_id. Replaces all documents "
+"atomically; published/retired or stale versions return VERSION_CONFLICT. Localization changes are"
+" recorded in version history. Versioned bpms.messages/1 catalogs support en/fa/ar, named typed "
+"parameters and one/other plurals, with optional zero/two/few/many Arabic branches. Draft "
+"validation reports missing or stale translations in warnings and returns source_revisions for "
+"translation acknowledgement. Publication requires every required-locale message and matching "
+"parameter types. Default text hashes track stale translations; published versions remain "
+"immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata declares "
+"direction, Gregorian calendar, IANA timezone, Latin/Persian/Arabic digits and exact "
+"decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes "
+"and ungrouped decimals; localized or lossy values are rejected."
+msgstr ""
+
+msgid ""
+"Requires forms.manage and the current draft version ref_id under an active form. Locks the "
+"version and validates all required translations before checksum/publication. Missing/stale "
+"required messages or incompatible parameters return VALIDATION_FAILED with pointer issues; stale "
+"or immutable versions return VERSION_CONFLICT. Versioned bpms.messages/1 catalogs support "
+"en/fa/ar, named typed parameters and one/other plurals, with optional zero/two/few/many Arabic "
+"branches. Draft validation reports missing or stale translations in warnings and returns "
+"source_revisions for translation acknowledgement. Publication requires every required-locale "
+"message and matching parameter types. Default text hashes track stale translations; published "
+"versions remain immutable. Null catalogs preserve legacy checksums. Field bpms.format/1 metadata "
+"declares direction, Gregorian calendar, IANA timezone, Latin/Persian/Arabic digits and exact "
+"decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes "
+"and ungrouped decimals; localized or lossy values are rejected."
+msgstr ""

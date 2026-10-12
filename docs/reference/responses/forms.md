@@ -27,7 +27,7 @@ Used by: `POST /api/v1/forms/copy-component`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
-| `text` | `string | PluralMessage` | Yes | Plain text with named {parameters}, or exactly one/other branches selected by integer count. No HTML, ICU, format specifiers or executable templates. |
+| `text` | `string | PluralMessage` | Yes | Plain text with named {parameters}, or required one/other plural branches with optional zero/two/few/many branches for Arabic. Missing branches fall back to other. No HTML, ICU, format specifiers or executable templates. |
 | `parameters` | `object` | No | — |
 | `source_revision` | `string | null` | No | Translation acknowledgement of the default message SHA-256 revision returned by validation/preview. Missing or old acknowledgements are draft gaps and block required-locale publication. |
 
@@ -299,6 +299,10 @@ Used by: `POST /api/v1/forms/copy-component`, `POST /api/v1/forms/preview`
 | --- | --- | --- | --- |
 | `one` | `string` | Yes | — |
 | `other` | `string` | Yes | — |
+| `zero` | `string | null` | No | — |
+| `two` | `string | null` | No | — |
+| `few` | `string | null` | No | — |
+| `many` | `string | null` | No | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
@@ -424,7 +428,7 @@ Used by: `POST /api/v1/forms/runtime-preview`
 | `data_dialect` | `string` | No |  Default: `https://json-schema.org/draft/2020-12/schema`. |
 | `view_key` | `string` | Yes | — |
 | `purpose` | `string` | Yes | — |
-| `resolved_locale` | `string` | Yes | Locale selected by the pinned catalog, or negotiated en/fa fallback. |
+| `resolved_locale` | `string` | Yes | Locale selected by the pinned catalog, or negotiated en/fa/ar fallback. |
 | `direction` | `string` | Yes | — |
 | `data` | `object` | Yes | Canonical actor-visible values. Hidden values are preserved only on the server. |
 | `item_identity` | `object` | Yes | Stable row keys for visible collection paths only. |

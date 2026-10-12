@@ -93,8 +93,15 @@ async def get_object(key: str) -> bytes:
             return data
 
 
-async def stream_object(key: str, chunk_size: int = 64 * 1024) -> AsyncGenerator[bytes]:
-    """Stream an object without buffering the complete download in memory."""
+async def stream_object(
+    key: str, chunk_size: int = 64 * 1024, *, expected_size: int | None = None
+) -> AsyncGenerator[bytes]:
+    """Stream bounded chunks, failing closed if a preflighted object changes size."""
+    if not 1 <= chunk_size <= 64 * 1024:
+        raise ValueError("S3 stream chunk size must be between 1 and 65536 bytes")
+    if expected_size is not None and expected_size < 0:
+        raise ValueError("S3 expected size must be nonnegative")
+    received = 0
     async with s3_client() as client:
         response = await client.get_object(Bucket=settings.S3_BUCKET, Key=key)
         stream = response["Body"]
@@ -102,7 +109,12 @@ async def stream_object(key: str, chunk_size: int = 64 * 1024) -> AsyncGenerator
             while chunk := await stream.read(chunk_size):
                 if not isinstance(chunk, bytes):
                     raise TypeError("S3 response body must return bytes")
+                received += len(chunk)
+                if expected_size is not None and received > expected_size:
+                    raise OSError("S3 object size changed after preflight")
                 yield chunk
+            if expected_size is not None and received != expected_size:
+                raise OSError("S3 object size changed after preflight")
 
 
 async def delete_object(key: str) -> None:

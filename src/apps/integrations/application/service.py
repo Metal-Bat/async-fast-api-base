@@ -263,7 +263,8 @@ class ConnectionService:
         config = AIConnectionConfig.model_validate(row.non_secret_config)
         self.provider.validate(row.provider, row.kind, config)
         if (
-            row.kind != "AI"
+            row.version != open_ref_id(pin.connection_ref)[1]
+            or row.kind != "AI"
             or row.provider != pin.provider
             or config.endpoint_key != pin.endpoint_key
             or row.secret_ref != pin.secret_ref
@@ -274,19 +275,30 @@ class ConnectionService:
             raise VersionConflictException("AI connection contract changed or was revoked")
         return config
 
-    async def execute(self, pin: ConnectionPin, actor: UserEntity) -> AdapterResult:
-        # The pin is an internal trusted execution snapshot, never an HTTP request body.
+    async def recheck_service(self, pin: ConnectionPin, actor: UserEntity) -> Connection:
+        """Recheck the exact live grant, revision and credential pin before dispatch."""
         row = await self.get(pin.connection_ref, actor)
         self._active(row)
-        if (row.provider, row.kind, row.non_secret_config["endpoint_key"]) != (
-            pin.provider,
-            pin.kind,
-            pin.endpoint_key,
+        config = ConnectionConfig.model_validate(row.non_secret_config)
+        self.provider.validate(row.provider, row.kind, config)
+        if (
+            row.version != open_ref_id(pin.connection_ref)[1]
+            or row.provider != pin.provider
+            or row.kind != pin.kind
+            or config.endpoint_key != pin.endpoint_key
+            or row.secret_ref != pin.secret_ref
+            or row.secret_version != pin.secret_version
+            or row.verification_status != "VERIFIED"
         ):
-            raise VersionConflictException("Connection contract changed")
+            raise VersionConflictException("Connection contract changed or was revoked")
+        return row
+
+    async def execute(self, pin: ConnectionPin, actor: UserEntity) -> AdapterResult:
+        # The pin is an internal trusted snapshot, never an HTTP request body.
+        await self.recheck_service(pin, actor)
         try:
             return await self.provider.invoke(pin)
-        except Exception:  # noqa: BLE001 -- This boundary must redact all provider exceptions.
+        except Exception:  # noqa: BLE001 -- Provider exception text stays inside this boundary.
             raise ServiceUnavailableException("Integration unavailable") from None
 
     async def search_grants(

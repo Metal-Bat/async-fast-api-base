@@ -124,7 +124,9 @@ def _explanation(reason: str, locale: str) -> str:
         ),
     }
     en, fa = labels.get(reason, ("Used by a definition", "در یک تعریف استفاده می‌شود"))
-    return fa if locale == "fa" else en
+    from core.i18n import translate
+
+    return fa if locale == "fa" else translate(en, locale)
 
 
 def _conditional_steps(graph: GraphSnapshot) -> set[str]:

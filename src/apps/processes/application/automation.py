@@ -1,6 +1,6 @@
 """Crash-safe dispatch and execution of registered BPMS background operations."""
 
-from uuid import UUID
+from uuid import UUID, uuid5
 
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -12,8 +12,18 @@ from apps.ai.domain.entity import AITaskBudgetEntity
 from apps.integrations.application.providers import ConnectionProvider, StatusProvider
 from apps.integrations.application.service import ConnectionService
 from apps.integrations.data.secrets import EncryptedFileSecrets
+from apps.integrations.domain.orders import (
+    PROTECTED_ORDER_OPERATION,
+    SandboxOrderPayload,
+    payload_hash,
+)
+from apps.processes.application.approval import ProtectedEffectApproval
 from apps.processes.application.extension_services import ProcessStepServices
-from apps.processes.domain.automation import AutomationResult, AutomationSnapshot
+from apps.processes.domain.automation import (
+    AutomationResult,
+    AutomationSnapshot,
+    OrderDispatchEvidence,
+)
 from apps.processes.domain.entity import (
     ProcessInstanceEntity,
     StepExecutionAttemptEntity,
@@ -84,10 +94,62 @@ class AutomationDispatcher:
             handler_key=handler.handler_key,
             handler_version=handler.handler_version,
         )
+        protected_approval = None
+        order_dispatch = None
+        if operation.key == PROTECTED_ORDER_OPERATION:
+            execution = await self.session.get(StepExecutionEntity, attempt.step_execution_id)
+            if execution is None:
+                raise VersionConflictException(
+                    "Protected operation requires matching human approval"
+                )
+            protected_approval = await ProtectedEffectApproval(self.session).capture(
+                execution, step
+            )
+            if actor.is_superuser or actor.deleted_at is not None:
+                raise VersionConflictException("Protected execution requires an ordinary publisher")
+            from apps.users.application.authorization import user_permissions
+
+            if "workflows.manage" not in await user_permissions(actor, self.session):
+                raise VersionConflictException("Protected publisher authority was revoked")
+            if pin.provider not in operation.allowed_providers:
+                raise VersionConflictException("Protected sandbox connection is unavailable")
+            payload = SandboxOrderPayload.model_validate(
+                (execution.input_snapshot or {}).get("payload")
+            )
+            order_dispatch = OrderDispatchEvidence(
+                operation_id=uuid5(execution.id, PROTECTED_ORDER_OPERATION),
+                payload_hash=payload_hash(payload.model_dump(mode="json")),
+            )
+            if attempt.number > 1:
+                previous = (
+                    await self.session.exec(
+                        select(StepExecutionAttemptEntity).where(
+                            StepExecutionAttemptEntity.step_execution_id == execution.id,
+                            StepExecutionAttemptEntity.id != attempt.id,
+                        )
+                    )
+                ).all()
+                for prior in previous:
+                    old = AutomationSnapshot.model_validate(prior.automation_snapshot)
+                    if (
+                        old.order_dispatch is None
+                        or old.connection != pin
+                        or old.actor_id != actor.id
+                        or old.protected_approval != protected_approval
+                    ):
+                        raise VersionConflictException(
+                            "Protected operation pin changed across retries"
+                        )
+                    if old.order_dispatch.state in {"DISPATCHING", "UNKNOWN", "CONFIRMED"}:
+                        raise VersionConflictException(
+                            "Protected operation requires reconciliation before retry"
+                        )
         snapshot = AutomationSnapshot(
             handler_key=handler.handler_key,
             handler_version=handler.handler_version,
             operation_key=operation.key,
+            protected_approval=protected_approval,
+            order_dispatch=order_dispatch,
             actor_id=actor.id,
             connection=pin,
         )
@@ -233,6 +295,21 @@ async def execute_background(
     attempt_id: UUID, provider: ConnectionProvider | None = None
 ) -> AutomationResult:
     """Execute a pinned adapter, then apply its result through an idempotent callback."""
+    async with SessionFactory() as session:
+        candidate = await session.get(StepExecutionAttemptEntity, attempt_id)
+        protected = bool(
+            candidate
+            and candidate.automation_snapshot
+            and candidate.automation_snapshot.get("operation_key") == PROTECTED_ORDER_OPERATION
+        )
+    if protected:
+        from apps.integrations.application.providers import OrderProvider
+        from apps.processes.application.orders import ProtectedOrderDispatch
+
+        selected = provider or _provider()
+        if not isinstance(selected, OrderProvider):
+            raise VersionConflictException("Protected sandbox provider is unavailable")
+        return await ProtectedOrderDispatch(SessionFactory, selected).execute(attempt_id)
     async with SessionFactory() as session, session.begin():
         attempt = await session.get(
             StepExecutionAttemptEntity,

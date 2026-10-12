@@ -39,7 +39,7 @@ class FieldInventoryQuery(BaseDTO):
         default=None,
         description="Exact start form version for this analysis. Omitted means no start form is analyzed; latest is never selected.",
     )
-    locale: Literal["en", "fa"] = "en"
+    locale: Literal["en", "fa", "ar"] = "en"
     page: int = Field(default=1, ge=1, le=1000)
     size: int = Field(default=25, ge=1, le=100)
     search: str | None = Field(default=None, max_length=128)

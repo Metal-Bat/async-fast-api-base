@@ -1,5 +1,6 @@
 """Tests for authenticated media storage services."""
 
+import asyncio
 import hashlib
 import io
 import zipfile
@@ -190,8 +191,12 @@ async def test_stream_requires_matching_trusted_object_metadata(monkeypatch) -> 
     )
     upload.content_type = "text/plain"
     stream = Mock()
-    monkeypatch.setattr(media, "stream_object", Mock(return_value=stream), raising=False)
-    assert await media.UserUploadService(Mock()).stream(upload) is stream
+    stream_object = Mock(return_value=stream)
+    monkeypatch.setattr(media, "stream_object", stream_object, raising=False)
+    session = Mock(close=AsyncMock())
+    assert await media.UserUploadService(session).stream(upload) is stream
+    session.close.assert_awaited_once()
+    stream_object.assert_called_once_with("private/key", expected_size=8)
 
     object_info.return_value = Mock(
         size=8, content_type="text/plain", metadata={"sha256": "0" * 64}
@@ -218,3 +223,22 @@ async def test_failed_upload_persistence_removes_private_object(monkeypatch) -> 
 
     session.rollback.assert_awaited_once()
     delete_object.assert_awaited_once()
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize("failure", [RuntimeError("refresh unavailable"), asyncio.CancelledError()])
+async def test_committed_upload_survives_refresh_failure(monkeypatch, failure) -> None:
+    monkeypatch.setattr(media, "enforce_upload_limit", AsyncMock())
+    monkeypatch.setattr(media, "put_object", AsyncMock())
+    delete_object = AsyncMock()
+    monkeypatch.setattr(media, "delete_object", delete_object)
+    session = Mock(commit=AsyncMock(), refresh=AsyncMock(side_effect=failure), rollback=AsyncMock())
+    upload = Mock(filename="committed.txt", content_type="text/plain")
+    upload.read = AsyncMock(return_value=b"committed")
+
+    with pytest.raises(type(failure)):
+        await media.UserUploadService(session).upload_file(uuid7(), upload)
+
+    session.commit.assert_awaited_once()
+    delete_object.assert_not_awaited()
+    session.rollback.assert_not_awaited()

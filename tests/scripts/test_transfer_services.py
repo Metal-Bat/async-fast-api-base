@@ -1,7 +1,7 @@
 """Real-service verification refuses any database it did not just provision."""
 
 import pytest
-from scripts.transfer_services import transfer_services
+from scripts.transfer_services import remove_owned_container, transfer_services
 
 
 @pytest.mark.parametrize(
@@ -17,5 +17,21 @@ from scripts.transfer_services import transfer_services
     ],
 )
 def test_transfer_harness_refuses_unowned_or_remote_database(environment):
-    with pytest.raises(ValueError, match="owned local"), transfer_services(environment):
+    with (
+        pytest.raises(ValueError, match="owned local"),
+        transfer_services(environment),
+    ):
         pytest.fail("Unsafe services must never start")
+
+
+def test_transfer_cleanup_refuses_changed_container_ownership(monkeypatch):
+    calls = []
+    monkeypatch.setattr(
+        "scripts.transfer_services._docker", lambda *args: '{"id":"changed","owner":"other"}'
+    )
+    monkeypatch.setattr(
+        "scripts.transfer_services.subprocess.run", lambda *args, **kwargs: calls.append(args)
+    )
+    with pytest.raises(RuntimeError, match="ownership"):
+        remove_owned_container("expected-id", "expected-owner")
+    assert calls == []

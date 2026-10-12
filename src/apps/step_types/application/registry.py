@@ -96,6 +96,12 @@ class NotificationConfigV2(NotificationConfig):
     locale: Literal["en", "fa"] = "en"
 
 
+class NotificationConfigV3(NotificationConfig):
+    template_version: Annotated[str, Field(min_length=1, max_length=32)] = "1"
+    channel: Literal["EMAIL"] = "EMAIL"
+    locale: Literal["en", "fa", "ar"] = "en"
+
+
 class EventWaitConfig(EmptyConfig):
     event_type: Annotated[
         str,
@@ -527,6 +533,23 @@ def builtin_registry() -> HandlerRegistry:
                 "2",
                 "BACKGROUND",
                 NotificationConfigV2,
+                (
+                    PortDefinition(
+                        "recipients", "INPUT", Reference, cardinality="LIST", reference_kind="user"
+                    ),
+                    PortDefinition("data", "INPUT", json_object),
+                    PortDefinition(
+                        "notification", "OUTPUT", Reference, reference_kind="notification"
+                    ),
+                ),
+            ),
+            HandlerDefinition(
+                "NOTIFICATION",
+                "Notification",
+                "notification",
+                "3",
+                "BACKGROUND",
+                NotificationConfigV3,
                 (
                     PortDefinition(
                         "recipients", "INPUT", Reference, cardinality="LIST", reference_kind="user"

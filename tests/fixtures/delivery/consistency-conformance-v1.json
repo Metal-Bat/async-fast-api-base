@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "authority": "current-producer",
+  "runtime_vectors": "runtime-controls-v1.json",
+  "scenario_vectors": "../scenarios/purchase-request-v1.json",
+  "dialects": ["bpms.runtime/1", "bpms.behavior/1", "bpms.workspace/1"],
+  "projections": ["edit", "summary", "print", "correction"],
+  "invariants": {
+    "integer": 0,
+    "boolean": false,
+    "choice": 0,
+    "money": "125.750",
+    "optional": null,
+    "date": "2028-02-29",
+    "datetime": "2028-02-29T00:00:00Z"
+  },
+  "forbidden_public_field": "private_note",
+  "workspace_graph_limits": {"bytes": 65536, "depth": 24, "nodes": 2048, "list_items": 256},
+  "owners": {
+    "scalar_decimal_date_choice": "apps.forms.application.validation",
+    "nested_rows": "apps.forms.application.collections",
+    "attachment_refs": "apps.forms.application.attachments",
+    "actor_policy": "apps.work_items.application.task_views",
+    "graph_bounds": "apps.forms.domain.document_limits"
+  },
+  "evidence_scope": "Backend conformance only; paired browser UI acceptance remains frontend-owned."
+}

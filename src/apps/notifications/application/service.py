@@ -121,6 +121,9 @@ class NotificationService:
                 )
                 self.session.add(notification)
                 await self.session.flush()
+                from apps.notifications.application.live import stage_push
+
+                stage_push(self.session, notification)
             delivery = (
                 await self.session.exec(
                     select(NotificationDeliveryEntity).where(

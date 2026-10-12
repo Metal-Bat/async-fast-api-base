@@ -31,9 +31,24 @@ class ClientFailure(BaseDTO):
             ]
         },
     )
-    screen_key: ScreenKey
-    build: str = Field(min_length=1, max_length=80, pattern=r"^[A-Za-z0-9._-]+$")
-    error_code: Literal["client.render_failed", "client.network_failed", "client.unexpected_error"]
+    screen_key: ScreenKey = Field(
+        description=_("Known client screen identifier; arbitrary paths are not accepted.")
+    )
+    build: str = Field(
+        min_length=1,
+        max_length=80,
+        pattern=r"^[A-Za-z0-9._-]+$",
+        description=_(
+            "Public build identifier, 1 to 80 ASCII letters, digits, dots, underscores or hyphens."
+        ),
+    )
+    error_code: Literal[
+        "client.render_failed", "client.network_failed", "client.unexpected_error"
+    ] = Field(
+        description=_(
+            "Stable safe error code; exception messages and stack traces are never accepted."
+        )
+    )
     request_id: UUID = Field(
         description=_("UUID correlation identity; do not send stack, message or request body.")
     )
@@ -53,16 +68,36 @@ class SupportReceipt(BaseDTO):
 
 
 class IncidentDTO(BaseDTO):
-    ref_id: str
-    support_ref: UUID
-    category: Category
-    error_code: int
-    operation: str
-    state: IncidentState
-    occurrence_count: int
-    first_seen_at: datetime
-    last_seen_at: datetime
-    expires_at: datetime
+    ref_id: str = Field(description=_("Opaque incident reference containing its current version."))
+    support_ref: UUID = Field(
+        description=_("Correlation UUID; inspection requires support.incidents.manage.")
+    )
+    category: Category = Field(
+        description=_("Canonical incident category; localized labels do not change this value.")
+    )
+    error_code: int = Field(
+        description=_(
+            "Stable safe error code; exception messages and stack traces are never accepted."
+        )
+    )
+    operation: str = Field(
+        description=_("Safe operation identifier; contains no submitted business payload.")
+    )
+    state: IncidentState = Field(
+        description=_("Incident lifecycle state: OPEN, ACKNOWLEDGED or RESOLVED.")
+    )
+    occurrence_count: int = Field(
+        description=_("Number of grouped occurrences retained for this incident.")
+    )
+    first_seen_at: datetime = Field(
+        description=_("Timezone-aware UTC instant of the first grouped occurrence.")
+    )
+    last_seen_at: datetime = Field(
+        description=_("Timezone-aware UTC instant of the latest grouped occurrence.")
+    )
+    expires_at: datetime = Field(
+        description=_("Timezone-aware UTC retention deadline; expired incidents may be removed.")
+    )
 
 
 class IncidentQuery(SearchRequest):
@@ -80,7 +115,15 @@ class IncidentCommand(BaseDTO):
 
 
 class IncidentHistoryDTO(BaseDTO):
-    changed_at: datetime
-    operation: str
-    from_state: str | None
-    to_state: str | None
+    changed_at: datetime = Field(
+        description=_("Timezone-aware UTC instant of this lifecycle transition.")
+    )
+    operation: str = Field(
+        description=_("Safe operation identifier; contains no submitted business payload.")
+    )
+    from_state: str | None = Field(
+        description=_("Previous canonical state; null for the initial transition.")
+    )
+    to_state: str | None = Field(
+        description=_("Resulting canonical state; null when no destination state is recorded.")
+    )

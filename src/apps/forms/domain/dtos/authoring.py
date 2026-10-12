@@ -107,7 +107,7 @@ class PreviewRequest(FormDocuments):
     locale: str | None = Field(
         default=None,
         max_length=64,
-        description="Preview locale override; regional tags use the base en/fa language. Omitted uses Accept-Language.",
+        description="Preview locale override; regional tags use the base en/fa/ar language. Omitted uses Accept-Language.",
     )
     format_values: list[FormatSample] = Field(default_factory=list, max_length=32)
 

@@ -661,6 +661,16 @@ class WorkflowService:
         self, graph: GraphSnapshot, actor_id: UUID | None = None
     ) -> dict[str, dict[str, dict[str, Any]]]:
         issues: list[dict[str, str]] = []
+        from apps.integrations.domain.orders import PROTECTED_ORDER_OPERATION
+
+        if actor_id is not None and any(
+            step.config.get("operation_key") == PROTECTED_ORDER_OPERATION for step in graph.steps
+        ):
+            principal = await self.session.get(UserEntity, actor_id)
+            if principal is None or principal.deleted_at is not None or principal.is_superuser:
+                issues.append(
+                    {"pointer": "/steps", "code": "protected_effect.principal.ordinary_required"}
+                )
         versions, ports = await self._dependency_maps(graph)
         versions_by_step = {
             step.key: versions.get(step.type_version_ref or "") for step in graph.steps
@@ -840,6 +850,19 @@ class WorkflowService:
                         connection, actor_id
                     ):
                         raise ValueError
+                    if (
+                        step.type_code == "SERVICE_TASK"
+                        and connection.provider
+                        not in resolve_operation(
+                            str(config.get("operation_key", "")),
+                            version.handler_key,
+                            version.handler_version,
+                            execution_scope="COMPENSATION"
+                            if step.flow.compensation_only
+                            else "NORMAL",
+                        ).allowed_providers
+                    ):
+                        raise ValueError
                 except AttributeError, InvalidReferenceException, TypeError, ValueError:
                     issues.append(
                         {
@@ -853,6 +876,7 @@ class WorkflowService:
                         str(config.get("operation_key", "")),
                         version.handler_key,
                         version.handler_version,
+                        execution_scope="COMPENSATION" if step.flow.compensation_only else "NORMAL",
                     )
                 except ValueError:
                     issues.append(
@@ -1005,6 +1029,19 @@ class WorkflowService:
                 output_schemas[step_key][port_key] = port.value_schema
         for step_key, (_, output_schema) in transform_contracts.items():
             output_schemas[step_key]["result"] = output_schema
+        from apps.step_types.application.automation import operation_catalog
+
+        operations = {operation.operation_key: operation for operation in operation_catalog()}
+        for step in graph.steps:
+            operation = operations.get(step.config.get("operation_key", ""))
+            if (
+                step.type_code == "SERVICE_TASK"
+                and operation is not None
+                and operation.has_business_effect
+            ):
+                # Refine compatibility from code-owned output guarantees. Persisted port
+                # metadata stays unchanged, preserving existing graph checksums and pins.
+                output_schemas[step.key]["result"] = operation.output_schema
         return dict(output_schemas)
 
     async def _can_use_connection(

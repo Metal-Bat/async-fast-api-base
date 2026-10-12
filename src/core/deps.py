@@ -36,7 +36,7 @@ async def init_db():
 engine = create_async_engine(
     settings.DATABASE_DSN,
     echo=False,
-    hide_parameters=True,
+    hide_parameters=settings.ENVIRONMENT != settings.LOCAL_ENVIRONMENT,
     future=True,
 )
 

@@ -25,7 +25,8 @@ pytestmark = [
 
 
 @pytest.mark.anyio
-async def test_self_settings_http_contract_and_avatar_ownership(tmp_path):
+@pytest.mark.parametrize("locale", ["fa", "ar"])
+async def test_self_settings_http_contract_and_avatar_ownership(tmp_path, locale):
     with open_manifest(
         tmp_path / "seed.json", database=os.environ["POSTGRES_DB"], create=True
     ) as manifest:
@@ -55,11 +56,11 @@ async def test_self_settings_http_contract_and_avatar_ownership(tmp_path):
                 changed = await client.patch(
                     "/api/v1/me/preferences",
                     headers=headers,
-                    json={"ref_id": current["ref_id"], "locale": {"language": "fa"}},
+                    json={"ref_id": current["ref_id"], "locale": {"language": locale}},
                 )
                 assert (
                     changed.status_code == 200
-                    and changed.json()["data"]["locale"]["language"] == "fa"
+                    and changed.json()["data"]["locale"]["language"] == locale
                 )
                 stale = await client.patch(
                     "/api/v1/me/preferences",

@@ -1,0 +1,415 @@
+{
+  "task": "APP-BE-005.1",
+  "date": "2026-10-11",
+  "scope": "Compose current-database developer seed and paired Arabic support",
+  "database": "configured local Compose database",
+  "seed_counts": {
+    "users": 102,
+    "departments": 8,
+    "forms": 17,
+    "workflows": 16,
+    "request_types": 15,
+    "cases": 3282,
+    "actors": 3,
+    "calendars": 615,
+    "saved_views": 102,
+    "favorites": 1,
+    "notices": 102,
+    "help_states": 3,
+    "catalog_calendars": 612,
+    "catalog_saved_views": 99,
+    "library_components": 3,
+    "library_data_types": 3,
+    "connections": 5,
+    "ai_agents": 3,
+    "reused_forms": 1,
+    "clients": 7,
+    "uploads": 18,
+    "schedules": 3,
+    "reports": 4,
+    "support_incidents": 7
+  },
+  "actual_runtime_verification": {
+    "catalog_cases": 3277,
+    "baseline_cases": 5,
+    "total_seed_cases": 3282,
+    "users": 102,
+    "runtime_matrix_passes": 234,
+    "workflows": {
+      "access": 252,
+      "contract": 252,
+      "equipment": 252,
+      "expenses": 252,
+      "incident": 252,
+      "invoice": 252,
+      "leave": 252,
+      "onboarding": 252,
+      "procurement": 253,
+      "quality": 252,
+      "service": 252,
+      "showcase": 252,
+      "travel": 252
+    },
+    "client_counts": {
+      "WEB": 547,
+      "ANDROID": 546,
+      "IOS": 546,
+      "DESKTOP": 546,
+      "B2B": 546,
+      "SDK": 546
+    },
+    "language_counts": {
+      "en": 1093,
+      "fa": 1092,
+      "ar": 1092
+    },
+    "request_states": {
+      "DRAFT": 234,
+      "RUNNING": 1938,
+      "COMPLETED": 798,
+      "CANCELLED": 235,
+      "FAILED": 72
+    },
+    "work_item_states": {
+      "OPEN": 1470,
+      "CLAIMED": 288,
+      "IN_PROGRESS": 252,
+      "COMPLETED": 1184,
+      "REJECTED": 180,
+      "CANCELLED": 254,
+      "RETURNED": 270
+    },
+    "process_states": {
+      "WAITING": 1740,
+      "COMPLETED": 1032,
+      "PAUSED": 198,
+      "CANCELLED": 235,
+      "FAILED": 36,
+      "COMPENSATED": 36
+    },
+    "preferences_languages": {
+      "fa": 34,
+      "en": 35,
+      "ar": 33
+    },
+    "scenario_revisions_sha256": "11fbd4844ffca323ab718f995e5ae88dae5a55e4a3619d4edd7bfbdbfd9eee3c"
+  },
+  "rerun": {
+    "cases": 3277,
+    "preserved": true,
+    "sha256": "11fbd4844ffca323ab718f995e5ae88dae5a55e4a3619d4edd7bfbdbfd9eee3c"
+  },
+  "focused": {
+    "regressions": 101,
+    "docs_and_locale": 86,
+    "seed_cli": 8,
+    "disposable_seed": {
+      "passed": 1,
+      "warnings": 3,
+      "warning_kind": "existing reporting SQLModel session.execute deprecations; no policy exemption added"
+    },
+    "disposable_foundation": 18,
+    "release_pair_and_seed_cli": 11
+  },
+  "migration": {
+    "head": "0003_arabic",
+    "preserved_baselines": [
+      "0001_schema",
+      "0002_required_data"
+    ],
+    "current_database_upgrade": "passed",
+    "reset_or_stamp": false
+  },
+  "limitations": [
+    "Backend runtime matrix does not attest native applications; paired web Arabic acceptance is recorded separately.",
+    "Untranslated technical Swagger descriptions fall back to English.",
+    "External/paid AI/provider receipts and human approvals are not fabricated.",
+    "Help acknowledgement persistence requires configuring the existing HELP_RELEASE_METADATA_FILE with the matching frontend release metadata."
+  ],
+  "prior_attempts": [
+    "Initial focused tests exposed missing Arabic negotiation and Compose host allowance; fixed.",
+    "Two main-suite generated-contract checks failed before artifact regeneration.",
+    "Initial Compose --build attempt failed at dependency image TLS fetch; development image build succeeded, final mise uses the existing image and mounted source.",
+    "First broad gate stopped at new test-only literal credential scanner findings; fixtures now use generated values.",
+    "Next gate was interrupted after 1000 default tests passed when fresh-checkout locale compilation was added.",
+    "Pre-commit initially normalized PO final newlines; final source retains those corrections.",
+    "Backend broad gate failed four old en/fa paired cases before frontend contract intake (paths/components drift).",
+    "Frontend full gate first stopped at stale UI inventory after Arabic editor addition; regenerated.",
+    "Frontend second full gate stopped at editor complexity and braces; extracted source-locale helper.",
+    "Pair verifier passed contracts then failed obsolete npm lockfile path; updated to the actual pnpm lockfile and retained interrupted broad-gate evidence.",
+    "Frontend third full run passed 596 tests but failed the old fixed handler count; the final assertion retains notification versions 1 and 2 and includes 3. Final full run passed all 597 tests.",
+    "Backend graph update initially failed sandbox worker permissions; the authorized retry rebuilt successfully."
+  ],
+  "paired_browser": {
+    "languages": [
+      "en",
+      "fa",
+      "ar"
+    ],
+    "passed": 6,
+    "deselected": 53,
+    "seconds": 215.8,
+    "scenarios": [
+      "ordinary authentication",
+      "persisted locale and RTL",
+      "human approval",
+      "actual worker order receipt",
+      "read-only receipt",
+      "acknowledgment",
+      "lost approval response recovery",
+      "authorization denials"
+    ],
+    "fixture_scope": "disposable real backend services and actual frontend production browser build",
+    "full_transfer_profile_passed": 59,
+    "full_transfer_profile_seconds": 763.32
+  },
+  "frontend_gate": {
+    "exitCode": 0,
+    "treeSha256": "2f22e768eb1a58e39962a59080b6aa6c0ad2ec03c13e789b5284dd7b6bade7ff",
+    "finalTreeSha256": "2f22e768eb1a58e39962a59080b6aa6c0ad2ec03c13e789b5284dd7b6bade7ff",
+    "sourceChangedDuringCheck": false,
+    "startedAt": "2026-10-11T19:49:35.698Z",
+    "endedAt": "2026-10-11T19:54:24.752Z",
+    "stages": [
+      {
+        "name": "format:check",
+        "exit_code": 0,
+        "diagnostic_count": 0
+      },
+      {
+        "name": "api:check",
+        "exit_code": 0,
+        "diagnostic_count": 0
+      },
+      {
+        "name": "delivery:check",
+        "exit_code": 0,
+        "diagnostic_count": 0
+      },
+      {
+        "name": "typecheck",
+        "exit_code": 0,
+        "diagnostic_count": 0
+      },
+      {
+        "name": "lint",
+        "exit_code": 0,
+        "diagnostic_count": 0
+      },
+      {
+        "name": "test:ci",
+        "exit_code": 0,
+        "diagnostic_count": 0
+      },
+      {
+        "name": "test:boundary",
+        "exit_code": 0,
+        "diagnostic_count": 0
+      },
+      {
+        "name": "test:deployment",
+        "exit_code": 0,
+        "diagnostic_count": 0
+      },
+      {
+        "name": "test:diagnostics",
+        "exit_code": 0,
+        "diagnostic_count": 0
+      },
+      {
+        "name": "build",
+        "exit_code": 0,
+        "diagnostic_count": 0
+      },
+      {
+        "name": "test:browser-quality",
+        "exit_code": 0,
+        "diagnostic_count": 0
+      },
+      {
+        "name": "release:evidence",
+        "exit_code": 0,
+        "diagnostic_count": 0
+      }
+    ],
+    "unit_tests": 597,
+    "browser_quality_scopes": 12
+  },
+  "release_pair": {
+    "schema_version": 1,
+    "backend_head": "9999641f8e37077829ebbe7159a6cd794fb94b91",
+    "producer_origin_head": "9999641f8e37077829ebbe7159a6cd794fb94b91",
+    "backend_source_sha256": "f98c98a8c58429d315621301eac4c4b4947753cde5e3a6e0df765eb0acf29ddb",
+    "frontend_head": "3638d8291d242ea48d25e5e1fdddd64aa88cf241",
+    "frontend_tree_sha256": "2f22e768eb1a58e39962a59080b6aa6c0ad2ec03c13e789b5284dd7b6bade7ff",
+    "contracts": {
+      "en": "49f59cb7804f07e820f7cb1f4d26adb4794b5496a7520d59df38d238fae907ed",
+      "fa": "3c038a929390f07aadd6092e5a023bd9b52de2927b1d4819b15dbe244fc3612d",
+      "ar": "232b0d0b4cfc847b51e6ed4070f95a351c73e391773200f4904654dbbcc5d363"
+    },
+    "migration_chain": [
+      "0001_schema",
+      "0002_required_data",
+      "0003_arabic"
+    ],
+    "backend_lock_sha256": "e1408c8331d6c65d30d19a48a8c6a89617e468176f810b1ae42cdef6edba3141",
+    "frontend_lock_sha256": "0c3c53521eaf6fb5fb226d05fc158ea476c6a673070f86064ba59b214a941c4e",
+    "scenario": "purchase-connected/1",
+    "ai_mode": "scripted_no_network",
+    "worktrees": "Exact dirty source identity required in final gate evidence; HEAD alone is not the candidate",
+    "snapshot_comparison": "PASS",
+    "live_http_browser": "NOT_ATTESTED_BY_THIS_COMMAND",
+    "hosted": "NOT_RUN",
+    "deployed": "NOT_ATTESTED",
+    "user_accepted": "NOT_ATTESTED"
+  },
+  "graph_updates": {
+    "backend_nodes": 17481,
+    "frontend_nodes": 9547,
+    "status": "passed"
+  },
+  "backend_gate": {
+    "status": "VERIFIED_WITH_EXCEPTION",
+    "started_at": "2026-10-11T19:46:46.831162+00:00",
+    "finished_at": "2026-10-11T20:07:24.579604+00:00",
+    "source_start_sha256": "35fd8a1d846280b7fb90606225fc3d00de2ada8ceb679e00326985aa329bf246",
+    "source_end_sha256": "35fd8a1d846280b7fb90606225fc3d00de2ada8ceb679e00326985aa329bf246",
+    "source_changed": [],
+    "approved_warning_exceptions": [
+      "ignore:'asyncio\\.iscoroutinefunction' is deprecated and slated for removal in Python 3\\.16; use inspect\\.iscoroutinefunction\\(\\) instead:DeprecationWarning:cohere\\.client$",
+      "ignore:'_UnionGenericAlias' is deprecated and slated for removal in Python 3\\.17:DeprecationWarning:google\\.genai\\.types$"
+    ],
+    "stages": [
+      {
+        "stage": "lock-check",
+        "status": "PASSED",
+        "passed": 0,
+        "skipped": 0,
+        "diagnostics": []
+      },
+      {
+        "stage": "fmt-check",
+        "status": "PASSED",
+        "passed": 0,
+        "skipped": 0,
+        "diagnostics": []
+      },
+      {
+        "stage": "lint",
+        "status": "PASSED",
+        "passed": 0,
+        "skipped": 0,
+        "diagnostics": []
+      },
+      {
+        "stage": "docstrings",
+        "status": "PASSED",
+        "passed": 0,
+        "skipped": 0,
+        "diagnostics": []
+      },
+      {
+        "stage": "typecheck",
+        "status": "PASSED",
+        "passed": 0,
+        "skipped": 0,
+        "diagnostics": []
+      },
+      {
+        "stage": "security",
+        "status": "PASSED",
+        "passed": 0,
+        "skipped": 0,
+        "diagnostics": []
+      },
+      {
+        "stage": "doctest",
+        "status": "PASSED",
+        "passed": 1,
+        "skipped": 0,
+        "diagnostics": []
+      },
+      {
+        "stage": "test",
+        "status": "PASSED",
+        "passed": 1001,
+        "skipped": 225,
+        "diagnostics": []
+      },
+      {
+        "stage": "flow-test",
+        "status": "PASSED",
+        "passed": 4,
+        "skipped": 0,
+        "diagnostics": []
+      },
+      {
+        "stage": "delivery-foundation-test",
+        "status": "PASSED",
+        "passed": 18,
+        "skipped": 0,
+        "diagnostics": []
+      },
+      {
+        "stage": "delivery-wave-four-test",
+        "status": "PASSED",
+        "passed": 31,
+        "skipped": 0,
+        "diagnostics": []
+      },
+      {
+        "stage": "delivery-transfer-test",
+        "status": "PASSED",
+        "passed": 59,
+        "skipped": 0,
+        "diagnostics": []
+      },
+      {
+        "stage": "delivery-through-020-test",
+        "status": "PASSED",
+        "passed": 9,
+        "skipped": 0,
+        "diagnostics": []
+      },
+      {
+        "stage": "delivery-completion-test",
+        "status": "PASSED",
+        "passed": 12,
+        "skipped": 0,
+        "diagnostics": []
+      },
+      {
+        "stage": "delivery-restore-test",
+        "status": "PASSED",
+        "passed": 2,
+        "skipped": 0,
+        "diagnostics": []
+      },
+      {
+        "stage": "precommit-check",
+        "status": "PASSED",
+        "passed": 0,
+        "skipped": 0,
+        "diagnostics": []
+      }
+    ],
+    "not_run": []
+  },
+  "documentation_closure": {
+    "backend_changed_only": [
+      "BACKLOG.md",
+      "docs/changes/APP-BE-005.1.md",
+      "docs/delivery/developer-seed-verification.json",
+      "docs/guides/demo-seed.md"
+    ],
+    "frontend_changed_only": [
+      "docs/changes/APP-FE-008.1.md",
+      "docs/delivery/FRONTEND-BACKLOG.md"
+    ],
+    "frontend_added_only": [
+      "docs/delivery/arabic-verification.json"
+    ],
+    "checks": "Backend documentation hooks and frontend Prettier passed; no source-code changes after either final gate.",
+    "unrelated_diff_check": "Whole-worktree git diff --check reports pre-existing Markdown hard-break trailing spaces in docs/BACKEND-BACKLOG.md and docs/delivery/BACKEND-BACKLOG.md; both files matched their gate-start hashes and were retained."
+  }
+}

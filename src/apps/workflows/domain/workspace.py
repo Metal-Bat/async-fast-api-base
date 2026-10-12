@@ -6,6 +6,7 @@ from typing import Annotated, Any
 from pydantic import ConfigDict, Field, field_validator, model_validator
 
 from core.base_dto import BaseDTO
+from core.i18n import _
 
 
 class WorkspacePoint(BaseDTO):
@@ -23,7 +24,9 @@ class WorkspaceDocument(BaseDTO):
     dialect: str = Field(default="bpms.workspace/1", pattern=r"^bpms\.workspace/1$")
     graph: dict[str, Any] = Field(
         default_factory=dict,
-        description="Incomplete authoring JSON, at most 256 KiB and depth 32. It is never executed; promotion validates GraphSnapshot and all dependencies.",
+        description=_(
+            "Incomplete authoring JSON, at most 64 KiB, depth 24, 2048 nodes and lists of at most 256 items. It is never executed; promotion validates GraphSnapshot and all dependencies."
+        ),
     )
     positions: dict[str, WorkspacePoint] = Field(
         default_factory=dict,
@@ -51,11 +54,11 @@ class WorkspaceDocument(BaseDTO):
     @field_validator("graph")
     @classmethod
     def bounded_graph(cls, value):
-        from apps.forms.application.validation import _bounded, _Invalid
+        from apps.forms.domain.document_limits import InvalidDocument, bounded_document
 
         try:
-            _bounded(value, "/graph")
-        except _Invalid as exc:
+            bounded_document(value, "/graph")
+        except InvalidDocument as exc:
             raise ValueError("Invalid bounded workspace graph") from exc
         if len(json.dumps(value, allow_nan=False).encode()) > 262144:
             raise ValueError("Workspace graph is too large")

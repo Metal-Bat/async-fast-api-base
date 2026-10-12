@@ -10,7 +10,7 @@ from sqlmodel import Field, SQLModel
 class HelpStateEntity(SQLModel, table=True):
     __tablename__ = "USER_HELP_STATE"
     __table_args__ = (
-        CheckConstraint("\"LOCALE\" IN ('en', 'fa')", name="ck_USER_HELP_STATE_locale"),
+        CheckConstraint("\"LOCALE\" IN ('en', 'fa', 'ar')", name="ck_USER_HELP_STATE_locale"),
         CheckConstraint(
             '("FIRST_VIEWED_AT" IS NULL AND "LAST_VIEWED_AT" IS NULL) OR ("FIRST_VIEWED_AT" IS NOT NULL AND "LAST_VIEWED_AT" >= "FIRST_VIEWED_AT")',
             name="ck_USER_HELP_STATE_viewed",

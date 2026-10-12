@@ -2369,6 +2369,20 @@ async def test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_huma
             )
         ).one()
         assert item.status == "OPEN"
+        from apps.ai.application.process_evidence import AIProcessEvidenceService
+        from utils.pagination import PageRequest
+
+        evidence = await AIProcessEvidenceService(session).search(process.id, PageRequest())
+        assert evidence.total == 1
+        row = evidence.items[0]
+        assert row.recommendation is not None and row.recommendation.choice == "bug"
+        assert row.recommendation.needs_review
+        assert bool(row.agent_ref_id) and bool(row.model_id)
+        assert row.allowed_input_fields == ["ticket"]
+        assert row.budget is not None and not row.budget.unknown_usage
+        assert "password is private" not in row.model_dump_json()
+        assert "ai_secret" not in row.model_dump_json()
+        assert "DOC-1" not in row.model_dump_json()
     await engine.dispose()
 
 

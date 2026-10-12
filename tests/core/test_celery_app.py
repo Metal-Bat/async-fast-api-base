@@ -14,7 +14,8 @@ from core.task_lifecycle import TaskAlreadyRunning, TaskLifecycle
 from core.task_registry import register_task
 
 
-def test_celery_logging_keeps_parameters_hidden_and_honors_warning_level() -> None:
+@pytest.mark.parametrize("environment", ["local", "develop", "stage", "production", "unknown"])
+def test_celery_sql_parameters_follow_environment_and_honor_warning_level(environment: str) -> None:
     result = subprocess.run(
         [
             sys.executable,
@@ -22,12 +23,19 @@ def test_celery_logging_keeps_parameters_hidden_and_honors_warning_level() -> No
             """
 import logging
 import structlog
+from sqlalchemy.exc import StatementError
 from core.celery_app import configure_celery_logging
 from core.deps import engine
 from core.settings import settings
 
 assert engine.echo is False
-assert engine.sync_engine.hide_parameters is True
+hide_parameters = settings.ENVIRONMENT != settings.LOCAL_ENVIRONMENT
+assert engine.sync_engine.hide_parameters is hide_parameters
+error = StatementError(
+    "synthetic query failure", "SELECT :value", {"value": "local_parameter_probe"},
+    RuntimeError("synthetic failure"), hide_parameters=engine.sync_engine.hide_parameters,
+)
+assert ("local_parameter_probe" in str(error)) is (not hide_parameters)
 settings.LOG_OUTPUTS = ["console"]
 settings.LOG_LEVEL = "DEBUG"
 configure_celery_logging(loglevel=logging.WARNING)
@@ -40,7 +48,7 @@ logging.getLogger("sqlalchemy.engine.Engine").info("hidden_query")
 """,
         ],
         capture_output=True,
-        env={**os.environ, "PYTHONPATH": os.pathsep.join(sys.path)},
+        env={**os.environ, "PYTHONPATH": os.pathsep.join(sys.path), "ENVIRONMENT": environment},
         text=True,
         timeout=15,
         check=False,

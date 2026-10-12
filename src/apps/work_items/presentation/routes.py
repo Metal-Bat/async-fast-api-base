@@ -196,7 +196,7 @@ async def get_work_item_view(
     response_model=SuccessResponse[RuntimeFormStateDTO],
     summary="Read the authorized versioned runtime form state",
     responses=PRIVATE_NO_STORE_RESPONSES,
-    description="Requires requests.start and per-item visibility. Returns bpms.runtime/1 with exact pinned form/design and current owning/submission refs, visible schema metadata, canonical data, stable row keys, effective writable/required scopes and available actions. Named key selects an edit/summary/print view; non-claimants and closed items are explicitly noneditable. Hidden schema/default/value/provenance data stays server-only. Accept-Language resolves en/fa without repinning. Unknown render dialects return 409; inaccessible resources return 404; private no-store response.",
+    description="Requires requests.start and per-item visibility. Returns bpms.runtime/1 with exact pinned form/design and current owning/submission refs, visible schema metadata, canonical data, stable row keys, effective writable/required scopes and available actions. Named key selects an edit/summary/print view; non-claimants and closed items are explicitly noneditable. Hidden schema/default/value/provenance data stays server-only. Accept-Language resolves en/fa/ar without repinning. Unknown render dialects return 409; inaccessible resources return 404; private no-store response.",
 )
 async def get_work_item_runtime(
     request: Request,

@@ -24,7 +24,7 @@ class AppearancePreferences(BaseDTO):
 
 class LocalePreferences(BaseDTO):
     model_config = ConfigDict(extra="forbid")
-    language: Literal["en", "fa"] = Field(
+    language: Literal["en", "fa", "ar"] = Field(
         default="en",
         description=_("Preferred presentation language; canonical data stays unchanged."),
     )
@@ -40,7 +40,7 @@ class LocalePreferences(BaseDTO):
             "Gregorian calendar only; Persian language does not select a different calendar."
         ),
     )
-    numbering: Literal["latn", "arabext"] = Field(
+    numbering: Literal["latn", "arabext", "arab"] = Field(
         default="latn",
         description=_("Preferred display digits; stored numbers keep their canonical format."),
     )

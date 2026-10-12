@@ -4,6 +4,14 @@ from fastapi import APIRouter, Request, Response
 
 from apps.notifications.application.inbox import InboxService
 from apps.notifications.domain.inbox import InboxDTO, InboxQuery, ReadCommand, UnreadDTO
+from apps.notifications.presentation.live import (
+    DESCRIPTION,
+    EVENT_SCHEMAS,
+    RESPONSES,
+    SUMMARY,
+    InboxEventSourceResponse,
+    events,
+)
 from core.deps import CurrentUser, SessionDep
 from core.i18n import _
 from utils.base_schema import PRIVATE_NO_STORE_RESPONSES, response_schema
@@ -18,7 +26,19 @@ from utils.presenter import (
 
 router = APIRouter(prefix="/inbox", tags=["inbox"], responses=response_schema())
 CONTRACT = _(
-    "Authenticated recipient-only unified inbox version 1. Case, work_item, ai_approval, report and account destinations resolve current owner-authorized references on every read. Calendar/support/operation targets are reserved and unavailable until their producers exist. An unavailable, deleted, revoked, expired or cancelled target exposes no private subject, content or reference. Stored labels never confer authority. Search is bounded and deterministic with existing filters/order/page/size plus unread=true/false; report is the same paginated search, not a queued archive. Unread totals count live ACTIVE unread inbox rows, including redacted unavailable destinations. Mark-read changes only read metadata, requires a current optimistic ref (409 when stale), and never decides or acts on a workflow. Non-owned refs fail 403; missing/deleted refs fail 404. Null read bodies are rejected; actions accept an empty object. UTC timestamps; en/fa template locale is chosen when staged with en fallback. Private no-store success/page envelopes, existing 401/403/404/409/422 errors. Refresh refs from mutation responses. Optional email defaults off; mandatory notices ignore optional opt-out. No delivery is performed by these reads."
+    "Authenticated recipient-only unified inbox version 1. Case, work_item, ai_approval, report and account destinations resolve current owner-authorized references on every read. Calendar/support/operation targets are reserved and unavailable until their producers exist. An unavailable, deleted, revoked, expired or cancelled target exposes no private subject, content or reference. Stored labels never confer authority. Search is bounded and deterministic with existing filters/order/page/size plus unread=true/false; report is the same paginated search, not a queued archive. Unread totals count live ACTIVE unread inbox rows, including redacted unavailable destinations. Mark-read changes only read metadata, requires a current optimistic ref (409 when stale), and never decides or acts on a workflow. Non-owned refs fail 403; missing/deleted refs fail 404. Null read bodies are rejected; actions accept an empty object. UTC timestamps; en/fa/ar template locale is chosen when staged with en fallback. Private no-store success/page envelopes, existing 401/403/404/409/422 errors. Refresh refs from mutation responses. Optional email defaults off; mandatory notices ignore optional opt-out. No delivery is performed by these reads."
+)
+
+router.add_api_route(
+    "/events",
+    events,
+    methods=["GET"],
+    response_class=InboxEventSourceResponse,
+    response_model=None,
+    summary=SUMMARY,
+    description=DESCRIPTION,
+    responses=RESPONSES,
+    openapi_extra={"x-sse-event-schemas": EVENT_SCHEMAS},
 )
 
 

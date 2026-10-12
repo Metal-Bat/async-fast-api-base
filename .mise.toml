@@ -227,3 +227,27 @@ run = "FLOW_TEST_PROFILE=delivery-through-020 uv run --env-file .envs/.backend p
 [tasks.delivery-completion-test]
 description = "Verify final delivery contracts and restoration against an owned disposable database"
 run = "FLOW_TEST_PROFILE=delivery-completion uv run --env-file .envs/.backend python scripts/run_flow_test.py"
+
+[tasks.runtime-image-build]
+description = "Build a source-only local runtime candidate; pass --report and optionally --image"
+run = "uv run python scripts/build_runtime_image.py"
+
+[tasks.runtime-image-test]
+description = "Verify APP_RUNTIME_IMAGE against disposable local services, actual lifespan and instrumented SQL"
+run = "FLOW_TEST_PROFILE=runtime-image uv run --env-file .envs/.backend python scripts/run_flow_test.py"
+
+[tasks.delivery-restore-test]
+description = "Restore an owned local database and private objects, then recheck current personal-state access"
+run = "FLOW_TEST_PROFILE=restore uv run --env-file .envs/.backend python scripts/run_flow_test.py"
+
+[tasks.demo-prepare]
+description = "Generate developer scenarios inside Compose (alias of demo-seed)"
+run = "LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) docker compose run --rm demo-seed"
+
+[tasks.demo-seed]
+description = "Generate developer scenarios inside Compose; --inspect reads their current states"
+run = "LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) docker compose run --rm demo-seed"
+
+[tasks.demo-seed-test]
+description = "Verify the rich demo seed and rerun preservation in an owned disposable database"
+run = "FLOW_TEST_PROFILE=demo-catalog uv run --env-file .envs/.backend python scripts/run_flow_test.py"

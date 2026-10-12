@@ -10,6 +10,7 @@ from apps.forms.domain.localization import FieldFormatting, FormatSample, Format
 
 _LATIN = "0123456789."
 _PERSIAN = "۰۱۲۳۴۵۶۷۸۹٫"
+_ARABIC = "٠١٢٣٤٥٦٧٨٩٫"
 
 
 def format_value(value: str, profile: FieldFormatting) -> tuple[str, str]:
@@ -18,11 +19,8 @@ def format_value(value: str, profile: FieldFormatting) -> tuple[str, str]:
         raise ValueError("Formatting input exceeds limit")
     if profile.kind == "text":
         return value, value
-    raw = (
-        value.translate(str.maketrans(_PERSIAN, _LATIN))
-        if profile.numbering == "arabext"
-        else value
-    )
+    digits = {"arabext": _PERSIAN, "arab": _ARABIC}.get(profile.numbering, _LATIN)
+    raw = value.translate(str.maketrans(digits, _LATIN))
     if profile.kind == "date":
         if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", raw):
             raise ValueError("Expected Gregorian YYYY-MM-DD")
@@ -55,8 +53,7 @@ def format_value(value: str, profile: FieldFormatting) -> tuple[str, str]:
                     raise ValueError("Decimal would require rounding")
                 amount = scaled
             canonical = display = format(amount, "f")
-    if profile.numbering == "arabext":
-        display = display.translate(str.maketrans(_LATIN, _PERSIAN))
+    display = display.translate(str.maketrans(_LATIN, digits))
     if bool(profile.currency):
         display += " " + profile.currency
     return canonical, display

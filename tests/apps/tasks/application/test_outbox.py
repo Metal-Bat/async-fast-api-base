@@ -1,12 +1,57 @@
 """Tests for transactional task outbox messages."""
 
-from unittest.mock import Mock
+import threading
+from unittest.mock import AsyncMock, Mock
 from uuid import UUID
 
+import anyio
+import anyio.lowlevel
+import pytest
 from structlog.contextvars import bind_contextvars, clear_contextvars
 
 from apps.tasks.application import outbox
 from apps.tasks.application.outbox import enqueue_task
+
+
+@pytest.mark.anyio
+async def test_broker_confirmation_does_not_block_other_async_work(monkeypatch):
+    """The transaction stays open while the loop can service other tasks."""
+    loop_progress = threading.Event()
+    transaction_open = False
+    session = AsyncMock()
+    message = enqueue_task(Mock(), "system.ping")
+    session.exec.side_effect = [
+        Mock(one_or_none=Mock(return_value=message)),
+        Mock(one_or_none=Mock(return_value=None)),
+    ]
+    session.add = Mock()
+
+    class Transaction:
+        async def __aenter__(self):
+            nonlocal transaction_open
+            transaction_open = True
+
+        async def __aexit__(self, *_args):
+            nonlocal transaction_open
+            transaction_open = False
+
+    session.begin = Mock(return_value=Transaction())
+    session.__aenter__.return_value = session
+    monkeypatch.setattr(outbox, "SessionFactory", Mock(return_value=session))
+
+    def confirm(_app, _message):
+        assert loop_progress.wait(timeout=1), "Broker confirmation blocked the async loop"
+        assert transaction_open, "The outbox row lock was released before confirmation"
+
+    async def progress():
+        await anyio.lowlevel.checkpoint()
+        loop_progress.set()
+
+    monkeypatch.setattr(outbox, "_publish", confirm)
+    async with anyio.create_task_group() as group:
+        group.start_soon(progress)
+        assert await outbox.dispatch_outbox(Mock()) == 1
+    assert not transaction_open
 
 
 def test_outbox_autogenerates_uuid7_idempotency_key() -> None:

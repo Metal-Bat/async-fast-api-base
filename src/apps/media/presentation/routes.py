@@ -144,7 +144,10 @@ async def upload_image(
         "passive-format bytes as an attachment with a server-owned filename, nosniff and "
         "Cache-Control: private, no-store. The optional Content-Disposition request value may "
         "only be attachment; inline, filenames, extra parameters and duplicates return 422. "
-        "Missing and unauthorized uploads return the same 404."
+        "Missing and unauthorized uploads return the same 404. Database authorization reads "
+        "finish before streaming. Storage is read in chunks of at most 64 KiB and the final "
+        "byte count must match metadata preflight. A late storage failure, changed size or "
+        "disconnect closes the binary stream; it cannot become a JSON success response."
     ),
     responses={
         200: {
@@ -197,7 +200,10 @@ async def download_file(
         "the browser may display the image inline without a Content-Disposition header. Send "
         "Content-Disposition: inline or attachment to select a server-named response; filenames, "
         "extra parameters and duplicates return 422. Missing and unauthorized images return "
-        "the same 404."
+        "the same 404. Database authorization reads finish before streaming. Storage is read "
+        "in chunks of at most 64 KiB and the final byte count must match metadata preflight. "
+        "A late storage failure, changed size or disconnect closes the binary stream; it "
+        "cannot become a JSON success response."
     ),
     responses={
         200: {

@@ -23,6 +23,24 @@
     "recorded_on": "2026-10-09",
     "request": "make the migration files just 2\nfirst one for all the code tables\nsecond one for all the items we need data for like opration and all",
     "policy": "Exactly two repository revisions: complete schema first, required built-in and deployed handler catalogs, permission definitions and maintenance schedules second. Supersedes the earlier additive-only repository file policy.",
-    "database_scope": "Repository migration restructuring and owned disposable verification. No shared database reset, teardown or rebaseline performed."
+    "database_scope": "Repository migration restructuring and owned disposable verification. No shared database reset, teardown or rebaseline performed.",
+    "arabic_followup": {
+      "recorded_on": "2026-10-11",
+      "request": "Owner requested Arabic as a supported project language.",
+      "implementation": "Preserve the two applied baseline files and add 0003_arabic for the help-locale constraint and notification v3. This feature-specific forward migration preserves existing records and published pins; no reset or stamp.",
+      "authority_note": "Forward-migration implementation choice under the new feature request; not a general baseline restructuring."
+    }
+  },
+  "protected_effect_policy": {
+    "recorded_on": "2026-10-10",
+    "response": "Accept the exact documented policy",
+    "policy_key": "purchase-human-approval/1",
+    "document": "docs/delivery/protected-effect-policy.md",
+    "scope": "sandbox.order.create/1 requires committed human approve evidence bound to workflow version/checksum, named approval step, work item/actor and canonical payload hash; changed payload requires fresh approval; reject bypasses and unsupported cross-subprocess composition; retain dedicated non-superuser publisher-bound authority and fail-closed pinned grants/secrets. Local disposable sandbox create/cancel only; no live vendor effects or paid/live AI authorized."
+  },
+  "D04": {
+    "recorded_on": "2026-10-10",
+    "response": "Accept the exact documented policy",
+    "policy": "Retain publisher-bound authority with a dedicated non-superuser demo publisher; recheck current capability and exact connection/version/secret pins; fail closed on revocation/offboarding/rotation; no new service principal or self-approval/quorum rule."
   }
 }

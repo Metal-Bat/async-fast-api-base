@@ -147,7 +147,7 @@ async def test_schema_revision_has_no_rows_and_data_revision_installs_required_c
     async with engine.connect() as connection:
         assert (
             await connection.execute(text("SELECT version_num FROM alembic_version"))
-        ).scalar_one() == "0002_required_data"
+        ).scalar_one() == "0003_arabic"
         assert (
             await connection.execute(text('SELECT count(*) FROM "PERIODIC_TASK"'))
         ).scalar_one() == schedule_count

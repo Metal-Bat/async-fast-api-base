@@ -2,6 +2,7 @@
 
 import asyncio
 import os
+import re
 import subprocess
 import sys
 from contextlib import nullcontext
@@ -11,12 +12,26 @@ from uuid import uuid4
 import asyncpg
 
 ROOT = Path(__file__).resolve().parents[1]
+_OWNED_DATABASES: dict[str, tuple[str, str, str]] = {}
 FLOW_TESTS = (
     "tests/integration/test_full_workflow.py",
     "tests/integration/test_frontend_journey.py",
     "tests/integration/test_platform_foundation.py",
 )
 PROFILES = {
+    "demo-catalog": ("tests/integration/test_demo_catalog.py",),
+    "restore": ("tests/integration/test_bpms_restore.py",),
+    "runtime-image": ("tests/integration/test_runtime_image.py",),
+    "consistency": ("tests/integration/test_consistency_live.py",),
+    "notification-push": ("tests/integration/test_notification_push.py",),
+    "protected-operations": (
+        "tests/integration/test_connected_workflow.py",
+        "tests/integration/test_required_human_approval.py",
+        "tests/integration/test_operation_reconciliation.py",
+        "tests/integration/test_processes.py::test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_human",
+        "tests/integration/test_ai_connections.py",
+        "tests/integration/test_ai_budget.py",
+    ),
     "delivery-completion": (
         "tests/integration/test_workflow_defaults.py",
         "tests/integration/test_studio_workspace.py",
@@ -30,11 +45,22 @@ PROFILES = {
     ),
     "flow": FLOW_TESTS,
     "delivery-transfers": (
+        "tests/integration/test_connected_workflow.py",
+        "tests/integration/test_consistency_live.py",
+        "tests/integration/test_notification_push.py",
         "tests/integration/test_owned_report_worker.py",
         "tests/integration/test_owned_notification_worker.py",
         "tests/integration/test_owned_calendar_worker.py",
+        "tests/integration/test_owned_operational_recovery.py",
         "tests/integration/test_private_transfers.py",
         "tests/integration/test_demo_assets.py",
+        "tests/integration/test_demo_personal.py",
+        "tests/integration/test_receipt_browser.py",
+        "tests/integration/test_required_human_approval.py",
+        "tests/integration/test_operation_reconciliation.py",
+        "tests/integration/test_processes.py::test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_human",
+        "tests/integration/test_ai_connections.py",
+        "tests/integration/test_ai_budget.py",
     ),
     "delivery-wave-four": (
         *FLOW_TESTS,
@@ -105,6 +131,19 @@ async def _ensure_postgres() -> None:
 
 
 async def _database_command(name: str, action: str) -> None:
+    identity = (
+        os.getenv("FLOW_TEST_POSTGRES_HOST", "localhost"),
+        os.getenv("POSTGRES_PORT", "5432"),
+        os.getenv("POSTGRES_USER", ""),
+    )
+    if (
+        re.fullmatch(r"bpms_flow_[0-9a-f]{32}", name) is None
+        or identity[0] not in {"localhost", "127.0.0.1", "::1"}
+        or action not in {"create", "drop"}
+        or (action == "drop" and _OWNED_DATABASES.get(name) != identity)
+        or (action == "create" and name in _OWNED_DATABASES)
+    ):
+        raise ValueError("Database mutation requires an owned local flow database")
     connection = await asyncpg.connect(
         host=os.getenv("FLOW_TEST_POSTGRES_HOST", "localhost"),
         port=int(os.getenv("POSTGRES_PORT", "5432")),
@@ -116,8 +155,10 @@ async def _database_command(name: str, action: str) -> None:
     try:
         if action == "create":
             await connection.execute(f'CREATE DATABASE "{name}"')
+            _OWNED_DATABASES[name] = identity
         else:
             await connection.execute(f'DROP DATABASE "{name}" WITH (FORCE)')
+            del _OWNED_DATABASES[name]
     finally:
         await connection.close()
 
@@ -126,6 +167,17 @@ def main() -> int:
     profile = os.getenv("FLOW_TEST_PROFILE", "flow")
     if profile not in PROFILES:
         print("Unknown flow profile; use " + ", ".join(PROFILES), file=sys.stderr)
+        return 2
+    if (
+        profile == "runtime-image"
+        and re.fullmatch(
+            r"app-be-runtime:[a-z0-9][a-z0-9_.-]{0,63}", os.getenv("APP_RUNTIME_IMAGE", "")
+        )
+        is None
+    ):
+        print(
+            "Runtime-image acceptance requires an explicit local candidate image", file=sys.stderr
+        )
         return 2
     host = os.getenv("FLOW_TEST_POSTGRES_HOST", "localhost")
     if host not in {"localhost", "127.0.0.1", "::1"}:
@@ -146,6 +198,8 @@ def main() -> int:
     )
     if profile == "delivery-foundation":
         environment["RUN_MIGRATION_INTEGRATION"] = "1"
+    if profile == "restore":
+        environment["RUN_BPMS_RESTORE"] = "1"
     try:
         asyncio.run(_ensure_postgres())
         asyncio.run(_database_command(name, "create"))
@@ -174,8 +228,17 @@ def main() -> int:
         )
         status = migration.returncode
         if status == 0:
-            if profile == "delivery-transfers":
+            if profile in {
+                "demo-catalog",
+                "delivery-transfers",
+                "notification-push",
+                "consistency",
+                "protected-operations",
+                "runtime-image",
+                "restore",
+            }:
                 sys.path.insert(0, str(ROOT))
+                sys.path.insert(0, str(ROOT / "src"))
                 from scripts.transfer_services import transfer_services
 
                 resources = transfer_services(environment)

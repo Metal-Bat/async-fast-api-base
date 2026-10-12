@@ -21,8 +21,8 @@ class HelpReleaseItem(BaseDTO):
     revision: Revision = Field(
         description=_("Exact content revision supplied by the paired frontend release.")
     )
-    locales: list[Literal["en", "fa"]] = Field(
-        min_length=1, max_length=2, description=_("Locales shipped for this exact help revision.")
+    locales: list[Literal["en", "fa", "ar"]] = Field(
+        min_length=1, max_length=3, description=_("Locales shipped for this exact help revision.")
     )
 
     @model_validator(mode="after")
@@ -58,7 +58,7 @@ class HelpAction(BaseDTO):
     revision: Revision = Field(
         description=_("Exact frontend content revision; stale revisions are not persisted.")
     )
-    locale: Literal["en", "fa"] = Field(
+    locale: Literal["en", "fa", "ar"] = Field(
         description=_(
             "Locale actually opened or dismissed; locales are acknowledged independently."
         )
@@ -78,8 +78,9 @@ class HelpStateDTO(HelpAction):
 
 
 class HelpStateQuery(PageRequest):
-    locale: Literal["en", "fa"] | None = Field(
-        default=None, description=_("Optional locale filter; omitted returns both locales.")
+    locale: Literal["en", "fa", "ar"] | None = Field(
+        default=None,
+        description=_("Optional locale filter; omitted returns all supported locales."),
     )
 
 

@@ -77,7 +77,7 @@ def effective_limits(user: AITaskLimits, admin: AITaskLimits) -> AITaskLimits:
 class AIChoice(BaseDTO):
     model_config = ConfigDict(extra="forbid")
     key: str = Field(min_length=1, max_length=64, pattern=r"^[A-Za-z][A-Za-z0-9_.-]*$")
-    labels: dict[Literal["en", "fa"], str] = Field(min_length=1, max_length=2)
+    labels: dict[Literal["en", "fa", "ar"], str] = Field(min_length=1, max_length=3)
     description: str = Field(min_length=1, max_length=512)
 
     @model_validator(mode="after")
@@ -133,7 +133,7 @@ class AIDecisionContract(BaseDTO):
         )
 
     def select(self, locale: str) -> list[SelectOption[str]]:
-        language = "fa" if locale.lower().startswith("fa") else "en"
+        language = locale.lower().split("-", 1)[0]
         return [
             SelectOption(
                 key=item.key, value=item.labels.get(language, item.labels.get("en", item.key))

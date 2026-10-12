@@ -1,5 +1,6 @@
 """Owned loopback cache, object store and report worker for a disposable flow database."""
 
+import json
 import os
 import secrets
 import subprocess
@@ -15,6 +16,7 @@ import httpx
 from redis import Redis
 from redis.exceptions import RedisError
 from scripts.notification_test_gateway import notification_gateway
+from scripts.order_sandbox import order_sandbox
 
 
 def _docker(*arguments: str) -> str:
@@ -26,6 +28,25 @@ def _docker(*arguments: str) -> str:
             "Disposable transfer service setup failed; inspect local Docker availability"
         )
     return result.stdout.strip()
+
+
+def remove_owned_container(identity: str, owner: str) -> None:
+    """Delete by immutable ID only after its ownership label still matches."""
+    current = json.loads(
+        _docker(
+            "inspect",
+            "--format",
+            '{"id":{{json .Id}},"owner":{{json (index .Config.Labels "app-be-owner")}}}',
+            identity,
+        )
+    )
+    if current != {"id": identity, "owner": owner}:
+        raise RuntimeError("Owned container ownership changed; cleanup refused")
+    result = subprocess.run(
+        ["docker", "rm", "-f", identity], capture_output=True, check=False, timeout=20
+    )
+    if result.returncode:
+        raise RuntimeError("Owned container cleanup failed")
 
 
 @contextmanager
@@ -41,8 +62,10 @@ def transfer_services(environment: dict[str, str]) -> Iterator[dict[str, str]]:
     token = uuid4().hex
     cache, storage = f"app-be-transfer-cache-{token}", f"app-be-transfer-s3-{token}"
     owned = []
+    identities = {}
     worker = None
     configured = environment.copy()
+
     access, secret = "synthetic-transfer", secrets.token_urlsafe(32)
     try:
         _docker(
@@ -63,6 +86,7 @@ def transfer_services(environment: dict[str, str]) -> Iterator[dict[str, str]]:
             "--logtostderr",
         )
         owned.append(cache)
+        identities[cache] = _docker("inspect", "--format", "{{.Id}}", cache)
         _docker(
             "run",
             "--pull=never",
@@ -85,6 +109,7 @@ def transfer_services(environment: dict[str, str]) -> Iterator[dict[str, str]]:
             "/data",
         )
         owned.append(storage)
+        identities[storage] = _docker("inspect", "--format", "{{.Id}}", storage)
         cache_address = _docker("port", cache, "6379/tcp")
         storage_address = _docker("port", storage, "9000/tcp")
         configured.update(
@@ -121,6 +146,7 @@ def transfer_services(environment: dict[str, str]) -> Iterator[dict[str, str]]:
             configured = gateway_stack.enter_context(
                 notification_gateway(Path(directory), configured)
             )
+            configured = gateway_stack.enter_context(order_sandbox(Path(directory), configured))
             os.chmod(directory, 0o700)
             log_path = Path(directory) / "worker.log"
             with log_path.open("w+") as log:
@@ -157,7 +183,35 @@ def transfer_services(environment: dict[str, str]) -> Iterator[dict[str, str]]:
                         raise RuntimeError("Owned reporting worker did not become ready")
                     time.sleep(0.1)
                 print("Disposable storage, broker and reporting worker ready", flush=True)
-                yield configured
+                # Private test-process provenance, never an API contract. Consumers
+                # must recheck immutable labels and process start identities.
+                configured["FLOW_TEST_RESOURCES"] = json.dumps(
+                    {
+                        "database": database,
+                        "owner_label": token,
+                        "containers": [{"name": name, "id": identities[name]} for name in owned],
+                        "supervisor_pid": os.getpid(),
+                        "supervisor_start_identity": Path(f"/proc/{os.getpid()}/stat")
+                        .read_text()
+                        .rsplit(")", 1)[1]
+                        .split()[19],
+                        "worker_pid": worker.pid,
+                        "worker_start_identity": Path(f"/proc/{worker.pid}/stat")
+                        .read_text()
+                        .rsplit(")", 1)[1]
+                        .split()[19],
+                    }
+                )
+                try:
+                    yield configured
+                finally:
+                    if worker.poll() is None:
+                        worker.terminate()
+                        try:
+                            worker.wait(timeout=10)
+                        except subprocess.TimeoutExpired:
+                            worker.kill()
+                            worker.wait(timeout=5)
                 log.flush()
                 if "DeprecationWarning" in log_path.read_text():
                     raise RuntimeError("Reporting worker emitted an unexpected deprecation")
@@ -171,9 +225,9 @@ def transfer_services(environment: dict[str, str]) -> Iterator[dict[str, str]]:
                 worker.wait(timeout=5)
         failed = False
         for container in reversed(owned):
-            result = subprocess.run(
-                ["docker", "rm", "-f", container], capture_output=True, check=False, timeout=20
-            )
-            failed = failed or bool(result.returncode)
+            try:
+                remove_owned_container(identities[container], token)
+            except RuntimeError, KeyError:
+                failed = True
         if failed:
             raise RuntimeError("Owned transfer container cleanup failed")

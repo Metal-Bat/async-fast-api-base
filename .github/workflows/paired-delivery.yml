@@ -1,0 +1,90 @@
+name: Paired delivery gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      peer_sha:
+        description: Exact reviewed 40-character frontend commit SHA
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: paired-delivery-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  paired:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      PEER_SHA: ${{ inputs.peer_sha }}
+      PYTHONPATH: src:.
+    steps:
+      - name: Validate immutable peer input
+        shell: bash
+        run: '[[ "$PEER_SHA" =~ ^[0-9a-f]{40}$ ]]'
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          path: backend
+          persist-credentials: false
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: Metal-Bat/angular-base
+          ref: ${{ inputs.peer_sha }}
+          path: frontend
+          persist-credentials: false
+          token: ${{ secrets.PEER_READ_TOKEN || github.token }}
+      - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c
+        with:
+          version: 2026.10.4
+          working_directory: backend
+      - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c
+        with:
+          version: 2026.10.4
+          working_directory: frontend
+      - name: Install locked dependencies
+        shell: bash
+        run: |
+          cd "$GITHUB_WORKSPACE/backend"
+          uv sync --locked
+          cd "$GITHUB_WORKSPACE/frontend"
+          npm ci
+      - name: Verify actual consumer intake and full frontend gate
+        working-directory: frontend
+        run: mise run check
+      - name: Retain sanitized actual frontend gate evidence
+        if: always()
+        working-directory: backend
+        run: uv run python -m scripts.summarize_peer_gate --source ../frontend/artifacts/check/manifest.json --report ../sanitized/frontend-gate.json
+      - name: Prove frontend warning and failure gates
+        working-directory: frontend
+        run: npm run ci:gates
+      - name: Run unchanged backend gate on owned hosted services
+        working-directory: backend
+        shell: bash
+        run: |
+          export CONS_BROWSER_EXECUTABLE="$(command -v google-chrome)"
+          export FIREFOX_BINARY="$(command -v firefox)"
+          uv run python -m scripts.hosted_gate --report ../sanitized/backend-gate.json
+      - name: Verify the exact producer and consumer pair
+        working-directory: backend
+        run: uv run python -m scripts.verify_release_pair --frontend ../frontend --expected-peer-sha "$PEER_SHA" --report ../sanitized/release-pair.json
+      - name: Build source-only runtime candidate
+        working-directory: backend
+        run: uv run python -m scripts.build_runtime_image --image app-be-runtime:hosted --report ../sanitized/runtime-build.json
+      - name: Verify actual image lifespan and SQL instrumentation
+        working-directory: backend
+        env:
+          APP_RUNTIME_IMAGE: app-be-runtime:hosted
+        run: mise run runtime-image-test
+      - name: Upload sanitized summaries only
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: paired-delivery-${{ github.sha }}-${{ inputs.peer_sha }}
+          path: sanitized/*.json
+          if-no-files-found: error
+          retention-days: 14

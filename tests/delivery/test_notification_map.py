@@ -21,7 +21,7 @@ def test_notification_row_has_safe_bilingual_contract_and_producer(map_id: str) 
     assert row["dedupe_fields"] and "recipient_id" in row["dedupe_fields"]
     assert set(fixture["identity"]) == set(row["dedupe_fields"])
     assert row["channel_scope"] == ["IN_APP", "EMAIL"]
-    assert set(row["templates"]) == {"en", "fa"}
+    assert set(row["templates"]) == {"en", "fa", "ar"}
     for translation in row["templates"].values():
         for template in translation.values():
             assert {

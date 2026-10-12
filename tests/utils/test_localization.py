@@ -20,7 +20,7 @@ def test_public_error_codes_are_globally_unique_and_localized() -> None:
     assert InfrastructureError.DATA_CONFLICT.number == 4002
 
     locale_root = Path(__file__).resolve().parents[2] / "src" / "locales"
-    for language in ("en", "fa"):
+    for language in ("en", "fa", "ar"):
         with (locale_root / language / "LC_MESSAGES" / "messages.po").open() as source:
             catalog = read_po(source)
         message_ids = {message.id for message in catalog if message.id}
@@ -30,12 +30,19 @@ def test_public_error_codes_are_globally_unique_and_localized() -> None:
 
 
 def test_language_negotiation_and_fallback() -> None:
+    assert resolve_language("ar-SA;q=0.9,en;q=0.5") == "ar"
+    assert resolve_language("Arabic") == "ar"
     assert resolve_language("en;q=0.5,fa-IR;q=0.9") == "fa"
     assert resolve_language("PERSIAN") == "fa"
     assert resolve_language("fa;q=0,en") == "en"
     assert resolve_language("fa;q=invalid") == "en"
     assert resolve_language("../../unknown") == "en"
     assert localize_error(CommonError.NOT_FOUND, "de") == CommonError.NOT_FOUND.text
+
+
+def test_arabic_public_errors_are_translated():
+    with use_language("ar"):
+        assert _("Resource not found.") == "المورد غير موجود."
 
 
 def test_gettext_shorthand_uses_request_local_language() -> None:

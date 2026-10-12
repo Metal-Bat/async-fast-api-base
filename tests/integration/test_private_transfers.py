@@ -1,6 +1,7 @@
 """Private maximum-size uploads traverse the actual paired Node boundary and real storage."""
 
 import asyncio
+import io
 import os
 import socket
 import subprocess
@@ -13,8 +14,12 @@ from urllib.parse import urlsplit
 
 import httpx
 import pytest
+from fastapi import UploadFile
 from sqlmodel import select
+from starlette.datastructures import Headers
 
+from apps.media.application.service import UserUploadService
+from apps.media.domain.entity import UserUploadEntity
 from apps.reporting.domain.entity import ReportEntity, ReportStatus
 from apps.users.domain.entity import UserEntity
 from core.deps import SessionFactory, engine
@@ -22,7 +27,7 @@ from core.ref_id import create_ref_id
 from core.settings import settings
 from tests.integration.test_frontend_journey import _prepare_journey
 from utils.date_utils import get_datetime_utc
-from utils.s3 import ensure_bucket, put_object
+from utils.s3 import ensure_bucket, get_object, put_object, stream_object
 
 pytestmark = [
     pytest.mark.integration,
@@ -31,6 +36,83 @@ pytestmark = [
         reason="requires disposable paired transfer services",
     ),
 ]
+
+
+@pytest.mark.anyio
+async def test_committed_upload_retains_actual_object_after_refresh_failure(monkeypatch):
+    """A failed post-commit read must not delete an owned persisted upload."""
+    assert os.environ.get("FLOW_TEST_OWNED_DATABASE") == settings.POSTGRES_DB
+    await ensure_bucket()
+    users, _, _ = await _prepare_journey()
+    contents = b"synthetic committed upload"
+    try:
+        async with SessionFactory() as session:
+            owner = (
+                await session.exec(select(UserEntity).where(UserEntity.username == users[0]))
+            ).one()
+            upload = UploadFile(
+                io.BytesIO(contents),
+                filename="committed.txt",
+                headers=Headers({"content-type": "text/plain"}),
+            )
+
+            async def fail_refresh(*_args, **_kwargs):
+                raise RuntimeError("synthetic post-commit refresh failure")
+
+            monkeypatch.setattr(session, "refresh", fail_refresh)
+            with pytest.raises(RuntimeError, match="synthetic post-commit"):
+                await UserUploadService(session).upload_file(owner.id, upload)
+            await upload.close()
+        async with SessionFactory() as session:
+            persisted = (
+                await session.exec(
+                    select(UserUploadEntity).where(UserUploadEntity.user_id == owner.id)
+                )
+            ).one()
+            assert persisted.size_bytes == len(contents)
+            assert persisted.sha256 == sha256(contents).hexdigest()
+            assert await get_object(persisted.object_key) == contents
+    finally:
+        await engine.dispose()
+
+
+@pytest.mark.anyio
+async def test_private_download_releases_database_before_actual_storage_stream():
+    """Owned metadata authorization finishes before consuming S3 bytes."""
+    assert os.environ.get("FLOW_TEST_OWNED_DATABASE") == settings.POSTGRES_DB
+    await ensure_bucket()
+    users, _, _ = await _prepare_journey()
+    contents = b"synthetic private download" * 8192
+    try:
+        async with SessionFactory() as session:
+            owner = (
+                await session.exec(select(UserEntity).where(UserEntity.username == users[0]))
+            ).one()
+            upload = UploadFile(
+                io.BytesIO(contents),
+                filename="download.txt",
+                headers=Headers({"content-type": "text/plain"}),
+            )
+            try:
+                stored = await UserUploadService(session).upload_file(owner.id, upload)
+            finally:
+                await upload.close()
+            assert session.in_transaction()
+            stream = await UserUploadService(session).stream(stored)
+            assert not session.in_transaction()
+            blocks = [block async for block in stream]
+            assert b"".join(blocks) == contents
+            assert max(map(len, blocks)) <= 65536
+            interrupted = await UserUploadService(session).stream(stored)
+            assert await anext(interrupted)
+            await interrupted.aclose()
+            assert not session.in_transaction()
+            with pytest.raises(OSError, match="size"):
+                async for _ in stream_object(stored.object_key, expected_size=len(contents) - 1):
+                    pass
+            assert await get_object(stored.object_key) == contents
+    finally:
+        await engine.dispose()
 
 
 def _port() -> int:
@@ -122,6 +204,39 @@ async def _pair(log_directory: Path):
                     await asyncio.to_thread(process.wait, timeout=5)
         for log in logs:
             log.close()
+
+
+@pytest.mark.anyio
+async def test_chunked_oversize_rejection_settles_and_preserves_authenticated_session(tmp_path):
+    """An actual Node IncomingMessage must return a settled 413 instead of a reset socket."""
+    users, password, _ = await _prepare_journey()
+    try:
+        async with (
+            _pair(tmp_path) as origin,
+            httpx.AsyncClient(base_url=origin, timeout=20) as client,
+        ):
+            login = await client.post(
+                "/session/login",
+                headers={"Origin": origin},
+                json={"username": users[0], "password": password},
+            )
+            assert login.status_code == 200
+
+            async def oversized_body():
+                for _ in range(100):
+                    yield b"x" * (128 * 1024)
+                    await asyncio.sleep(0)
+
+            response = await client.post(
+                "/api/v1/media/files",
+                headers={"Origin": origin, "X-CSRF-Token": login.json()["csrfToken"]},
+                content=oversized_body(),
+            )
+            assert response.status_code == 413
+            assert response.json()["uncertain"] is False
+            assert (await client.get("/session/status")).json()["authenticated"] is True
+    finally:
+        await engine.dispose()
 
 
 @pytest.mark.anyio

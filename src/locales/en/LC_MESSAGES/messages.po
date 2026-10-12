@@ -1571,6 +1571,875 @@ msgstr ""
 "Opaque signed preview token. New application expires after 600 seconds; a committed command can "
 "replay after expiry subject to current authorization."
 
+#: src/apps/notifications/presentation/live.py
+msgid "Stream private inbox updates"
+msgstr "Stream private inbox updates"
+
+#: src/apps/notifications/presentation/live.py
+msgid ""
+"Recipient-only SSE invalidations over the persisted unified inbox. Requires an active bearer "
+"access token, user, session and registered client. No query parameters or user_id are accepted. "
+"Native EventSource needs an authenticated Node proxy; direct clients use streaming fetch with "
+"Authorization. Subscribe then refresh inbox/search and inbox/unread on inbox.resync, on reconnect"
+" and at least every 60 seconds. Last-Event-ID is an optional bounded reconnect hint, not an "
+"authorized replay cursor. inbox.changed contains only schema_version and notification_ref_id; its"
+" SSE id is the same reference. Deduplicate ids and coalesce refreshes. No subject, business data,"
+" password, URL or error is streamed. Heartbeat and authorization checks have a 15-second cadence;"
+" authorization probes are bounded to 3 seconds and changed events recheck authorization before "
+"sending. A stream lasts at most 300 seconds, receives at most 256 signals, and times out blocked "
+"sends after 5 seconds. Limit 3 streams per recipient and 200 per configured cache namespace "
+"across processes. No stream-long database session. Offline/missed signals remain in persisted "
+"search. Authentication or service failure after headers closes the stream; pre-stream errors use "
+"existing JSON envelopes. Success is text/event-stream, never a JSON success envelope. Private no-"
+"store/no-transform; proxies must disable buffering/compression and propagate disconnects. This "
+"backend contract does not establish browser or Node proxy acceptance."
+msgstr ""
+"Recipient-only SSE invalidations over the persisted unified inbox. Requires an active bearer "
+"access token, user, session and registered client. No query parameters or user_id are accepted. "
+"Native EventSource needs an authenticated Node proxy; direct clients use streaming fetch with "
+"Authorization. Subscribe then refresh inbox/search and inbox/unread on inbox.resync, on reconnect"
+" and at least every 60 seconds. Last-Event-ID is an optional bounded reconnect hint, not an "
+"authorized replay cursor. inbox.changed contains only schema_version and notification_ref_id; its"
+" SSE id is the same reference. Deduplicate ids and coalesce refreshes. No subject, business data,"
+" password, URL or error is streamed. Heartbeat and authorization checks have a 15-second cadence;"
+" authorization probes are bounded to 3 seconds and changed events recheck authorization before "
+"sending. A stream lasts at most 300 seconds, receives at most 256 signals, and times out blocked "
+"sends after 5 seconds. Limit 3 streams per recipient and 200 per configured cache namespace "
+"across processes. No stream-long database session. Offline/missed signals remain in persisted "
+"search. Authentication or service failure after headers closes the stream; pre-stream errors use "
+"existing JSON envelopes. Success is text/event-stream, never a JSON success envelope. Private no-"
+"store/no-transform; proxies must disable buffering/compression and propagate disconnects. This "
+"backend contract does not establish browser or Node proxy acceptance."
+
+#: src/apps/notifications/presentation/live.py
+msgid "Private SSE invalidations and heartbeat comments; no JSON envelope."
+msgstr "Private SSE invalidations and heartbeat comments; no JSON envelope."
+
+#: src/apps/notifications/presentation/live.py
+msgid "Concurrent inbox stream limit reached. Retry after disconnecting another stream."
+msgstr "Concurrent inbox stream limit reached. Retry after disconnecting another stream."
+
+#: src/apps/notifications/presentation/live.py
+msgid "Live signaling unavailable. Persisted inbox search remains authoritative."
+msgstr "Live signaling unavailable. Persisted inbox search remains authoritative."
+
+#: src/apps/notifications/presentation/live.py
+msgid "Reconnect hint only; always resynchronize from the persisted inbox."
+msgstr "Reconnect hint only; always resynchronize from the persisted inbox."
+
+#: src/apps/notifications/presentation/live.py
+msgid "Pre-stream JSON error using the existing application envelope."
+msgstr "Pre-stream JSON error using the existing application envelope."
+
+msgid "Schedule variant. Only fields belonging to this variant may be supplied on writes."
+msgstr "Schedule variant. Only fields belonging to this variant may be supplied on writes."
+
+msgid ""
+"Positive interval in seconds; required only for interval schedules. Retained legacy reads may be "
+"null."
+msgstr ""
+"Positive interval in seconds; required only for interval schedules. Retained legacy reads may be "
+"null."
+
+msgid "Timezone-aware execution instant; required only for clocked one-off schedules."
+msgstr "Timezone-aware execution instant; required only for clocked one-off schedules."
+
+msgid "JSON positional arguments bound to the registered task signature before saving."
+msgstr "JSON positional arguments bound to the registered task signature before saving."
+
+msgid "JSON keyword arguments bound to the registered task signature before saving."
+msgstr "JSON keyword arguments bound to the registered task signature before saving."
+
+msgid "Whether the scheduler may dispatch this row; false pauses it without deleting history."
+msgstr "Whether the scheduler may dispatch this row; false pauses it without deleting history."
+
+msgid "Whether the schedule disables itself after dispatch; clocked schedules require true."
+msgstr "Whether the schedule disables itself after dispatch; clocked schedules require true."
+
+msgid "Optional timezone-aware lower execution bound; omitted preserves it on update, null clears it."
+msgstr "Optional timezone-aware lower execution bound; omitted preserves it on update, null clears it."
+
+msgid ""
+"Optional timezone-aware expiry after start and clocked instant; omitted preserves it on update, "
+"null clears it."
+msgstr ""
+"Optional timezone-aware expiry after start and clocked instant; omitted preserves it on update, "
+"null clears it."
+
+msgid "UTC creation instant of the persisted schedule."
+msgstr "UTC creation instant of the persisted schedule."
+
+msgid "UTC instant of the most recent change, or null before the first change."
+msgstr "UTC instant of the most recent change, or null before the first change."
+
+msgid "UTC soft-deletion instant, or null for a retained active configuration."
+msgstr "UTC soft-deletion instant, or null for a retained active configuration."
+
+msgid "UTC instant of the most recent scheduler dispatch, or null before any dispatch."
+msgstr "UTC instant of the most recent scheduler dispatch, or null before any dispatch."
+
+msgid "Number of scheduler dispatches recorded for this schedule."
+msgstr "Number of scheduler dispatches recorded for this schedule."
+
+msgid "Configured queue choice; omitted preserves it on update, null uses the scheduler default."
+msgstr "Configured queue choice; omitted preserves it on update, null uses the scheduler default."
+
+msgid "Known client screen identifier; arbitrary paths are not accepted."
+msgstr "Known client screen identifier; arbitrary paths are not accepted."
+
+msgid "Public build identifier, 1 to 80 ASCII letters, digits, dots, underscores or hyphens."
+msgstr "Public build identifier, 1 to 80 ASCII letters, digits, dots, underscores or hyphens."
+
+msgid "Stable safe error code; exception messages and stack traces are never accepted."
+msgstr "Stable safe error code; exception messages and stack traces are never accepted."
+
+msgid "Opaque incident reference containing its current version."
+msgstr "Opaque incident reference containing its current version."
+
+msgid "Correlation UUID; inspection requires support.incidents.manage."
+msgstr "Correlation UUID; inspection requires support.incidents.manage."
+
+msgid "Canonical incident category; localized labels do not change this value."
+msgstr "Canonical incident category; localized labels do not change this value."
+
+msgid "Safe operation identifier; contains no submitted business payload."
+msgstr "Safe operation identifier; contains no submitted business payload."
+
+msgid "Incident lifecycle state: OPEN, ACKNOWLEDGED or RESOLVED."
+msgstr "Incident lifecycle state: OPEN, ACKNOWLEDGED or RESOLVED."
+
+msgid "Number of grouped occurrences retained for this incident."
+msgstr "Number of grouped occurrences retained for this incident."
+
+msgid "Timezone-aware UTC instant of the first grouped occurrence."
+msgstr "Timezone-aware UTC instant of the first grouped occurrence."
+
+msgid "Timezone-aware UTC instant of the latest grouped occurrence."
+msgstr "Timezone-aware UTC instant of the latest grouped occurrence."
+
+msgid "Timezone-aware UTC retention deadline; expired incidents may be removed."
+msgstr "Timezone-aware UTC retention deadline; expired incidents may be removed."
+
+msgid "Timezone-aware UTC instant of this lifecycle transition."
+msgstr "Timezone-aware UTC instant of this lifecycle transition."
+
+msgid "Previous canonical state; null for the initial transition."
+msgstr "Previous canonical state; null for the initial transition."
+
+msgid "Resulting canonical state; null when no destination state is recorded."
+msgstr "Resulting canonical state; null when no destination state is recorded."
+
+msgid ""
+"Celery cron minute expression; null defaults to * for crontab schedules and must be absent for "
+"other variants."
+msgstr ""
+"Celery cron minute expression; null defaults to * for crontab schedules and must be absent for "
+"other variants."
+
+msgid ""
+"Celery cron hour expression; null defaults to * for crontab schedules and must be absent for "
+"other variants."
+msgstr ""
+"Celery cron hour expression; null defaults to * for crontab schedules and must be absent for "
+"other variants."
+
+msgid ""
+"Celery cron day of week expression; null defaults to * for crontab schedules and must be absent "
+"for other variants."
+msgstr ""
+"Celery cron day of week expression; null defaults to * for crontab schedules and must be absent "
+"for other variants."
+
+msgid ""
+"Celery cron day of month expression; null defaults to * for crontab schedules and must be absent "
+"for other variants."
+msgstr ""
+"Celery cron day of month expression; null defaults to * for crontab schedules and must be absent "
+"for other variants."
+
+msgid ""
+"Celery cron month of year expression; null defaults to * for crontab schedules and must be absent"
+" for other variants."
+msgstr ""
+"Celery cron month of year expression; null defaults to * for crontab schedules and must be absent"
+" for other variants."
+
+msgid ""
+"Requires an active authenticated actor with admin.tasks.manage. Persists schedule configuration "
+"in one transaction; execution occurs later through the existing database scheduler and outbox. "
+"Only registered tasks and configured queues are accepted. Positional and keyword arguments must "
+"bind the task signature. Interval, crontab and clocked fields are mutually exclusive. Clocked "
+"schedules require one_off=true; instants include timezone and expiry follows start/clocked time. "
+"Invalid commands return 422, unknown task definitions 404 and denied actors 403. The 201 "
+"success/data response carries the current ref_id; no task result is returned."
+msgstr ""
+"Requires an active authenticated actor with admin.tasks.manage. Persists schedule configuration "
+"in one transaction; execution occurs later through the existing database scheduler and outbox. "
+"Only registered tasks and configured queues are accepted. Positional and keyword arguments must "
+"bind the task signature. Interval, crontab and clocked fields are mutually exclusive. Clocked "
+"schedules require one_off=true; instants include timezone and expiry follows start/clocked time. "
+"Invalid commands return 422, unknown task definitions 404 and denied actors 403. The 201 "
+"success/data response carries the current ref_id; no task result is returned."
+
+msgid ""
+"Requires admin.tasks.manage and the current versioned ref_id. Omitted fields preserve stored "
+"values; queue/start_at/expires_at null clears the override, while enabled/interval_seconds "
+"explicit null is invalid. Interval changes belong to interval schedules. Enabling or changing "
+"configuration revalidates the merged schedule; disabling a retained legacy row remains possible. "
+"A no-op preserves its reference. Stale or concurrent writes return 409; invalid merged commands "
+"return 422. The success/data response contains the refreshed reference; history is retained."
+msgstr ""
+"Requires admin.tasks.manage and the current versioned ref_id. Omitted fields preserve stored "
+"values; queue/start_at/expires_at null clears the override, while enabled/interval_seconds "
+"explicit null is invalid. Interval changes belong to interval schedules. Enabling or changing "
+"configuration revalidates the merged schedule; disabling a retained legacy row remains possible. "
+"A no-op preserves its reference. Stale or concurrent writes return 409; invalid merged commands "
+"return 422. The success/data response contains the refreshed reference; history is retained."
+
+msgid ""
+"Incomplete authoring JSON, at most 64 KiB, depth 24, 2048 nodes and lists of at most 256 items. "
+"It is never executed; promotion validates GraphSnapshot and all dependencies."
+msgstr ""
+"Incomplete authoring JSON, at most 64 KiB, depth 24, 2048 nodes and lists of at most 256 items. "
+"It is never executed; promotion validates GraphSnapshot and all dependencies."
+
+msgid ""
+"Requires an authenticated owner or an explicit trusted access policy. Resolves the versioned "
+"upload reference and authorization before object storage. Streams verified passive-format bytes "
+"as an attachment with a server-owned filename, nosniff and Cache-Control: private, no-store. The "
+"optional Content-Disposition request value may only be attachment; inline, filenames, extra "
+"parameters and duplicates return 422. Missing and unauthorized uploads return the same 404. "
+"Database authorization reads finish before streaming. Storage is read in chunks of at most 64 KiB"
+" and the final byte count must match metadata preflight. A late storage failure, changed size or "
+"disconnect closes the binary stream; it cannot become a JSON success response."
+msgstr ""
+"Requires an authenticated owner or an explicit trusted access policy. Resolves the versioned "
+"upload reference and authorization before object storage. Streams verified passive-format bytes "
+"as an attachment with a server-owned filename, nosniff and Cache-Control: private, no-store. The "
+"optional Content-Disposition request value may only be attachment; inline, filenames, extra "
+"parameters and duplicates return 422. Missing and unauthorized uploads return the same 404. "
+"Database authorization reads finish before streaming. Storage is read in chunks of at most 64 KiB"
+" and the final byte count must match metadata preflight. A late storage failure, changed size or "
+"disconnect closes the binary stream; it cannot become a JSON success response."
+
+msgid ""
+"Requires an authenticated owner or an explicit trusted access policy. Resolves the versioned "
+"upload reference and authorization before object storage. Streams verified normalized WebP bytes "
+"with nosniff and Cache-Control: private, no-store. By default the browser may display the image "
+"inline without a Content-Disposition header. Send Content-Disposition: inline or attachment to "
+"select a server-named response; filenames, extra parameters and duplicates return 422. Missing "
+"and unauthorized images return the same 404. Database authorization reads finish before "
+"streaming. Storage is read in chunks of at most 64 KiB and the final byte count must match "
+"metadata preflight. A late storage failure, changed size or disconnect closes the binary stream; "
+"it cannot become a JSON success response."
+msgstr ""
+"Requires an authenticated owner or an explicit trusted access policy. Resolves the versioned "
+"upload reference and authorization before object storage. Streams verified normalized WebP bytes "
+"with nosniff and Cache-Control: private, no-store. By default the browser may display the image "
+"inline without a Content-Disposition header. Send Content-Disposition: inline or attachment to "
+"select a server-named response; filenames, extra parameters and duplicates return 422. Missing "
+"and unauthorized images return the same 404. Database authorization reads finish before "
+"streaming. Storage is read in chunks of at most 64 KiB and the final byte count must match "
+"metadata preflight. A late storage failure, changed size or disconnect closes the binary stream; "
+"it cannot become a JSON success response."
+
+msgid ""
+"Requires the authenticated report owner. Only ready, unexpired private archives within the "
+"configured byte limit may download. Metadata preflight precedes recording an authorized download "
+"start; download_count does not prove complete delivery. The database session closes before "
+"streaming. Storage uses chunks of at most 64 KiB and the final byte count must match preflight. A"
+" late storage failure, changed size or disconnect closes the binary stream without a JSON success"
+" envelope. Report generation status is independent of a browser download. The response is "
+"private, no-store, nosniff and attachment-only with a server-selected filename; no direct storage"
+" URL."
+msgstr ""
+"Requires the authenticated report owner. Only ready, unexpired private archives within the "
+"configured byte limit may download. Metadata preflight precedes recording an authorized download "
+"start; download_count does not prove complete delivery. The database session closes before "
+"streaming. Storage uses chunks of at most 64 KiB and the final byte count must match preflight. A"
+" late storage failure, changed size or disconnect closes the binary stream without a JSON success"
+" envelope. Report generation status is independent of a browser download. The response is "
+"private, no-store, nosniff and attachment-only with a server-selected filename; no direct storage"
+" URL."
+
+# APP-BE-021–025 additive contract documentation
+msgid "Inspect governed business operations"
+msgstr "Inspect governed business operations"
+
+# APP-BE-021–025 additive contract documentation
+msgid "Inspect sandbox order receipts"
+msgstr "Inspect sandbox order receipts"
+
+# APP-BE-021–025 additive contract documentation
+msgid "Inspect supervised AI process evidence"
+msgstr "Inspect supervised AI process evidence"
+
+# APP-BE-021–025 additive contract documentation
+msgid "Reconcile an uncertain sandbox order"
+msgstr "Reconcile an uncertain sandbox order"
+
+# APP-BE-021–025 additive contract documentation
+msgid "Reconcile an uncertain sandbox cancellation"
+msgstr "Reconcile an uncertain sandbox cancellation"
+
+# APP-BE-021–025 additive contract documentation
+msgid "Exact historical agent pin; never a substituted latest agent."
+msgstr "Exact historical agent pin; never a substituted latest agent."
+
+# APP-BE-021–025 additive contract documentation
+msgid "Approved field names only; no copied input values."
+msgstr "Approved field names only; no copied input values."
+
+# APP-BE-021–025 additive contract documentation
+msgid "Typed model recommendation; confidence never grants business approval."
+msgstr "Typed model recommendation; confidence never grants business approval."
+
+# APP-BE-021–025 additive contract documentation
+msgid "Code-owned JSON Schema, not authored HTTP configuration."
+msgstr "Code-owned JSON Schema, not authored HTTP configuration."
+
+# APP-BE-021–025 additive contract documentation
+msgid "Code-owned JSON Schema for the bounded result port."
+msgstr "Code-owned JSON Schema for the bounded result port."
+
+# APP-BE-021–025 additive contract documentation
+msgid "Current opaque step execution reference belonging to the path process."
+msgstr "Current opaque step execution reference belonging to the path process."
+
+# APP-BE-021–025 additive contract documentation
+msgid "Safe incident/ticket code, not private free text."
+msgstr "Safe incident/ticket code, not private free text."
+
+# APP-BE-021–025 additive contract documentation
+msgid "Existing compensation record state; RUNNING is queued, not confirmed cancellation."
+msgstr "Existing compensation record state; RUNNING is queued, not confirmed cancellation."
+
+# APP-BE-021–025 additive contract documentation
+msgid ""
+"Requires an authenticated active session and workflows.manage. Returns the bounded code-owned "
+"catalog (currently three operations), typed input/output JSON Schemas, allowed provider/kind, "
+"publisher identity policy, approval policy and retry behavior. Sandbox orders require an explicit"
+" committed human approve action covering the exact workflow and input. Timeouts after dispatch "
+"require receipt lookup before retry. Metadata is not proof of executable credentials: connections"
+" must separately be active, authorized, verified and pinned to the exact revision and secret "
+"version. Endpoints and secrets are never returned. This read has no business side effects. "
+"Missing/expired/revoked authentication returns 401; missing permission returns 403."
+msgstr ""
+"Requires an authenticated active session and workflows.manage. Returns the bounded code-owned "
+"catalog (currently three operations), typed input/output JSON Schemas, allowed provider/kind, "
+"publisher identity policy, approval policy and retry behavior. Sandbox orders require an explicit"
+" committed human approve action covering the exact workflow and input. Timeouts after dispatch "
+"require receipt lookup before retry. Metadata is not proof of executable credentials: connections"
+" must separately be active, authorized, verified and pinned to the exact revision and secret "
+"version. Endpoints and secrets are never returned. This read has no business side effects. "
+"Missing/expired/revoked authentication returns 401; missing permission returns 403."
+
+# APP-BE-021–025 additive contract documentation
+msgid ""
+"Requires an authenticated active session, requests.start and request participant view "
+"authorization. Returns the latest AI attempt per execution, ordered by creation time and ID; page"
+" defaults to 1, size defaults to 20 and is bounded to 100. Exposes the historical agent pin, "
+"available model identity, allowed input field names, typed recommendation and existing task "
+"budget/unknown usage. No input values, prompt, checkpoint, raw response trace, secret, private "
+"URL or connection credential is returned. Human outcomes remain in the authorized work-"
+"item/process timeline. A normal/high-confidence recommendation never authorizes a protected "
+"order; that requires the exact committed human approval. Missing historical agent metadata is "
+"marked unavailable, never replaced with a latest agent. Missing/expired authentication returns "
+"401, missing permission 403, outsider or wrong process 404, invalid pagination 422. This read "
+"makes no model call. Deterministic tests are not live-model quality or calibration evidence."
+msgstr ""
+"Requires an authenticated active session, requests.start and request participant view "
+"authorization. Returns the latest AI attempt per execution, ordered by creation time and ID; page"
+" defaults to 1, size defaults to 20 and is bounded to 100. Exposes the historical agent pin, "
+"available model identity, allowed input field names, typed recommendation and existing task "
+"budget/unknown usage. No input values, prompt, checkpoint, raw response trace, secret, private "
+"URL or connection credential is returned. Human outcomes remain in the authorized work-"
+"item/process timeline. A normal/high-confidence recommendation never authorizes a protected "
+"order; that requires the exact committed human approval. Missing historical agent metadata is "
+"marked unavailable, never replaced with a latest agent. Missing/expired authentication returns "
+"401, missing permission 403, outsider or wrong process 404, invalid pagination 422. This read "
+"makes no model call. Deterministic tests are not live-model quality or calibration evidence."
+
+# APP-BE-021–025 additive contract documentation
+msgid ""
+"Requires an authenticated active session, processes.recover and superuser recovery authorization."
+" Supply current process and step execution refs, a 1–128 character command_key and a 1–64 "
+"character incident reason code. Receipt lookup uses the original pinned publisher, connection, "
+"credential version and operation identity; revoked authority or rotated pins fail closed. Never "
+"sends another create request. UNKNOWN can be queried immediately; DISPATCHING must be at least 20"
+" seconds old. A matching receipt confirms the existing operation and applies the ordinary "
+"idempotent completion callback. Missing receipt remains UNKNOWN and does not authorize retry. "
+"Same command and intent return current evidence even with old refs; changed intent conflicts. "
+"Failed/uncertain lookup requires a fresh lookup command, never an effect replay. Errors: 401 "
+"missing/expired session, 403 non-superuser, 404 wrong process/step, 409 stale refs, wrong state, "
+"changed command intent or revoked pins, 422 invalid input, 503 unavailable lookup. No DB session "
+"is held across HTTPS; no production purchase is made."
+msgstr ""
+"Requires an authenticated active session, processes.recover and superuser recovery authorization."
+" Supply current process and step execution refs, a 1–128 character command_key and a 1–64 "
+"character incident reason code. Receipt lookup uses the original pinned publisher, connection, "
+"credential version and operation identity; revoked authority or rotated pins fail closed. Never "
+"sends another create request. UNKNOWN can be queried immediately; DISPATCHING must be at least 20"
+" seconds old. A matching receipt confirms the existing operation and applies the ordinary "
+"idempotent completion callback. Missing receipt remains UNKNOWN and does not authorize retry. "
+"Same command and intent return current evidence even with old refs; changed intent conflicts. "
+"Failed/uncertain lookup requires a fresh lookup command, never an effect replay. Errors: 401 "
+"missing/expired session, 403 non-superuser, 404 wrong process/step, 409 stale refs, wrong state, "
+"changed command intent or revoked pins, 422 invalid input, 503 unavailable lookup. No DB session "
+"is held across HTTPS; no production purchase is made."
+
+# APP-BE-021–025 additive contract documentation
+msgid ""
+"Requires an authenticated active session, processes.recover and superuser authorization. Supply "
+"current process/step execution refs, command_key and an incident reason code. Requeues only a "
+"previously dispatched sandbox reversal through the existing outbox/worker. The worker uses "
+"receipt lookup with the original connection, credential and stable reversal identity; it never "
+"resends cancellation or creates an order. Failed records are eligible immediately; EXECUTING "
+"records must be at least 20 seconds old. Current publisher/grant/pin revocation fails closed. "
+"RUNNING means queued, not provider-confirmed success. Inspect the ordinary process timeline for "
+"compensation.receipt_confirmed and compensation.completed. Same command/intent returns current "
+"state; changed intent conflicts. Errors: 401 missing authentication, 403 non-superuser, 404 wrong"
+" process/step or missing reversal, 409 stale refs, revoked pins, changed intent or wrong state, "
+"422 invalid input. A missing receipt remains failed/manual intervention; no blind effect replay "
+"is permitted."
+msgstr ""
+"Requires an authenticated active session, processes.recover and superuser authorization. Supply "
+"current process/step execution refs, command_key and an incident reason code. Requeues only a "
+"previously dispatched sandbox reversal through the existing outbox/worker. The worker uses "
+"receipt lookup with the original connection, credential and stable reversal identity; it never "
+"resends cancellation or creates an order. Failed records are eligible immediately; EXECUTING "
+"records must be at least 20 seconds old. Current publisher/grant/pin revocation fails closed. "
+"RUNNING means queued, not provider-confirmed success. Inspect the ordinary process timeline for "
+"compensation.receipt_confirmed and compensation.completed. Same command/intent returns current "
+"state; changed intent conflicts. Errors: 401 missing authentication, 403 non-superuser, 404 wrong"
+" process/step or missing reversal, 409 stale refs, revoked pins, changed intent or wrong state, "
+"422 invalid input. A missing receipt remains failed/manual intervention; no blind effect replay "
+"is permitted."
+
+# APP-BE-023 safe receipt inspection
+msgid "Inspect sandbox operation receipts"
+msgstr "Inspect sandbox operation receipts"
+
+# APP-BE-023 safe receipt inspection
+msgid ""
+"Requires an authenticated active session, requests.start and request participant view "
+"authorization. Returns one latest attempt per sandbox order, ordered by step creation time and "
+"ID. page defaults to 1; size defaults to 20 and is bounded to 100. PREPARED means staged, "
+"DISPATCHING means a request may be in flight, UNKNOWN requires operator lookup, and CONFIRMED "
+"includes an actual validated provider receipt. Queued does not mean completed. The opaque "
+"step_execution_ref_id is current; operation_id is the stable external idempotency identity. No "
+"inputs, approval records, credentials or private URLs are exposed. Outsiders receive 404; missing"
+" permission receives 403. This inspection never dispatches an order."
+msgstr ""
+"Requires an authenticated active session, requests.start and request participant view "
+"authorization. Returns one latest attempt per sandbox order, ordered by step creation time and "
+"ID. page defaults to 1; size defaults to 20 and is bounded to 100. PREPARED means staged, "
+"DISPATCHING means a request may be in flight, UNKNOWN requires operator lookup, and CONFIRMED "
+"includes an actual validated provider receipt. Queued does not mean completed. The opaque "
+"step_execution_ref_id is current; operation_id is the stable external idempotency identity. No "
+"inputs, approval records, credentials or private URLs are exposed. Outsiders receive 404; missing"
+" permission receives 403. This inspection never dispatches an order."
+
+# APP-BE-021–025 public field documentation
+msgid "Sandbox item identifier; no production catalog or monetary semantics."
+msgstr "Sandbox item identifier; no production catalog or monetary semantics."
+
+# APP-BE-021–025 public field documentation
+msgid "Positive sandbox quantity, bounded to 1000."
+msgstr "Positive sandbox quantity, bounded to 1000."
+
+# APP-BE-021–025 public field documentation
+msgid "Optional approved note; never copied into public receipt or timeline."
+msgstr "Optional approved note; never copied into public receipt or timeline."
+
+# APP-BE-021–025 public field documentation
+msgid "Stable external create identity, unchanged across duplicate delivery and lookup."
+msgstr "Stable external create identity, unchanged across duplicate delivery and lookup."
+
+# APP-BE-021–025 public field documentation
+msgid "Durable sandbox receipt identity, not a private backend row reference."
+msgstr "Durable sandbox receipt identity, not a private backend row reference."
+
+# APP-BE-021–025 public field documentation
+msgid "Actual provider order state; cancellation is separate from database rollback."
+msgstr "Actual provider order state; cancellation is separate from database rollback."
+
+# APP-BE-021–025 public field documentation
+msgid "SHA-256 of canonical typed sandbox payload including default note; no payload values."
+msgstr "SHA-256 of canonical typed sandbox payload including default note; no payload values."
+
+# APP-BE-021–025 public field documentation
+msgid "Stable reversal identity, distinct from the original create operation."
+msgstr "Stable reversal identity, distinct from the original create operation."
+
+# APP-BE-021–025 public field documentation
+msgid "Original order identity being deliberately reversed."
+msgstr "Original order identity being deliberately reversed."
+
+# APP-BE-021–025 public field documentation
+msgid "Durable cancellation receipt identity from the sandbox."
+msgstr "Durable cancellation receipt identity from the sandbox."
+
+# APP-BE-021–025 public field documentation
+msgid "Provider-confirmed cancellation; queued or unknown reversal is not success."
+msgstr "Provider-confirmed cancellation; queued or unknown reversal is not success."
+
+# APP-BE-021–025 public field documentation
+msgid "Original canonical order payload hash; reversal cannot substitute inputs."
+msgstr "Original canonical order payload hash; reversal cannot substitute inputs."
+
+# APP-BE-021–025 public field documentation
+msgid "Current opaque execution reference for a subsequent operator command."
+msgstr "Current opaque execution reference for a subsequent operator command."
+
+# APP-BE-021–025 public field documentation
+msgid "Stable external operation identity; never a permission or backend ref."
+msgstr "Stable external operation identity; never a permission or backend ref."
+
+# APP-BE-021–025 public field documentation
+msgid "Persisted attempt evidence: PREPARED, DISPATCHING, UNKNOWN or CONFIRMED; queued is not completed."
+msgstr "Persisted attempt evidence: PREPARED, DISPATCHING, UNKNOWN or CONFIRMED; queued is not completed."
+
+# APP-BE-021–025 public field documentation
+msgid "Validated provider receipt only when confirmed; never inferred from a timeout."
+msgstr "Validated provider receipt only when confirmed; never inferred from a timeout."
+
+# APP-BE-021–025 public field documentation
+msgid "Current opaque reference of the original order execution."
+msgstr "Current opaque reference of the original order execution."
+
+# APP-BE-021–025 public field documentation
+msgid "Current opaque AI execution reference; this endpoint is read-only."
+msgstr "Current opaque AI execution reference; this endpoint is read-only."
+
+# APP-BE-021–025 public field documentation
+msgid "Latest persisted attempt number within the logical AI execution."
+msgstr "Latest persisted attempt number within the logical AI execution."
+
+# APP-BE-021–025 public field documentation
+msgid "Existing automation attempt state; queued or failed does not imply a recommendation."
+msgstr "Existing automation attempt state; queued or failed does not imply a recommendation."
+
+# APP-BE-021–025 public field documentation
+msgid "Whether the exact pinned published/retired agent metadata remains available."
+msgstr "Whether the exact pinned published/retired agent metadata remains available."
+
+# APP-BE-021–025 public field documentation
+msgid "Model identity from the exact agent pin, not a substituted latest model."
+msgstr "Model identity from the exact agent pin, not a substituted latest model."
+
+# APP-BE-021–025 public field documentation
+msgid "Existing task-wide budget, reservation and unknown-usage evidence; no new provider call."
+msgstr "Existing task-wide budget, reservation and unknown-usage evidence; no new provider call."
+
+# APP-BE-021–025 public field documentation
+msgid "Exact code-owned operation identifier and version; no arbitrary HTTP scripting."
+msgstr "Exact code-owned operation identifier and version; no arbitrary HTTP scripting."
+
+# APP-BE-021–025 public field documentation
+msgid "Required deployed step handler key."
+msgstr "Required deployed step handler key."
+
+# APP-BE-021–025 public field documentation
+msgid "Required exact deployed handler version."
+msgstr "Required exact deployed handler version."
+
+# APP-BE-021–025 public field documentation
+msgid "Allowed execution contexts; sandbox cancellation is compensation-only."
+msgstr "Allowed execution contexts; sandbox cancellation is compensation-only."
+
+# APP-BE-021–025 public field documentation
+msgid "Compatible registered connection providers."
+msgstr "Compatible registered connection providers."
+
+# APP-BE-021–025 public field documentation
+msgid "Required connection kind; AI and notification connections are incompatible."
+msgstr "Required connection kind; AI and notification connections are incompatible."
+
+# APP-BE-021–025 public field documentation
+msgid "Pinned workflow publisher; protected sandbox effects require an active ordinary publisher."
+msgstr "Pinned workflow publisher; protected sandbox effects require an active ordinary publisher."
+
+# APP-BE-021–025 public field documentation
+msgid "Credential mode; secret values and references remain private."
+msgstr "Credential mode; secret values and references remain private."
+
+# APP-BE-021–025 public field documentation
+msgid "Endpoint resolved by an administrator-owned key, never an authored URL."
+msgstr "Endpoint resolved by an administrator-owned key, never an authored URL."
+
+# APP-BE-021–025 public field documentation
+msgid "Versioned required human approval policy for create, otherwise null; tool approval is distinct."
+msgstr "Versioned required human approval policy for create, otherwise null; tool approval is distinct."
+
+# APP-BE-021–025 public field documentation
+msgid "Whether execution changes sandbox business state; metadata inspection has no effect."
+msgstr "Whether execution changes sandbox business state; metadata inspection has no effect."
+
+# APP-BE-021–025 public field documentation
+msgid "Total network deadline in seconds; a timeout does not prove provider rollback."
+msgstr "Total network deadline in seconds; a timeout does not prove provider rollback."
+
+# APP-BE-021–025 public field documentation
+msgid "Diagnostic retries or lookup-only recovery after uncertain business dispatch."
+msgstr "Diagnostic retries or lookup-only recovery after uncertain business dispatch."
+
+# APP-BE-021–025 public field documentation
+msgid "Supported operation-specific receipt lookup, otherwise null."
+msgstr "Supported operation-specific receipt lookup, otherwise null."
+
+# APP-BE-021–025 public field documentation
+msgid "Supported explicit reversal family; null means no registered automated reversal."
+msgstr "Supported explicit reversal family; null means no registered automated reversal."
+
+# APP-BE-023 verified-receipt completion boundary
+msgid "Resume a supported single process wait"
+msgstr "Resume a supported single process wait"
+
+# APP-BE-023 verified-receipt completion boundary
+msgid ""
+"Requires an authenticated active session, requests.start, request participant view and requester "
+"control (or superuser). Supply a current process ref, command_key, declared outcome and handler-"
+"valid outputs for an eligible single wait. Existing unprotected wait semantics are retained. "
+"Subprocess results are settled by their owning worker. A sandbox.order.create/1 wait cannot "
+"accept caller-supplied receipts: only the protected worker or authorized receipt lookup may "
+"confirm it. Human business approval must use the actual eligible work-item completion action. "
+"Replay follows the existing command-key behavior; this is not an arbitrary effect executor. "
+"Errors: 401 missing/expired authentication, 403 missing permission/control, 404 outsider/missing "
+"process, 409 stale ref, ambiguous/ineligible wait or invented protected receipt, 422 invalid "
+"input. Queued sandbox work is never confirmed by this command."
+msgstr ""
+"Requires an authenticated active session, requests.start, request participant view and requester "
+"control (or superuser). Supply a current process ref, command_key, declared outcome and handler-"
+"valid outputs for an eligible single wait. Existing unprotected wait semantics are retained. "
+"Subprocess results are settled by their owning worker. A sandbox.order.create/1 wait cannot "
+"accept caller-supplied receipts: only the protected worker or authorized receipt lookup may "
+"confirm it. Human business approval must use the actual eligible work-item completion action. "
+"Replay follows the existing command-key behavior; this is not an arbitrary effect executor. "
+"Errors: 401 missing/expired authentication, 403 missing permission/control, 404 outsider/missing "
+"process, 409 stale ref, ambiguous/ineligible wait or invented protected receipt, 422 invalid "
+"input. Queued sandbox work is never confirmed by this command."
+
+#: src/apps/workflows/domain/dtos/graph.py
+msgid ""
+"Pinned human-task read/write/required/hidden JSON Schema scopes. A nonempty read policy with an "
+"empty write list permits read-only acknowledgment; every changed field remains forbidden. Runtime"
+" writable_scopes is authoritative."
+msgstr ""
+"Pinned human-task read/write/required/hidden JSON Schema scopes. A nonempty read policy with an "
+"empty write list permits read-only acknowledgment; every changed field remains forbidden. Runtime"
+" writable_scopes is authoritative."
+
+#: src/apps/workflows/domain/dtos/graph.py
+msgid ""
+"For STEP_OUTPUT, the exact pinned output-port schema, including generic service metadata. "
+"Registered sandbox receipt guarantees refine server-side compatibility without changing persisted"
+" port metadata or graph checksums. Caller-supplied schema assertions cannot replace the trusted "
+"operation contract."
+msgstr ""
+"For STEP_OUTPUT, the exact pinned output-port schema, including generic service metadata. "
+"Registered sandbox receipt guarantees refine server-side compatibility without changing persisted"
+" port metadata or graph checksums. Caller-supplied schema assertions cannot replace the trusted "
+"operation contract."
+
+msgid ""
+"Atomically update self settings with the current ref_id from GET. Omitted groups and nested "
+"fields are preserved; null resets an entire supplied group to documented defaults. Nested scalar "
+"nulls and unknown keys are rejected with 422. Wrong-owner references return non-disclosing 404; "
+"stale references return 409 without applying changes. A no-op keeps the current reference. "
+"Returns a fresh reference after change. Locale supports en/fa/ar, Gregorian calendar and valid "
+"IANA zones; settings never grant screen permissions."
+msgstr ""
+"Atomically update self settings with the current ref_id from GET. Omitted groups and nested "
+"fields are preserved; null resets an entire supplied group to documented defaults. Nested scalar "
+"nulls and unknown keys are rejected with 422. Wrong-owner references return non-disclosing 404; "
+"stale references return 409 without applying changes. A no-op keeps the current reference. "
+"Returns a fresh reference after change. Locale supports en/fa, Gregorian calendar and valid IANA "
+"zones; settings never grant screen permissions."
+
+msgid "Optional locale filter; omitted returns all supported locales."
+msgstr "Optional locale filter; omitted returns both locales."
+
+msgid ""
+"Read only this authenticated user's acknowledgment metadata with page/size bounds and optional "
+"en/fa/ar locale filter. Ordered by help_key, revision, locale. This read records no seen or "
+"dismissal action and grants no business access. release_key is null when paired frontend metadata"
+" is unavailable. Help content remains frontend-owned and is never stored here."
+msgstr ""
+"Read only this authenticated user's acknowledgment metadata with page/size bounds and optional "
+"en/fa locale filter. Ordered by help_key, revision, locale. This read records no seen or "
+"dismissal action and grants no business access. release_key is null when paired frontend metadata"
+" is unavailable. Help content remains frontend-owned and is never stored here."
+
+msgid ""
+"Return editable given/family names and the current owned private image reference. No public "
+"URL is returned. Contact details, passwords and sessions use the existing /auth APIs. Missing or "
+"removed image bindings resolve to null. This read does not modify preferences or media."
+msgstr ""
+"Return editable given/family names and the current owned private image reference. No public URL "
+"is returned. Contact details, passwords and sessions use the existing /auth APIs. Missing or "
+"removed image bindings resolve to null. This read does not modify preferences or media."
+
+msgid ""
+"Update only self given/family names and an owned private avatar using the current profile "
+"ref_id. Omitted fields survive; null clears a name or detaches the avatar. Upload images through "
+"the existing authenticated media image endpoint, which enforces size/type and strips metadata. An"
+" avatar reference must identify an existing live image owned by this actor; missing, stale, "
+"wrong-kind and outsider images return non-disclosing 404. Detachment preserves the private upload"
+" because it may be referenced by retained case data. Security/privilege fields are rejected. "
+"Stale profile references return 409. Returns the authoritative current profile reference."
+msgstr ""
+"Update only self given/family names and an owned private avatar using the current profile ref_id."
+" Omitted fields survive; null clears a name or detaches the avatar. Upload images through the "
+"existing authenticated media image endpoint, which enforces size/type and strips metadata. An "
+"avatar reference must identify an existing live image owned by this actor; missing, stale, wrong-"
+"kind and outsider images return non-disclosing 404. Detachment preserves the private upload "
+"because it may be referenced by retained case data. Security/privilege fields are rejected. Stale"
+" profile references return 409. Returns the authoritative current profile reference."
+
+msgid ""
+"Authenticated recipient-only unified inbox version 1. Case, work_item, ai_approval, report and "
+"account destinations resolve current owner-authorized references on every read. "
+"Calendar/support/operation targets are reserved and unavailable until their producers exist. An "
+"unavailable, deleted, revoked, expired or cancelled target exposes no private subject, content or"
+" reference. Stored labels never confer authority. Search is bounded and deterministic with "
+"existing filters/order/page/size plus unread=true/false; report is the same paginated search, not"
+" a queued archive. Unread totals count live ACTIVE unread inbox rows, including redacted "
+"unavailable destinations. Mark-read changes only read metadata, requires a current optimistic ref"
+" (409 when stale), and never decides or acts on a workflow. Non-owned refs fail 403; "
+"missing/deleted refs fail 404. Null read bodies are rejected; actions accept an empty object. UTC"
+" timestamps; en/fa/ar template locale is chosen when staged with en fallback. Private no-store "
+"success/page envelopes, existing 401/403/404/409/422 errors. Refresh refs from mutation "
+"responses. Optional email defaults off; mandatory notices ignore optional opt-out. No delivery is"
+" performed by these reads."
+msgstr ""
+"Authenticated recipient-only unified inbox version 1. Case, work_item, ai_approval, report and "
+"account destinations resolve current owner-authorized references on every read. "
+"Calendar/support/operation targets are reserved and unavailable until their producers exist. An "
+"unavailable, deleted, revoked, expired or cancelled target exposes no private subject, content or"
+" reference. Stored labels never confer authority. Search is bounded and deterministic with "
+"existing filters/order/page/size plus unread=true/false; report is the same paginated search, not"
+" a queued archive. Unread totals count live ACTIVE unread inbox rows, including redacted "
+"unavailable destinations. Mark-read changes only read metadata, requires a current optimistic ref"
+" (409 when stale), and never decides or acts on a workflow. Non-owned refs fail 403; "
+"missing/deleted refs fail 404. Null read bodies are rejected; actions accept an empty object. UTC"
+" timestamps; en/fa template locale is chosen when staged with en fallback. Private no-store "
+"success/page envelopes, existing 401/403/404/409/422 errors. Refresh refs from mutation "
+"responses. Optional email defaults off; mandatory notices ignore optional opt-out. No delivery is"
+" performed by these reads."
+
+msgid ""
+"Authenticated Gregorian calendar. Personal events belong to their creator; a team event is "
+"visible only to current active members of its explicitly selected active work group. Only the "
+"creator can update/delete. No superuser bypass grants another person's calendar. Timed events use"
+" aware ISO-8601 instants and an IANA timezone; storage/output are UTC. A supplied non-UTC offset "
+"must match the named local wall time, rejecting DST gaps; explicit offsets disambiguate folds. "
+"All-day events retain start_date/end_date, exclusive end, without conversion into timed events. "
+"Each event spans at most 366 days. command_key binds exact create/update intent; same-key replay "
+"returns the current result, another intent conflicts. Updates/deletes require a current revision "
+"ref (409 stale); unavailable source is 404. Search/report require a half-open Gregorian date "
+"range of 1–93 days and IANA timezone, size 1–100, at most 20 filters and 10 sorts. Actual live "
+"work_item.due_at values appear as read-only deadline points only with requests.start and current "
+"available/claimed cartable authority. Live visibility and overlap precede filtering, count, "
+"ordering and pagination. Derived items link to work_items and cannot be edited as calendar "
+"events. Manual links use calendar_events. History returns only transition timestamps/operations, "
+"at most 1000, without private snapshots. Delete is soft and cancels pending reminders in the same"
+" transaction. Up to three distinct reminder offsets of 0–2592000 seconds are supported. Existing "
+"envelopes, snake_case, en/fa/ar localization, and private no-store apply."
+msgstr ""
+"Authenticated Gregorian calendar. Personal events belong to their creator; a team event is "
+"visible only to current active members of its explicitly selected active work group. Only the "
+"creator can update/delete. No superuser bypass grants another person's calendar. Timed events use"
+" aware ISO-8601 instants and an IANA timezone; storage/output are UTC. A supplied non-UTC offset "
+"must match the named local wall time, rejecting DST gaps; explicit offsets disambiguate folds. "
+"All-day events retain start_date/end_date, exclusive end, without conversion into timed events. "
+"Each event spans at most 366 days. command_key binds exact create/update intent; same-key replay "
+"returns the current result, another intent conflicts. Updates/deletes require a current revision "
+"ref (409 stale); unavailable source is 404. Search/report require a half-open Gregorian date "
+"range of 1–93 days and IANA timezone, size 1–100, at most 20 filters and 10 sorts. Actual live "
+"work_item.due_at values appear as read-only deadline points only with requests.start and current "
+"available/claimed cartable authority. Live visibility and overlap precede filtering, count, "
+"ordering and pagination. Derived items link to work_items and cannot be edited as calendar "
+"events. Manual links use calendar_events. History returns only transition timestamps/operations, "
+"at most 1000, without private snapshots. Delete is soft and cancels pending reminders in the same"
+" transaction. Up to three distinct reminder offsets of 0–2592000 seconds are supported. Existing "
+"envelopes, snake_case, en/fa localization, and private no-store apply."
+
+msgid ""
+"Authenticated safe client failure intake. Only screen_key from "
+"calendar/work_items/requests/designer/reports/preferences/support, build 1–80 ASCII version "
+"characters, one of client.render_failed/client.network_failed/client.unexpected_error and a UUID "
+"request_id are accepted; unknown fields, text, HTML, stack and arbitrary error codes are rejected"
+" 422. The actor comes from authentication. Ten new reports per actor per UTC calendar minute, "
+"serialized on the user; replay among the last 100 episode correlations does not increment. Excess"
+" is 429. The returned support_ref is a correlation identity, never an authorization capability. "
+"persisted=false and support_ref=null explicitly report sink failure. No business operation is "
+"executed. Private no-store, existing envelope and en/fa/ar messages."
+msgstr ""
+"Authenticated safe client failure intake. Only screen_key from "
+"calendar/work_items/requests/designer/reports/preferences/support, build 1–80 ASCII version "
+"characters, one of client.render_failed/client.network_failed/client.unexpected_error and a UUID "
+"request_id are accepted; unknown fields, text, HTML, stack and arbitrary error codes are rejected"
+" 422. The actor comes from authentication. Ten new reports per actor per UTC calendar minute, "
+"serialized on the user; replay among the last 100 episode correlations does not increment. Excess"
+" is 429. The returned support_ref is a correlation identity, never an authorization capability. "
+"persisted=false and support_ref=null explicitly report sink failure. No business operation is "
+"executed. Private no-store, existing envelope and en/fa messages."
+
+msgid ""
+"Authenticated source-owned reminder state. Manual configuration is part of event create/update; "
+"work reminders require requests.start and current available/claimed cartable responsibility, a "
+"current source revision ref, and an actual due_at. Configure one to three distinct offsets "
+"0–2592000 seconds; command_key binds exact intent, changed intent conflicts 409. DELETE cancels "
+"this actor's work reminders without changing the workflow deadline. Read exposes at most the "
+"latest 100 owned reminder states, never another recipient's schedule or destination. Existing "
+"database clocked one-off scheduling, durable outbox and MAP-10/11 own delivery. Event "
+"edits/deletes and terminal/forwarded work changes cancel old state in the source transaction; "
+"recipient authority and source revision/deadline are checked again at fire and delivery. Replays "
+"cannot create duplicate notices. Late reminders deliver once within 24 hours if still relevant; "
+"older occurrences expire and record bounded support lag. This never changes business state, "
+"guarantees provider receipt, or creates a second timer loop. Private no-store, existing "
+"snake_case envelopes and en/fa/ar localization apply."
+msgstr ""
+"Authenticated source-owned reminder state. Manual configuration is part of event create/update; "
+"work reminders require requests.start and current available/claimed cartable responsibility, a "
+"current source revision ref, and an actual due_at. Configure one to three distinct offsets "
+"0–2592000 seconds; command_key binds exact intent, changed intent conflicts 409. DELETE cancels "
+"this actor's work reminders without changing the workflow deadline. Read exposes at most the "
+"latest 100 owned reminder states, never another recipient's schedule or destination. Existing "
+"database clocked one-off scheduling, durable outbox and MAP-10/11 own delivery. Event "
+"edits/deletes and terminal/forwarded work changes cancel old state in the source transaction; "
+"recipient authority and source revision/deadline are checked again at fire and delivery. Replays "
+"cannot create duplicate notices. Late reminders deliver once within 24 hours if still relevant; "
+"older occurrences expire and record bounded support lag. This never changes business state, "
+"guarantees provider receipt, or creates a second timer loop. Private no-store, existing "
+"snake_case envelopes and en/fa localization apply."
+
+msgid ""
+"Requires live workflows.manage and current template visibility. Preview freezes the exact "
+"target/workspace revisions, published template checksum and symbolic reference bindings for ten "
+"minutes. An unassociated workflow requires explicit source_ref_id. Dependencies are validated "
+"through existing publication rules; blockers return no plan_token. replace_draft changes only "
+"DRAFT; successor creates a new DRAFT for any live target including PUBLISHED/RETIRED. Apply "
+"requires the reviewed token and command_key; replay returns the same result and changed-plan key "
+"reuse conflicts. Stale target/workspace, expired plan or changed dependencies conflict 409; "
+"unavailable source is 404 and invalid bindings/graph are 422. Graph/workspace and the replay "
+"receipt commit atomically. No automatic publication, request-type retargeting, form edit, "
+"execution-pin change, secret/grant reset or provider operation occurs. Existing private no-store "
+"snake_case success envelopes and en/fa/ar localization apply."
+msgstr ""
+"Requires live workflows.manage and current template visibility. Preview freezes the exact "
+"target/workspace revisions, published template checksum and symbolic reference bindings for ten "
+"minutes. An unassociated workflow requires explicit source_ref_id. Dependencies are validated "
+"through existing publication rules; blockers return no plan_token. replace_draft changes only "
+"DRAFT; successor creates a new DRAFT for any live target including PUBLISHED/RETIRED. Apply "
+"requires the reviewed token and command_key; replay returns the same result and changed-plan key "
+"reuse conflicts. Stale target/workspace, expired plan or changed dependencies conflict 409; "
+"unavailable source is 404 and invalid bindings/graph are 422. Graph/workspace and the replay "
+"receipt commit atomically. No automatic publication, request-type retargeting, form edit, "
+"execution-pin change, secret/grant reset or provider operation occurs. Existing private no-store "
+"snake_case success envelopes and en/fa localization apply."
+
 #~ msgid "Authentication and user account operations."
 #~ msgstr ""
 

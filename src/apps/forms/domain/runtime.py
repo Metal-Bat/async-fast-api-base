@@ -91,7 +91,7 @@ class RuntimeFormStateDTO(BaseDTO):
     view_key: str
     purpose: Literal["edit", "summary", "print", "observer", "correction"]
     resolved_locale: str = Field(
-        description="Locale selected by the pinned catalog, or negotiated en/fa fallback."
+        description="Locale selected by the pinned catalog, or negotiated en/fa/ar fallback."
     )
     direction: Literal["ltr", "rtl"]
     data: dict[str, Any] = Field(

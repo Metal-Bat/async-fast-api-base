@@ -446,7 +446,7 @@ RESTORE_DESCRIPTION = _(
     "dependencies conflict 409; unavailable source is 404 and invalid bindings/graph are 422. Graph/workspace "
     "and the replay receipt commit atomically. No automatic publication, request-type retargeting, form edit, "
     "execution-pin change, secret/grant reset or provider operation occurs. Existing private no-store "
-    "snake_case success envelopes and en/fa localization apply."
+    "snake_case success envelopes and en/fa/ar localization apply."
 )
 
 

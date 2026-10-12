@@ -41,6 +41,8 @@ a competing handwritten schema. Proposed backlog behavior must not appear as alr
 
 ## Verification
 
+Verify route-reachable fixed JSON models recursively, including computed output fields and serialization-mode schemas. All typed public nested objects must satisfy the BaseDTO contract. Distinguish fixed DTO fields from explicitly bounded dynamic document keys. Validate examples and effective generated OpenAPI after shared localization/header/tag enrichment. Entity metadata does not justify exposing private storage fields. Document observed exceptions and compatibility, not proposed behavior as implemented.
+
 Inspect generated JSON/YAML OpenAPI and localized variants. Verify stable operation IDs, resolved
 references, security metadata, parameter locations, response schemas/headers, discriminator
 variants and examples against DTO validation and representative route behavior. Cover meaningful

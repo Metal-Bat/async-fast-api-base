@@ -33,12 +33,16 @@ class PluralMessage(BaseDTO):
     model_config = ConfigDict(extra="forbid")
     one: MessageText
     other: MessageText
+    zero: MessageText | None = Field(default=None, exclude_if=lambda value: value is None)
+    two: MessageText | None = Field(default=None, exclude_if=lambda value: value is None)
+    few: MessageText | None = Field(default=None, exclude_if=lambda value: value is None)
+    many: MessageText | None = Field(default=None, exclude_if=lambda value: value is None)
 
 
 class CatalogMessage(BaseDTO):
     model_config = ConfigDict(extra="forbid")
     text: MessageText | PluralMessage = Field(
-        description="Plain text with named {parameters}, or exactly one/other branches selected by integer count. No HTML, ICU, format specifiers or executable templates."
+        description="Plain text with named {parameters}, or required one/other plural branches with optional zero/two/few/many branches for Arabic. Missing branches fall back to other. No HTML, ICU, format specifiers or executable templates."
     )
     parameters: dict[ParameterName, ParameterType] = Field(default_factory=dict, max_length=16)
     source_revision: str | None = Field(
@@ -53,7 +57,7 @@ class CatalogMessage(BaseDTO):
         if plural and self.parameters.get("count") != "integer":
             raise ValueError("Plural messages require integer count")
         texts = (
-            [self.text.one, self.text.other]
+            list(self.text.model_dump().values())
             if isinstance(self.text, PluralMessage)
             else [self.text]
         )
@@ -78,12 +82,16 @@ class CatalogMessage(BaseDTO):
 class FormLocalization(BaseDTO):
     model_config = ConfigDict(extra="forbid")
     dialect: Literal["bpms.messages/1"] = "bpms.messages/1"
-    default_locale: Literal["en", "fa"] = "en"
-    supported_locales: list[Literal["en", "fa"]] = Field(default=["en"], min_length=1, max_length=2)
-    required_locales: list[Literal["en", "fa"]] = Field(default=["en"], min_length=1, max_length=2)
-    catalogs: dict[Literal["en", "fa"], dict[MessageKey, CatalogMessage]] = Field(
+    default_locale: Literal["en", "fa", "ar"] = "en"
+    supported_locales: list[Literal["en", "fa", "ar"]] = Field(
+        default=["en"], min_length=1, max_length=3
+    )
+    required_locales: list[Literal["en", "fa", "ar"]] = Field(
+        default=["en"], min_length=1, max_length=3
+    )
+    catalogs: dict[Literal["en", "fa", "ar"], dict[MessageKey, CatalogMessage]] = Field(
         default_factory=dict,
-        max_length=2,
+        max_length=3,
         description="Versioned administrator-authored catalogs, at most 256 messages per locale and 64 KiB in total. Regional requests fall back to their base language, then package default, then English.",
     )
 
@@ -140,7 +148,7 @@ class FieldFormatting(BaseDTO):
         max_length=64,
         description="IANA zone used for datetime display. Input datetime must carry an explicit UTC offset; canonical output is UTC.",
     )
-    numbering: Literal["latn", "arabext"] = "latn"
+    numbering: Literal["latn", "arabext", "arab"] = "latn"
     decimal_places: int | None = Field(
         default=None,
         ge=0,

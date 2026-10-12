@@ -114,3 +114,10 @@ def test_only_owner_approved_filters_can_enter_the_gate(tmp_path):
             }
         ]
     )
+
+
+def test_full_gate_includes_owned_restore_acceptance():
+    """Default exclusions cannot stand in for the actual restore profile."""
+    from scripts.run_check import STAGES
+
+    assert "delivery-restore-test" in STAGES

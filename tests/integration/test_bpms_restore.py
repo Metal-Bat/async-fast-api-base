@@ -3,6 +3,7 @@
 import hashlib
 import json
 import os
+import re
 import subprocess
 from uuid import uuid7
 
@@ -31,13 +32,18 @@ from apps.requests.domain.dto import (
     RequestTypeCreateDTO,
 )
 from apps.requests.domain.entity import FormSubmissionAttachmentEntity, FormSubmissionEntity
+from apps.support.application.recorder import record_failure
+from apps.support.application.service import IncidentService
+from apps.support.domain.dto import IncidentQuery
+from apps.support.domain.entity import SupportIncidentEntity
 from apps.users.domain.entity import UserEntity
 from apps.workflows.domain.entity import WorkflowDefinitionEntity, WorkflowVersionEntity
 from core.deps import SessionFactory, engine
 from core.ref_id import create_ref_id
 from core.settings import settings
 from tests.integration.test_processes import _start_waiting_process
-from utils.s3 import delete_object, get_object, put_object, s3_client
+from tests.integration.test_restore_personal_fixture import populate_personal, verify_personal
+from utils.s3 import delete_object, ensure_bucket, get_object, put_object, s3_client
 
 pytestmark = [
     pytest.mark.integration,
@@ -63,9 +69,12 @@ async def test_restore_preserves_pins_private_attachments_and_secret_versions(
     tmp_path, monkeypatch
 ) -> None:
     source_database = make_url(settings.DATABASE_DSN).database
-    assert bool(source_database) and source_database.startswith("bpms016_"), (
-        "Use an explicitly disposable source database"
-    )
+    assert source_database is not None
+    assert (
+        source_database == os.environ.get("FLOW_TEST_OWNED_DATABASE")
+        and re.fullmatch(r"bpms_flow_[0-9a-f]{32}", source_database or "")
+        and make_url(settings.DATABASE_DSN).host in {"localhost", "127.0.0.1", "::1"}
+    ), "Use the owned local restore profile; unknown source ownership is refused"
     target = "bpms016_restore_" + uuid7().hex
     bucket = "restore-" + uuid7().hex
     key = "restore-drill/" + uuid7().hex
@@ -74,8 +83,11 @@ async def test_restore_preserves_pins_private_attachments_and_secret_versions(
     restored_engine = None
     created_database = False
     created_bucket = False
+    uploaded_object = False
     try:
+        await ensure_bucket()
         await put_object(key, body, "application/pdf")
+        uploaded_object = True
         async with SessionFactory() as session:
             owner = UserEntity(
                 username=f"restore-{uuid7()}", hashed_password="unused", is_superuser=True
@@ -183,6 +195,15 @@ async def test_restore_preserves_pins_private_attachments_and_secret_versions(
                 connection.id,
             )
             workflow_pin, form_pin = process.workflow_version_id, version.id
+            personal_backup = await populate_personal(
+                session, owner, create_ref_id(form.id, form.version)
+            )
+            await session.commit()
+
+        incident_id = await record_failure(
+            category="technical", error_code=1099, operation="restore.drill", request_id=uuid7()
+        )
+        assert incident_id is not None
 
         # Quiescent test source: database snapshot, referenced object bytes and ciphertext form one set.
         dump = _postgres('exec pg_dump -U "$POSTGRES_USER" -Fc "$1"', source_database)
@@ -221,6 +242,15 @@ async def test_restore_preserves_pins_private_attachments_and_secret_versions(
             restored_upload = await session.get(UserUploadEntity, upload_id)
             restored_attachment = await session.get(FormSubmissionAttachmentEntity, attachment_id)
             assert actor and restored_upload and restored_attachment
+            await verify_personal(session, actor, personal_backup)
+            incident = await session.get(SupportIncidentEntity, incident_id)
+            assert incident is not None and incident.operation == "restore.drill"
+            outsider = await session.get(UserEntity, personal_backup.outsider_id)
+            assert outsider is not None
+            from utils.exceptions import NotAllowedException
+
+            with pytest.raises(NotAllowedException):
+                await IncidentService(session).search(IncidentQuery(), outsider)
             submission = await session.get(
                 FormSubmissionEntity, restored_attachment.form_submission_id
             )
@@ -270,4 +300,39 @@ async def test_restore_preserves_pins_private_attachments_and_secret_versions(
             async with s3_client() as client:
                 await client.delete_object(Bucket=bucket, Key=key)
                 await client.delete_bucket(Bucket=bucket)
-        await delete_object(key)
+        if uploaded_object:
+            await delete_object(key)
+
+
+@pytest.mark.anyio
+async def test_restored_unknown_order_requires_original_receipt_lookup_before_resume():
+    """An owned restore must not turn uncertain external work into another purchase."""
+    from tests.integration.test_restore_protected_fixture import (
+        prepare_unknown_order,
+        reconcile_restored,
+    )
+
+    assert settings.POSTGRES_DB == os.environ["FLOW_TEST_OWNED_DATABASE"]
+    assert re.fullmatch(r"bpms_flow_[0-9a-f]{32}", settings.POSTGRES_DB)
+    target = "bpms016_restore_" + uuid7().hex
+    try:
+        evidence = await prepare_unknown_order()
+        dump = _postgres('exec pg_dump -U "$POSTGRES_USER" -Fc "$1"', settings.POSTGRES_DB)
+        _postgres('exec createdb -U "$POSTGRES_USER" "$1"', target)
+        try:
+            _postgres(
+                'exec pg_restore -U "$POSTGRES_USER" --exit-on-error --no-owner -d "$1"',
+                target,
+                input_data=dump,
+            )
+            restored_engine = create_async_engine(
+                make_url(settings.DATABASE_DSN).set(database=target), poolclass=NullPool
+            )
+            try:
+                await reconcile_restored(restored_engine, evidence)
+            finally:
+                await restored_engine.dispose()
+        finally:
+            _postgres('exec dropdb -U "$POSTGRES_USER" "$1"', target)
+    finally:
+        await engine.dispose()

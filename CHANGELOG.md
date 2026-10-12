@@ -4,10 +4,20 @@
 
 ### Documentation cleanup
 
-- Removed completed plans, duplicate backlogs, obsolete installation bundles and superseded verification records. The root backlog retains eight unfinished tasks; current guides, contract fixtures and migration decisions remain.
+- Removed completed plans, duplicate backlogs, obsolete installation bundles and superseded verification records. The root backlog now contains only eight unfinished tasks; current guides, contracts, operational records and migration decisions remain. Removed the unused backlog mirror script.
 
-Migration deployment now uses exactly `0001_schema -> 0002_required_data`: complete schema
-first, required handlers, permissions and schedules second. Older revision markers require a
+
+- Expanded the Compose developer seed to 3,282 requests and 102 users, with six client variants and English/Persian/Arabic scenarios. Added Arabic negotiation, RTL, digits, form messages and notifications. Apply `0003_arabic` before use. See [APP-BE-005.1](docs/changes/APP-BE-005.1.md).
+
+- Added `mise run demo-seed` (also `demo-prepare`) to populate the configured development database with rich localized demo data and exit. See [the seed guide](docs/guides/demo-seed.md) and [APP-BE-005.1](docs/changes/APP-BE-005.1.md).
+
+- Removed the obsolete demo supervisor, its five mise commands, exclusive tests and observation callback. The one-shot seed is the supported demo setup. See APP-BE-029.1.
+
+- Preserve committed private upload objects when a post-commit refresh fails or is cancelled; keep the async loop responsive during broker confirmation. See [APP-BE-030](docs/changes/APP-BE-030.md).
+
+Migration deployment uses `0001_schema -> 0002_required_data -> 0003_arabic`: complete schema
+first, required handlers, permissions and schedules second, then Arabic help locales and
+notification handler version 3. The two baseline revisions remain unchanged. Older revision markers require a
 reviewed database transition before this checkout is deployed. The additive IDs below describe
 the previous delivery history; fresh installations use the new two-revision baseline.
 See [DB-002](docs/changes/DB-002.md).
@@ -20,6 +30,33 @@ Apply the additive migration chain through `j016_calendar_events` before use. Se
 APP-BE-012 and APP-BE-014.
 
 ### Added
+
+- Added source-hashed paired contract
+  verification, guarded hosted workflow and source-only runtime image automation.
+  Current full/hosted acceptance remains separate. See
+  [APP-BE-031](docs/changes/APP-BE-031.md) and [operator handoff](docs/delivery/DEMO-OPERATIONS-HANDOFF.md).
+- Expanded owned restore and actual broker/worker interruption evidence for current
+  personal/private/support data and original-identity protected order reconciliation.
+  See [APP-BE-032](docs/changes/APP-BE-032.md).
+
+- Added governed sandbox create/cancel operations with exact committed human approval,
+  publisher/connection revocation checks, real worker/HTTPS receipts and safe process
+  receipt/AI-evidence inspection. Unknown outcomes use original-identity lookup; reversal
+  needs its own confirmed receipt. Generic resume cannot invent protected results.
+  Browser and live-model acceptance remain separate. See [APP-BE-021](docs/changes/APP-BE-021.md),
+  [APP-BE-022](docs/changes/APP-BE-022.md), [APP-BE-023](docs/changes/APP-BE-023.md),
+  [APP-BE-024](docs/changes/APP-BE-024.md) and [APP-BE-025](docs/changes/APP-BE-025.md).
+
+- Added a source-hashed consistency contract inventory and DTO/architecture regression checks.
+  New schedule writes validate variant combinations, timezone-aware instants, configured queues
+  and registered argument binding; retained legacy rows remain readable, pausing remains available,
+  and no-op updates preserve references. No database migration is required.
+
+
+- Added authenticated `GET /api/v1/inbox/events` SSE invalidations using the existing
+  committed notification outbox and persisted inbox. Browser/Node clients must resynchronize
+  after reconnect; see [APP-BE-014.4](docs/changes/APP-BE-014.4.md) and the
+  [live delivery handoff](docs/delivery/NOTIFICATION-PUSH-HANDOFF.md).
 
 - Added reviewed workflow default restoration with expiring previews, atomic command
   replay, unpublished successors and separate layout reset. Apply additive migration
@@ -54,6 +91,8 @@ APP-BE-012 and APP-BE-014.
   See DOCS-001.
 
 ### Fixed
+
+- Private media/report downloads release database sessions before streaming and reject changed or truncated object sizes with bounded storage reads. Actual Node oversized-upload recovery remains separate pending work. See [APP-BE-027](docs/changes/APP-BE-027.md).
 
 - Attachment mutations now immediately refresh canonical runtime values and current upload
   references. Partial return/correction actions correctly validate formatted values.

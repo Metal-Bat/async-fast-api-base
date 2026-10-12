@@ -41,6 +41,10 @@
         "fa": {
           "subject": "درخواست ثبت شد",
           "content": "درخواست ثبت شد: {resource_name}"
+        },
+        "ar": {
+          "subject": "تم إرسال الطلب",
+          "content": "تم إرسال الطلب: {resource_name}"
         }
       },
       "dedupe_fields": [
@@ -91,6 +95,10 @@
         "fa": {
           "subject": "کار انسانی آماده است",
           "content": "کار انسانی آماده است: {resource_name}"
+        },
+        "ar": {
+          "subject": "توجد مهمة بشرية متاحة",
+          "content": "توجد مهمة بشرية متاحة: {resource_name}"
         }
       },
       "dedupe_fields": [
@@ -143,6 +151,10 @@
         "fa": {
           "subject": "تخصیص تغییر کرد",
           "content": "تخصیص تغییر کرد: {resource_name}"
+        },
+        "ar": {
+          "subject": "تم تغيير الإسناد",
+          "content": "تم تغيير الإسناد: {resource_name}"
         }
       },
       "dedupe_fields": [
@@ -193,6 +205,10 @@
         "fa": {
           "subject": "اصلاح لازم است",
           "content": "اصلاح لازم است: {resource_name}"
+        },
+        "ar": {
+          "subject": "التصحيح مطلوب",
+          "content": "التصحيح مطلوب: {resource_name}"
         }
       },
       "dedupe_fields": [
@@ -244,6 +260,10 @@
         "fa": {
           "subject": "تصمیم انسانی ثبت شد",
           "content": "تصمیم انسانی ثبت شد: {resource_name}"
+        },
+        "ar": {
+          "subject": "تم تسجيل القرار البشري",
+          "content": "تم تسجيل القرار البشري: {resource_name}"
         }
       },
       "dedupe_fields": [
@@ -295,6 +315,10 @@
         "fa": {
           "subject": "نتیجه گردش کار ثبت شد",
           "content": "نتیجه گردش کار ثبت شد: {resource_name}"
+        },
+        "ar": {
+          "subject": "تم تسجيل نتيجة سير العمل",
+          "content": "تم تسجيل نتيجة سير العمل: {resource_name}"
         }
       },
       "dedupe_fields": [
@@ -343,6 +367,10 @@
         "fa": {
           "subject": "عملیات نیازمند بررسی است",
           "content": "عملیات نیازمند بررسی است: {resource_name}"
+        },
+        "ar": {
+          "subject": "العملية تتطلب الانتباه",
+          "content": "العملية تتطلب الانتباه: {resource_name}"
         }
       },
       "dedupe_fields": [
@@ -391,6 +419,10 @@
         "fa": {
           "subject": "رسید عملیات تایید شد",
           "content": "رسید عملیات تایید شد: {resource_name}"
+        },
+        "ar": {
+          "subject": "تم تأكيد إيصال العملية",
+          "content": "تم تأكيد إيصال العملية: {resource_name}"
         }
       },
       "dedupe_fields": [
@@ -439,6 +471,10 @@
         "fa": {
           "subject": "وضعیت گزارش تغییر کرد",
           "content": "وضعیت گزارش تغییر کرد: {resource_name}"
+        },
+        "ar": {
+          "subject": "تم تغيير حالة التقرير",
+          "content": "تم تغيير حالة التقرير: {resource_name}"
         }
       },
       "dedupe_fields": [
@@ -488,6 +524,10 @@
         "fa": {
           "subject": "یادآوری تقویم",
           "content": "یادآوری تقویم: {resource_name}"
+        },
+        "ar": {
+          "subject": "تذكير التقويم",
+          "content": "تذكير التقويم: {resource_name}"
         }
       },
       "dedupe_fields": [
@@ -537,6 +577,10 @@
         "fa": {
           "subject": "یادآوری کار",
           "content": "یادآوری کار: {resource_name}"
+        },
+        "ar": {
+          "subject": "تذكير بالمهمة",
+          "content": "تذكير بالمهمة: {resource_name}"
         }
       },
       "dedupe_fields": [
@@ -586,6 +630,10 @@
         "fa": {
           "subject": "تایید ابزار فقط خواندنی هوش مصنوعی",
           "content": "تایید ابزار فقط خواندنی هوش مصنوعی: {resource_name}"
+        },
+        "ar": {
+          "subject": "الموافقة على أداة ذكاء اصطناعي للقراءة فقط",
+          "content": "الموافقة على أداة ذكاء اصطناعي للقراءة فقط: {resource_name}"
         }
       },
       "dedupe_fields": [
@@ -634,6 +682,10 @@
         "fa": {
           "subject": "خطای پشتیبانی نیازمند بررسی است",
           "content": "خطای پشتیبانی نیازمند بررسی است: {resource_name}"
+        },
+        "ar": {
+          "subject": "خطأ الدعم يتطلب الانتباه",
+          "content": "خطأ الدعم يتطلب الانتباه: {resource_name}"
         }
       },
       "dedupe_fields": [
@@ -688,6 +740,10 @@
         "fa": {
           "subject": "رویداد امنیت حساب",
           "content": "رویداد امنیت حساب: {resource_name}"
+        },
+        "ar": {
+          "subject": "حدث أمان الحساب",
+          "content": "حدث أمان الحساب: {resource_name}"
         }
       },
       "dedupe_fields": [

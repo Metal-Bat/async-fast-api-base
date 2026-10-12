@@ -1,0 +1,742 @@
+{
+  "actions": [
+    {
+      "item_index": 0,
+      "operation": "reorder",
+      "path": "/lines",
+      "target_index": 1
+    },
+    {
+      "item_index": 0,
+      "operation": "remove",
+      "path": "/lines"
+    },
+    {
+      "item_index": 0,
+      "operation": "reorder",
+      "path": "/lines/0/adjustments",
+      "target_index": 1
+    },
+    {
+      "item_index": 0,
+      "operation": "remove",
+      "path": "/lines/0/adjustments"
+    }
+  ],
+  "actor": {
+    "permissions": [
+      "forms.override"
+    ],
+    "ref": "actor"
+  },
+  "client": {
+    "kind": "WEB",
+    "release": "2.10"
+  },
+  "connected_profile": {
+    "acceptance_note": "This manifest describes required behavior. Coverage is recorded separately; its presence does not certify any stage.",
+    "ai_mode": "scripted_no_network",
+    "child_policy": "Unprotected pinned reviews; root-local approval alone authorizes the exact sandbox payload.",
+    "corrected_order_payload": {
+      "item_code": "DEMO",
+      "quantity": 3
+    },
+    "id": "purchase-connected/1",
+    "labels": {
+      "en": "Synthetic purchasing demonstration",
+      "fa": "نمایش آزمایشی خرید"
+    },
+    "order_payload": {
+      "item_code": "DEMO",
+      "quantity": 2
+    },
+    "receipt_fields": [
+      "operation_id",
+      "receipt_id",
+      "state",
+      "payload_hash"
+    ],
+    "required_stages": [
+      "triage",
+      "recommend",
+      "supervision",
+      "fork",
+      "finance",
+      "procurement",
+      "approve",
+      "order",
+      "receipt",
+      "finish"
+    ],
+    "variants": [
+      "approve",
+      "reject",
+      "correction"
+    ]
+  },
+  "corrections": {
+    "expected_final_amount": 9,
+    "feedback_status": "RESOLVED",
+    "return_comment": "Need correction",
+    "reviewer_hidden_fields": [
+      "secret"
+    ],
+    "rounds": [
+      1,
+      2
+    ]
+  },
+  "documents": {
+    "behavior_dialect": "bpms.behavior/1",
+    "data_schema": {
+      "properties": {
+        "billing": {
+          "properties": {
+            "city": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "city"
+          ],
+          "type": "object"
+        },
+        "city": {
+          "type": "integer"
+        },
+        "country": {
+          "enum": [
+            "IR",
+            "GB"
+          ],
+          "type": "string"
+        },
+        "lines": {
+          "items": {
+            "properties": {
+              "adjustments": {
+                "items": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "quantity": {
+                "type": "integer"
+              },
+              "sku": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "sku",
+              "quantity"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "note": {
+          "type": "string"
+        },
+        "requester": {
+          "type": "string"
+        },
+        "shipping": {
+          "properties": {
+            "city": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "city"
+          ],
+          "type": "object"
+        },
+        "shipping_fee": {
+          "type": "number"
+        },
+        "subtotal": {
+          "type": "number"
+        },
+        "total": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "billing",
+        "shipping",
+        "country",
+        "city",
+        "requester",
+        "lines"
+      ],
+      "type": "object"
+    },
+    "localization": {
+      "catalogs": {
+        "en": {
+          "billing_city": {
+            "parameters": {},
+            "text": "Billing city"
+          }
+        },
+        "fa": {
+          "billing_city": {
+            "source_revision": "b973ecd0b0b5bde3cca5ea603720a64cc77d5cd85bd33748d722fb4181a47a08",
+            "text": "شهر صورت‌حساب"
+          }
+        }
+      },
+      "default_locale": "en",
+      "required_locales": [
+        "en",
+        "fa"
+      ],
+      "supported_locales": [
+        "en",
+        "fa"
+      ]
+    },
+    "render_schema": {
+      "root": {
+        "children": [
+          {
+            "component": "text",
+            "messages": {
+              "label": {
+                "key": "billing_city"
+              }
+            },
+            "scope": "/properties/billing/properties/city"
+          },
+          {
+            "component": "text",
+            "scope": "/properties/shipping/properties/city"
+          },
+          {
+            "component": "choice",
+            "scope": "/properties/country",
+            "source": {
+              "kind": "schema"
+            }
+          },
+          {
+            "component": "choice",
+            "scope": "/properties/city",
+            "source": {
+              "dependencies": {
+                "country": "/properties/country"
+              },
+              "items": [
+                {
+                  "key": 1,
+                  "matches": {
+                    "country": "IR"
+                  },
+                  "value": "Tehran"
+                },
+                {
+                  "key": 2,
+                  "matches": {
+                    "country": "GB"
+                  },
+                  "value": "London"
+                }
+              ],
+              "kind": "custom"
+            }
+          },
+          {
+            "component": "text",
+            "navigation": {
+              "argument_schema": {
+                "properties": {
+                  "current": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "current"
+                ],
+                "type": "object"
+              },
+              "arguments": {
+                "current": "/properties/requester"
+              },
+              "result_mappings": {
+                "/properties/requester": "/properties/id"
+              },
+              "result_schema": {
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "type": "object"
+              },
+              "route": "/people/pick"
+            },
+            "scope": "/properties/requester"
+          },
+          {
+            "calculation": {
+              "function": "sum",
+              "override_permission": "forms.override",
+              "scopes": [
+                "/properties/subtotal",
+                "/properties/shipping_fee"
+              ]
+            },
+            "component": "calculated",
+            "scope": "/properties/total"
+          },
+          {
+            "children": [
+              {
+                "component": "text",
+                "scope": "/properties/lines/items/properties/sku"
+              },
+              {
+                "component": "integer",
+                "scope": "/properties/lines/items/properties/quantity"
+              }
+            ],
+            "component": "repeater",
+            "scope": "/properties/lines"
+          },
+          {
+            "component": "text",
+            "rules": [
+              {
+                "effect": "hide",
+                "operator": "eq",
+                "scope": "/properties/country",
+                "value": "GB"
+              }
+            ],
+            "scope": "/properties/note"
+          }
+        ],
+        "component": "vertical"
+      }
+    },
+    "variants": [
+      {
+        "key": "web_picker",
+        "kind": "WEB",
+        "priority": 10,
+        "render_schema": {
+          "root": {
+            "children": [
+              {
+                "component": "text",
+                "messages": {
+                  "label": {
+                    "key": "billing_city"
+                  }
+                },
+                "scope": "/properties/billing/properties/city"
+              },
+              {
+                "component": "text",
+                "scope": "/properties/shipping/properties/city"
+              },
+              {
+                "component": "choice",
+                "scope": "/properties/country",
+                "source": {
+                  "kind": "schema"
+                }
+              },
+              {
+                "component": "choice",
+                "scope": "/properties/city",
+                "source": {
+                  "dependencies": {
+                    "country": "/properties/country"
+                  },
+                  "items": [
+                    {
+                      "key": 1,
+                      "matches": {
+                        "country": "IR"
+                      },
+                      "value": "Tehran"
+                    },
+                    {
+                      "key": 2,
+                      "matches": {
+                        "country": "GB"
+                      },
+                      "value": "London"
+                    }
+                  ],
+                  "kind": "custom"
+                }
+              },
+              {
+                "component": "text",
+                "navigation": {
+                  "argument_schema": {
+                    "properties": {
+                      "current": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "current"
+                    ],
+                    "type": "object"
+                  },
+                  "arguments": {
+                    "current": "/properties/requester"
+                  },
+                  "result_mappings": {
+                    "/properties/requester": "/properties/id"
+                  },
+                  "result_schema": {
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id"
+                    ],
+                    "type": "object"
+                  },
+                  "route": "/people/pick"
+                },
+                "scope": "/properties/requester"
+              },
+              {
+                "calculation": {
+                  "function": "sum",
+                  "override_permission": "forms.override",
+                  "scopes": [
+                    "/properties/subtotal",
+                    "/properties/shipping_fee"
+                  ]
+                },
+                "component": "calculated",
+                "scope": "/properties/total"
+              },
+              {
+                "children": [
+                  {
+                    "component": "text",
+                    "scope": "/properties/lines/items/properties/sku"
+                  },
+                  {
+                    "component": "integer",
+                    "scope": "/properties/lines/items/properties/quantity"
+                  }
+                ],
+                "component": "repeater",
+                "scope": "/properties/lines"
+              },
+              {
+                "component": "text",
+                "rules": [
+                  {
+                    "effect": "hide",
+                    "operator": "eq",
+                    "scope": "/properties/country",
+                    "value": "GB"
+                  }
+                ],
+                "scope": "/properties/note"
+              }
+            ],
+            "component": "vertical"
+          }
+        },
+        "required_capabilities": [
+          "picker.bottom_sheet"
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "issues": [
+      {
+        "code": "data.type",
+        "item_keys": [
+          "line_A"
+        ],
+        "pointer": "/data/lines/0/quantity"
+      }
+    ],
+    "submitted": {
+      "billing": {
+        "city": "Tehran"
+      },
+      "city": 1,
+      "country": "IR",
+      "lines": [
+        {
+          "adjustments": [
+            {
+              "reason": "discount"
+            }
+          ],
+          "quantity": 2,
+          "sku": "SKU-A"
+        }
+      ],
+      "note": "private note",
+      "requester": "u1",
+      "shipping": {
+        "city": "Shiraz"
+      },
+      "shipping_fee": 5,
+      "subtotal": 10,
+      "total": 30
+    },
+    "trace": [
+      {
+        "row_count": 2,
+        "step": "initial"
+      },
+      {
+        "index_map": {
+          "0": 1,
+          "1": 0
+        },
+        "sku_order": [
+          "SKU-B",
+          "SKU-A"
+        ],
+        "step": "reorder"
+      },
+      {
+        "index_map": {
+          "0": null,
+          "1": 0
+        },
+        "sku_order": [
+          "SKU-A"
+        ],
+        "step": "remove"
+      },
+      {
+        "reasons": [
+          "rebate",
+          "discount"
+        ],
+        "step": "nested_reorder"
+      },
+      {
+        "reasons": [
+          "discount"
+        ],
+        "step": "nested_remove"
+      },
+      {
+        "step": "calculate",
+        "total": 15
+      },
+      {
+        "cleared": [
+          "/note"
+        ],
+        "note_present": false,
+        "step": "rule"
+      },
+      {
+        "fingerprints_differ": true,
+        "new_keys": [
+          "json:2"
+        ],
+        "newer": 2,
+        "older": 1,
+        "step": "option_race"
+      },
+      {
+        "preserved": "changed",
+        "step": "navigation_stale"
+      },
+      {
+        "reason": "Approved price",
+        "step": "override",
+        "total": 30
+      }
+    ],
+    "views": {
+      "en": {
+        "label": "Billing city",
+        "resolved_locale": "en",
+        "variant": "shared"
+      },
+      "fa": {
+        "label": "شهر صورت‌حساب",
+        "resolved_locale": "fa",
+        "variant": "shared"
+      }
+    }
+  },
+  "fake_results": {
+    "changed_requester": "changed",
+    "navigation": {
+      "id": "u2"
+    },
+    "option_source": "custom_in_pinned_form"
+  },
+  "initial_data": {
+    "billing": {
+      "city": "Tehran"
+    },
+    "city": 1,
+    "country": "IR",
+    "lines": [
+      {
+        "adjustments": [
+          {
+            "reason": "discount"
+          },
+          {
+            "reason": "rebate"
+          }
+        ],
+        "quantity": 2,
+        "sku": "SKU-A"
+      },
+      {
+        "adjustments": [
+          {
+            "reason": "tax"
+          }
+        ],
+        "quantity": 1,
+        "sku": "SKU-B"
+      }
+    ],
+    "note": "private note",
+    "requester": "u1",
+    "shipping": {
+      "city": "Shiraz"
+    },
+    "shipping_fee": 5,
+    "subtotal": 10
+  },
+  "locales": [
+    "en",
+    "fa"
+  ],
+  "name": "purchase-request",
+  "reuse": {
+    "component": {
+      "checksum": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "data_schema": {
+        "properties": {
+          "city": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "city"
+        ],
+        "type": "object"
+      },
+      "dependencies": [],
+      "ref_id": "address-v1",
+      "render_schema": {
+        "root": {
+          "children": [
+            {
+              "component": "text",
+              "label": "City",
+              "scope": "/properties/city"
+            }
+          ],
+          "component": "vertical"
+        }
+      }
+    },
+    "data": {
+      "billing": {
+        "city": "Tehran"
+      },
+      "shipping": {
+        "city": "Shiraz"
+      }
+    },
+    "expected_scopes": [
+      "/properties/billing/properties/city",
+      "/properties/shipping/properties/city"
+    ],
+    "parent": {
+      "data_schema": {
+        "properties": {
+          "billing": {
+            "type": "object"
+          },
+          "shipping": {
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "render_schema": {
+        "root": {
+          "children": [
+            {
+              "component": "vertical"
+            },
+            {
+              "component": "vertical"
+            }
+          ],
+          "component": "vertical"
+        }
+      }
+    },
+    "uses": [
+      {
+        "component_ref": "address-v1",
+        "instance_key": "billing",
+        "node_pointer": "/root/children/0",
+        "schema_pointer": "/properties/billing"
+      },
+      {
+        "component_ref": "address-v1",
+        "instance_key": "shipping",
+        "node_pointer": "/root/children/1",
+        "schema_pointer": "/properties/shipping"
+      }
+    ]
+  },
+  "schema_version": "bpms.conformance/1",
+  "workflow": {
+    "approval_steps": [
+      {
+        "amount": "10",
+        "outcome": "approve",
+        "step": "manager_one"
+      },
+      {
+        "amount": "20",
+        "outcome": "approve",
+        "step": "manager_two"
+      }
+    ],
+    "authorized_data_keys": [],
+    "description": "One live purchase request calls the pinned ManagerApproval subprocess twice while child and parent successor versions are published. PostgreSQL test owns authorization, assignments, idempotency and timeline evidence.",
+    "duplicate_submit": "same_key_returns_same_request",
+    "expected_child_count": 2,
+    "expected_child_statuses": [
+      "COMPLETED",
+      "COMPLETED"
+    ],
+    "pinned_version": 1,
+    "published_successor_version": 2
+  }
+}

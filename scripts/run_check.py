@@ -30,6 +30,7 @@ STAGES = (
     "delivery-transfer-test",
     "delivery-through-020-test",
     "delivery-completion-test",
+    "delivery-restore-test",
     "precommit-check",
 )
 _DIAGNOSTIC = re.compile(r"^(?:WARN(?:ING)?\b|.*\b\w+Warning:|.*\bwarning\[)", re.IGNORECASE)
@@ -223,6 +224,7 @@ def main() -> int:
                 "delivery-transfer-test",
                 "delivery-through-020-test",
                 "delivery-completion-test",
+                "delivery-restore-test",
             }:
                 environment["PYTEST_ADDOPTS"] = (
                     os.getenv("PYTEST_ADDOPTS", "")
@@ -245,6 +247,7 @@ def main() -> int:
                     "delivery-transfer-test",
                     "delivery-through-020-test",
                     "delivery-completion-test",
+                    "delivery-restore-test",
                 },
             )
             # Default opt-in exclusions are reported, not represented as integrated passes.

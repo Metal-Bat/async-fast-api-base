@@ -49,8 +49,7 @@ def validate_contract(
     transitions: set[str],
 ) -> None:
     readable = set(policy.get("read", [])) | set(policy.get("write", []))
-    writable = set(policy.get("write", []))
-    if not readable or not writable:
+    if not readable:
         raise TaskPolicyError("task.policy.empty")
     if not set(policy.get("required", [])) <= readable:
         raise TaskPolicyError("task.policy.required_scope")

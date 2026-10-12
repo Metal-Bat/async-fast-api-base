@@ -12,7 +12,7 @@ The main path is: publish a form and workflow, connect them with a request type,
 - [Project and API overview](docs/project-overview.md) defines the domain vocabulary and module ownership.
 - [Full workflow roadmap](docs/roadmap/full-workflow.md) gives a staged purchase approval example for frontend design, including a human approval after AI preparation.
 - [Response DTO reference](docs/reference/responses/index.md) lists successful response schemas by API topic, with generated field tables and reviewed examples where available.
-- [Swagger/OpenAPI](http://localhost:8000/api/v1/swagger-ui) is the current machine-readable API contract. ReDoc is at `/api/v1/redoc`, JSON at `/api/v1/openapi.json`, and YAML at `/api/v1/openapi.yaml`. Schema responses honor `Accept-Language` for English/Farsi descriptions.
+- [Swagger/OpenAPI](http://localhost:8000/api/v1/swagger-ui) is the current machine-readable API contract. ReDoc is at `/api/v1/redoc`, JSON at `/api/v1/openapi.json`, and YAML at `/api/v1/openapi.yaml`. Schema responses honor `Accept-Language` for English, Persian and Arabic descriptions (untranslated technical text falls back to English).
 
 ## Architecture
 
@@ -52,6 +52,15 @@ flowchart LR
 3. Run `mise run up`, then `mise run migrate` against the local database. Open [Swagger UI](http://localhost:8000/api/v1/swagger-ui) after backend startup. Use `mise run logs` for service output.
 
 The stack uses PostgreSQL, a Redis-compatible cache, an AMQP broker, S3-compatible object storage, API and Celery workers, Flower, and OpenTelemetry collector/Jaeger. Liveness and readiness endpoints expose dependency status. Swagger authorization uses the configured OAuth client and a seeded local account where available.
+
+## Demo data
+
+Run `mise run demo-seed` to populate the current local database configured by
+`.envs/.backend` through Docker Compose and exit. The default adds 3,282 business
+cases and 102 users, with English, Persian and Arabic data across six client
+types, workflow states, personal data and operational examples. Reruns preserve edited
+records. See the [demo seed guide](docs/guides/demo-seed.md) for coverage and login
+credentials. `mise run demo-prepare` runs the same seed.
 
 ## Testing
 
@@ -316,7 +325,7 @@ mise run shell
 
 ## 🗄️ Database
 
-The migration history has exactly two revisions:
+The migration history has one linear chain with two preserved baseline revisions and an Arabic follow-up:
 
 1. `src/migrations/versions/0001_schema.py` creates all current application tables, history
    tables, indexes, constraints, functions and PostgreSQL guards. It inserts no rows.
@@ -326,6 +335,9 @@ The migration history has exactly two revisions:
    is created only when both `INITIAL_ADMIN_USERNAME` and `INITIAL_ADMIN_PASSWORD` are configured.
    Demo data, roles, user assignments and integration credentials remain explicit setup actions.
    Operations such as `connection.status` are code registries, not separately persisted records.
+
+3. `src/migrations/versions/0003_arabic.py` extends help-state locales to Arabic and publishes
+   notification handler version 3. Existing published version 2 remains immutable.
 
 Fresh databases use `alembic upgrade head`. To install only tables, use
 `alembic upgrade 0001_schema`. Data-only downgrade is refused because published handlers can

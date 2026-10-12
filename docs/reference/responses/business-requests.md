@@ -256,7 +256,7 @@ Used by: `GET /api/v1/business-requests/{ref_id}/view`, `POST /api/v1/business-r
 | `data_dialect` | `string` | No |  Default: `https://json-schema.org/draft/2020-12/schema`. |
 | `view_key` | `string` | Yes | — |
 | `purpose` | `string` | Yes | — |
-| `resolved_locale` | `string` | Yes | Locale selected by the pinned catalog, or negotiated en/fa fallback. |
+| `resolved_locale` | `string` | Yes | Locale selected by the pinned catalog, or negotiated en/fa/ar fallback. |
 | `direction` | `string` | Yes | — |
 | `data` | `object` | Yes | Canonical actor-visible values. Hidden values are preserved only on the server. |
 | `item_identity` | `object` | Yes | Stable row keys for visible collection paths only. |

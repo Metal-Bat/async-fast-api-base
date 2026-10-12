@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "backend_head": "9999641f8e37077829ebbe7159a6cd794fb94b91",
+  "producer_origin_head": "9999641f8e37077829ebbe7159a6cd794fb94b91",
+  "backend_source_sha256": "dd3ec9595a1153c663970b07266c0e69a9abc5ffd50214928a56db45a6c9c0de",
+  "frontend_head": "95f88dce6f1a48da87294929041378c174e6b39c",
+  "frontend_tree_sha256": "1a4ab78efbc7b9c2ff956c71c731772d617e7661218d9a5f3e3994c8becb0c7d",
+  "contracts": {
+    "en": "78c06495ea694face5563620c11f13e1c981d046fc276046a2601640fbcdd6c6",
+    "fa": "dc1cec356e0a1c47bcfa5ded878e6f53bceba28349aa1c56a9069283849f5cce"
+  },
+  "migration_chain": [
+    "0001_schema",
+    "0002_required_data"
+  ],
+  "backend_lock_sha256": "4c23cc5a60e0f913471df1a80dcba273c29c22d8878f9d8a75a573cfe35eecf4",
+  "frontend_lock_sha256": "22c36b3108eeb245c791f3ccb230fa4f9a272a81f4851a886e5aeb3fb22ddca7",
+  "scenario": "purchase-connected/1",
+  "ai_mode": "scripted_no_network",
+  "worktrees": "Exact dirty source identity required in final gate evidence; HEAD alone is not the candidate",
+  "snapshot_comparison": "PASS",
+  "live_http_browser": "NOT_ATTESTED_BY_THIS_COMMAND",
+  "hosted": "NOT_RUN",
+  "deployed": "NOT_ATTESTED",
+  "user_accepted": "NOT_ATTESTED",
+  "backend_gate_source_sha256": "ce068154402a8a67511a56435180b76898ad427ba4ecb6c1b7951ff602b27173",
+  "runtime_image_id": "sha256:eb8d524f57ac1879c5fc04ee5c13522709705dc618c72a789593bff7e88d1f5a",
+  "local_verification": "VERIFIED_WITH_EXCEPTION",
+  "evidence": "main-tasks-final-verification.json",
+  "seed_defaults_authority": "0002_required_data and source-attested request demo installers; installed template hashes verified through both guarded rehearsals and resets",
+  "publication": "DOCUMENTED_LOCAL_CANDIDATE; immutable commit publication and hosted run still pending"
+}

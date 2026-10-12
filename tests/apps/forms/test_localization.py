@@ -13,6 +13,44 @@ from apps.forms.application.validation import FormValidator
 from apps.forms.domain.dto import FormDocuments
 
 
+def test_arabic_digits_plural_categories_and_legacy_serialization():
+    from apps.forms.application.formatting import format_value
+    from apps.forms.application.localization import render_message
+    from apps.forms.domain.localization import FieldFormatting, PluralMessage, ResolvedMessage
+    from apps.work_items.domain.task_contract import LocalizedTaskText
+
+    assert format_value("١٢٣٫٤٥", FieldFormatting(kind="decimal", numbering="arab")) == (
+        "123.45",
+        "١٢٣٫٤٥",
+    )
+    assert PluralMessage(one="One", other="Many").model_dump() == {"one": "One", "other": "Many"}
+    assert LocalizedTaskText(en="Approve", fa="تأیید").model_dump() == {
+        "en": "Approve",
+        "fa": "تأیید",
+    }
+    message = ResolvedMessage(
+        locale="ar",
+        text=PluralMessage(
+            one="واحد",
+            other="{count} عنصر",
+            zero="لا عناصر",
+            two="عنصران",
+            few="{count} عناصر",
+            many="{count} عنصرًا",
+        ),
+        parameters={"count": "integer"},
+        source_revision="0" * 64,
+    )
+    assert [render_message(message, {"count": n}) for n in (0, 1, 2, 3, 11, 100)] == [
+        "لا عناصر",
+        "واحد",
+        "عنصران",
+        "٣ عناصر",
+        "١١ عنصرًا",
+        "١٠٠ عنصر",
+    ]
+
+
 def catalog_documents():
     from pathlib import Path
 

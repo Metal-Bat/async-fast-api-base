@@ -33,6 +33,11 @@ class GraphValidator:
             if len(issues) < 64:
                 issues.append(GraphIssue(pointer=pointer, code=code, **details))
 
+        from apps.workflows.application.protected_effects import protected_effect_issues
+
+        for issue in protected_effect_issues(graph):
+            add(issue.pointer, issue.code)
+
         positions: dict[str, int] = {}
         types: dict[str, str] = {}
         steps_by_key = {step.key: step for step in graph.steps}
@@ -228,6 +233,12 @@ class GraphValidator:
                 ):
                     add(f"/bindings/{index}/source_step", "binding.source.not_prior")
             source_schema = binding.source_schema
+            if binding.source_kind == "STEP_OUTPUT":
+                source_schema = (
+                    (step_output_schemas or {})
+                    .get(binding.source_step or "", {})
+                    .get(binding.source_port or "", source_schema)
+                )
             if bool(source_schema) and bool(binding.source_path):
                 source_schema = self._schema_at(source_schema, binding.source_path)
                 if source_schema is None:

@@ -22,6 +22,13 @@ _MAX_PAYLOAD_BYTES = 4096
 _COMMON_FIELDS = frozenset({"status", "error_code", "wait_kind", "attempt", "outcome"})
 _EVENT_FIELDS: dict[str, frozenset[str]] = {
     "operation.recovered": frozenset({"action", "reason", "intent_hash"}),
+    "operation.dispatch_started": frozenset({"operation_id", "operation"}),
+    "operation.outcome_unknown": frozenset({"operation_id", "state"}),
+    "operation.confirmed": frozenset({"operation_id", "receipt_id", "state"}),
+    "operation.reconciliation_started": frozenset({"operation_id", "reason", "intent_hash"}),
+    "operation.reconciled": frozenset(
+        {"operation_id", "receipt_id", "state", "reason", "intent_hash"}
+    ),
     "request.submitted": frozenset({"status", "priority"}),
     "process.started": frozenset({"status"}),
     "subprocess.started": frozenset({"child_process_ref", "workflow_version_ref"}),
@@ -72,6 +79,11 @@ _EVENT_FIELDS: dict[str, frozenset[str]] = {
     "join.released": frozenset({"step", "branches"}),
     "compensation.registered": frozenset({"ordinal", "compensation_step"}),
     "compensation.started": frozenset({"ordinal"}),
+    "compensation.dispatch_started": frozenset({"operation_id", "order_operation_id"}),
+    "compensation.reconciliation_requested": frozenset({"reason", "intent_hash"}),
+    "compensation.receipt_confirmed": frozenset(
+        {"operation_id", "order_operation_id", "receipt_id", "state"}
+    ),
     "compensation.completed": frozenset({"ordinal"}),
     "compensation.failed": frozenset({"ordinal", "error_code", "manual_intervention"}),
 }

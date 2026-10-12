@@ -52,10 +52,15 @@ def _arguments(
             if canonical != value:
                 raise ValueError("Parameter must use canonical representation")
             _, text = format_value(
-                value, FieldFormatting(kind=kind, numbering="arabext" if locale == "fa" else "latn")
+                value,
+                FieldFormatting(
+                    kind=kind,
+                    numbering="arabext" if locale == "fa" else "arab" if locale == "ar" else "latn",
+                ),
             )
-        if kind == "integer" and locale == "fa":
-            text = text.translate(str.maketrans("0123456789", "۰۱۲۳۴۵۶۷۸۹"))
+        if kind == "integer" and locale in {"fa", "ar"}:
+            digits = "۰۱۲۳۴۵۶۷۸۹" if locale == "fa" else "٠١٢٣٤٥٦٧٨٩"
+            text = text.translate(str.maketrans("0123456789", digits))
         result[name] = text
     return result
 
@@ -68,7 +73,13 @@ def render_message(message: ResolvedMessage, arguments: dict[str, str | int]) ->
         if type(count) is not int:
             raise ValueError("Plural count must be an integer")
         branch = Locale.parse(message.locale).plural_form(count)
-        text = text.one if branch == "one" else text.other
+        text = {
+            "zero": text.zero,
+            "one": text.one,
+            "two": text.two,
+            "few": text.few,
+            "many": text.many,
+        }.get(branch) or text.other
     # Output is plain text; clients must use text nodes, never HTML interpolation.
     return text.format_map(values)
 
@@ -186,7 +197,7 @@ def resolve_catalog(catalog: FormLocalization, requested: str | None) -> Resolve
                 break
     return ResolvedLocalization(
         resolved_locale=locale,
-        direction="rtl" if locale == "fa" else "ltr",
+        direction="rtl" if locale in {"fa", "ar"} else "ltr",
         catalog_revision=_digest(catalog.model_dump(mode="json")),
         messages=messages,
     )

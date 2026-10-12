@@ -124,6 +124,9 @@ async def stage_notice(
         return None
     session.add(row)
     await session.flush()
+    from apps.notifications.application.live import stage_push
+
+    stage_push(session, row)
     mandatory = map_id in {"MAP-12", "MAP-14"}
     if (
         recipient.email is None

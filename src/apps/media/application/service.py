@@ -3,7 +3,7 @@ import hashlib
 import io
 import json
 import zipfile
-from collections.abc import AsyncIterator
+from collections.abc import AsyncGenerator
 from pathlib import PurePath
 from typing import Literal, Protocol
 from uuid import UUID, uuid7
@@ -181,7 +181,6 @@ class UserUploadService:
         self.session.add(entity)
         try:
             await self.session.commit()
-            await self.session.refresh(entity)
         except BaseException:
             try:
                 await self.session.rollback()
@@ -196,6 +195,8 @@ class UserUploadService:
                     error_type=type(exc).__name__,
                 )
             raise
+        # Refresh is a read after a successful commit; failure cannot undo ownership.
+        await self.session.refresh(entity)
         return entity
 
     async def download(self, upload: UserUploadEntity) -> bytes:
@@ -221,7 +222,7 @@ class UserUploadService:
             raise NotFoundException("Upload not found")
         return upload
 
-    async def stream(self, upload: UserUploadEntity) -> AsyncIterator[bytes]:
+    async def stream(self, upload: UserUploadEntity) -> AsyncGenerator[bytes]:
         """Preflight immutable object metadata, then return a bounded-memory stream."""
         info = await object_info(upload.object_key)
         if (
@@ -230,4 +231,6 @@ class UserUploadService:
             or info.metadata.get("sha256") != upload.sha256
         ):
             raise NotFoundException("Upload not found")
-        return stream_object(upload.object_key)
+        # Authorization and metadata reads finish before the network response starts.
+        await self.session.close()
+        return stream_object(upload.object_key, expected_size=upload.size_bytes)

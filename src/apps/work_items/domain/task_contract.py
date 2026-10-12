@@ -11,6 +11,12 @@ class LocalizedTaskText(BaseDTO):
     model_config = ConfigDict(extra="forbid")
     en: str = Field(min_length=1, max_length=255)
     fa: str | None = Field(default=None, min_length=1, max_length=255)
+    ar: str | None = Field(
+        default=None, min_length=1, max_length=255, exclude_if=lambda value: value is None
+    )
+
+    def localized(self, language: str) -> str:
+        return {"fa": self.fa, "ar": self.ar}.get(language) or self.en
 
 
 class TaskView(BaseDTO):

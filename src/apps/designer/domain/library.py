@@ -16,7 +16,7 @@ class LibrarySearch(SelectQuery):
     page: int = Field(default=1, ge=1, le=100)
     kind: LibraryKind | None = None
     category: str | None = Field(default=None, min_length=1, max_length=64)
-    locale: Literal["en", "fa"] = "en"
+    locale: Literal["en", "fa", "ar"] = "en"
     capabilities: list[str] = Field(default_factory=list, max_length=32)
 
 
