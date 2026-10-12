@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Documentation cleanup
+
+- Removed completed plans, duplicate backlogs, obsolete installation bundles and superseded verification records. The root backlog retains eight unfinished tasks; current guides, contract fixtures and migration decisions remain.
+
 Migration deployment now uses exactly `0001_schema -> 0002_required_data`: complete schema
 first, required handlers, permissions and schedules second. Older revision markers require a
 reviewed database transition before this checkout is deployed. The additive IDs below describe
@@ -12,33 +16,33 @@ Delivery through APP-BE-020 adds safe support, calendar/reminders, verified anal
 runtime form fixes alongside private installation/dependency readiness and
 a unified inbox with transaction-owned notifications and verified local email-gateway
 worker delivery. The complete gate passed with the two owner-approved SDK exceptions.
-Apply the additive migration chain through `j016_calendar_events` before use. See [APP-BE-011](docs/changes/APP-BE-011.md),
-[APP-BE-012](docs/changes/APP-BE-012.md) and [APP-BE-014](docs/changes/APP-BE-014.md).
+Apply the additive migration chain through `j016_calendar_events` before use. See APP-BE-011,
+APP-BE-012 and APP-BE-014.
 
 ### Added
 
 - Added reviewed workflow default restoration with expiring previews, atomic command
   replay, unpublished successors and separate layout reset. Apply additive migration
   `k026_workflow_restore` before use. Existing cases and published dependencies retain
-  their pins. See [APP-BE-026](docs/changes/APP-BE-026.md).
+  their pins. See APP-BE-026.
 
 - Added safe support episodes, private personal/team calendar, actual workflow deadline
   projections and one-off reminders using the existing scheduler/outbox/notification pipeline.
   Apply additive migrations through j016_calendar_events and explicitly grant reviewed
-  support.incidents.manage access. See [APP-BE-015](docs/changes/APP-BE-015.md),
-  [APP-BE-016](docs/changes/APP-BE-016.md) and [APP-BE-017](docs/changes/APP-BE-017.md).
+  support.incidents.manage access. See APP-BE-015,
+  APP-BE-016 and APP-BE-017.
 
 - Added private saved views and canonical favorites with optimistic references,
   idempotent creation, serialized defaults and schema-drift recovery. Work-item pins
   remain their existing personal state. Generic admin history no longer exposes
-  private personal documents. See [APP-BE-009](docs/changes/APP-BE-009.md).
+  private personal documents. See APP-BE-009.
 
 - Added self profile/preferences and minimal multilingual help state, stable
   authorized resource links, business metrics and typed designer inspectors.
   Additive migrations preserve both applied revisions. Supported guarded bootstrap
   and private transfer/report bounds are documented in the
-  [wave-four handoff](docs/delivery/wave-four-handoff.md). Profile/help/resource-link/inspector completion is recorded in
-  [verification](docs/delivery/through-014-verification.md); additional prepared task scopes
+  wave-four handoff. Profile/help/resource-link/inspector completion is recorded in
+  verification; additional prepared task scopes
   retain their individual backlog records.
 
 ### Documentation
@@ -47,46 +51,46 @@ Apply the additive migration chain through `j016_calendar_events` before use. Se
   TypeScript and request/response examples. Replaced fabricated response samples with curated
   examples or explicit coverage gaps, added portable navigation, and marked historical migration
   guidance. Documentation tests check API examples, local links and generated-reference drift.
-  See [DOCS-001](docs/changes/DOCS-001.md).
+  See DOCS-001.
 
 ### Fixed
 
 - Attachment mutations now immediately refresh canonical runtime values and current upload
   references. Partial return/correction actions correctly validate formatted values.
-  See [APP-BE-020](docs/changes/APP-BE-020.md).
+  See APP-BE-020.
 - New task failures retain safe class/code metadata instead of raw inputs, exception text
-  and traceback copies. Historical rows are retained. See [APP-BE-015](docs/changes/APP-BE-015.md).
+  and traceback copies. Historical rows are retained. See APP-BE-015.
 
 - Restore local cache startup with bounded Dragonfly threads and authenticated health gates,
   defer Celery scheduler cleanup during signal interruption, and constrain SQLAlchemy to the
   OpenTelemetry-supported 2.0 series. Rebuild cache and application images; see
-  [REPO-004](docs/changes/REPO-004.md).
+  REPO-004.
 
 - Local workflow checks now start the configured PostgreSQL service when the default port is
   unavailable, wait for readiness, and report setup/cleanup failures safely. See
-  [REPO-003](docs/changes/REPO-003.md).
+  REPO-003.
 
 - Restore async database imports after the SQLAlchemy 2.1 upgrade by explicitly installing
-  its asyncio extra. See [REPO-002](docs/changes/REPO-002.md).
+  its asyncio extra. See REPO-002.
 
 - Disabled duplicate FastAPI native HTTP telemetry exporters when the application's gRPC
   pipeline owns instrumentation, and removed internal structlog metadata from exported logs.
-  Verified real backend log delivery and Jaeger traces. See [OBS-002](docs/changes/OBS-002.md).
+  Verified real backend log delivery and Jaeger traces. See OBS-002.
 
 - Prevented OpenTelemetry diagnostics from feeding back into OTLP log export while preserving
   local diagnostic output. Added recovery instructions for stale HTTP exporters targeting the
-  gRPC Collector port. See [OBS-001](docs/changes/OBS-001.md).
+  gRPC Collector port. See OBS-001.
 
 ### Changed
 
 - Keep local Compose credentials out of Git and provide development templates in
   `.envs/examples/`. Secret checks now include untracked source/configuration and compare findings
   against reviewed fingerprints. Added Obsidian vault instructions. See
-  [REPO-001](docs/changes/REPO-001.md).
+  REPO-001.
 
 - Consolidated 33 Alembic revisions into one initial migration while retaining head ID
   `b13a0c7d2e44`. Existing databases at earlier revisions must first upgrade using the previous
-  migration chain. See [DB-001](docs/changes/DB-001.md).
+  migration chain. See DB-001.
 
 - Updated compatible locked dependencies, kept Pydantic on the stable 2.13 line, and made the production image explicitly omit the local `dev` group. `mise run check` now runs the complete local quality gate sequentially. See the [dependency policy](docs/operations/dependencies.md).
 

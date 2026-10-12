@@ -12,7 +12,7 @@ gap is graceful recovery while an oversized upload is still streaming through th
 paired frontend: a connection reset is possible. Header-only preflight evidence does
 not close that gap. The older preparation paragraphs below retain their dated history;
 they do not represent current unresolved scanner approval. See
-[completion verification](../delivery/completion-verification.md).
+completion verification.
 
 Private upload metadata and report operations use no-store; report artifact size and storage integrity preflight precede transfer accounting, and decode/archive bounds reject excessive work.
 
@@ -105,4 +105,4 @@ backend rejection, declared-size boundary preflight rejection, session isolation
 actual worker/storage. An oversized client still streaming after peer early rejection
 can receive a reset; graceful peer streaming rejection remains paired acceptance work.
 The header preflight case sends no invalid body and does not attest that missing behavior.
-No frontend source was changed. See [through-020 evidence](../delivery/through-020-verification.md).
+No frontend source was changed. See through-020 evidence.

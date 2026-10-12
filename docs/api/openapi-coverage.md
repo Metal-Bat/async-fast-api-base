@@ -69,7 +69,7 @@ field name. Those require route, DTO, service and test review before release doc
 
 ## Existing source material
 
-- [Project setup and API URLs](../../README.md) and [BPMS architecture](../architecture/bpms.md)
+- [Project setup and API URLs](../../README.md) and [BPMS architecture](../project-overview.md)
   provide orientation. Domain contracts have separate guides for
   [forms](../architecture/forms.md), [dynamic fields](form-fields.md),
   [behavior](form-behavior.md), [localization](form-localization.md),

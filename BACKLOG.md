@@ -1,353 +1,302 @@
 # Engineering Backlog
 
-Application delivery tasks live in [the APP-BE supplement](docs/delivery/BACKEND-BACKLOG.md).
-Existing task IDs and completion records below retain their historical scope.
-APP-BE-001–020 are DONE; see [through-020 verification](docs/delivery/through-020-verification.md).
-The complete fourteen-stage gate passed as VERIFIED_WITH_EXCEPTION under the two exact
-owner-approved SDK exceptions. Remaining APP work retains its separate scope.
-APP-BE-026 is also DONE; [completion verification](docs/delivery/completion-verification.md)
-records the fifteen-stage gate, safe restoration and the remaining eleven APP tasks.
+Only unfinished work belongs here. Completed plans and duplicate delivery backlogs were
+removed on 2026-10-11 at the owner's request. Consult Git history for committed records.
+Do not reuse previously assigned IDs or add completed work back as open tasks. Existing implementation satisfies completed
+prerequisites referenced below.
 
-## DB-002 — Split the complete schema and required data into two revisions
+Current behavior is documented in [the documentation home](docs/Home.md),
+demo seed guide (`docs/guides/demo-seed.md`), operational handoff (`docs/delivery/DEMO-OPERATIONS-HANDOFF.md`)
+and [approved decisions](docs/delivery/approved-decisions.json). Current contract artifacts
+remain in `docs/delivery/consistency-2026-10-09/contracts/`.
 
-Priority: P2
-Status: DONE
-Area: migrations
-Depends-On: DB-001
-Related: APP-BE-003
-Change-Record: docs/changes/DB-002.md
+The eight tasks below remain blocked by their recorded dependencies or external acceptance;
+this cleanup does not mark them complete. Assistant C15–C17/A27–A46 contracts are in
+the workflow and assistant specification (`docs/delivery/follow-up-2026-10-09/WORKFLOW-SCENARIOS-AND-CONTRACTS.md`).
+
+## APP-BE-031 — Automate paired contracts, hosted checks and rebuilt image verification
+
+
+Priority: P0
+Status: BLOCKED
+Verification: IMPLEMENTED
+Area: backend / M5
+Depends-On: APP-BE-002, APP-BE-028
+Related: REPO-004; frontend ARC-04/API-01/QA-07
+Decisions: None
+Owner: Codex
+Estimate: 2–4 person-days; confidence low-to-medium before intake
+Change-Record: docs/changes/APP-BE-031.md
 
 ### Goal
 
-Keep exactly two Alembic revision files: all current tables and PostgreSQL guards first,
-required built-in catalog data and schedules second.
+Certify a concrete backend/frontend pair and actual application image instead of trusting stale checked-in API snapshots or local dependency fixes.
 
 ### Context
 
-The owner explicitly requested two files on 2026-10-09, superseding the earlier additive-only
-repository migration decision. Preserve final schema and immutable handler contracts. Existing
-legacy databases require a reviewed transition; do not reset or stamp project databases.
-Optional configured admin bootstrap remains available in the data revision. Demo installations,
-role assignments, secrets and external integration activation remain explicit application setup.
+The local implementations, complete backend/frontend gates and real-service/browser
+verification have passed. APP-BE-031 remains blocked on an actual hosted run and
+reviewed immutable pair publication. APP-BE-032 retains hosted, deployed, named-provider,
+live-AI and product-owner acceptance boundaries. Local checks do not establish those
+outcomes. Existing D07 exceptions remain unchanged.
 
-Completed: exactly two revisions; 103 tables and all legacy schema/catalog/schedule objects
-retained, all 17 registered handler versions and 13 permissions installed. Full fifteen-stage gate
-passed as VERIFIED_WITH_EXCEPTION (809 default tests and 78 required integration-profile passes).
-No project database reset or rebaseline; legacy deployment transition remains an operator action.
+### Implementation sequence
 
-### Acceptance Criteria
+1. Implement/extend backend hosted checks using pinned toolchain and disposable services. Run the same mise run check, upload sanitized diagnostics and prove warning/failure negative gates.
+2. Build the runtime image from locked dependencies with the existing production install policy. Run startup/lifespan/health and a real instrumented query against the image; do not substitute the developer venv.
+3. Coordinate peer SHA selection and generate actual OpenAPI from the candidate backend. Diff relevant paths, schemas, security, errors, nullable/required/defaults and binary headers; regenerate frontend contracts reproducibly.
+4. Publish release-pair manifest with SHAs, hashes, dialects, migrations, seeded defaults and client release. Keep credentials and environment-specific refs out of artifacts.
+5. Run the connected scenario with the candidate pair and document rolling/forward-repair constraints; a workflow file without a hosted run is implemented but not hosted-verified.
 
-- Exactly two revisions in one linear chain; schema-only installation contains no seed rows.
-- Full installation retains built-in handler versions, ports and schedules and installs permissions.
-- Disposable PostgreSQL round trips, populated data preservation and model drift checks pass.
-- Update deployment instructions, migration tests, generated head metadata and quality evidence.
+### Acceptance criteria
 
-## REPO-004 — Restore cache startup, scheduler shutdown and database tracing
+- A deliberately incompatible backend DTO change fails the paired check even if operation IDs are unchanged.
+- The built image actually runs the tested dependency correction and API contract; clean startup has no unexpected warnings.
+- Hosted logs/artifacts identify exact pair and scope; pending/unavailable hosted runs remain unverified.
+
+### Verification and required evidence
+
+Actual hosted backend and paired jobs, image startup and A24 negative probes; A18/A19 on the pair. mise run check locally and in CI. APP-FE-037 owns browser-specific assertions, avoiding duplicate harness development.
+
+### Data, compatibility, rollout and peer handoff
+
+C14 → APP-FE-001/005/037/038. Hosted permissions and infrastructure may block evidence; record rather than claiming a pass.
+
+## APP-BE-032 — Close backend demo acceptance, restore and support handoff
+
+Priority: P0
+Status: BLOCKED
+Verification: IMPLEMENTED
+Area: backend / M5
+Depends-On: APP-BE-029, APP-BE-030, APP-BE-031
+Related: Existing QA-03–07 cross-project release scope; safeguards/restore
+Decisions: None
+Owner: Codex
+Estimate: 3–5 person-days; confidence low-to-medium before intake
+Change-Record: docs/changes/APP-BE-032.md
+
+### Goal
+
+Publish a truthful backend capability ledger and demonstrate the operational behavior needed for the requested application, without confusing demo readiness with production certification.
+
+### Context
+
+The local implementations, complete backend/frontend gates and real-service/browser
+verification have passed. APP-BE-031 remains blocked on an actual hosted run and
+reviewed immutable pair publication. APP-BE-032 retains hosted, deployed, named-provider,
+live-AI and product-owner acceptance boundaries. Local checks do not establish those
+outcomes. Existing D07 exceptions remain unchanged.
+
+### Implementation sequence
+
+1. Verify all APP-BE task criteria and C/A contract rows, current permission seeds, deletion policy, templates, maps and help metadata. Resolve untested critical branches before declaring scope complete.
+2. Run final mise run check from the candidate tree with zero warnings and no skipped required acceptance. Run actual broker/worker/storage/scheduler, migrations and backup/restore in isolated resources; include new tables and template references.
+3. Exercise service outage and safe recovery, credential/config restoration, failure logging fallback and reconciliation of external effects. Do not resume dispatch after restore until the sandbox/provider effect state is reconciled.
+4. Create operator/startup/reset/runbook and support handoff with known limits, seed/default versions, exact pair, role accounts provisioned privately and named owner roles TBD until assigned.
+5. Record DEMO_READY only after paired frontend evidence is attached. Live-vendor/live-AI and user acceptance remain separately signed gates; do not upgrade them from a local simulated pass.
+
+### Acceptance criteria
+
+- All mandatory scenario IDs have actual evidence or the capability is explicitly not accepted; no paper-only closure.
+- A restored isolated environment preserves pins/private objects and new personal/notification/calendar/support records under current access rules.
+- The final report states what is implemented, verified, demo-ready, deployed and user-accepted separately.
+
+### Verification and required evidence
+
+Full check, real-service suite, disposable restore and paired demonstration. A01–A26. APP-FE-038 supplies browser/user acceptance evidence but is not a precondition to backend-only checks (avoid circular task dependency).
+
+### Data, compatibility, rollout and peer handoff
+
+Product owner signoff is required for USER_ACCEPTED. No RPO/RTO, tenancy, compliance or production throughput guarantee is inferred.
+
+## APP-BE-033 — Define private conversation and proposal contracts with durable ownership
 
 Priority: P1
-Status: DONE
-Area: deployment/celery/observability
-Depends-On: None
-Related: REPO-002, OBS-002
-Change-Record: docs/changes/REPO-004.md
+Status: BLOCKED until current-pair intake and conversation schema upgrade mechanism are recorded
+Area: conversations/domain, application, data, presentation
+Depends-On: APP-BE-001, APP-BE-003, APP-BE-008
+Related: APP-BE-007/010/015, APP-FE-039/040, C15
+Change-Record: None
+Owner: Backend role — TBD
+Provisional effort: 4–7 person-days; low-to-medium confidence, not agent runtime.
 
-### Goal
+### Goal and scope
 
-Fix the reported cache connection failures, reentrant scheduler shutdown and missing SQL spans.
+Private starter+assistant room, bounded ordered user/assistant messages, durable turns, typed action proposals and safe read APIs. No multiparty membership, general workflow editing through chat, arbitrary tool calls or silent job execution.
 
-### Context
+### Implementation steps
 
-Dragonfly exited because its automatic 12-thread pool required 3 GiB of available memory.
-Celery beat calls scheduler.close from its signal handler inside an active asyncio runner.
-The installed SQLAlchemy instrumentor rejects SQLAlchemy 2.1.
-RELATED REPO-002: constrain the earlier dependency upgrade to the instrumentor support range.
-RELATED OBS-002: preserve working SQL telemetry alongside application tracing.
+1. Record the exact actor, client, agent/workflow pins, privacy/retention and archive semantics; confirm which existing resource resolver kinds need extension.
+2. Implement constrained BaseDTO request/response models, canonical enums and typed content/proposal unions. Separate raw persisted protected text from safe event/correlation projections.
+3. Add unique keys for conversation+client message and proposal confirmation identity. Lock or atomically sequence room turns; choose bounded ordered queuing or conflict-on-concurrent-turn and document it.
+4. Implement user-only message ingestion and read/search with live/ownership criteria before count/paging; the browser cannot choose another owner or system/assistant role.
+5. Stage a turn reference through existing task infrastructure in the same transaction; do not call the model in the route transaction.
+6. Export en/fa OpenAPI and documented examples/errors; add current contracts to the paired manifest and permission catalog without auto-granting privileges.
 
-Completed: full gate passes (685 default tests, 119 opt-in skips, one doctest, four database
-workflow tests and all applicable hooks). Rebuilt cache remains healthy; reporting-worker
-container resolves it and reads/cleans up Celery results successfully. AST graph refreshed.
-Application image rebuild remains unverified: both normal and host-network Docker builds fail
-package-download DNS resolution. The dependency correction is installed/tested locally; deployment
-requires rebuilding/recreating application services when Docker DNS is available.
+### Acceptance and verification
 
-### Acceptance Criteria
+A31–A33: foreign user enumeration/read/mutation fails; identical message replay has one turn; altered replay conflicts; concurrent tabs cannot corrupt ordering; archived rows disappear from ordinary lists; payload/log bounds and actor cleanup demonstrated. Tests include real PostgreSQL transaction races and HTTP authorization. `mise run check` plus new required non-skipping conversation profile; preserve exact current warning label. Record migration/restore support and rollback/forward repair.
 
-- Local cache starts with bounded thread count, authenticated health checks and restart policy;
-  API and task services wait for cache health. Preserve volumes and task result semantics.
-- Scheduler signal shutdown unwinds its active loop before releasing resources; regression
-  tests cover interrupting and non-interrupting close requests.
-- A real instrumented query emits spans using locked compatible SQLAlchemy dependencies.
-- Full quality gate passes; document container verification and rebuild requirements.
+### Frontend handoff
 
+Exact C15 schema/hash, current permission keys, sample ordinary actor fixtures, state/available-action matrix, pagination behavior, safe error codes and immutable version information. Never hand off proposed examples as live test captures.
 
-## REPO-003 — Make local workflow checks self-starting and scope SDK notices
+## APP-BE-034 — Execute bounded assistant turns through governed AI and the existing workflow engine
 
 Priority: P1
-Status: DONE
-Area: repository/testing
-Depends-On: None
-Related: REPO-002
-Change-Record: docs/changes/REPO-003.md
+Status: BLOCKED by APP-BE-033 and approved model/data configuration
+Area: conversations/application, ai/application, step_types, processes
+Depends-On: APP-BE-033
+Related: APP-BE-019/021/022, APP-FE-039/042, C15
+Change-Record: None
+Owner: Backend/AI role — TBD
+Provisional effort: 5–9 person-days; low confidence.
 
-### Goal
+### Goal and scope
 
-Run the local quality gate when PostgreSQL is stopped, and contain the two known upstream
-Python 3.14 deprecation notices without hiding other warnings.
+For one persisted turn, produce a validated answer, clarification or action proposal using only permitted context. Reuse AI budget/reservation/provider owners and bounded workflow execution; do not turn the existing AI_DECISION handler into an incompatible freeform chat contract.
 
-### Context
+### Implementation steps
 
-RELATED REPO-002: starting PostgreSQL manually fixed one run but did not persist startup behavior.
-Targeted uv resolution found no newer compatible Cohere/Google GenAI releases. Use narrow pytest
-filters while leaving SDK code and global runtime warning policy untouched.
+1. Register a new versioned assistant-turn handler/profile only after checking the locked SDK's actual typed-output/history APIs. Retain old published handler behavior.
+2. Build a bounded context projection from explicitly approved help and currently readable resources. Pin source identities/hashes and record minimal metadata; no implicit publisher/superuser access.
+3. Reserve one logical model budget before dispatch, bind message/turn identity and typed output schema; duplicates cannot authorize a second model request.
+4. Validate result type and source references. Invalid or unsafe output cannot reach an action dispatcher. Clarifications persist no business object.
+5. Persist protected response/history and safe failure state separately from generic process logs. Cancellation/late callbacks cannot resurrect a cancelled turn or update a different actor/turn.
+6. Add explicit manual/no-provider fallback and synthetic test mode labeling. Live provider tests are opt-in and budgeted; no secret resolution from workstation auth state.
 
-Completed: 56 focused tests and the full quality gate pass (681 default tests, 119 opt-in skips,
-one doctest, four PostgreSQL workflow tests). The full run started the stopped Compose service
-automatically, migrated and removed its disposable database, and emitted no warning summary.
-All applicable hooks, including explicit checks of new tests, pass; graphify was refreshed.
+### Policy dependency
 
-### Acceptance Criteria
+Use the existing approved AI runtime and the evaluation/reservation rules owned by APP-BE-025. Completing an answer-only or self-task intent profile does not require a procurement operation. A live model/data/price policy is still a real prerequisite; synthetic construction tests cannot replace it.
 
-- Probe local PostgreSQL, start only the default-port Compose service if unavailable, and wait
-  within bounded limits; support an automatic-start opt-out and reject remote hosts.
-- Authentication/configuration errors fail safely; tests and migrations retain failure status,
-  with cleanup attempted and cleanup failure reported.
-- Only the exact known upstream warnings are filtered; unrelated warnings remain visible.
-- Regression tests and the complete `mise run check` gate pass; document service side effects.
+### Acceptance and verification
 
-## REPO-002 — Restore the quality gate after dependency updates
+A32–A34/A43: bounded history, adversarial retrieved text, timeout, unknown usage, duplicate delivery, revocation and cancellation. Approved answers use real accessible sources; proposals have no side effects. Pure fake-adapter evaluation is labeled deterministic; one approved live evaluation is separate from application contract correctness. Required worker/DB profile and full gate; no paid retry on uncertainty.
 
-Priority: P1
-Status: DONE
-Area: repository/dependencies
-Depends-On: None
-Related: REPO-001
-Change-Record: docs/changes/REPO-002.md
+### Handoff
 
-### Goal
+Result union, structured citations, turn states, polling/cancellation behavior, feature readiness and meaningful local fixtures. Do not return hidden chain-of-thought or unrestricted tool history.
 
-Make the current working tree pass `mise run check` with the updated uv dependencies,
-and prepare the user-authorized changes for Conventional Commit delivery.
-
-### Context
-
-RELATED REPO-001: retain all-file secret scanning and exact reviewed fingerprints.
-The upgraded type checker reports optional truth tests and changed typing contracts;
-SQLAlchemy 2.1 requires the explicit asyncio extra for async database imports.
-Existing frontend runtime and studio workspace work is included in the requested commit.
-
-Completed: `mise run check` passes with 664 default tests, 119 opt-in skips, one doctest,
-four disposable PostgreSQL workflow tests, and all applicable hooks. The knowledge graph
-was refreshed and Commitizen validated the delivery message. PostgreSQL was started locally;
-an interrupted first flow run passed on retry and in the final complete gate.
-
-### Acceptance Criteria
-
-- Preserve empty-value behavior while resolving type diagnostics without disabling rules.
-- Fresh uv synchronization includes SQLAlchemy's async runtime dependency.
-- Review individual secret findings without weakening scanner failure behavior.
-- The complete quality gate passes, including disposable PostgreSQL workflow tests and hooks.
-- Refresh the knowledge graph and validate the proposed Conventional Commit message.
-
-## REPO-001 — Prepare a clean, reproducible repository baseline
+## APP-BE-035 — Confirm a proposal and create one real self task or eligible draft
 
 Priority: P1
-Status: DONE
-Area: repository/tooling
-Depends-On: None
-Related: DOCS-001
-Change-Record: docs/changes/REPO-001.md
+Status: BLOCKED by C15 plus approved action/principal policy
+Area: conversations/application, requests/application, work_items
+Depends-On: APP-BE-033, APP-BE-034
+Related: APP-BE-005/028, APP-FE-040, C15
+Change-Record: None
+Owner: Backend role — TBD
+Provisional effort: 3–6 person-days; low-to-medium confidence.
 
-### Goal
+### Goal and scope
 
-Commit the implemented backend, documentation and contributor tooling in coherent groups,
-keeping local credentials private and documenting Obsidian navigation.
+A confirmed typed proposal creates exactly one permitted business request/self HUMAN_TASK or an eligible draft, with a durable receipt. It cannot assign arbitrary people, bypass required review, publish a workflow or execute generic code.
 
-### Context
+### Implementation steps
 
-RELATED DOCS-001: document opening the project root as an Obsidian vault. Initial staging exposed
-that the old secret scan ignored untracked files. The corrected gate scans untracked files too
-and permits only reviewed file/type/fingerprint matches. Runtime local files remain unchanged.
+1. Implement an allowlisted application action registry mapping semantic operation/version to typed payload, current permissions, validator, executor and result projector. No browser/model Celery task names or handler imports.
+2. Bind proposal expiry, revision, canonical payload hash and version pins. Use server-derived actor/client and exact source resources.
+3. Implement confirmation with atomic lock/unique receipt and operation-specific idempotency; identical committed replay resolves the same result with fresh refs and rechecks authority.
+4. Use RequestService and the normal process/HUMAN_TASK path for self tasks. For starter-specific assignments, use supported interface binding or add a tested explicit starter policy; never seed all users' tasks to the one fixed demo requester.
+5. Preserve differences between create-now/due-later, draft creation and submission. Changed proposal fields require a new reviewed revision.
+6. Emit the mapped notification and safe audit evidence transactionally. UI result is a real created resource, not a prose claim that creation succeeded.
 
-Completed: development templates validate with Settings; 631 tests pass, 114 integration skips;
-Ruff, ty and pre-commit pass. Reviewed fixture and schema-identifier findings are recorded in
-`.secrets.baseline`. No push or history rewrite is part of this task.
+### Policy dependency
 
-### Acceptance Criteria
+Freeze the narrow self-task/draft authority as part of C15 using the same operation-policy owner as APP-BE-022. Do not require the unrelated procurement sandbox to exist before a safe self-task can be developed. Any protected procurement effect additionally requires completed APP-BE-021/022 and its exact approval evidence.
 
-- Local environment credentials and reader state stay out of Git; fresh clones have templates.
-- A new secret finding or a reviewed value moved to another file fails the gate.
-- Vendored Swagger/ReDoc assets retain upstream bytes during formatting checks.
-- Documentation explains setup, verification and Obsidian entry points.
-- Commit groups describe the implemented scope and leave a clean working tree.
+### Acceptance and verification
 
-## OBS-002 — Resolve structlog and duplicate FastAPI telemetry
+A35–A37: confirm/dismiss, double click, lost response, stale proposal, revoked resources, tampered actor/assignee, required independent approval and hidden fields. Inspect resulting request/process/work item and receipt in real PostgreSQL/HTTP tests. Run full gate plus the new required profile. No detached work-item rows, admin grant or duplicate effect.
 
-Priority: P1
-Status: DONE
-Area: core/observability
-Depends-On: OBS-001
-Related: OBS-001
-Change-Record: docs/changes/OBS-002.md
+### Handoff
 
-### Goal
+Purpose-built form fields, preview summary, available actions, exact confirm body/errors and created-resource locator contract. A generic JSON textarea is not an acceptable frontend completion.
 
-Remove invalid Logger attribute warnings while preserving local log rendering, and verify
-current exporter delivery through FastAPI startup and a real gRPC collector.
-
-### Context
-
-RELATED OBS-001: its diagnostic filter stops feedback but still exports structlog's internal
-`_logger` and `_name` extras. Supplied logs also show HTTP exporter traffic reaching a gRPC
-receiver. A real Compose startup identified FastAPI native auto-configuration adding duplicate
-HTTP exporters alongside the application gRPC pipeline. Disable native telemetry; retain the
-existing instrumentation and providers.
-
-Completed: metadata and lifespan regressions reproduced both causes, then passed after fixes.
-629 tests passed; static checks and hooks passed. Rebuilt images and restarted the local backend.
-Swagger requests returned 200 without telemetry errors; collector received logs and Jaeger received
-new API traces. Local services are left running; database data was preserved.
-
-### Acceptance Criteria
-
-- Structured application logs export without internal formatter metadata; local handlers retain it.
-- Preserve diagnostic exclusion and trace correlation; add a failing regression before the fix.
-- Verify real collector receipt of logs, traces and metrics using current providers.
-- FastAPI lifespan adds no HTTP exporters; real Swagger requests export through the existing pipeline.
-- Run project checks and document remaining deployment verification limits.
-
-## DOCS-002 — Execute the documented HTTP workflow
+## APP-BE-036 — Schedule, cancel and reschedule owned approved actions durably
 
 Priority: P1
-Status: DONE
-Area: documentation/testing
-Depends-On: DOCS-001
-Related: DOCS-001
-Change-Record: docs/changes/DOCS-002.md
+Status: BLOCKED by confirmed action contract and schema/time policy
+Area: tasks/application, conversations/application, calendar integration
+Depends-On: APP-BE-033, APP-BE-035, APP-BE-017
+Related: APP-BE-024/027, APP-FE-041, C16
+Change-Record: None
+Owner: Backend role — TBD
+Provisional effort: 5–9 person-days; low confidence.
 
-### Goal
+### Goal and scope
 
-Validate the documented login-to-approval sequence against real authentication and PostgreSQL,
-make the check repeatable, and correct missing setup steps.
+An ordinary user schedules only an allowed operation on their permitted data, at an exact reviewed instant, without task-admin permission. Persistent clocked schedules/outbox handle delay; no long-lived sleep/ETA queue.
 
-### Context
+### Implementation steps
 
-RELATED DOCS-001: close its full HTTP sequence evidence gap. User requested validation of the
-current process. Keep English guides and framework-neutral examples. In-process HTTP coverage
-must not be presented as deployed browser, external-service or reader acceptance.
+1. Create an owned scheduled-action aggregate/receipt with operation/version, exact payload/resource pins, aware UTC instant, original IANA timezone/local intent, late policy, generation and execution links.
+2. Validate ambiguity, past times, DST gaps/folds, horizon/expiry and operation-specific grace. State the accepted late policy rather than promise exact-clock execution.
+3. Stage through existing PeriodicTaskEntity/database scheduler and fixed registered task mapping. Extract application orchestration from current admin routes only as needed; admin HTTP routes remain unchanged in authority.
+4. Implement current-ref/command-key cancel and reschedule before irreversible start. Disable old occurrence and increment/fence generation in the same transaction. Do not invent clocked_at in the old update DTO.
+5. At worker dispatch recheck owner/access/operation/connection pins and generation; duplicate deliveries resolve one business intent; retry/unknown-effect treatment is inherited from the operation.
+6. Expose owner-only search/detail and current status/actual timings/result. Project safe events into calendar/inbox without duplicating scheduling or silently altering work-item due dates.
 
-Completed: real HTTP journey and original purchase regression passed on fresh PostgreSQL;
-628 default tests passed (114 opt-in skips), static checks and hooks passed. Setup requirements
-and deployment acceptance are documented. Temporary database/container removed.
+### Acceptance and verification
 
-### Acceptance Criteria
+A38–A42: DST/time conversion, cancellation races, task queued before cancellation, reschedule with stale revision, stopped worker/scheduler, actual configured broker outage, delayed dispatch, duplicate delivery and revocation. Use deterministic time tests plus an owned actual clocked worker run. Require no skips in this service profile; full gate and receipt evidence. Human task due-date checks remain separate.
 
-- A newly migrated disposable database passes the existing purchase flow and the documented
-  HTTP journey with ordinary users, real bearer sessions and no authorization overrides.
-- Verify invalid input, stale writes, ownership/permission denial, command replay, completion,
-  refresh rotation/reuse and logout through HTTP responses.
-- The standard flow command includes the HTTP regression; documentation states exact setup,
-  observable success criteria and remaining deployment/reader checks.
-- Existing tests, static checks and repository hooks pass; record evidence and limits.
+### Handoff
 
-## DOCS-001 — User and frontend documentation handoff
+Exact C16 DTOs/current refs/statuses, time-display examples, late-policy labels, allowed cancel/reschedule states, scheduling permission keys and retry-safe operation matrix.
+
+## APP-BE-037 — Produce an authorized summary/report and record action outcomes
 
 Priority: P1
-Status: DONE
-Area: documentation
-Depends-On: None
-Related: DB-001
-Change-Record: docs/changes/DOCS-001.md
+Status: BLOCKED by owned action dispatch
+Area: reporting/application, tasks, conversations, notifications/support
+Depends-On: APP-BE-035, APP-BE-036, APP-BE-014, APP-BE-015, APP-BE-027
+Related: APP-FE-040/041, C15/C16
+Change-Record: None
+Owner: Backend role — TBD
+Provisional effort: 4–7 person-days; low confidence.
 
-### Goal
+### Goal and scope
 
-Provide English user journeys, a framework-neutral TypeScript frontend walkthrough,
-trustworthy examples and portable documentation navigation.
+A concrete immediate/scheduled allowed operation generates a private bounded report or summary and returns an actual receipt/link. This supplies a useful background action rather than only system.ping.
 
-### Context
+### Implementation steps
 
-User requested all four identified documentation gaps be filled. Existing guides and generated
-references remain the foundation. RELATED DB-001: replace outdated migration instructions.
-Do not change runtime contracts to make a guide work; explicitly document current access and
-discovery limits. English only; frontend code is framework-neutral TypeScript.
+1. Choose an existing code-owned report definition and permitted data projection; pin it into the proposed summary operation. Do not introduce arbitrary SQL, columns, external URLs or raw templates.
+2. Run through the existing reporting queue/output owner with limits and cancellation. Check resource visibility at execution and download, not only at schedule creation.
+3. Commit final result/receipt and mapped event atomically where possible; object-storage effects use existing cleanup/reconciliation semantics.
+4. Append conversation/schedule notification mappings with stable identities, current recipient authority and no private report contents in external messages.
+5. Record failed/unknown operation through existing support episode rules, avoiding recursive reporting when the sink/delivery fails.
+6. Provide explicit difference between queued, running, ready, denied, failed, missed and unknown through the actual new DTOs.
 
-Completed: user handbook, frontend walkthrough/shared contracts, checked TypeScript and 11
-curated wire cases; six documentation checks, portable navigation and historical-design labels.
-Full suite: 628 passed, 113 skipped; separate disposable PostgreSQL purchase regression passed.
-Static checks passed. Browser/reader validation remains an explicitly documented future check.
+### Acceptance and verification
 
-### Acceptance Criteria
+A39–A43: real private artifact/structured summary, duplicate dispatch, expired/revoked report source, bounded size, failed storage, late acknowledgment and truthful persistence receipt. Scheduler/worker success must link to the actual result, not only a count. Full gate and required real reporting/storage profile; no paid summarization implied unless explicitly configured.
 
-- Plain-language handbook covers starting, tracking, reviewing and correcting requests.
-- Login-to-completion frontend guide includes prerequisites, calls, payloads, UI states,
-  authorization, current refs, retries and errors, with checked TypeScript examples.
-- Curated examples validate against current OpenAPI/DTOs; generated references stop emitting
-  fabricated business values such as `status: example`.
-- Documentation home provides audience routes; internal links work in ordinary Markdown;
-  implemented, historical and proposed material is clearly distinguished.
-- Automated checks cover local links, documented API examples and generated-reference drift.
-
-## DB-001 — Consolidate Alembic into one initial revision
-
-Priority: P2
-Status: DONE
-Area: migrations
-Depends-On: None
-Related: None
-Change-Record: docs/changes/DB-001.md
-
-### Goal
-
-Replace the 33-file migration chain with one self-contained root/head migration.
-
-### Context
-
-User explicitly requested one migration file. Preserve frozen operations, seeds and triggers,
-and retain the existing head ID `b13a0c7d2e44` for databases already fully upgraded.
-Intermediate revisions must be upgraded with the previous chain before switching.
-No overlap with OBS-001; verify against isolated PostgreSQL without touching project databases.
-
-Completed: one root/head file, identical PostgreSQL schema dumps and normalized seed data across
-91 tables, successful fresh upgrade and downgrade/re-upgrade, and no-op upgrade from the former
-head. Migration integration test passed; full suite: 622 passed, 113 skipped. Ruff, ty and
-pre-commit passed. Temporary database container removed; README explains earlier-revision handling.
-
-### Acceptance Criteria
-
-- Exactly one revision file, with no parent and the former head ID.
-- Fresh upgrade preserves schema, functions, triggers and seeds compared with the old chain.
-- Disposable PostgreSQL upgrade/downgrade/upgrade succeeds; an existing head remains a no-op.
-- Update migration tests and deployment documentation; run project quality checks.
-
-## OBS-001 — Prevent telemetry diagnostic feedback
+## APP-BE-038 — Seed and verify the private assistant plus connected showcase
 
 Priority: P1
-Status: DONE
-Area: core/observability
-Depends-On: None
-Related: None
-Change-Record: docs/changes/OBS-001.md
+Status: BLOCKED until new conversation/action implementations exist
+Area: requests/demo, delivery/testing, operations documentation
+Depends-On: APP-BE-005, APP-BE-028, APP-BE-029, APP-BE-031, APP-BE-034, APP-BE-035, APP-BE-036, APP-BE-037
+Related: APP-FE-037/043, C17
+Change-Record: None
+Owner: Backend/QA roles — TBD
+Provisional effort: 4–7 person-days; low confidence; excludes earlier existing-task closure.
 
-### Goal
+### Goal and scope
 
-Prevent telemetry diagnostics from re-entering OTLP logging and document recovery from
-HTTP exporters targeting the Compose gRPC receiver.
+The rich profile installs the actual private assistant workflow and sample task/scheduled-summary paths; an owned paired rehearsal proves them. No chat-looking placeholder, direct fake execution rows or paid call during seeding.
 
-### Context
+### Implementation steps
 
-Reported connection resets use HTTP exporter messages, while current source explicitly uses
-gRPC exporters and Compose targets port 4317. No running Compose services are available locally.
-The OTLP log handler currently accepts SDK diagnostics, allowing recursive logging and export
-failure feedback. No other backlog tasks exist in the current checkout.
+1. Register assistant.workspace/1 and scheduled-summary scenarios with complete schemas, labels, graph/layout/version pins, personas and prerequisite checks.
+2. Seed deterministic definition/sample context only; use real user commands for acceptance. Synthetic AI and real approved AI must be visibly distinct modes.
+3. Execute A27–A46 with committed pair, ordinary actors and real scheduler/worker/storage/sandbox. Test both expected and denied/fault paths.
+4. Extend owned reset inventory to conversations/actions/schedules/receipts and preserve non-demo resources. Archive does not imply job cancellation.
+5. Restore isolated data/object/credential/configuration backup and demonstrate original pins/current access before dispatch resumes.
+6. Capture safe scenario output, gate labels/exceptions, source/contract hashes, manual browser limitations and owner acceptance separately.
 
-Completed: handler filter and regression coverage added in `src/core/observability.py` and
-`tests/core/test_observability.py`; README documents deployment recovery. Full pytest run outside
-the sandbox: 622 passed, 113 integration tests skipped. Ruff, ty and pre-commit passed.
-Live recovery remains unverified because no Compose services are running locally.
+### Acceptance and verification
 
-### Acceptance Criteria
-
-- Application records reach OTLP; OpenTelemetry diagnostics remain available to local handlers
-  without entering the OTLP pipeline.
-- Regression coverage verifies all three exporters use gRPC and the configured endpoint.
-- Document rebuild/recreation and protocol troubleshooting; report live verification limits.
-- Record focused and project-wide check results without hiding pre-existing failures.
+A44–A46 and all prerequisite scenarios. A new person follows the documented mise plan/seed/verify sequence, builds an editable workflow, starts a private conversation, confirms a self task, schedules a summary, observes a real receipt, and repeats the owned demo safely. Full backend/frontend gates and actual browser evidence are mandatory. No DEMO_READY until the whole requested profile succeeds.

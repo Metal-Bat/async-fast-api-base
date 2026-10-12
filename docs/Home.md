@@ -44,10 +44,6 @@ that vault. See the official [vault instructions](https://obsidian.md/help/vault
   Generated OpenAPI is authoritative for wire fields; services and tests establish business rules.
 - **Reviewed synthetic example:** checked payload shape with invented non-secret identities.
   It does not prove that a browser or a live HTTP journey ran. Replace synthetic refs with real ones.
-- **Historical design:** [BPMS-001](architecture/bpms.md) records the original blueprint and estimates;
-  it is not the current schema or migration instructions.
-- **Proposed design:** [form package v2](architecture/form-package-v2.md) is not an accepted current
-  request payload. Continue using the implemented FormDocuments/bpms.render/1 contract.
 - **Roadmap:** [full workflow target](roadmap/full-workflow.md) includes AI, parallel and delivery
   stages that are not all exercised in the single core regression.
 
@@ -59,7 +55,7 @@ environment. Check feature configuration and the live API when integrating anoth
 - [Full workflow roadmap](roadmap/full-workflow.md) — staged purchase approval with AI preparation and required human approval.
 - [Saved purchase-request scenario](testing/form-workflow-conformance.md) — canonical data, localization, reuse, corrections and backend replay.
 - [Full workflow regression](testing/full-workflow-regression.md) — one migrated database journey and the extension rule for future workflow features.
-- [BPMS architecture](architecture/bpms.md) and [Form architecture](architecture/forms.md) — domain rules and ownership.
+- [BPMS architecture](project-overview.md) and [Form architecture](architecture/forms.md) — domain rules and ownership.
 - [Trusted step extensions](guides/step-extensions.md) — registered handler contracts.
 
 ## API and client contracts

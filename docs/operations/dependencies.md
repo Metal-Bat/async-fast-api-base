@@ -57,4 +57,4 @@ This command preserves named volumes. Inspect `docker compose logs cache` and
 `docker compose ps` if startup fails; restarting workers alone cannot repair a stopped cache.
 Celery continues storing results in the configured Redis-compatible backend. Scheduler cleanup
 is deferred until the current asyncio runner call unwinds when a shutdown signal arrives.
-See [REPO-004](../changes/REPO-004.md) for validation and deployment details.
+Use the current production install policy above and rebuild application images after dependency changes.

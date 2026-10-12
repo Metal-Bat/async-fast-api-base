@@ -96,7 +96,7 @@ favorite identity indexes. Both previously applied migrations remain unchanged.
 Rollback removes only personal state, never targets; destructive verification uses
 the exact owned disposable harness, not shared data.
 
-Observed results and the final gate are tracked in `through-009-verification.md`.
+Current migration and warning policy follow [approved decisions](approved-decisions.json).
 The new parent revision reference adds one public identifier finding to the existing
 eight secret-scanner false positives. The nine-entry review remains pending; the
 security baseline is unchanged until explicit approval.

@@ -74,6 +74,5 @@ It does not attest downstream SMTP, a paid provider, external delivery or deploy
 
 Generated en/fa OpenAPI and inbox-contracts.json in wave-four freeze methods, discriminated
 schemas, authorization, private headers and mapped producer limits. Actual verification
-is recorded in through-014-verification.md. D01 and the two D07 SDK exceptions are approved;
-the exact ten-entry secret-baseline review is owner-approved. See through-020-verification.md
-for the additional actual reminder worker checks.
+uses the configured delivery checks. Migration policy, the exact D07 exceptions and
+the ten-entry secret review follow [approved decisions](approved-decisions.json).
