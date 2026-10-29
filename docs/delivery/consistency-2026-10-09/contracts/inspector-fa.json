@@ -1318,6 +1318,190 @@
       ]
     },
     {
+      "bindings": [],
+      "code": "ARITHMETIC",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "description": "Operation on left and right numeric ports. Divide and remainder reject zero right operands. Uses finite JSON numbers, not exact decimal accounting.",
+            "enum": [
+              "add",
+              "subtract",
+              "multiply",
+              "divide",
+              "remainder"
+            ],
+            "title": "Operation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "operation"
+        ],
+        "title": "ArithmeticConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "7a204bbe2aba7eaa1566ccc0624e26f6841d4d5f2f43b479be9a4c78d8d9a1f1",
+      "examples": [
+        {
+          "operation": "add"
+        },
+        {
+          "operation": "subtract"
+        },
+        {
+          "operation": "multiply"
+        },
+        {
+          "operation": "divide"
+        },
+        {
+          "operation": "remainder"
+        }
+      ],
+      "execution_mode": "SYNC",
+      "handler_key": "arithmetic",
+      "handler_version": "1",
+      "help_key": "Calculate two finite numbers; reject zero divisors. Use for quantities and scores, not exact currency accounting.",
+      "help_text": "محاسبه دو عدد متناهی؛ مقسوم‌علیه صفر مجاز نیست. برای مقدار و امتیاز، نه حسابداری دقیق پولی.",
+      "name": "محاسبه عددی",
+      "name_key": "Arithmetic",
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "left",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "number"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "right",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "number"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "result",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "number"
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [],
+      "code": "BOOLEAN_LOGIC",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "description": "AND and OR require left and right boolean ports. NOT uses left and ignores an optional right input.",
+            "enum": [
+              "and",
+              "or",
+              "not"
+            ],
+            "title": "Operation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "operation"
+        ],
+        "title": "LogicConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "b5727e0eaf1b094ebc16c80bdafd8426cff8c6e1d98b4cb9914a2be8108312ee",
+      "examples": [
+        {
+          "operation": "and"
+        },
+        {
+          "operation": "or"
+        },
+        {
+          "operation": "not"
+        }
+      ],
+      "execution_mode": "SYNC",
+      "handler_key": "boolean_logic",
+      "handler_version": "1",
+      "help_key": "Combine boolean conditions with AND or OR, or invert one condition with NOT.",
+      "help_text": "ترکیب شرط‌ها با و یا یا، یا معکوس کردن یک شرط با نقیض.",
+      "name": "منطق بولی",
+      "name_key": "Boolean logic",
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "left",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "boolean"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "right",
+          "required": false,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "boolean"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "result",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "boolean"
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
       "bindings": [
         {
           "pinned": false,
@@ -1748,6 +1932,62 @@
       "required_capabilities": []
     },
     {
+      "bindings": [],
+      "code": "IF_ELSE",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "title": "EmptyConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "f88fa3b0189f734e72c72cd5df597ac4f52e506ced9fc942049e961e1eb2cfb4",
+      "examples": [
+        {}
+      ],
+      "execution_mode": "SYNC",
+      "handler_key": "if_else",
+      "handler_version": "1",
+      "help_key": "Follow the true or false transition according to a boolean input; connect both branches.",
+      "help_text": "انتخاب مسیر درست یا نادرست بر اساس ورودی بولی؛ هر دو شاخه را متصل کنید.",
+      "name": "اگر / وگرنه",
+      "name_key": "If / else",
+      "outcome_source": "handler",
+      "outcomes": [
+        "true",
+        "false"
+      ],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "condition",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "boolean"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "result",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "boolean"
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
       "bindings": [
         {
           "pinned": false,
@@ -2124,6 +2364,106 @@
     },
     {
       "bindings": [],
+      "code": "NUMBER_COMPARE",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "operation": {
+            "description": "Numeric comparison: equal, not equal, less, less or equal, greater, greater or equal. Produces a boolean result.",
+            "enum": [
+              "eq",
+              "ne",
+              "lt",
+              "lte",
+              "gt",
+              "gte"
+            ],
+            "title": "Operation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "operation"
+        ],
+        "title": "ComparisonConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "b4d0b7d0bf331116c51df6ad5f144d336b1514cbfad57c52dd7d27b6e31585d5",
+      "examples": [
+        {
+          "operation": "eq"
+        },
+        {
+          "operation": "ne"
+        },
+        {
+          "operation": "lt"
+        },
+        {
+          "operation": "lte"
+        },
+        {
+          "operation": "gt"
+        },
+        {
+          "operation": "gte"
+        }
+      ],
+      "execution_mode": "SYNC",
+      "handler_key": "number_compare",
+      "handler_version": "1",
+      "help_key": "Compare two numbers to produce a boolean for a threshold, equality check or branch.",
+      "help_text": "مقایسه دو عدد و تولید شرط درست یا نادرست برای آستانه یا انتخاب مسیر.",
+      "name": "مقایسه اعداد",
+      "name_key": "Compare numbers",
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "left",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "number"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "right",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "number"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": false,
+          "port_key": "result",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "boolean"
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [],
       "code": "PERMISSION_CHECK",
       "config_dialect": "json-schema-2020-12",
       "config_schema": {
@@ -2209,6 +2549,106 @@
               "type": "null"
             },
             "type": "integer"
+          }
+        }
+      ],
+      "required_capabilities": []
+    },
+    {
+      "bindings": [],
+      "code": "SELECT_VALUE",
+      "config_dialect": "json-schema-2020-12",
+      "config_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "title": "EmptyConfig",
+        "type": "object"
+      },
+      "contract_fingerprint": "e6518ac4f954f605268b912f94fa709b623b29822a13d5547ddc60f7fec28de9",
+      "examples": [
+        {}
+      ],
+      "execution_mode": "SYNC",
+      "handler_key": "select_value",
+      "handler_version": "1",
+      "help_key": "Select one supplied JSON value using a boolean condition, without branching the workflow. Both inputs are required and may be null.",
+      "help_text": "انتخاب یکی از دو مقدار JSON بر اساس شرط، بدون تغییر مسیر گردش کار. هر دو ورودی الزامی‌اند و می‌توانند تهی باشند.",
+      "name": "انتخاب مقدار",
+      "name_key": "Select value",
+      "outcome_source": "graph",
+      "outcomes": [],
+      "ports": [
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": false,
+          "port_key": "condition",
+          "required": true,
+          "value_schema": {
+            "not": {
+              "type": "null"
+            },
+            "type": "boolean"
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": true,
+          "port_key": "if_true",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "anyOf": [
+              {
+                "$ref": "#/$defs/JsonValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "INPUT",
+          "nullable": true,
+          "port_key": "if_false",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "anyOf": [
+              {
+                "$ref": "#/$defs/JsonValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        {
+          "cardinality": "SCALAR",
+          "direction": "OUTPUT",
+          "nullable": true,
+          "port_key": "result",
+          "required": true,
+          "value_schema": {
+            "$defs": {
+              "JsonValue": {}
+            },
+            "anyOf": [
+              {
+                "$ref": "#/$defs/JsonValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         }
       ],

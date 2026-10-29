@@ -1,6 +1,41 @@
 # Changelog
 
+### Integration closure — 2026-10-28
+
+- Add current Calendar membership selection, evidence-bound operation notices, versioned object-field mappings/redacted preview, and the cached-process event-lock repair. See APP-BE-016.UX01, APP-BE-014.UX01, APP-BE-019.UX03 and APP-BE-028.UX02 change records for actual acceptance and D07/external limits.
+
 ## Unreleased
+
+### Added
+
+- Five owned Agent authoring/evaluation contracts and use-authorized saved connection
+  names. Evaluation delegates eligible published workflow/request submission with
+  existing budget, approval and replay rules. See [APP-BE-019.UX01](docs/changes/APP-BE-019.UX01.md).
+- An additive local business seed profile with thirteen executable review workflows,
+  actual Legal review, invoice-number correlation and human-entered inspection results.
+  `mise run real-process-seed` creates drafts/waiting work without auto-approval.
+  See [APP-BE-005.3](docs/changes/APP-BE-005.3.md) and the matching client setup in
+  [the seed guide](docs/guides/demo-seed.md).
+
+### Fixed
+
+- Keep notification recipient serialization compatible with foreign-key locks so
+  fanout cannot deadlock a concurrent human claim. See
+  [APP-BE-028.UX01](docs/changes/APP-BE-028.UX01.md).
+
+- Preserve declared workflow source schemas through promotion/publication and repair legacy
+  Transform validation/execution without replacing published type metadata. Apply
+  `0004_binding_source_schema` before deployment. See [APP-BE-019.UX02](docs/changes/APP-BE-019.UX02.md).
+
+- Added executable workflow math, comparison, boolean, if/else and value-selection
+  blocks, with purpose-documented reusable workflow/type/component seeds. `mise run
+  demo-seed` now inserts the small library locally; the Compose seed service/image
+  target are removed. The larger dataset requires `--with-demo-cases`. See
+  [the seed guide](docs/guides/demo-seed.md).
+
+- Register scheduler model dependencies at startup to prevent recurring
+  `NoReferencedTableError` during timer retries. Restart the scheduler after updating.
+  See [APP-BE-024.1](docs/changes/APP-BE-024.1.md).
 
 ### Documentation cleanup
 
@@ -15,7 +50,7 @@
 
 - Preserve committed private upload objects when a post-commit refresh fails or is cancelled; keep the async loop responsive during broker confirmation. See [APP-BE-030](docs/changes/APP-BE-030.md).
 
-Migration deployment uses `0001_schema -> 0002_required_data -> 0003_arabic`: complete schema
+Migration deployment uses `0001_schema -> 0002_required_data -> 0003_arabic -> 0004_binding_source_schema`: complete schema
 first, required handlers, permissions and schedules second, then Arabic help locales and
 notification handler version 3. The two baseline revisions remain unchanged. Older revision markers require a
 reviewed database transition before this checkout is deployed. The additive IDs below describe

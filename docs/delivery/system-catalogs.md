@@ -14,4 +14,12 @@ Requester/reviewer templates grant `requests.start`; resource eligibility and cu
 
 Dynamic business permissions, forms, workflows, integrations, users, paid-provider configurations and connection grants are operator-owned. Transforms are declared in registered handler schemas rather than seeded as universal business definitions. Templates are code-owned, with `workflow.notice/1` currently executable; MAP templates are design-only until APP-BE-014. Demo fixtures and any new bootstrap flow belong to APP-BE-005. This task introduces no new tables, default passwords, user assignments or production credentials.
 
+The local `mise run demo-seed` workflow-library profile adds and publishes five deployed
+primitive families (`arithmetic`, `number_compare`, `boolean_logic`, `if_else`,
+`select_value`) and installs their reusable workflow/type/component examples through
+existing owners. It runs on the host and does not start a seed service. See
+[the seed guide](../guides/demo-seed.md) for every item's purpose and repeat-insert rules.
+System catalog reconciliation still leaves new extension versions as drafts; the local
+development insert is the explicit publication path. Applied migrations are unchanged.
+
 Check summaries report permission gaps without credentials. The permission check does not claim full installation readiness; APP-BE-011 owns readiness across providers, catalogs and operational services. The write command calls the existing step reconciler, which rejects unavailable roots and validates existing snapshots instead of rewriting published data.

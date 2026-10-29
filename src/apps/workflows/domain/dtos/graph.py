@@ -5,6 +5,7 @@ from typing import Any, Literal
 from pydantic import ConfigDict, Field, model_validator
 
 from apps.work_items.domain.task_contract import HumanTaskContract
+from apps.workflows.domain.object_projection import ObjectFieldProjection
 from apps.workflows.domain.subprocess import SubprocessCall, SubprocessInterface
 from core.base_dto import BaseDTO
 
@@ -52,15 +53,30 @@ class GraphBinding(BaseDTO):
     target_port: str
     target_schema: dict[str, Any]
     ordinal: int = Field(default=0, ge=0)
+    target_projection: ObjectFieldProjection | None = Field(
+        default=None,
+        exclude_if=lambda value: value is None,
+        description="Optional bpms.binding.object/1 destination field for a scalar object input. Absent/null retains whole-port semantics and is omitted from canonical output to preserve existing published payloads/checksums. Field bindings cannot overlap or mix with whole-port bindings. No array containers or implicit defaults; explicit null must satisfy the target leaf schema.",
+    )
     source_kind: Literal["REQUEST", "CONTEXT", "CONSTANT", "STEP_OUTPUT"]
     source_path: str | None = None
     source_step: str | None = None
     source_port: str | None = None
     source_schema: dict[str, Any] | None = Field(
         default=None,
-        description="For STEP_OUTPUT, the exact pinned output-port schema, including generic service metadata. Registered sandbox receipt guarantees refine server-side compatibility without changing persisted port metadata or graph checksums. Caller-supplied schema assertions cannot replace the trusted operation contract.",
+        description="For REQUEST/CONTEXT, the declared source JSON Schema is persisted with the executable binding across save, promotion, publication and reload; null retains legacy undeclared behavior. This schema is an authoring type contract, not data or authorization. For STEP_OUTPUT, use the exact pinned output-port schema, including generic service metadata. Trusted registered output guarantees refine validation without changing persisted port metadata or graph checksums. Caller assertions cannot replace trusted operation contracts.",
     )
     constant_value: Any = None
+
+    @model_validator(mode="after")
+    def projection_root(self) -> GraphBinding:
+        if self.target_projection is not None and (
+            self.target_schema.get("type") != "object"
+            or not isinstance(self.target_schema.get("properties"), dict)
+            or not self.target_schema["properties"]
+        ):
+            raise ValueError("binding.projection.root_object.required")
+        return self
 
 
 class GraphTarget(BaseDTO):

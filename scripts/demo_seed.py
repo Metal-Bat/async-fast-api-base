@@ -1,4 +1,4 @@
-"""Populate the configured local database with rich additive demonstration data and exit."""
+"""Insert a reusable workflow library locally; optionally populate business demonstrations."""
 
 import argparse
 import asyncio
@@ -10,7 +10,6 @@ from pathlib import Path
 from uuid import uuid4
 
 from dotenv import load_dotenv
-from scripts.bootstrap_application import open_manifest
 
 
 def validate_seed_environment(environment: str, host: str, database: str) -> None:
@@ -71,7 +70,36 @@ def save_credentials(path: Path, database: str, credentials: list[dict[str, str]
         temporary.unlink(missing_ok=True)
 
 
-async def seed(manifest, count: int, directory: Path) -> None:
+async def seed(
+    manifest,
+    count: int,
+    directory: Path,
+    *,
+    with_demo_cases: bool = False,
+    with_real_processes: bool = False,
+    process_cases: int = 2,
+) -> None:
+    await seed_workflow_library(manifest, directory)
+    if with_real_processes:
+        from scripts.demo.real_processes import install_real_processes
+
+        from core.deps import SessionFactory, engine
+
+        try:
+            async with SessionFactory() as session, session.begin():
+                counts, credentials = await install_real_processes(
+                    session, manifest, cases_per_type=process_cases
+                )
+            save_credentials(directory / "credentials.json", manifest.database, credentials)
+            print(json.dumps(counts))
+            print(
+                f"Real process examples inserted. Initial login credentials: {directory / 'credentials.json'}"
+            )
+        finally:
+            await engine.dispose()
+        return
+    if not with_demo_cases:
+        return
     from scripts.demo.catalog import install_catalog
     from scripts.demo.operations import (
         ensure_demo_storage,
@@ -95,14 +123,54 @@ async def seed(manifest, count: int, directory: Path) -> None:
         await engine.dispose()
 
 
-async def inspect_states(manifest) -> None:
+async def seed_workflow_library(manifest, directory: Path) -> None:
+    from uuid import uuid5
+
+    from scripts.demo.workflow_library import install_workflow_library
+
+    from apps.users.application.bootstrap import install_accounts
+    from apps.users.application.permission_catalog import reconcile_permissions
+    from apps.users.domain.entity import UserEntity
+    from core.deps import SessionFactory, engine
+
+    try:
+        async with SessionFactory() as session, session.begin():
+            await reconcile_permissions(
+                session, roles=tuple(account.persona for account in manifest.accounts)
+            )
+            await install_accounts(session, manifest)
+            owner = await session.get(UserEntity, uuid5(manifest.installation_id, "user:designer"))
+            if owner is None:
+                raise ValueError("Workflow library requires the installation designer")
+            counts = await install_workflow_library(session, manifest, owner)
+        save_credentials(
+            directory / "credentials.json",
+            manifest.database,
+            [
+                {
+                    "username": account.username,
+                    "password": account.password.get_secret_value(),
+                    "role": account.persona,
+                }
+                for account in manifest.accounts
+            ],
+        )
+        print(json.dumps(counts))
+        print(f"Workflow library inserted. Login credentials: {directory / 'credentials.json'}")
+    finally:
+        await engine.dispose()
+
+
+async def inspect_states(manifest, *, real_processes: bool = False) -> None:
+    from scripts.demo.real_processes import current_real_states
     from scripts.demo.scenarios import current_states
 
     from core.deps import SessionFactory, engine
 
     try:
         async with SessionFactory() as session:
-            print(json.dumps(await current_states(session, manifest), ensure_ascii=False, indent=2))
+            reader = current_real_states if real_processes else current_states
+            print(json.dumps(await reader(session, manifest), ensure_ascii=False, indent=2))
     finally:
         await engine.dispose()
 
@@ -133,18 +201,42 @@ def main() -> int:
     parser.add_argument(
         "--inspect", action="store_true", help="Read current scenario states without seeding"
     )
+    profiles = parser.add_mutually_exclusive_group()
+    profiles.add_argument(
+        "--with-demo-cases",
+        action="store_true",
+        help="Also generate business requests, people, private files and reports; requires their existing services",
+    )
+    profiles.add_argument(
+        "--with-real-processes",
+        action="store_true",
+        help="Add executable v3 business processes and genuine draft/waiting requests; never auto-approve or call providers",
+    )
+    parser.add_argument(
+        "--process-cases-per-type",
+        type=int,
+        default=2,
+        help="1–10 real cases per business process, alternating draft and submitted",
+    )
     parser.add_argument(
         "--state-directory", type=Path, help="Reuse a specific private installation directory"
     )
     options = parser.parse_args()
-    compile_locales()
     if not 14 <= options.cases_per_type <= 2000:
         parser.error("--cases-per-type must be between 14 and 2000")
+    if not 1 <= options.process_cases_per_type <= 10:
+        parser.error("--process-cases-per-type must be between 1 and 10")
     # Preserve JSON-valued settings; shell-style env-file parsing removes their quotes.
     load_dotenv(Path(__file__).resolve().parents[1] / ".envs" / ".backend")
+    # The seed runs on the host; Compose's database is already published on this port.
+    if os.environ.get("POSTGRES_HOST") == "postgres":
+        os.environ["POSTGRES_HOST"] = "127.0.0.1"
+    from scripts.bootstrap_application import open_manifest
+
     from core.settings import settings
 
     validate_seed_environment(settings.ENVIRONMENT, settings.POSTGRES_HOST, settings.POSTGRES_DB)
+    compile_locales()
     host = "127.0.0.1" if settings.POSTGRES_HOST == "postgres" else settings.POSTGRES_HOST
     target = f"{host}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}"
     directory = options.state_directory or (
@@ -161,9 +253,18 @@ def main() -> int:
         usernames={key: "demo." + key for key in ("requester", "reviewer", "designer")},
     ) as manifest:
         if options.inspect:
-            asyncio.run(inspect_states(manifest))
+            asyncio.run(inspect_states(manifest, real_processes=options.with_real_processes))
         else:
-            asyncio.run(seed(manifest, options.cases_per_type, directory))
+            asyncio.run(
+                seed(
+                    manifest,
+                    options.cases_per_type,
+                    directory,
+                    with_demo_cases=options.with_demo_cases,
+                    with_real_processes=options.with_real_processes,
+                    process_cases=options.process_cases_per_type,
+                )
+            )
     return 0
 
 

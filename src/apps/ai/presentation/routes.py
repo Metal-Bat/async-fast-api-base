@@ -5,6 +5,7 @@ from typing import Annotated, Literal, cast
 from fastapi import APIRouter, Depends, Path, Request, Response
 
 from apps.ai.application.agent_service import AIAgentService
+from apps.ai.application.authoring import AIAgentAuthoringService, decision_preview
 from apps.ai.application.budget_service import AIBudgetService
 from apps.ai.application.catalog import AISelectionService
 from apps.ai.application.providers import (
@@ -12,6 +13,17 @@ from apps.ai.application.providers import (
     provider_spec,
 )
 from apps.ai.domain.agent import AIAgentDraftSpec, AIAgentPublishedSpec, AIPrice
+from apps.ai.domain.authoring import (
+    AIAgentEvaluationDTO,
+    AIAgentEvaluationInput,
+    AIDecisionPreviewDTO,
+    AIDecisionPreviewInput,
+    AIReportLookupDTO,
+    AIReportLookupPreviewDTO,
+    AIReportLookupPreviewInput,
+    AIWorkflowContextDTO,
+    AIWorkflowContextInput,
+)
 from apps.ai.domain.budget import AIBudgetStatus
 from apps.ai.domain.contracts import AIDecisionContract, AITaskLimits
 from apps.ai.domain.dto import (
@@ -32,18 +44,19 @@ from apps.processes.domain.entity import StepExecutionEntity
 from apps.processes.presentation.routes import authorized as authorized_process
 from apps.users.application.authorization import RequirePermission
 from apps.users.domain.entity import UserEntity
-from core.deps import SessionDep
+from core.deps import ClientContextDep, SessionDep
 from core.history_dto import HistoryQuery, HistoryRecordDTO
 from core.history_service import HistoryService
 from core.ref_id import create_ref_id, open_ref_id
 from core.settings import settings
-from utils.base_schema import response_schema
+from utils.base_schema import PRIVATE_NO_STORE_RESPONSES, response_schema
 from utils.exceptions import NotFoundException, VersionConflictException
 from utils.pagination import Page
 from utils.presenter import (
     PageResponse,
     SuccessResponse,
     page_response,
+    private_no_store,
     select_response,
     success_response,
 )
@@ -52,6 +65,109 @@ from utils.select import SelectOption, SelectQuery, SelectResponseFormat
 router = APIRouter(prefix="/ai-agents", tags=["ai-agents"], responses=response_schema())
 AIAuthor = Annotated[UserEntity, Depends(RequirePermission("workflows.manage"))]
 ProcessReader = Annotated[UserEntity, Depends(RequirePermission("requests.start"))]
+
+
+@router.post(
+    "/{ref_id}/decision-preview",
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    response_model=SuccessResponse[AIDecisionPreviewDTO],
+    summary="Validate an author-provided decision sample",
+    description="Requires workflows.manage and ownership of the exact current agent. Validates at most 32 KiB of explicitly supplied permitted inputs and distinguishes static, missing, empty, invalid and valid choices. No provider, query, budget reservation, business command or execution-snapshot read occurs. This is local validation, never model evaluation evidence. Stale agent refs return 409; foreign agents are denied.",
+)
+async def preview_agent_decision(
+    request: Request,
+    response: Response,
+    ref_id: str,
+    data: AIDecisionPreviewInput,
+    actor: AIAuthor,
+    session: SessionDep,
+) -> SuccessResponse[AIDecisionPreviewDTO]:
+    _, spec = await AIAgentAuthoringService(session).agent(ref_id, actor)
+    private_no_store(response)
+    return success_response(request, decision_preview(spec, data.sample_inputs))
+
+
+@router.post(
+    "/{ref_id}/workflow-context",
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    response_model=SuccessResponse[AIWorkflowContextDTO],
+    summary="Inspect exact workflow-bound agent choices",
+    description="Requires workflows.manage, owned current agent and current view authorization for the named active workflow. The exact workflow version and AI_DECISION step must pin this exact agent. Projects the declared whole-input source schema through its source path, or the shared object declaration for bpms.binding.object/1 fields. Optional whole-input author samples, a visible constant binding or an all-constant object composition are clearly identified; protected runtime samples are never fetched. Missing bindings, mixed legacy multiple bindings, mismatched agent pins and stale versions return 409. Multiple versioned object fields share one input schema; mixed-source compositions never fetch runtime values. No execution or model call occurs.",
+)
+async def agent_workflow_context(
+    request: Request,
+    response: Response,
+    ref_id: str,
+    data: AIWorkflowContextInput,
+    actor: AIAuthor,
+    session: SessionDep,
+) -> SuccessResponse[AIWorkflowContextDTO]:
+    result = await AIAgentAuthoringService(session).workflow_context(ref_id, data, actor)
+    private_no_store(response)
+    return success_response(request, result)
+
+
+@router.post(
+    "/{ref_id}/retrieval-sources/search",
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    response_model=PageResponse[Page[AIReportLookupDTO]],
+    summary="Find permitted owned report lookup sources",
+    description="Requires workflows.manage and ownership of the current agent. Returns only current unexpired owned saved reports whose exact registered definition opts into AI lookup and whose permission, classification, source and tool are allowed by this agent. Authorization and lifecycle filtering precede count and stable paging. Search matches definition keys; size/page use SelectQuery bounds. No private rows, saved filters, artifact paths or credentials are exposed. An empty catalog grants no authority and does not imply that missing sources were revoked.",
+)
+async def agent_retrieval_sources(
+    request: Request,
+    response: Response,
+    ref_id: str,
+    query: SelectQuery,
+    actor: AIAuthor,
+    session: SessionDep,
+) -> PageResponse[Page[AIReportLookupDTO]]:
+    result = await AIAgentAuthoringService(session).report_sources(ref_id, query, actor)
+    private_no_store(response)
+    return page_response(request, result)
+
+
+@router.post(
+    "/{ref_id}/retrieval-preview",
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    response_model=SuccessResponse[AIReportLookupPreviewDTO],
+    summary="Review a bounded saved-report lookup plan",
+    description="Requires workflows.manage, owned current agent and exact owned unexpired saved-report reference. Rechecks registered definition version, source/tool/classification and current report permission. Limit is 1–10 and cannot exceed either registered or saved-query bounds. Returns an allowed-field result schema without executing the query or calling a provider. Runtime lookup_saved_report/1 still requires approval of the exact pending read-only call and reauthorizes at dispatch; this preview is not that approval. Stale/expired refs return 409; foreign/disallowed sources are not exposed.",
+)
+async def agent_retrieval_preview(
+    request: Request,
+    response: Response,
+    ref_id: str,
+    data: AIReportLookupPreviewInput,
+    actor: AIAuthor,
+    session: SessionDep,
+) -> SuccessResponse[AIReportLookupPreviewDTO]:
+    result = await AIAgentAuthoringService(session).lookup_preview(ref_id, data, actor)
+    private_no_store(response)
+    return success_response(request, result)
+
+
+@router.post(
+    "/{ref_id}/evaluations",
+    responses=PRIVATE_NO_STORE_RESPONSES,
+    response_model=SuccessResponse[AIAgentEvaluationDTO],
+    summary="Submit an eligible request for governed agent evaluation",
+    description="Requires both workflows.manage and requests.start, ownership of the current published agent and of the selected eligible draft request. The request's immutable workflow must pin this exact agent. Delegates the unchanged submit_key and saved inputs to normal RequestService submission with the authenticated client context; exact replay, current refs, pinned grants, budgets, prices, worker lifecycle and required human approvals remain authoritative. Draft agents and mismatched pins return 409. Returns accepted request/process identity, never a fabricated provider verdict. Actual execution may be queued, denied, failed or uncertain; inspect ordinary process/AI evidence. No arbitrary draft execution, paid retry or protected-effect bypass is introduced.",
+)
+async def start_agent_evaluation(
+    request: Request,
+    response: Response,
+    ref_id: str,
+    data: AIAgentEvaluationInput,
+    actor: AIAuthor,
+    _: ProcessReader,
+    client: ClientContextDep,
+    session: SessionDep,
+) -> SuccessResponse[AIAgentEvaluationDTO]:
+    result = await AIAgentAuthoringService(session).start_evaluation(ref_id, data, actor, client)
+    await session.commit()
+    private_no_store(response)
+    return success_response(request, result)
 
 
 def service(session: SessionDep) -> AIAgentService:
@@ -256,34 +372,24 @@ async def model_suggestions(
 
 @router.get(
     "/connections/{connection_ref}/models/{model_id}/metadata",
+    responses=PRIVATE_NO_STORE_RESPONSES,
     response_model=SuccessResponse[AIModelMetadataDTO],
     summary="Inspect one connection-scoped model capability",
     description="Requires workflows.manage and use access to the verified AI connection. Reports configured model, region, retention declaration and adapter capabilities without resolving or returning its secret.",
 )
 async def model_metadata(
     request: Request,
+    response: Response,
     connection_ref: str,
     model_id: str,
     actor: AIAuthor,
     session: SessionDep,
 ) -> SuccessResponse[AIModelMetadataDTO]:
-    connections = connection_service(session)
-    pin, policy = await connections.pin_ai(connection_ref, actor, model_id)
-    spec = provider_spec(pin.provider)
-    if spec is None:
-        raise VersionConflictException("AI provider unavailable")
+    private_no_store(response)
     return success_response(
         request,
-        AIModelMetadataDTO(
-            connection_ref=connection_ref,
-            provider=pin.provider,
-            model_id=model_id,
-            source="configured",
-            can_execute=spec.governed_execution,
-            supports_structured_output=spec.supports_structured_output,
-            supports_tools=spec.supports_tools,
-            region=policy.region,
-            provider_retention=policy.provider_retention,
+        await AISelectionService(session, connection_service(session)).model_metadata(
+            connection_ref, actor, model_id
         ),
     )
 

@@ -3449,3 +3449,127 @@ msgid ""
 "decimal/currency formatting. Canonical submission strings use Gregorian ISO dates, UTC datetimes "
 "and ungrouped decimals; localized or lossy values are rejected."
 msgstr ""
+
+
+msgid "Arithmetic"
+msgstr "حساب الأعداد"
+
+
+msgid "Calculate two finite numbers; reject zero divisors. Use for quantities and scores, not exact currency accounting."
+msgstr "حساب عددين محدودين؛ القسمة على صفر مرفوضة. للكميات والدرجات وليس للمحاسبة المالية الدقيقة."
+
+
+msgid "Compare numbers"
+msgstr "مقارنة الأعداد"
+
+
+msgid "Compare two numbers to produce a boolean for a threshold, equality check or branch."
+msgstr "مقارنة عددين لإنتاج شرط منطقي للتحقق من الحدود أو اختيار المسار."
+
+
+msgid "Boolean logic"
+msgstr "المنطق البولياني"
+
+
+msgid "Combine boolean conditions with AND or OR, or invert one condition with NOT."
+msgstr "دمج الشروط باستخدام و أو أو، أو عكس شرط باستخدام النفي."
+
+
+msgid "If / else"
+msgstr "إذا / وإلا"
+
+
+msgid "Follow the true or false transition according to a boolean input; connect both branches."
+msgstr "اتباع مسار صحيح أو خطأ وفق المدخل المنطقي؛ يجب توصيل الفرعين."
+
+
+msgid "Select value"
+msgstr "اختيار قيمة"
+
+
+msgid "Select one supplied JSON value using a boolean condition, without branching the workflow. Both inputs are required and may be null."
+msgstr "اختيار إحدى قيمتي JSON وفق شرط دون تغيير مسار العمل. كلا المدخلين مطلوب ويمكن أن يكون فارغاً."
+
+#: src/apps/ai/presentation/routes.py
+msgid "Validate an author-provided decision sample"
+msgstr "يتحقق من عينة قرار يقدمها المؤلف"
+
+#: src/apps/ai/presentation/routes.py
+msgid "Requires workflows.manage and ownership of the exact current agent. Validates at most 32 KiB of explicitly supplied permitted inputs and distinguishes static, missing, empty, invalid and valid choices. No provider, query, budget reservation, business command or execution-snapshot read occurs. This is local validation, never model evaluation evidence. Stale agent refs return 409; foreign agents are denied."
+msgstr "يتطلب workflows.manage وملكية الوكيل ومرجعه الحالي الدقيق. يتحقق فقط من المدخلات المسموح بها المقدمة حتى 32 KiB ويميز الخيارات الثابتة والمفقودة والفارغة وغير الصالحة والصالحة. لا يستدعي مزودا أو استعلاما ولا يحجز ميزانية ولا ينفذ أمرا تجاريا ولا يقرأ لقطة تنفيذ خاصة. هذا تحقق محلي وليس نتيجة نموذج. المرجع القديم يعيد 409 ولا يسمح بوكيل مستخدم آخر."
+
+#: src/apps/ai/presentation/routes.py
+msgid "Inspect exact workflow-bound agent choices"
+msgstr "فحص خيارات الوكيل المرتبطة بإصدار سير عمل دقيق"
+
+#: src/apps/ai/presentation/routes.py
+msgid "Requires workflows.manage, owned current agent and current view authorization for the named active workflow. The exact workflow version and AI_DECISION step must pin this exact agent. Projects the declared data binding schema through its source path. Optional author samples or an existing constant binding are clearly identified; protected runtime samples are never fetched. Missing or multiple data bindings, mismatched agent pins and stale versions return 409. No execution or model call occurs."
+msgstr "يتطلب workflows.manage وملكية الوكيل الحالي وصلاحية عرض حالية لسير العمل النشط. يجب أن يثبت إصدار سير العمل الدقيق وخطوة AI_DECISION هذا الوكيل نفسه. يعرض مخطط ربط data المعلن بعد إسقاط مسار المصدر. يحدد عينة المؤلف أو الربط الثابت ولا يقرأ عينات تنفيذ خاصة. الربط المفقود أو المتعدد والتثبيت المختلف والإصدار القديم تعيد 409. لا يحدث تنفيذ أو استدعاء نموذج."
+
+#: src/apps/ai/presentation/routes.py
+msgid "Find permitted owned report lookup sources"
+msgstr "البحث عن مصادر استعلام تقارير مملوكة ومسموح بها"
+
+#: src/apps/ai/presentation/routes.py
+msgid "Requires workflows.manage and ownership of the current agent. Returns only current unexpired owned saved reports whose exact registered definition opts into AI lookup and whose permission, classification, source and tool are allowed by this agent. Authorization and lifecycle filtering precede count and stable paging. Search matches definition keys; size/page use SelectQuery bounds. No private rows, saved filters, artifact paths or credentials are exposed. An empty catalog grants no authority and does not imply that missing sources were revoked."
+msgstr "يتطلب workflows.manage وملكية الوكيل الحالي. يعرض فقط التقارير المحفوظة الحالية غير المنتهية المملوكة للمؤلف التي تسمح نسختها المسجلة الدقيقة باستعلام الذكاء الاصطناعي وتوافق صلاحيتها وتصنيفها ومصدرها وأداتها سياسة الوكيل. تطبق صلاحية الوصول ودورة الحياة قبل العد والترقيم المستقر. يبحث في مفاتيح التعريف ويلتزم بحدود SelectQuery. لا يعرض صفوفا خاصة أو مرشحات محفوظة أو مسارات ملفات أو بيانات اعتماد. الكتالوج الفارغ لا يمنح صلاحية ولا يعني إلغاء مصدر غير ظاهر."
+
+#: src/apps/ai/presentation/routes.py
+msgid "Review a bounded saved-report lookup plan"
+msgstr "مراجعة خطة محدودة لاستعلام تقرير محفوظ"
+
+#: src/apps/ai/presentation/routes.py
+msgid "Requires workflows.manage, owned current agent and exact owned unexpired saved-report reference. Rechecks registered definition version, source/tool/classification and current report permission. Limit is 1–10 and cannot exceed either registered or saved-query bounds. Returns an allowed-field result schema without executing the query or calling a provider. Runtime lookup_saved_report/1 still requires approval of the exact pending read-only call and reauthorizes at dispatch; this preview is not that approval. Stale/expired refs return 409; foreign/disallowed sources are not exposed."
+msgstr "يتطلب workflows.manage وملكية الوكيل الحالي ومرجعا دقيقا لتقرير محفوظ مملوك وغير منته. يعيد فحص إصدار التعريف وسياسة المصدر والأداة والتصنيف والصلاحية الحالية. الحد من 1 إلى 10 ولا يتجاوز حد التعريف أو التقرير. يعرض مخطط حقول مسموح بها بلا تنفيذ الاستعلام أو النموذج. ما زال lookup_saved_report/1 يتطلب موافقة بشرية على الاستدعاء المعلق الدقيق للقراءة فقط وإعادة التحقق عند التنفيذ؛ المعاينة ليست موافقة. المرجع القديم أو المنتهي يعيد 409 ولا يكشف المصدر الخاص أو غير المسموح."
+
+#: src/apps/ai/presentation/routes.py
+msgid "Submit an eligible request for governed agent evaluation"
+msgstr "إرسال طلب مؤهل لتقييم وكيل محكوم"
+
+#: src/apps/ai/presentation/routes.py
+msgid "Requires both workflows.manage and requests.start, ownership of the current published agent and of the selected eligible draft request. The request's immutable workflow must pin this exact agent. Delegates the unchanged submit_key and saved inputs to normal RequestService submission with the authenticated client context; exact replay, current refs, pinned grants, budgets, prices, worker lifecycle and required human approvals remain authoritative. Draft agents and mismatched pins return 409. Returns accepted request/process identity, never a fabricated provider verdict. Actual execution may be queued, denied, failed or uncertain; inspect ordinary process/AI evidence. No arbitrary draft execution, paid retry or protected-effect bypass is introduced."
+msgstr "يتطلب workflows.manage وrequests.start معا وملكية الوكيل المنشور الحالي ومسودة الطلب المؤهلة. يجب أن يثبت سير العمل غير القابل للتغيير الوكيل نفسه. يفوض submit_key والمدخلات المحفوظة دون تغيير إلى إرسال RequestService العادي مع سياق العميل الموثق. تبقى قواعد الإعادة الدقيقة والمراجع الحالية والمنح المثبتة والميزانية والأسعار والعامل والموافقة البشرية المطلوبة سارية. الوكيل المسودة أو التثبيت المختلف يعيد 409. يعيد هوية الطلب والعملية المقبولة فقط وليس نتيجة مزود مختلقة. قد يكون التنفيذ في الطابور أو مرفوضا أو فاشلا أو غير مؤكد؛ راجع أدلة العملية والذكاء الاصطناعي العادية. لا يضيف تنفيذ مسودة اعتباطيا أو إعادة مدفوعة أو تجاوز موافقة أثر محمي."
+
+#: src/apps/ai/presentation/routes.py
+msgid "Workflow does not pin this agent at this step"
+msgstr "هذه الخطوة لا تثبت هذا الوكيل"
+
+#: src/apps/ai/presentation/routes.py
+msgid "AI data binding is unavailable"
+msgstr "ربط بيانات الوكيل غير متاح"
+
+#: src/apps/ai/presentation/routes.py
+msgid "Evaluation requires a published AI agent"
+msgstr "يتطلب التقييم وكيلا منشورا"
+
+#: src/apps/ai/presentation/routes.py
+msgid "Request workflow does not pin this AI agent"
+msgstr "سير عمل الطلب لا يثبت هذا الوكيل"
+
+#: src/apps/ai/presentation/routes.py
+msgid "Authoring sample exceeds 32 KiB"
+msgstr "عينة المؤلف تتجاوز 32 KiB"
+
+#: src/apps/calendar/presentation/routes.py
+msgid "Select my active Calendar groups"
+msgstr "اختيار مجموعاتي النشطة في التقويم"
+
+#: src/apps/calendar/presentation/routes.py
+msgid "Read-only private selector for any authenticated current actor, without administrative group permission. Only the actor's current active memberships in live active groups are eligible; superusers have no membership bypass. Literal case-insensitive name search (1–100 characters when supplied) runs before counts and pagination. Omitted/null search matches all eligible groups. Page defaults to 1, size to 20 (1–100); stable name/id order. response_format=page returns the usual result envelope; items returns the same bounded page as a plain key/value array. No owner or lifecycle overrides. Keys are current opaque revision refs, values preserve user-entered names in every locale. Selection grants no write authority: Calendar commands recheck live membership and current group revision. Revoked/deleted groups disappear immediately on the next read, including counts; unauthenticated access is 401, malformed input 422. No business mutation or provider call. Private no-store headers apply to both formats."
+msgstr "محدد خاص للقراءة فقط لأي مستخدم مسجل الدخول دون صلاحية إدارة المجموعات. تظهر فقط العضويات الحالية النشطة في مجموعات نشطة غير محذوفة؛ لا يُستثنى المدير العام. يُطبّق البحث الحرفي في الاسم دون حساسية لحالة الأحرف (١–١٠٠ حرف) قبل العد وترقيم الصفحات. غياب البحث أو null يطابق جميع المجموعات المسموحة. الصفحة الافتراضية ١ والحجم ٢٠ (١–١٠٠) بترتيب ثابت حسب الاسم والمعرّف. يعيد تنسيق page غلاف result، ويعيد items الصفحة المحدودة نفسها كمصفوفة key/value. لا يمكن تجاوز المالك أو حالة السجل. المفاتيح مراجع مبهمة للمراجعة الحالية والقيم أسماء المستخدمين الأصلية بجميع اللغات. لا يمنح الاختيار صلاحية الكتابة؛ تتحقق أوامر التقويم مجددًا من العضوية ومراجعة المجموعة. تختفي المجموعات المحذوفة أو المسحوبة من النتائج والعد عند القراءة التالية. يعيد الوصول غير المصادق عليه ٤٠١ والمدخل غير الصالح ٤٢٢. لا يحدث تعديل لأعمال المستخدم أو استدعاء مزود. تنطبق ترويسات private no-store على التنسيقين."
+
+#: src/apps/notifications/presentation/inbox.py
+msgid "Authenticated recipient-only unified inbox version 1. Case, work_item, ai_approval, report and account destinations resolve current owner-authorized references on every read. Calendar and support targets resolve current authorized sources. Protected operation notices resolve the existing process screen: MAP-07 requires current superuser recovery authority and unresolved evidence; MAP-08 requires current requester ownership, requests.start and the exact confirmed CREATED receipt. Unknown outcomes never authorize provider replay. Old unsupported operation targets remain unavailable. An unavailable, deleted, revoked, expired or cancelled target exposes no private subject, content or reference. Stored labels never confer authority. Search is bounded and deterministic with existing filters/order/page/size plus unread=true/false; report is the same paginated search, not a queued archive. Unread totals count live ACTIVE unread inbox rows, including redacted unavailable destinations. Mark-read changes only read metadata, requires a current optimistic ref (409 when stale), and never decides or acts on a workflow. Non-owned refs fail 403; missing/deleted refs fail 404. Null read bodies are rejected; actions accept an empty object. UTC timestamps; en/fa/ar template locale is chosen when staged with en fallback. Private no-store success/page envelopes, existing 401/403/404/409/422 errors. Refresh refs from mutation responses. Optional email defaults off; mandatory notices ignore optional opt-out. No delivery is performed by these reads."
+msgstr "صندوق موحد بالإصدار ١ خاص بالمستلم المصادق عليه. تُحل وجهات الطلب والعمل وموافقة الذكاء الاصطناعي والتقرير والحساب إلى المراجع الحالية المصرح بها عند كل قراءة. يتحقق التقويم والدعم من المصدر الحالي المصرح به. تفتح إشعارات العمليات المحمية شاشة العملية الحالية: يتطلب MAP-07 صلاحية استرداد حالية للمدير العام ودليلاً لم يُحسم؛ ويتطلب MAP-08 ملكية الطلب الحالية وصلاحية requests.start وإيصال CREATED المؤكد نفسه. لا تجيز النتيجة المجهولة تنفيذ المزود مجددًا. تبقى وجهات العمليات القديمة غير المدعومة غير متاحة. لا تعرض الوجهة المحذوفة أو المسحوبة أو المنتهية أو الملغاة أي عنوان أو محتوى أو مرجع خاص. لا تمنح التسميات المحفوظة صلاحية. البحث محدود وثابت بالفلاتر والترتيب والصفحة والحجم وunread؛ والتقرير هو البحث المرقم نفسه. يشمل عدد غير المقروء سجلات ACTIVE ذات الوجهات المحجوبة. يغيّر تعليم القراءة بيانات القراءة فقط ويتطلب مرجع المراجعة الحالية (٤٠٩ للقديم) ولا ينفذ قرارًا أو إجراءً في سير العمل. يرجع المرجع غير المملوك ٤٠٣ والمفقود أو المحذوف ٤٠٤. تُرفض أجسام null وتقبل الأوامر كائنًا فارغًا. الأوقات UTC وتُختار لغة القالب en/fa/ar عند الإنشاء مع الرجوع إلى en. تستمر أغلفة snake_case الخاصة ذات no-store وأخطاء ٤٠١/٤٠٣/٤٠٤/٤٠٩/٤٢٢. حدّث المراجع من ردود الأوامر. البريد الاختياري معطل افتراضيًا وتتجاوز الإشعارات الإلزامية إلغاء الاشتراك الاختياري. لا تنفذ هذه القراءات أي إرسال."
+
+#: src/apps/workflows/presentation/routes.py
+msgid "Preview object field samples"
+msgstr "معاينة عينات حقول الكائن"
+
+#: src/apps/workflows/presentation/routes.py
+msgid "Pure bpms.binding.object/1 authoring preview. Requires workflows.manage and current view access to an active workflow; ref_id must identify the current version revision (409 stale; 404 missing, deleted or unauthorized workflow). The candidate graph is validated through the existing publication/type/source authorization path but is never saved, published or executed. target_step and target_port select a projected scalar object input. Existing constants are visible candidate values; other sources require explicit author samples of the selected source value, keyed by binding ordinal. No request submission, execution output, credential or runtime context is fetched as a sample. Omitted samples differ from explicit null, zero, false and empty collections. At most 64 unique samples / 32 KiB UTF-8 and a 1 MiB candidate are accepted (422 invalid body). Invalid candidates/types/values and missing samples return an INVALID or MISSING data result with bounded pointer/code issues, never submitted values. VALID returns only mapped paths, source kinds/origins and JSON value types; every value stays redacted. Constants cannot be overridden by samples. candidate_checksum identifies the validated candidate, not a deployed workflow. No provider, tool, handler, approval or business effect is invoked; no authorization is granted. Private no-store and existing snake_case success/error envelopes apply; authentication/permission errors remain 401/403. Existing whole-port and LIST bindings retain their original contracts."
+msgstr "معاينة تأليف خالصة وفق bpms.binding.object/1. تتطلب workflows.manage وصلاحية العرض الحالية لسير عمل نشط ومرجع مراجعة الإصدار الحالي؛ المرجع القديم 409 والمورد المفقود أو المحذوف أو غير المصرح به 404. يتحقق الرسم المقترح عبر مسار النشر والأنواع وصلاحيات المصادر الحالي دون حفظ أو نشر أو تنفيذ. يحدد target_step وtarget_port مدخل كائن SCALAR. الثوابت قيم ظاهرة في التصميم؛ تتطلب المصادر الأخرى عينات صريحة من المؤلف بحسب ordinal الربط. لا تجلب بيانات طلب أو مخرجات تنفيذ أو اعتماد أو سياق تشغيل خاص. العينة المحذوفة تختلف عن null والصفر وfalse والمجموعات الفارغة. الحد 64 عينة فريدة و32 كيبيبايت UTF-8 ورسم بحجم ميبيبايت واحد؛ الجسم غير الصالح 422. تعيد أخطاء الرسم أو النوع أو القيمة والعينات المفقودة INVALID أو MISSING مع مؤشرات وأكواد محدودة دون القيم المدخلة. يعيد VALID المسارات وأنواع المصادر وأصول العينات وأنواع JSON فقط؛ تحجب جميع القيم. لا تستبدل العينات الثوابت. candidate_checksum يعرّف الرسم المقترح وليس نشرا. لا يستدعى مزود أو أداة أو معالج أو موافقة أو أثر تجاري، ولا تمنح صلاحيات. تبقى أغلفة snake_case الخاصة وno-store وأخطاء المصادقة 401/403. تحتفظ روابط المدخل الكامل وLIST بعقودها الحالية."
+
+#: src/apps/workflows/presentation/routes.py
+msgid "Requires workflows.manage, owned current agent and current view authorization for the named active workflow. The exact workflow version and AI_DECISION step must pin this exact agent. Projects the declared whole-input source schema through its source path, or the shared object declaration for bpms.binding.object/1 fields. Optional whole-input author samples, a visible constant binding or an all-constant object composition are clearly identified; protected runtime samples are never fetched. Missing bindings, mixed legacy multiple bindings, mismatched agent pins and stale versions return 409. Multiple versioned object fields share one input schema; mixed-source compositions never fetch runtime values. No execution or model call occurs."
+msgstr "يتطلب workflows.manage وملكية الوكيل الحالي وصلاحية عرض سير العمل النشط. يجب أن يثبت الإصدار وخطوة AI_DECISION هذا الوكيل نفسه. يعرض مخطط مصدر المدخل الكامل عبر مساره أو مخطط الكائن المشترك لحقول bpms.binding.object/1. تميز عينات المؤلف الصريحة للمدخل الكامل والثوابت الظاهرة والتركيب الثابت بالكامل؛ لا تجلب قيم تشغيل خاصة. تعيد الروابط المفقودة أو الروابط القديمة المتعددة المختلطة أو تثبيت وكيل مختلف أو إصدار قديم 409. تشترك حقول الكائن ذات الإصدار في مخطط مدخل واحد؛ لا يجلب التركيب متعدد المصادر قيم التشغيل. لا يحدث تنفيذ أو استدعاء نموذج."

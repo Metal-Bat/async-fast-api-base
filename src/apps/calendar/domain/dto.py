@@ -9,6 +9,7 @@ from pydantic import AwareDatetime, ConfigDict, Field, field_validator, model_va
 from core.base_dto import BaseDTO
 from core.i18n import _
 from utils.pagination import SearchRequest
+from utils.select import SelectQuery
 
 
 def calendar_zone(value: str) -> ZoneInfo:
@@ -230,3 +231,9 @@ class ReminderDTO(BaseDTO):
     ref_id: str
     due_at: AwareDatetime
     status: Literal["PENDING", "SENT", "CANCELLED", "EXPIRED"]
+
+
+class CalendarGroupQuery(SelectQuery):
+    """Current actor only: no owner, membership or lifecycle overrides."""
+
+    model_config = ConfigDict(extra="forbid")

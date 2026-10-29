@@ -74,8 +74,8 @@
   "MAP-07": {
     "identity": {
       "operation_id": "synthetic-operation_id",
-      "failure_episode": "synthetic-failure_episode",
-      "recipient_id": "synthetic-recipient_id"
+      "recipient_id": "synthetic-recipient_id",
+      "outcome_episode": "synthetic-failure_episode"
     },
     "variables": {
       "resource_name": "Synthetic resource"

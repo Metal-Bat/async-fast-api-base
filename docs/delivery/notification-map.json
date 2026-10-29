@@ -332,18 +332,21 @@
     },
     {
       "id": "MAP-07",
-      "source_file": "src/apps/processes/application/service.py",
-      "source_symbol": "fail_background",
-      "source_events": [],
-      "producer_status": "BLOCKED_PRODUCER",
-      "blocked_by": "APP-BE-024",
-      "producer_gap": "Distinguish definitive failure from unknown-after-dispatch outcome; generic step failure is insufficient.",
-      "delivery_status": "TARGET_RESERVED_PRODUCER_BLOCKED",
-      "delivery_implemented_by": "APP-BE-014",
+      "source_file": "src/apps/processes/application/orders.py",
+      "source_symbol": "record_outcome",
+      "source_events": [
+        "operation.outcome_unknown",
+        "automation.failed"
+      ],
+      "producer_status": "EXISTING_EVENT",
+      "blocked_by": null,
+      "producer_gap": null,
+      "delivery_status": "IMPLEMENTED",
+      "delivery_implemented_by": "APP-BE-014.UX01",
       "target_kind": "operation",
       "requires_case": true,
-      "audience": "authorized recovery operators; configured safe requester summary",
-      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "audience": "current authorized recovery superusers only; requester failure summary is disabled",
+      "authorization": "Resolve current protected latest-attempt evidence and process/request access at fanout, delivery and open. MAP-07 also requires superuser recovery authority; MAP-08 requires current requester ownership and requests.start. Legacy unsupported targets remain unavailable. No inputs, approval records, credentials, URLs or provider replay.",
       "channel_scope": [
         "IN_APP",
         "EMAIL"
@@ -375,27 +378,39 @@
       },
       "dedupe_fields": [
         "operation_id",
-        "failure_episode",
+        "outcome_episode",
         "recipient_id"
       ],
-      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "cancellation": "Suppress unresolved attention alerts once their current outcome is resolved; suppress delivery/open on revoked recipient or source authority. Preserve immutable operation/receipt evidence and delivered audit identity.",
       "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
-      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim",
+      "additional_producers": [
+        {
+          "source_file": "src/apps/processes/application/service.py",
+          "source_symbol": "fail_background",
+          "source_events": [
+            "automation.failed"
+          ]
+        }
+      ]
     },
     {
       "id": "MAP-08",
-      "source_file": "src/apps/processes/application/service.py",
-      "source_symbol": "complete_background",
-      "source_events": [],
-      "producer_status": "BLOCKED_PRODUCER",
-      "blocked_by": "APP-BE-023",
-      "producer_gap": "Bind actual durable sandbox business receipt; automation.completed alone is not provider-effect confirmation.",
-      "delivery_status": "TARGET_RESERVED_PRODUCER_BLOCKED",
-      "delivery_implemented_by": "APP-BE-014",
+      "source_file": "src/apps/processes/application/orders.py",
+      "source_symbol": "record_outcome",
+      "source_events": [
+        "operation.confirmed",
+        "operation.reconciled"
+      ],
+      "producer_status": "EXISTING_EVENT",
+      "blocked_by": null,
+      "producer_gap": null,
+      "delivery_status": "IMPLEMENTED",
+      "delivery_implemented_by": "APP-BE-014.UX01",
       "target_kind": "operation",
       "requires_case": true,
-      "audience": "authorized case audience",
-      "authorization": "Re-resolve live active recipients and owning resource authority at staging, delivery and open; selector or prior receipt grants no new access. No raw credentials, payloads or external URLs.",
+      "audience": "current authorized requester only; exact validated CREATED receipt required",
+      "authorization": "Resolve current protected latest-attempt evidence and process/request access at fanout, delivery and open. MAP-07 also requires superuser recovery authority; MAP-08 requires current requester ownership and requests.start. Legacy unsupported targets remain unavailable. No inputs, approval records, credentials, URLs or provider replay.",
       "channel_scope": [
         "IN_APP",
         "EMAIL"
@@ -430,9 +445,18 @@
         "receipt_id",
         "recipient_id"
       ],
-      "cancellation": "Cancel pending deliveries when source superseded/cancelled, recipient offboarded, authority revoked or reminder revision changed. Preserve already delivered audit identity; open rechecks authority. Never cancel immutable business evidence.",
+      "cancellation": "Suppress unresolved attention alerts once their current outcome is resolved; suppress delivery/open on revoked recipient or source authority. Preserve immutable operation/receipt evidence and delivered audit identity.",
       "retention": "Reuse notification content-expiry and delivery-retention policy; audit retains safe identity, not private content.",
-      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim"
+      "email_provider": "https_notification; actual local HTTPS gateway receipt verified; no downstream SMTP claim",
+      "additional_producers": [
+        {
+          "source_file": "src/apps/processes/application/order_recovery.py",
+          "source_symbol": "reconcile",
+          "source_events": [
+            "operation.reconciled"
+          ]
+        }
+      ]
     },
     {
       "id": "MAP-09",

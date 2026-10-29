@@ -4168,6 +4168,73 @@
       "ai-agents"
     ]
   },
+  "POST /api/v1/ai-agents/{ref_id}/decision-preview": {
+    "dependencies": [
+      "apps.ai.presentation.routes.preview_agent_decision",
+      "apps.users.application.authorization.RequirePermission:workflows.manage",
+      "core.deps.get_current_user",
+      "core.deps.get_db",
+      "fastapi.security.oauth2.OAuth2PasswordBearer",
+      "utils.base_schema.get_request_user_agent"
+    ],
+    "disposition": "domain-ui",
+    "endpoint": "apps.ai.presentation.routes.preview_agent_decision",
+    "models": [
+      "apps.ai.domain.authoring.AIDecisionPreviewInput",
+      "utils.presenter.ErrorResponse",
+      "utils.presenter.SuccessResponse[AIDecisionPreviewDTO]"
+    ],
+    "operation_id": "preview_agent_decision_api_v1_ai_agents__ref_id__decision_preview_post",
+    "owner": "ai",
+    "permission_dependencies": [
+      "apps.users.application.authorization.RequirePermission:workflows.manage",
+      "core.deps.get_current_user"
+    ],
+    "response_family": "success-data",
+    "security": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ],
+    "tags": [
+      "ai-agents"
+    ]
+  },
+  "POST /api/v1/ai-agents/{ref_id}/evaluations": {
+    "dependencies": [
+      "apps.ai.presentation.routes.start_agent_evaluation",
+      "apps.users.application.authorization.RequirePermission:requests.start",
+      "apps.users.application.authorization.RequirePermission:workflows.manage",
+      "core.deps.get_current_client_context",
+      "core.deps.get_current_user",
+      "core.deps.get_db",
+      "fastapi.security.oauth2.OAuth2PasswordBearer",
+      "utils.base_schema.get_request_user_agent"
+    ],
+    "disposition": "domain-ui",
+    "endpoint": "apps.ai.presentation.routes.start_agent_evaluation",
+    "models": [
+      "apps.ai.domain.authoring.AIAgentEvaluationInput",
+      "utils.presenter.ErrorResponse",
+      "utils.presenter.SuccessResponse[AIAgentEvaluationDTO]"
+    ],
+    "operation_id": "start_agent_evaluation_api_v1_ai_agents__ref_id__evaluations_post",
+    "owner": "ai",
+    "permission_dependencies": [
+      "apps.users.application.authorization.RequirePermission:requests.start",
+      "apps.users.application.authorization.RequirePermission:workflows.manage",
+      "core.deps.get_current_user"
+    ],
+    "response_family": "success-data",
+    "security": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ],
+    "tags": [
+      "ai-agents"
+    ]
+  },
   "POST /api/v1/ai-agents/{ref_id}/history": {
     "dependencies": [
       "apps.ai.presentation.routes.history",
@@ -4218,6 +4285,102 @@
       "utils.presenter.SuccessResponse[AIAgentDTO]"
     ],
     "operation_id": "publish_api_v1_ai_agents__ref_id__publish_post",
+    "owner": "ai",
+    "permission_dependencies": [
+      "apps.users.application.authorization.RequirePermission:workflows.manage",
+      "core.deps.get_current_user"
+    ],
+    "response_family": "success-data",
+    "security": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ],
+    "tags": [
+      "ai-agents"
+    ]
+  },
+  "POST /api/v1/ai-agents/{ref_id}/retrieval-preview": {
+    "dependencies": [
+      "apps.ai.presentation.routes.agent_retrieval_preview",
+      "apps.users.application.authorization.RequirePermission:workflows.manage",
+      "core.deps.get_current_user",
+      "core.deps.get_db",
+      "fastapi.security.oauth2.OAuth2PasswordBearer",
+      "utils.base_schema.get_request_user_agent"
+    ],
+    "disposition": "domain-ui",
+    "endpoint": "apps.ai.presentation.routes.agent_retrieval_preview",
+    "models": [
+      "apps.ai.domain.authoring.AIReportLookupPreviewInput",
+      "utils.presenter.ErrorResponse",
+      "utils.presenter.SuccessResponse[AIReportLookupPreviewDTO]"
+    ],
+    "operation_id": "agent_retrieval_preview_api_v1_ai_agents__ref_id__retrieval_preview_post",
+    "owner": "ai",
+    "permission_dependencies": [
+      "apps.users.application.authorization.RequirePermission:workflows.manage",
+      "core.deps.get_current_user"
+    ],
+    "response_family": "success-data",
+    "security": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ],
+    "tags": [
+      "ai-agents"
+    ]
+  },
+  "POST /api/v1/ai-agents/{ref_id}/retrieval-sources/search": {
+    "dependencies": [
+      "apps.ai.presentation.routes.agent_retrieval_sources",
+      "apps.users.application.authorization.RequirePermission:workflows.manage",
+      "core.deps.get_current_user",
+      "core.deps.get_db",
+      "fastapi.security.oauth2.OAuth2PasswordBearer",
+      "utils.base_schema.get_request_user_agent"
+    ],
+    "disposition": "domain-ui",
+    "endpoint": "apps.ai.presentation.routes.agent_retrieval_sources",
+    "models": [
+      "utils.presenter.ErrorResponse",
+      "utils.presenter.PageResponse[Page[AIReportLookupDTO]]",
+      "utils.select.SelectQuery"
+    ],
+    "operation_id": "agent_retrieval_sources_api_v1_ai_agents__ref_id__retrieval_sources_search_post",
+    "owner": "ai",
+    "permission_dependencies": [
+      "apps.users.application.authorization.RequirePermission:workflows.manage",
+      "core.deps.get_current_user"
+    ],
+    "response_family": "page-result",
+    "security": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ],
+    "tags": [
+      "ai-agents"
+    ]
+  },
+  "POST /api/v1/ai-agents/{ref_id}/workflow-context": {
+    "dependencies": [
+      "apps.ai.presentation.routes.agent_workflow_context",
+      "apps.users.application.authorization.RequirePermission:workflows.manage",
+      "core.deps.get_current_user",
+      "core.deps.get_db",
+      "fastapi.security.oauth2.OAuth2PasswordBearer",
+      "utils.base_schema.get_request_user_agent"
+    ],
+    "disposition": "domain-ui",
+    "endpoint": "apps.ai.presentation.routes.agent_workflow_context",
+    "models": [
+      "apps.ai.domain.authoring.AIWorkflowContextInput",
+      "utils.presenter.ErrorResponse",
+      "utils.presenter.SuccessResponse[AIWorkflowContextDTO]"
+    ],
+    "operation_id": "agent_workflow_context_api_v1_ai_agents__ref_id__workflow_context_post",
     "owner": "ai",
     "permission_dependencies": [
       "apps.users.application.authorization.RequirePermission:workflows.manage",
@@ -5061,6 +5224,37 @@
       "core.deps.get_current_user"
     ],
     "response_family": "page-result",
+    "security": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ],
+    "tags": [
+      "calendar-events"
+    ]
+  },
+  "POST /api/v1/calendar/work-groups/select": {
+    "dependencies": [
+      "apps.calendar.presentation.routes.select_calendar_groups",
+      "core.deps.get_current_user",
+      "core.deps.get_db",
+      "fastapi.security.oauth2.OAuth2PasswordBearer",
+      "utils.base_schema.get_request_user_agent"
+    ],
+    "disposition": "domain-ui",
+    "endpoint": "apps.calendar.presentation.routes.select_calendar_groups",
+    "models": [
+      "apps.calendar.domain.dto.CalendarGroupQuery",
+      "utils.presenter.ErrorResponse",
+      "utils.presenter.PageResponse[Page[SelectOption[str]]]",
+      "utils.select.SelectOption[str]"
+    ],
+    "operation_id": "select_calendar_groups_api_v1_calendar_work_groups_select_post",
+    "owner": "calendar",
+    "permission_dependencies": [
+      "core.deps.get_current_user"
+    ],
+    "response_family": "typed-union",
     "security": [
       {
         "OAuth2PasswordBearer": []
@@ -10516,6 +10710,38 @@
       "core.deps.get_current_user"
     ],
     "response_family": "page-result",
+    "security": [
+      {
+        "OAuth2PasswordBearer": []
+      }
+    ],
+    "tags": [
+      "workflow-versions"
+    ]
+  },
+  "POST /api/v1/workflow-versions/{ref_id}/binding-preview": {
+    "dependencies": [
+      "apps.users.application.authorization.RequirePermission:workflows.manage",
+      "apps.workflows.presentation.routes.preview_object_fields",
+      "core.deps.get_current_user",
+      "core.deps.get_db",
+      "fastapi.security.oauth2.OAuth2PasswordBearer",
+      "utils.base_schema.get_request_user_agent"
+    ],
+    "disposition": "domain-ui",
+    "endpoint": "apps.workflows.presentation.routes.preview_object_fields",
+    "models": [
+      "apps.workflows.domain.object_preview.BindingPreviewInput",
+      "utils.presenter.ErrorResponse",
+      "utils.presenter.SuccessResponse[BindingPreviewDTO]"
+    ],
+    "operation_id": "preview_object_fields_api_v1_workflow_versions__ref_id__binding_preview_post",
+    "owner": "workflows",
+    "permission_dependencies": [
+      "apps.users.application.authorization.RequirePermission:workflows.manage",
+      "core.deps.get_current_user"
+    ],
+    "response_family": "success-data",
     "security": [
       {
         "OAuth2PasswordBearer": []

@@ -5,6 +5,7 @@ import json
 from typing import Any
 from uuid import UUID
 
+from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from apps.processes.domain.entity import (
@@ -128,12 +129,16 @@ class ProcessEventService:
         payload: dict[str, Any] | None = None,
         command_key: str | None = None,
     ) -> ProcessEventEntity:
-        process = await self.session.get(
-            ProcessInstanceEntity,
-            process_id,
-            with_for_update=True,
-            populate_existing=True,
-        )
+        # Internal event serialization is ID-based. Refresh the locked current row;
+        # Session.get(FOR UPDATE) instead checks a possibly stale cached ORM version.
+        process = (
+            await self.session.exec(
+                select(ProcessInstanceEntity)
+                .where(ProcessInstanceEntity.id == process_id)
+                .with_for_update()
+                .execution_options(populate_existing=True)
+            )
+        ).one_or_none()
         if process is None:
             raise NotFoundException("Process not found")
         safe_payload = public_event_payload(event_type, payload)

@@ -21916,6 +21916,15 @@
         "server_default": null,
         "type": "CHAR(32)"
       },
+      "SOURCE_SCHEMA": {
+        "comment": "VALIDATED AUTHOR-DECLARED REQUEST/CONTEXT SCHEMA PINNED WITH THIS EXECUTABLE BINDING; NULL PRESERVES LEGACY ROWS.",
+        "default": null,
+        "foreign_keys": [],
+        "nullable": true,
+        "primary_key": false,
+        "server_default": null,
+        "type": "JSONB"
+      },
       "SOURCE_STEP_ID": {
         "comment": null,
         "default": null,
@@ -21930,6 +21939,15 @@
         "server_default": null,
         "type": "CHAR(32)"
       },
+      "TARGET_PATH": {
+        "comment": "DECLARED OBJECT FIELD DESTINATION; MAXIMUM 1024 UTF-8 BYTES; NOT A RESOURCE REFERENCE.",
+        "default": null,
+        "foreign_keys": [],
+        "nullable": true,
+        "primary_key": false,
+        "server_default": null,
+        "type": "VARCHAR(1024)"
+      },
       "TARGET_PORT_ID": {
         "comment": null,
         "default": null,
@@ -21943,6 +21961,24 @@
         "primary_key": false,
         "server_default": null,
         "type": "CHAR(32)"
+      },
+      "TARGET_PROJECTION_VERSION": {
+        "comment": "OBJECT FIELD PROJECTION CONTRACT VERSION; NULL PRESERVES LEGACY WHOLE-PORT/LIST BINDINGS.",
+        "default": null,
+        "foreign_keys": [],
+        "nullable": true,
+        "primary_key": false,
+        "server_default": null,
+        "type": "INTEGER"
+      },
+      "TARGET_SCHEMA": {
+        "comment": "PROJECTED SCALAR OBJECT ROOT DECLARATION PINNED WITH THIS BINDING; TYPE INFORMATION NEVER GRANTS AUTHORITY.",
+        "default": null,
+        "foreign_keys": [],
+        "nullable": true,
+        "primary_key": false,
+        "server_default": null,
+        "type": "JSONB"
       },
       "WORKFLOW_STEP_ID": {
         "comment": null,
@@ -21992,9 +22028,21 @@
       },
       {
         "columns": [],
+        "expression": "\"SOURCE_SCHEMA\" IS NULL OR (\"SOURCE_KIND\" IN ('REQUEST', 'CONTEXT') AND jsonb_typeof(\"SOURCE_SCHEMA\") = 'object')",
+        "kind": "CheckConstraint",
+        "name": "ck_WORKFLOW_BINDING_source_schema"
+      },
+      {
+        "columns": [],
         "expression": "(\"SOURCE_KIND\" = 'STEP_OUTPUT') = (\"SOURCE_STEP_ID\" IS NOT NULL AND \"SOURCE_PORT_ID\" IS NOT NULL)",
         "kind": "CheckConstraint",
         "name": "ck_WORKFLOW_BINDING_step_source"
+      },
+      {
+        "columns": [],
+        "expression": "(\"TARGET_PROJECTION_VERSION\" IS NULL AND \"TARGET_PATH\" IS NULL AND \"TARGET_SCHEMA\" IS NULL) OR (\"TARGET_PROJECTION_VERSION\" IS NOT NULL AND \"TARGET_PROJECTION_VERSION\" = 1 AND \"TARGET_PATH\" IS NOT NULL AND \"TARGET_SCHEMA\" IS NOT NULL AND left(\"TARGET_PATH\", 1) = '/' AND octet_length(\"TARGET_PATH\") <= 1024 AND jsonb_typeof(\"TARGET_SCHEMA\") = 'object' AND \"TARGET_SCHEMA\" ? 'type' AND \"TARGET_SCHEMA\" ->> 'type' = 'object' AND \"TARGET_SCHEMA\" ? 'properties' AND jsonb_typeof(\"TARGET_SCHEMA\" -> 'properties') = 'object')",
+        "kind": "CheckConstraint",
+        "name": "ck_WORKFLOW_BINDING_target_projection"
       },
       {
         "columns": [
@@ -22045,6 +22093,16 @@
         "expression": "",
         "kind": "UniqueConstraint",
         "name": "uq_WORKFLOW_BINDING_target_ordinal"
+      },
+      {
+        "columns": [
+          "WORKFLOW_STEP_ID",
+          "TARGET_PORT_ID",
+          "TARGET_PATH"
+        ],
+        "expression": "",
+        "kind": "UniqueConstraint",
+        "name": "uq_WORKFLOW_BINDING_target_path"
       }
     ],
     "history_visibility": "not-a-history-projection",

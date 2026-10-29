@@ -86,6 +86,13 @@ class InboxService(NotificationService):
                     raise NotFoundException()
                 event = await CalendarService(self.session).get(create_ref_id(identity, 0), actor)
                 ref = create_ref_id(event.id, event.version)
+            elif kind == "operation":
+                from apps.notifications.application.operation_notices import destination
+
+                if identity is None or not available:
+                    raise NotFoundException()
+                ref = await destination(self.session, identity, row.template_key, actor)
+                available = ref is not None
             elif kind == "support":
                 from apps.support.application.service import require_support
                 from apps.support.domain.entity import SupportIncidentEntity
@@ -121,7 +128,9 @@ class InboxService(NotificationService):
             return CalendarTarget(available=bool(available), ref_id=ref)
         return FutureTarget(
             kind="operation",
-            available=False,
+            available=bool(available and ref),
+            ref_id=ref,
+            route_key="processes" if ref is not None else None,
         )
 
     async def dto(self, row: NotificationEntity, actor: UserEntity) -> InboxDTO:

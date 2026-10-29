@@ -265,6 +265,75 @@
         "title": "AIAgentDraftSpec",
         "type": "object"
       },
+      "AIAgentEvaluationDTO": {
+        "properties": {
+          "agent_ref": {
+            "title": "Agent Ref",
+            "type": "string"
+          },
+          "evidence_kind": {
+            "const": "GOVERNED_REQUEST_SUBMISSION",
+            "default": "GOVERNED_REQUEST_SUBMISSION",
+            "title": "Evidence Kind",
+            "type": "string"
+          },
+          "process_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Process Ref"
+          },
+          "request_ref": {
+            "title": "Request Ref",
+            "type": "string"
+          },
+          "request_status": {
+            "title": "Request Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "agent_ref",
+          "request_ref",
+          "request_status",
+          "process_ref"
+        ],
+        "title": "AIAgentEvaluationDTO",
+        "type": "object"
+      },
+      "AIAgentEvaluationInput": {
+        "additionalProperties": false,
+        "properties": {
+          "request_ref": {
+            "description": "Exact owned eligible draft request whose pinned published workflow uses this published agent. Inputs remain in the normal saved request; this command cannot inject arbitrary model inputs.",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Request Ref",
+            "type": "string"
+          },
+          "submit_key": {
+            "description": "Normal request submission replay key. Reuse only for the identical saved request payload; uncertain model execution is never retried through a new key.",
+            "examples": [
+              "reviewed-agent-evaluation-1"
+            ],
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Submit Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "submit_key",
+          "request_ref"
+        ],
+        "title": "AIAgentEvaluationInput",
+        "type": "object"
+      },
       "AIAgentPublishedSpec": {
         "additionalProperties": false,
         "properties": {
@@ -618,6 +687,105 @@
         "title": "AIDecisionContract",
         "type": "object"
       },
+      "AIDecisionPreviewDTO": {
+        "properties": {
+          "issue_codes": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 64,
+            "title": "Issue Codes",
+            "type": "array"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/AIChoice"
+            },
+            "maxItems": 254,
+            "title": "Options",
+            "type": "array"
+          },
+          "options_input_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Options Input Key"
+          },
+          "provider_called": {
+            "const": false,
+            "default": false,
+            "title": "Provider Called",
+            "type": "boolean"
+          },
+          "sample_state": {
+            "enum": [
+              "STATIC",
+              "MISSING",
+              "EMPTY",
+              "INVALID",
+              "VALID"
+            ],
+            "title": "Sample State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sample_state",
+          "options_input_key",
+          "options"
+        ],
+        "title": "AIDecisionPreviewDTO",
+        "type": "object"
+      },
+      "AIDecisionPreviewInput": {
+        "additionalProperties": false,
+        "properties": {
+          "sample_inputs": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/JsonValue"
+                },
+                "maxProperties": 64,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional author-provided permitted inputs, at most 32 KiB JSON. Never reads runtime snapshots or calls a provider.",
+            "examples": [
+              {
+                "options": [
+                  {
+                    "description": "Invoice handling",
+                    "key": "finance",
+                    "labels": {
+                      "en": "Finance"
+                    }
+                  },
+                  {
+                    "description": "Service issues",
+                    "key": "support",
+                    "labels": {
+                      "en": "Support"
+                    }
+                  }
+                ],
+                "ticket": "Example invoice"
+              }
+            ],
+            "title": "Sample Inputs"
+          }
+        },
+        "title": "AIDecisionPreviewInput",
+        "type": "object"
+      },
       "AIInputDecision": {
         "additionalProperties": false,
         "properties": {
@@ -653,6 +821,13 @@
           "can_execute": {
             "title": "Can Execute",
             "type": "boolean"
+          },
+          "connection_name": {
+            "description": "Current display name of this exact use-authorized AI connection; never a credential or an integration-management projection.",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Connection Name",
+            "type": "string"
           },
           "connection_ref": {
             "title": "Connection Ref",
@@ -697,6 +872,7 @@
         },
         "required": [
           "connection_ref",
+          "connection_name",
           "provider",
           "model_id",
           "source",
@@ -1007,6 +1183,146 @@
         "title": "AIProviderMetadataDTO",
         "type": "object"
       },
+      "AIReportLookupDTO": {
+        "properties": {
+          "classification": {
+            "enum": [
+              "PUBLIC",
+              "INTERNAL",
+              "CONFIDENTIAL"
+            ],
+            "title": "Classification",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "definition_version": {
+            "title": "Definition Version",
+            "type": "integer"
+          },
+          "fields": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 256,
+            "title": "Fields",
+            "type": "array"
+          },
+          "max_rows": {
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Max Rows",
+            "type": "integer"
+          },
+          "report_ref": {
+            "title": "Report Ref",
+            "type": "string"
+          },
+          "source_key": {
+            "title": "Source Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_ref",
+          "source_key",
+          "definition_version",
+          "created_at",
+          "fields",
+          "classification",
+          "max_rows"
+        ],
+        "title": "AIReportLookupDTO",
+        "type": "object"
+      },
+      "AIReportLookupPreviewDTO": {
+        "properties": {
+          "agent_ref": {
+            "title": "Agent Ref",
+            "type": "string"
+          },
+          "limit": {
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "requires_human_tool_approval": {
+            "const": true,
+            "default": true,
+            "title": "Requires Human Tool Approval",
+            "type": "boolean"
+          },
+          "result_schema": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "description": "Bounded projected result shape. Empty property schemas do not claim unregistered scalar types. No rows, saved filters, storage paths or credentials are returned.",
+            "title": "Result Schema",
+            "type": "object"
+          },
+          "source": {
+            "$ref": "#/components/schemas/AIReportLookupDTO"
+          },
+          "tool_called": {
+            "const": false,
+            "default": false,
+            "title": "Tool Called",
+            "type": "boolean"
+          },
+          "tool_key": {
+            "const": "lookup_saved_report",
+            "default": "lookup_saved_report",
+            "title": "Tool Key",
+            "type": "string"
+          },
+          "tool_version": {
+            "const": "1",
+            "default": "1",
+            "title": "Tool Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "agent_ref",
+          "source",
+          "limit",
+          "result_schema"
+        ],
+        "title": "AIReportLookupPreviewDTO",
+        "type": "object"
+      },
+      "AIReportLookupPreviewInput": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "default": 10,
+            "description": "Reviewed maximum rows; must also fit the registered source and saved report limits.",
+            "examples": [
+              5
+            ],
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "report_ref": {
+            "description": "Current opaque reference of the author's unexpired saved report query, never a file URL or a definition chosen by arbitrary import path.",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Report Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_ref"
+        ],
+        "title": "AIReportLookupPreviewInput",
+        "type": "object"
+      },
       "AITaskLimits-Input": {
         "additionalProperties": false,
         "properties": {
@@ -1247,6 +1563,136 @@
           "decided_at"
         ],
         "title": "AIToolApprovalDTO",
+        "type": "object"
+      },
+      "AIWorkflowContextDTO": {
+        "properties": {
+          "agent_ref": {
+            "title": "Agent Ref",
+            "type": "string"
+          },
+          "decision": {
+            "$ref": "#/components/schemas/AIDecisionPreviewDTO"
+          },
+          "input_schema": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/JsonValue"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Declared JSON Schema for the exact AI data binding, projected through its source path. Null means undeclared, not an inferred runtime schema.",
+            "title": "Input Schema"
+          },
+          "sample_origin": {
+            "enum": [
+              "AUTHOR",
+              "CONSTANT_BINDING",
+              "NONE"
+            ],
+            "title": "Sample Origin",
+            "type": "string"
+          },
+          "step_key": {
+            "title": "Step Key",
+            "type": "string"
+          },
+          "workflow_checksum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workflow Checksum"
+          },
+          "workflow_version_ref": {
+            "title": "Workflow Version Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "agent_ref",
+          "workflow_version_ref",
+          "workflow_checksum",
+          "step_key",
+          "input_schema",
+          "sample_origin",
+          "decision"
+        ],
+        "title": "AIWorkflowContextDTO",
+        "type": "object"
+      },
+      "AIWorkflowContextInput": {
+        "additionalProperties": false,
+        "properties": {
+          "sample_inputs": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/JsonValue"
+                },
+                "maxProperties": 64,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional author-provided permitted inputs, at most 32 KiB JSON. Never reads runtime snapshots or calls a provider.",
+            "examples": [
+              {
+                "options": [
+                  {
+                    "description": "Invoice handling",
+                    "key": "finance",
+                    "labels": {
+                      "en": "Finance"
+                    }
+                  },
+                  {
+                    "description": "Service issues",
+                    "key": "support",
+                    "labels": {
+                      "en": "Support"
+                    }
+                  }
+                ],
+                "ticket": "Example invoice"
+              }
+            ],
+            "title": "Sample Inputs"
+          },
+          "step_key": {
+            "description": "Existing AI_DECISION step key in that exact saved executable graph.",
+            "examples": [
+              "classify_invoice"
+            ],
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Step Key",
+            "type": "string"
+          },
+          "workflow_version_ref": {
+            "description": "Current revision-bearing reference of an active workflow version the author may view. Stale references conflict; published pins are not replaced.",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Workflow Version Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_version_ref",
+          "step_key"
+        ],
+        "title": "AIWorkflowContextInput",
         "type": "object"
       },
       "AccountTarget": {
@@ -1752,6 +2198,195 @@
           "data"
         ],
         "title": "BehaviorPreviewRequest",
+        "type": "object"
+      },
+      "BindingPreviewDTO": {
+        "properties": {
+          "candidate_checksum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Candidate Checksum"
+          },
+          "fields": {
+            "items": {
+              "$ref": "#/components/schemas/BindingPreviewField"
+            },
+            "maxItems": 64,
+            "title": "Fields",
+            "type": "array"
+          },
+          "handler_called": {
+            "const": false,
+            "default": false,
+            "title": "Handler Called",
+            "type": "boolean"
+          },
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/GraphIssue"
+            },
+            "maxItems": 64,
+            "title": "Issues",
+            "type": "array"
+          },
+          "provider_called": {
+            "const": false,
+            "default": false,
+            "title": "Provider Called",
+            "type": "boolean"
+          },
+          "sample_state": {
+            "enum": [
+              "VALID",
+              "MISSING",
+              "INVALID"
+            ],
+            "title": "Sample State",
+            "type": "string"
+          },
+          "target_port": {
+            "title": "Target Port",
+            "type": "string"
+          },
+          "target_step": {
+            "title": "Target Step",
+            "type": "string"
+          },
+          "tool_called": {
+            "const": false,
+            "default": false,
+            "title": "Tool Called",
+            "type": "boolean"
+          },
+          "values_redacted": {
+            "const": true,
+            "default": true,
+            "title": "Values Redacted",
+            "type": "boolean"
+          },
+          "workflow_version_ref": {
+            "title": "Workflow Version Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_version_ref",
+          "candidate_checksum",
+          "target_step",
+          "target_port",
+          "sample_state"
+        ],
+        "title": "BindingPreviewDTO",
+        "type": "object"
+      },
+      "BindingPreviewField": {
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "sample_origin": {
+            "enum": [
+              "AUTHOR",
+              "VISIBLE_CONSTANT"
+            ],
+            "title": "Sample Origin",
+            "type": "string"
+          },
+          "source_kind": {
+            "enum": [
+              "REQUEST",
+              "CONTEXT",
+              "CONSTANT",
+              "STEP_OUTPUT"
+            ],
+            "title": "Source Kind",
+            "type": "string"
+          },
+          "value_type": {
+            "enum": [
+              "null",
+              "boolean",
+              "integer",
+              "number",
+              "string",
+              "array",
+              "object"
+            ],
+            "title": "Value Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "source_kind",
+          "sample_origin",
+          "value_type"
+        ],
+        "title": "BindingPreviewField",
+        "type": "object"
+      },
+      "BindingPreviewInput": {
+        "additionalProperties": false,
+        "properties": {
+          "graph": {
+            "$ref": "#/components/schemas/GraphSnapshot"
+          },
+          "samples": {
+            "items": {
+              "$ref": "#/components/schemas/BindingSourceSample"
+            },
+            "maxItems": 64,
+            "title": "Samples",
+            "type": "array"
+          },
+          "target_port": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Target Port",
+            "type": "string"
+          },
+          "target_step": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Target Step",
+            "type": "string"
+          }
+        },
+        "required": [
+          "graph",
+          "target_step",
+          "target_port"
+        ],
+        "title": "BindingPreviewInput",
+        "type": "object"
+      },
+      "BindingSourceSample": {
+        "additionalProperties": false,
+        "properties": {
+          "ordinal": {
+            "description": "Existing source binding ordinal within the selected input port. Constants cannot be overridden here.",
+            "maximum": 1023.0,
+            "minimum": 0.0,
+            "title": "Ordinal",
+            "type": "integer"
+          },
+          "value": {
+            "$ref": "#/components/schemas/JsonValue",
+            "description": "Explicit author sample for the already-projected source value. Null, false, zero and empty collections are present values, distinct from an omitted sample."
+          }
+        },
+        "required": [
+          "ordinal",
+          "value"
+        ],
+        "title": "BindingSourceSample",
         "type": "object"
       },
       "Body_token_api_v1_auth_token_post": {
@@ -2362,6 +2997,40 @@
           "data"
         ],
         "title": "BusinessRequestUpdateDTO",
+        "type": "object"
+      },
+      "CalendarGroupQuery": {
+        "additionalProperties": false,
+        "description": "Current actor only: no owner, membership or lifecycle overrides.",
+        "properties": {
+          "page": {
+            "default": 1,
+            "minimum": 1.0,
+            "title": "Page",
+            "type": "integer"
+          },
+          "search": {
+            "anyOf": [
+              {
+                "maxLength": 100,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Search"
+          },
+          "size": {
+            "default": 20,
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Size",
+            "type": "integer"
+          }
+        },
+        "title": "CalendarGroupQuery",
         "type": "object"
       },
       "CalendarHistoryDTO": {
@@ -6125,8 +6794,17 @@
             "title": "Ref Id"
           },
           "route_key": {
-            "title": "Route Key",
-            "type": "null"
+            "anyOf": [
+              {
+                "const": "processes",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Current authorized protected-operation evidence opens the existing process screen. Null retains unavailable legacy operation targets; never an external URL or execution authority.",
+            "title": "Route Key"
           }
         },
         "required": [
@@ -6242,7 +6920,7 @@
                 "type": "null"
               }
             ],
-            "description": "برای STEP_OUTPUT، طرح‌وارهٔ دقیق درگاه خروجی ثابت‌شده، شامل فرادادهٔ عمومی سرویس. تضمین‌های رسید عملیات آزمایشی ثبت‌شده، سازگاری سمت سرور را بدون تغییر فرادادهٔ ذخیره‌شده یا اثر انگشت گراف دقیق‌تر می‌کنند. طرح‌وارهٔ اعلام‌شدهٔ فراخوان جایگزین قرارداد قابل‌اعتماد عملیات نمی‌شود.",
+            "description": "For REQUEST/CONTEXT, the declared source JSON Schema is persisted with the executable binding across save, promotion, publication and reload; null retains legacy undeclared behavior. This schema is an authoring type contract, not data or authorization. For STEP_OUTPUT, use the exact pinned output-port schema, including generic service metadata. Trusted registered output guarantees refine validation without changing persisted port metadata or graph checksums. Caller assertions cannot replace trusted operation contracts.",
             "title": "Source Schema"
           },
           "source_step": {
@@ -6263,6 +6941,17 @@
           "target_port": {
             "title": "Target Port",
             "type": "string"
+          },
+          "target_projection": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ObjectFieldProjection"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional bpms.binding.object/1 destination field for a scalar object input. Absent/null retains whole-port semantics and is omitted from canonical output to preserve existing published payloads/checksums. Field bindings cannot overlap or mix with whole-port bindings. No array containers or implicit defaults; explicit null must satisfy the target leaf schema."
           },
           "target_schema": {
             "additionalProperties": true,
@@ -9398,6 +10087,29 @@
         "title": "NotificationQuery",
         "type": "object"
       },
+      "ObjectFieldProjection": {
+        "additionalProperties": false,
+        "properties": {
+          "dialect": {
+            "const": "bpms.binding.object/1",
+            "title": "Dialect",
+            "type": "string"
+          },
+          "path": {
+            "description": "RFC 6901 destination within declared object properties; no array containers, overlap or prototype keys. Explicit null is preserved and validated.",
+            "maxLength": 1024,
+            "minLength": 1,
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dialect",
+          "path"
+        ],
+        "title": "ObjectFieldProjection",
+        "type": "object"
+      },
       "OptionPreviewRequest": {
         "additionalProperties": false,
         "examples": [
@@ -9836,6 +10548,38 @@
           "result"
         ],
         "title": "PageResponse[Page[AIProcessEvidenceDTO]]",
+        "type": "object"
+      },
+      "PageResponse_Page_AIReportLookupDTO__": {
+        "properties": {
+          "code": {
+            "default": 200,
+            "title": "Code",
+            "type": "integer"
+          },
+          "error": {
+            "title": "Error",
+            "type": "null"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "result": {
+            "$ref": "#/components/schemas/Page_AIReportLookupDTO_"
+          },
+          "success": {
+            "const": true,
+            "default": true,
+            "title": "موفقیت",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "request_id",
+          "result"
+        ],
+        "title": "PageResponse[Page[AIReportLookupDTO]]",
         "type": "object"
       },
       "PageResponse_Page_AuthAuditEventDTO__": {
@@ -11396,6 +12140,46 @@
           "total_pages"
         ],
         "title": "Page[AIProcessEvidenceDTO]",
+        "type": "object"
+      },
+      "Page_AIReportLookupDTO_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AIReportLookupDTO"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "page": {
+            "default": 1,
+            "minimum": 1.0,
+            "title": "Page",
+            "type": "integer"
+          },
+          "size": {
+            "default": 20,
+            "minimum": 1.0,
+            "title": "Size",
+            "type": "integer"
+          },
+          "total": {
+            "minimum": 0.0,
+            "title": "Total",
+            "type": "integer"
+          },
+          "total_pages": {
+            "description": "Return the number of nonempty pages in the full result set.",
+            "readOnly": true,
+            "title": "Total Pages",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total",
+          "total_pages"
+        ],
+        "title": "Page[AIReportLookupDTO]",
         "type": "object"
       },
       "Page_AuthAuditEventDTO_": {
@@ -18345,6 +19129,38 @@
         "title": "SuccessResponse[AIAgentDTO]",
         "type": "object"
       },
+      "SuccessResponse_AIAgentEvaluationDTO_": {
+        "properties": {
+          "code": {
+            "default": 200,
+            "title": "Code",
+            "type": "integer"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AIAgentEvaluationDTO"
+          },
+          "error": {
+            "title": "Error",
+            "type": "null"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "success": {
+            "const": true,
+            "default": true,
+            "title": "موفقیت",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "request_id",
+          "data"
+        ],
+        "title": "SuccessResponse[AIAgentEvaluationDTO]",
+        "type": "object"
+      },
       "SuccessResponse_AIBudgetStatus_": {
         "properties": {
           "code": {
@@ -18375,6 +19191,38 @@
           "data"
         ],
         "title": "SuccessResponse[AIBudgetStatus]",
+        "type": "object"
+      },
+      "SuccessResponse_AIDecisionPreviewDTO_": {
+        "properties": {
+          "code": {
+            "default": 200,
+            "title": "Code",
+            "type": "integer"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AIDecisionPreviewDTO"
+          },
+          "error": {
+            "title": "Error",
+            "type": "null"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "success": {
+            "const": true,
+            "default": true,
+            "title": "موفقیت",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "request_id",
+          "data"
+        ],
+        "title": "SuccessResponse[AIDecisionPreviewDTO]",
         "type": "object"
       },
       "SuccessResponse_AIModelMetadataDTO_": {
@@ -18441,6 +19289,38 @@
         "title": "SuccessResponse[AIProviderMetadataDTO]",
         "type": "object"
       },
+      "SuccessResponse_AIReportLookupPreviewDTO_": {
+        "properties": {
+          "code": {
+            "default": 200,
+            "title": "Code",
+            "type": "integer"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AIReportLookupPreviewDTO"
+          },
+          "error": {
+            "title": "Error",
+            "type": "null"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "success": {
+            "const": true,
+            "default": true,
+            "title": "موفقیت",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "request_id",
+          "data"
+        ],
+        "title": "SuccessResponse[AIReportLookupPreviewDTO]",
+        "type": "object"
+      },
       "SuccessResponse_AIToolApprovalDTO_": {
         "properties": {
           "code": {
@@ -18471,6 +19351,38 @@
           "data"
         ],
         "title": "SuccessResponse[AIToolApprovalDTO]",
+        "type": "object"
+      },
+      "SuccessResponse_AIWorkflowContextDTO_": {
+        "properties": {
+          "code": {
+            "default": 200,
+            "title": "Code",
+            "type": "integer"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AIWorkflowContextDTO"
+          },
+          "error": {
+            "title": "Error",
+            "type": "null"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "success": {
+            "const": true,
+            "default": true,
+            "title": "موفقیت",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "request_id",
+          "data"
+        ],
+        "title": "SuccessResponse[AIWorkflowContextDTO]",
         "type": "object"
       },
       "SuccessResponse_AppliedView_": {
@@ -18599,6 +19511,38 @@
           "data"
         ],
         "title": "SuccessResponse[BehaviorPreview]",
+        "type": "object"
+      },
+      "SuccessResponse_BindingPreviewDTO_": {
+        "properties": {
+          "code": {
+            "default": 200,
+            "title": "Code",
+            "type": "integer"
+          },
+          "data": {
+            "$ref": "#/components/schemas/BindingPreviewDTO"
+          },
+          "error": {
+            "title": "Error",
+            "type": "null"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "success": {
+            "const": true,
+            "default": true,
+            "title": "موفقیت",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "request_id",
+          "data"
+        ],
+        "title": "SuccessResponse[BindingPreviewDTO]",
         "type": "object"
       },
       "SuccessResponse_BulkUpgradeReport_": {
@@ -35678,6 +36622,13 @@
             },
             "description": "Successful Response",
             "headers": {
+              "Cache-Control": {
+                "description": "Protected actor-specific response; persistent caching is prohibited.",
+                "schema": {
+                  "const": "private, no-store",
+                  "type": "string"
+                }
+              },
               "X-Client-Date-Advisory": {
                 "description": "فقط وقتی اختلاف ظاهری به آستانه تنظیم‌شده برسد، با مقدار check-device-time ارائه می‌شود.",
                 "schema": {
@@ -39143,6 +40094,530 @@
         ]
       }
     },
+    "/api/v1/ai-agents/{ref_id}/decision-preview": {
+      "post": {
+        "description": "نیازمند workflows.manage، مالکیت عامل و مرجع جاری دقیق است. فقط ورودی‌های مجاز ارائه‌شده تا ۳۲ کیبی‌بایت را بررسی کرده و حالت گزینه‌های ثابت، غایب، خالی، نامعتبر و معتبر را جدا می‌کند. هیچ ارائه‌دهنده، پرس‌وجو، رزرو بودجه، دستور تجاری یا خواندن تصویر اجرای خصوصی انجام نمی‌شود. این اعتبارسنجی محلی است و نتیجهٔ مدل نیست. مرجع قدیمی 409 می‌دهد و عامل متعلق به دیگری مجاز نیست.",
+        "operationId": "preview_agent_decision_api_v1_ai_agents__ref_id__decision_preview_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref_id",
+            "required": true,
+            "schema": {
+              "title": "Ref Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست.",
+            "in": "header",
+            "name": "User-Agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست.",
+              "examples": [
+                "MyNativeClient/2.3",
+                "python-httpx/0.28.1"
+              ],
+              "title": "User-Agent"
+            }
+          },
+          {
+            "description": "تاریخ اختیاری طبق RFC 9110 که کلاینت‌های بومی برای راهنمایی تشخیصی تولید می‌کنند. جاوااسکریپت مرورگر نمی‌تواند Date را تنظیم کند. مقدار ناموجود یا نامعتبر باعث رد درخواست نمی‌شود.",
+            "example": "Mon, 28 Sep 2026 12:00:00 GMT",
+            "in": "header",
+            "name": "Date",
+            "required": false,
+            "schema": {
+              "maxLength": 128,
+              "type": "string"
+            }
+          },
+          {
+            "description": "زبان ترجیحی اختیاری پاسخ. انگلیسی، فارسی و عربی پشتیبانی می‌شوند؛ برچسب‌های منطقه‌ای از زبان پایه استفاده می‌کنند و مقدارهای پشتیبانی‌نشده به انگلیسی برمی‌گردند. پشتیبانی از زبان عربی نیز فعال است.",
+            "example": "fa-IR",
+            "in": "header",
+            "name": "Accept-Language",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "شناسه اختیاری همبستگی UUIDv7. مقدار ناموجود یا نامعتبر با UUIDv7 تازه جایگزین می‌شود و مقدار مؤثر در X-Request-ID پاسخ برمی‌گردد.",
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "دلیل اختیاری ارائه‌شده توسط فرستنده که در تاریخچه ممیزی ثبت می‌شود. این مقدار اعتبارنامه مجوزدهی نیست.",
+            "example": "Correcting a submitted request",
+            "in": "header",
+            "name": "X-Audit-Reason",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AIDecisionPreviewInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse_AIDecisionPreviewDTO_"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Cache-Control": {
+                "description": "Protected actor-specific response; persistent caching is prohibited.",
+                "schema": {
+                  "const": "private, no-store",
+                  "type": "string"
+                }
+              },
+              "X-Client-Date-Advisory": {
+                "description": "فقط وقتی اختلاف ظاهری به آستانه تنظیم‌شده برسد، با مقدار check-device-time ارائه می‌شود.",
+                "schema": {
+                  "enum": [
+                    "check-device-time"
+                  ],
+                  "type": "string"
+                }
+              },
+              "X-Client-Date-Delta-Seconds": {
+                "description": "اختلاف زمان دریافت سرور و تاریخ کلاینت بر حسب ثانیه با علامت؛ شامل تأخیر شبکه و تولید درخواست است و اختلاف دقیق ساعت‌ها نیست.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Client-Date-Status": {
+                "description": "وضعیت تاریخ اختیاری کلاینت: معتبر، موجود نیست یا نامعتبر. این بررسی باعث رد درخواست نمی‌شود.",
+                "schema": {
+                  "enum": [
+                    "available",
+                    "unavailable",
+                    "invalid"
+                  ],
+                  "type": "string"
+                }
+              },
+              "X-Server-Received-At": {
+                "description": "زمان دریافت سرور به UTC. سرور HTTP یا پراکسی، هدر Date پاسخ را در صورت وجود تولید می‌کند.",
+                "schema": {
+                  "format": "date-time",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Content Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "423": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Locked"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "اعتبارسنجی نمونهٔ تصمیم ارائه‌شده توسط مؤلف",
+        "tags": [
+          "ai-agents"
+        ]
+      }
+    },
+    "/api/v1/ai-agents/{ref_id}/evaluations": {
+      "post": {
+        "description": "هم workflows.manage و هم requests.start و مالکیت عامل منتشرشدهٔ جاری و پیش‌نویس درخواست لازم است. گردش کار تغییرناپذیر درخواست باید همین عامل را سنجاق کند. submit_key و ورودی ذخیره‌شده بدون تغییر به ارسال عادی RequestService با زمینهٔ کلاینت معتبر سپرده می‌شود. بازپخش دقیق، مراجع جاری، مجوزهای سنجاق‌شده، بودجه، قیمت، کارگر و تأیید انسانی الزامی همان قواعد عادی را دارند. عامل پیش‌نویس یا سنجاق ناسازگار 409 است. فقط هویت درخواست و فرایند پذیرفته‌شده بازگردانده می‌شود، نه نتیجهٔ ساختگی ارائه‌دهنده. اجرا ممکن است صف‌شده، ردشده، ناموفق یا نامعلوم باشد؛ شواهد عادی فرایند و هوش مصنوعی را ببینید. اجرای دلخواه پیش‌نویس، تکرار هزینه‌دار یا دور زدن تأیید عملیات محافظت‌شده اضافه نشده است.",
+        "operationId": "start_agent_evaluation_api_v1_ai_agents__ref_id__evaluations_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref_id",
+            "required": true,
+            "schema": {
+              "title": "Ref Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست.",
+            "in": "header",
+            "name": "User-Agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست.",
+              "examples": [
+                "MyNativeClient/2.3",
+                "python-httpx/0.28.1"
+              ],
+              "title": "User-Agent"
+            }
+          },
+          {
+            "description": "تاریخ اختیاری طبق RFC 9110 که کلاینت‌های بومی برای راهنمایی تشخیصی تولید می‌کنند. جاوااسکریپت مرورگر نمی‌تواند Date را تنظیم کند. مقدار ناموجود یا نامعتبر باعث رد درخواست نمی‌شود.",
+            "example": "Mon, 28 Sep 2026 12:00:00 GMT",
+            "in": "header",
+            "name": "Date",
+            "required": false,
+            "schema": {
+              "maxLength": 128,
+              "type": "string"
+            }
+          },
+          {
+            "description": "زبان ترجیحی اختیاری پاسخ. انگلیسی، فارسی و عربی پشتیبانی می‌شوند؛ برچسب‌های منطقه‌ای از زبان پایه استفاده می‌کنند و مقدارهای پشتیبانی‌نشده به انگلیسی برمی‌گردند. پشتیبانی از زبان عربی نیز فعال است.",
+            "example": "fa-IR",
+            "in": "header",
+            "name": "Accept-Language",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "شناسه اختیاری همبستگی UUIDv7. مقدار ناموجود یا نامعتبر با UUIDv7 تازه جایگزین می‌شود و مقدار مؤثر در X-Request-ID پاسخ برمی‌گردد.",
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "دلیل اختیاری ارائه‌شده توسط فرستنده که در تاریخچه ممیزی ثبت می‌شود. این مقدار اعتبارنامه مجوزدهی نیست.",
+            "example": "Correcting a submitted request",
+            "in": "header",
+            "name": "X-Audit-Reason",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AIAgentEvaluationInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse_AIAgentEvaluationDTO_"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Cache-Control": {
+                "description": "Protected actor-specific response; persistent caching is prohibited.",
+                "schema": {
+                  "const": "private, no-store",
+                  "type": "string"
+                }
+              },
+              "X-Client-Date-Advisory": {
+                "description": "فقط وقتی اختلاف ظاهری به آستانه تنظیم‌شده برسد، با مقدار check-device-time ارائه می‌شود.",
+                "schema": {
+                  "enum": [
+                    "check-device-time"
+                  ],
+                  "type": "string"
+                }
+              },
+              "X-Client-Date-Delta-Seconds": {
+                "description": "اختلاف زمان دریافت سرور و تاریخ کلاینت بر حسب ثانیه با علامت؛ شامل تأخیر شبکه و تولید درخواست است و اختلاف دقیق ساعت‌ها نیست.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Client-Date-Status": {
+                "description": "وضعیت تاریخ اختیاری کلاینت: معتبر، موجود نیست یا نامعتبر. این بررسی باعث رد درخواست نمی‌شود.",
+                "schema": {
+                  "enum": [
+                    "available",
+                    "unavailable",
+                    "invalid"
+                  ],
+                  "type": "string"
+                }
+              },
+              "X-Server-Received-At": {
+                "description": "زمان دریافت سرور به UTC. سرور HTTP یا پراکسی، هدر Date پاسخ را در صورت وجود تولید می‌کند.",
+                "schema": {
+                  "format": "date-time",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Content Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "423": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Locked"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "ارسال درخواست واجد شرایط برای ارزیابی تحت نظارت عامل",
+        "tags": [
+          "ai-agents"
+        ]
+      }
+    },
     "/api/v1/ai-agents/{ref_id}/history": {
       "post": {
         "description": "به مجوز workflows.manage و مالکیت یا دسترسی مدیر کل نیاز دارد. تاریخچه ممکن است متن دستورهای پیشین را داشته باشد و همان کنترل دسترسی جزئیات عامل اعمال می‌شود.",
@@ -39638,6 +41113,792 @@
           }
         ],
         "summary": "انتشار نسخه مجاز و قیمت‌گذاری‌شده عامل هوش مصنوعی",
+        "tags": [
+          "ai-agents"
+        ]
+      }
+    },
+    "/api/v1/ai-agents/{ref_id}/retrieval-preview": {
+      "post": {
+        "description": "نیازمند workflows.manage، مالکیت عامل جاری و مرجع دقیق گزارش ذخیره‌شدهٔ شخصی و منقضی‌نشده است. نسخهٔ تعریف، سیاست مبدأ، ابزار، طبقه‌بندی و مجوز فعلی دوباره بررسی می‌شود. حد ۱ تا ۱۰ نباید از حدود تعریف یا گزارش بیشتر باشد. طرح نتیجه فقط فیلدهای مجاز را بدون اجرای پرس‌وجو یا مدل نشان می‌دهد. lookup_saved_report/1 همچنان به تأیید انسانی همان فراخوانی معلق فقط‌خواندنی و بررسی دسترسی هنگام اجرا نیاز دارد؛ پیش‌نمایش تأیید نیست. مرجع قدیمی یا منقضی 409 است و منبع خصوصی یا غیرمجاز افشا نمی‌شود.",
+        "operationId": "agent_retrieval_preview_api_v1_ai_agents__ref_id__retrieval_preview_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref_id",
+            "required": true,
+            "schema": {
+              "title": "Ref Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست.",
+            "in": "header",
+            "name": "User-Agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست.",
+              "examples": [
+                "MyNativeClient/2.3",
+                "python-httpx/0.28.1"
+              ],
+              "title": "User-Agent"
+            }
+          },
+          {
+            "description": "تاریخ اختیاری طبق RFC 9110 که کلاینت‌های بومی برای راهنمایی تشخیصی تولید می‌کنند. جاوااسکریپت مرورگر نمی‌تواند Date را تنظیم کند. مقدار ناموجود یا نامعتبر باعث رد درخواست نمی‌شود.",
+            "example": "Mon, 28 Sep 2026 12:00:00 GMT",
+            "in": "header",
+            "name": "Date",
+            "required": false,
+            "schema": {
+              "maxLength": 128,
+              "type": "string"
+            }
+          },
+          {
+            "description": "زبان ترجیحی اختیاری پاسخ. انگلیسی، فارسی و عربی پشتیبانی می‌شوند؛ برچسب‌های منطقه‌ای از زبان پایه استفاده می‌کنند و مقدارهای پشتیبانی‌نشده به انگلیسی برمی‌گردند. پشتیبانی از زبان عربی نیز فعال است.",
+            "example": "fa-IR",
+            "in": "header",
+            "name": "Accept-Language",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "شناسه اختیاری همبستگی UUIDv7. مقدار ناموجود یا نامعتبر با UUIDv7 تازه جایگزین می‌شود و مقدار مؤثر در X-Request-ID پاسخ برمی‌گردد.",
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "دلیل اختیاری ارائه‌شده توسط فرستنده که در تاریخچه ممیزی ثبت می‌شود. این مقدار اعتبارنامه مجوزدهی نیست.",
+            "example": "Correcting a submitted request",
+            "in": "header",
+            "name": "X-Audit-Reason",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AIReportLookupPreviewInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse_AIReportLookupPreviewDTO_"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Cache-Control": {
+                "description": "Protected actor-specific response; persistent caching is prohibited.",
+                "schema": {
+                  "const": "private, no-store",
+                  "type": "string"
+                }
+              },
+              "X-Client-Date-Advisory": {
+                "description": "فقط وقتی اختلاف ظاهری به آستانه تنظیم‌شده برسد، با مقدار check-device-time ارائه می‌شود.",
+                "schema": {
+                  "enum": [
+                    "check-device-time"
+                  ],
+                  "type": "string"
+                }
+              },
+              "X-Client-Date-Delta-Seconds": {
+                "description": "اختلاف زمان دریافت سرور و تاریخ کلاینت بر حسب ثانیه با علامت؛ شامل تأخیر شبکه و تولید درخواست است و اختلاف دقیق ساعت‌ها نیست.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Client-Date-Status": {
+                "description": "وضعیت تاریخ اختیاری کلاینت: معتبر، موجود نیست یا نامعتبر. این بررسی باعث رد درخواست نمی‌شود.",
+                "schema": {
+                  "enum": [
+                    "available",
+                    "unavailable",
+                    "invalid"
+                  ],
+                  "type": "string"
+                }
+              },
+              "X-Server-Received-At": {
+                "description": "زمان دریافت سرور به UTC. سرور HTTP یا پراکسی، هدر Date پاسخ را در صورت وجود تولید می‌کند.",
+                "schema": {
+                  "format": "date-time",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Content Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "423": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Locked"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "بازبینی طرح محدود بازیابی از گزارش ذخیره‌شده",
+        "tags": [
+          "ai-agents"
+        ]
+      }
+    },
+    "/api/v1/ai-agents/{ref_id}/retrieval-sources/search": {
+      "post": {
+        "description": "نیازمند workflows.manage و مالکیت عامل جاری است. فقط گزارش‌های ذخیره‌شدهٔ جاری، منقضی‌نشده و متعلق به مؤلف نمایش داده می‌شوند که نسخهٔ دقیق تعریف ثبت‌شدهٔ آن‌ها بازیابی هوش مصنوعی را مجاز کرده و مجوز، طبقه‌بندی، مبدأ و ابزار با سیاست عامل سازگار باشد. فیلتر دسترسی و چرخهٔ عمر پیش از شمارش و صفحه‌بندی پایدار اعمال می‌شود. جست‌وجو روی کلید تعریف و حدود صفحه از SelectQuery است. سطرهای خصوصی، فیلتر ذخیره‌شده، مسیر فایل یا اعتبارنامه نمایش داده نمی‌شود. فهرست خالی مجوز ایجاد نمی‌کند و به معنی لغو منبع غایب نیست.",
+        "operationId": "agent_retrieval_sources_api_v1_ai_agents__ref_id__retrieval_sources_search_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref_id",
+            "required": true,
+            "schema": {
+              "title": "Ref Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست.",
+            "in": "header",
+            "name": "User-Agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست.",
+              "examples": [
+                "MyNativeClient/2.3",
+                "python-httpx/0.28.1"
+              ],
+              "title": "User-Agent"
+            }
+          },
+          {
+            "description": "تاریخ اختیاری طبق RFC 9110 که کلاینت‌های بومی برای راهنمایی تشخیصی تولید می‌کنند. جاوااسکریپت مرورگر نمی‌تواند Date را تنظیم کند. مقدار ناموجود یا نامعتبر باعث رد درخواست نمی‌شود.",
+            "example": "Mon, 28 Sep 2026 12:00:00 GMT",
+            "in": "header",
+            "name": "Date",
+            "required": false,
+            "schema": {
+              "maxLength": 128,
+              "type": "string"
+            }
+          },
+          {
+            "description": "زبان ترجیحی اختیاری پاسخ. انگلیسی، فارسی و عربی پشتیبانی می‌شوند؛ برچسب‌های منطقه‌ای از زبان پایه استفاده می‌کنند و مقدارهای پشتیبانی‌نشده به انگلیسی برمی‌گردند. پشتیبانی از زبان عربی نیز فعال است.",
+            "example": "fa-IR",
+            "in": "header",
+            "name": "Accept-Language",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "شناسه اختیاری همبستگی UUIDv7. مقدار ناموجود یا نامعتبر با UUIDv7 تازه جایگزین می‌شود و مقدار مؤثر در X-Request-ID پاسخ برمی‌گردد.",
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "دلیل اختیاری ارائه‌شده توسط فرستنده که در تاریخچه ممیزی ثبت می‌شود. این مقدار اعتبارنامه مجوزدهی نیست.",
+            "example": "Correcting a submitted request",
+            "in": "header",
+            "name": "X-Audit-Reason",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SelectQuery"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponse_Page_AIReportLookupDTO__"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Cache-Control": {
+                "description": "Protected actor-specific response; persistent caching is prohibited.",
+                "schema": {
+                  "const": "private, no-store",
+                  "type": "string"
+                }
+              },
+              "X-Client-Date-Advisory": {
+                "description": "فقط وقتی اختلاف ظاهری به آستانه تنظیم‌شده برسد، با مقدار check-device-time ارائه می‌شود.",
+                "schema": {
+                  "enum": [
+                    "check-device-time"
+                  ],
+                  "type": "string"
+                }
+              },
+              "X-Client-Date-Delta-Seconds": {
+                "description": "اختلاف زمان دریافت سرور و تاریخ کلاینت بر حسب ثانیه با علامت؛ شامل تأخیر شبکه و تولید درخواست است و اختلاف دقیق ساعت‌ها نیست.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Client-Date-Status": {
+                "description": "وضعیت تاریخ اختیاری کلاینت: معتبر، موجود نیست یا نامعتبر. این بررسی باعث رد درخواست نمی‌شود.",
+                "schema": {
+                  "enum": [
+                    "available",
+                    "unavailable",
+                    "invalid"
+                  ],
+                  "type": "string"
+                }
+              },
+              "X-Server-Received-At": {
+                "description": "زمان دریافت سرور به UTC. سرور HTTP یا پراکسی، هدر Date پاسخ را در صورت وجود تولید می‌کند.",
+                "schema": {
+                  "format": "date-time",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Content Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "423": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Locked"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "یافتن گزارش‌های ذخیره‌شدهٔ شخصی مجاز برای بازیابی",
+        "tags": [
+          "ai-agents"
+        ]
+      }
+    },
+    "/api/v1/ai-agents/{ref_id}/workflow-context": {
+      "post": {
+        "description": "نیازمند workflows.manage، مالکیت عامل جاری و دسترسی فعلی مشاهده به گردش کار فعال است. نسخه دقیق و گام AI_DECISION باید همین عامل را سنجاق کنند. طرح‌واره مبدأ ورودی کامل از مسیر آن، یا طرح‌واره مشترک فیلدهای bpms.binding.object/1 نمایش داده می‌شود. نمونه صریح کل ورودی، ثابت قابل مشاهده یا ترکیب تمام‌ثابت مشخص است؛ هیچ مقدار خصوصی اجرای واقعی خوانده نمی‌شود. اتصال غایب، چند اتصال قدیمی ناسازگار، عامل متفاوت و نسخه قدیمی ۴۰۹ می‌دهند. فیلدهای شیء نسخه‌دار یک طرح‌واره ورودی مشترک دارند؛ ترکیب چند مبدأ مقدار اجرا را نمی‌خواند. هیچ اجرا یا فراخوانی مدل رخ نمی‌دهد.",
+        "operationId": "agent_workflow_context_api_v1_ai_agents__ref_id__workflow_context_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref_id",
+            "required": true,
+            "schema": {
+              "title": "Ref Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست.",
+            "in": "header",
+            "name": "User-Agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست.",
+              "examples": [
+                "MyNativeClient/2.3",
+                "python-httpx/0.28.1"
+              ],
+              "title": "User-Agent"
+            }
+          },
+          {
+            "description": "تاریخ اختیاری طبق RFC 9110 که کلاینت‌های بومی برای راهنمایی تشخیصی تولید می‌کنند. جاوااسکریپت مرورگر نمی‌تواند Date را تنظیم کند. مقدار ناموجود یا نامعتبر باعث رد درخواست نمی‌شود.",
+            "example": "Mon, 28 Sep 2026 12:00:00 GMT",
+            "in": "header",
+            "name": "Date",
+            "required": false,
+            "schema": {
+              "maxLength": 128,
+              "type": "string"
+            }
+          },
+          {
+            "description": "زبان ترجیحی اختیاری پاسخ. انگلیسی، فارسی و عربی پشتیبانی می‌شوند؛ برچسب‌های منطقه‌ای از زبان پایه استفاده می‌کنند و مقدارهای پشتیبانی‌نشده به انگلیسی برمی‌گردند. پشتیبانی از زبان عربی نیز فعال است.",
+            "example": "fa-IR",
+            "in": "header",
+            "name": "Accept-Language",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "شناسه اختیاری همبستگی UUIDv7. مقدار ناموجود یا نامعتبر با UUIDv7 تازه جایگزین می‌شود و مقدار مؤثر در X-Request-ID پاسخ برمی‌گردد.",
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "دلیل اختیاری ارائه‌شده توسط فرستنده که در تاریخچه ممیزی ثبت می‌شود. این مقدار اعتبارنامه مجوزدهی نیست.",
+            "example": "Correcting a submitted request",
+            "in": "header",
+            "name": "X-Audit-Reason",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AIWorkflowContextInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse_AIWorkflowContextDTO_"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Cache-Control": {
+                "description": "Protected actor-specific response; persistent caching is prohibited.",
+                "schema": {
+                  "const": "private, no-store",
+                  "type": "string"
+                }
+              },
+              "X-Client-Date-Advisory": {
+                "description": "فقط وقتی اختلاف ظاهری به آستانه تنظیم‌شده برسد، با مقدار check-device-time ارائه می‌شود.",
+                "schema": {
+                  "enum": [
+                    "check-device-time"
+                  ],
+                  "type": "string"
+                }
+              },
+              "X-Client-Date-Delta-Seconds": {
+                "description": "اختلاف زمان دریافت سرور و تاریخ کلاینت بر حسب ثانیه با علامت؛ شامل تأخیر شبکه و تولید درخواست است و اختلاف دقیق ساعت‌ها نیست.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Client-Date-Status": {
+                "description": "وضعیت تاریخ اختیاری کلاینت: معتبر، موجود نیست یا نامعتبر. این بررسی باعث رد درخواست نمی‌شود.",
+                "schema": {
+                  "enum": [
+                    "available",
+                    "unavailable",
+                    "invalid"
+                  ],
+                  "type": "string"
+                }
+              },
+              "X-Server-Received-At": {
+                "description": "زمان دریافت سرور به UTC. سرور HTTP یا پراکسی، هدر Date پاسخ را در صورت وجود تولید می‌کند.",
+                "schema": {
+                  "format": "date-time",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Content Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "423": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Locked"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "بررسی گزینه‌های عامل در نسخهٔ دقیق گردش کار",
         "tags": [
           "ai-agents"
         ]
@@ -50590,6 +52851,284 @@
           }
         ],
         "summary": "Event Reminders",
+        "tags": [
+          "calendar-events"
+        ]
+      }
+    },
+    "/api/v1/calendar/work-groups/select": {
+      "post": {
+        "description": "انتخابگر خصوصی فقط‌خواندنی برای کاربر واردشده، بدون نیاز به مجوز مدیریت گروه. فقط عضویت‌های فعال فعلی در گروه‌های فعال حذف‌نشده نمایش داده می‌شوند؛ مدیرکل نیز معاف نیست. جست‌وجوی نام به‌صورت متن صریح و بدون حساسیت به حروف (۱ تا ۱۰۰ نویسه) پیش از شمارش و صفحه‌بندی انجام می‌شود. نبودن یا null جست‌وجو همه گروه‌های مجاز را برمی‌گرداند. صفحه پیش‌فرض ۱ و اندازه ۲۰ (۱ تا ۱۰۰) است؛ ترتیب نام و شناسه ثابت است. قالب page پوشش result و قالب items همان صفحه محدود را به‌شکل آرایه key/value می‌دهد. تعیین مالک یا وضعیت مجاز نیست. کلیدها ارجاع مبهم نسخه فعلی و مقدارها نام واردشده کاربر در همه زبان‌ها هستند. انتخاب مجوز نوشتن نمی‌دهد؛ فرمان تقویم عضویت و نسخه گروه را دوباره بررسی می‌کند. لغو عضویت یا حذف، گروه و شمارش آن را در خواندن بعدی حذف می‌کند. دسترسی بدون ورود ۴۰۱ و ورودی نامعتبر ۴۲۲ است. تغییری در داده کسب‌وکار یا فراخوانی ارائه‌دهنده انجام نمی‌شود. هر دو قالب سرآیند خصوصی no-store دارند.",
+        "operationId": "select_calendar_groups_api_v1_calendar_work_groups_select_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "response_format",
+            "required": false,
+            "schema": {
+              "default": "page",
+              "enum": [
+                "page",
+                "items"
+              ],
+              "title": "Response Format",
+              "type": "string"
+            }
+          },
+          {
+            "description": "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست.",
+            "in": "header",
+            "name": "User-Agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست.",
+              "examples": [
+                "MyNativeClient/2.3",
+                "python-httpx/0.28.1"
+              ],
+              "title": "User-Agent"
+            }
+          },
+          {
+            "description": "تاریخ اختیاری طبق RFC 9110 که کلاینت‌های بومی برای راهنمایی تشخیصی تولید می‌کنند. جاوااسکریپت مرورگر نمی‌تواند Date را تنظیم کند. مقدار ناموجود یا نامعتبر باعث رد درخواست نمی‌شود.",
+            "example": "Mon, 28 Sep 2026 12:00:00 GMT",
+            "in": "header",
+            "name": "Date",
+            "required": false,
+            "schema": {
+              "maxLength": 128,
+              "type": "string"
+            }
+          },
+          {
+            "description": "زبان ترجیحی اختیاری پاسخ. انگلیسی، فارسی و عربی پشتیبانی می‌شوند؛ برچسب‌های منطقه‌ای از زبان پایه استفاده می‌کنند و مقدارهای پشتیبانی‌نشده به انگلیسی برمی‌گردند. پشتیبانی از زبان عربی نیز فعال است.",
+            "example": "fa-IR",
+            "in": "header",
+            "name": "Accept-Language",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "شناسه اختیاری همبستگی UUIDv7. مقدار ناموجود یا نامعتبر با UUIDv7 تازه جایگزین می‌شود و مقدار مؤثر در X-Request-ID پاسخ برمی‌گردد.",
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "دلیل اختیاری ارائه‌شده توسط فرستنده که در تاریخچه ممیزی ثبت می‌شود. این مقدار اعتبارنامه مجوزدهی نیست.",
+            "example": "Correcting a submitted request",
+            "in": "header",
+            "name": "X-Audit-Reason",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarGroupQuery"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/PageResponse_Page_SelectOption_str___"
+                    },
+                    {
+                      "items": {
+                        "$ref": "#/components/schemas/SelectOption_str_"
+                      },
+                      "type": "array"
+                    }
+                  ],
+                  "title": "Response Select Calendar Groups Api V1 Calendar Work Groups Select Post"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Cache-Control": {
+                "description": "Protected actor-specific response; persistent caching is prohibited.",
+                "schema": {
+                  "const": "private, no-store",
+                  "type": "string"
+                }
+              },
+              "X-Client-Date-Advisory": {
+                "description": "فقط وقتی اختلاف ظاهری به آستانه تنظیم‌شده برسد، با مقدار check-device-time ارائه می‌شود.",
+                "schema": {
+                  "enum": [
+                    "check-device-time"
+                  ],
+                  "type": "string"
+                }
+              },
+              "X-Client-Date-Delta-Seconds": {
+                "description": "اختلاف زمان دریافت سرور و تاریخ کلاینت بر حسب ثانیه با علامت؛ شامل تأخیر شبکه و تولید درخواست است و اختلاف دقیق ساعت‌ها نیست.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Client-Date-Status": {
+                "description": "وضعیت تاریخ اختیاری کلاینت: معتبر، موجود نیست یا نامعتبر. این بررسی باعث رد درخواست نمی‌شود.",
+                "schema": {
+                  "enum": [
+                    "available",
+                    "unavailable",
+                    "invalid"
+                  ],
+                  "type": "string"
+                }
+              },
+              "X-Server-Received-At": {
+                "description": "زمان دریافت سرور به UTC. سرور HTTP یا پراکسی، هدر Date پاسخ را در صورت وجود تولید می‌کند.",
+                "schema": {
+                  "format": "date-time",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Content Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "423": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Locked"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "انتخاب گروه‌های فعال تقویم من",
         "tags": [
           "calendar-events"
         ]
@@ -75839,7 +78378,7 @@
     },
     "/api/v1/inbox/report": {
       "post": {
-        "description": "صندوق یکپارچه نسخه 1 فقط برای گیرنده احرازشده است. مقصد case، work_item، ai_approval، report و account در هر خواندن با مجوز مالک به ارجاع فعلی حل می‌شود. calendar، support و operation تا پیاده‌سازی تولیدکننده در دسترس نیستند. مقصد حذف‌شده، لغوشده، منقضی یا سلب‌مجوزشده عنوان، محتوا یا ارجاع خصوصی نشان نمی‌دهد. جستجو محدود و مرتب با filters، sort_orders، page، size و unread است؛ report همان جستجوی صفحه‌بندی‌شده است، نه آرشیو صف‌شده. شمار خوانده‌نشده ردیف‌های زنده ACTIVE و بدون read_at را شامل می‌شود، حتی مقصد پوشانده‌شده. علامت خواندن فقط فراداده را تغییر می‌دهد و ارجاع فعلی می‌خواهد؛ هرگز عمل گردش کار انجام نمی‌دهد. ارجاع قدیمی 409، مال دیگری 403، ناموجود 404 و بدنه نامعتبر 422 است. فرمان {} می‌پذیرد و null رد می‌شود. زمان‌ها UTC و زبان قالب هنگام ایجاد en/fa با پیش‌فرض en است. پاسخ‌ها خصوصی و بدون کش هستند. ارجاع را از پاسخ تغییر تازه کنید. ایمیل اختیاری پیش‌فرض خاموش است و اعلان ضروری از خاموشی اختیاری پیروی نمی‌کند. خواندن هیچ ارسال انجام نمی‌دهد.",
+        "description": "صندوق یکپارچه نسخه ۱ فقط برای گیرنده واردشده است. مقصدهای درخواست، کار، تأیید هوش مصنوعی، گزارش و حساب در هر خواندن، ارجاع مجاز فعلی را می‌دهند. تقویم و پشتیبانی نیز منبع مجاز فعلی را بررسی می‌کنند. اعلان عملیات کنترل‌شده، صفحه فرایند موجود را باز می‌کند: MAP-07 به اختیار فعلی بازیابی مدیرکل و شواهد حل‌نشده نیاز دارد؛ MAP-08 به مالکیت فعلی درخواست، مجوز requests.start و رسید دقیق تأییدشده CREATED نیاز دارد. نتیجه نامعلوم هرگز مجوز اجرای دوباره ارائه‌دهنده نیست. مقصدهای قدیمی پشتیبانی‌نشده در دسترس نیستند. مقصد حذف‌شده، لغوشده، منقضی یا بدون مجوز، عنوان، محتوا و ارجاع خصوصی را نمایش نمی‌دهد. برچسب ذخیره‌شده مجوز نمی‌دهد. جست‌وجو محدود و مرتب با فیلتر، ترتیب، صفحه، اندازه و unread است؛ گزارش همان جست‌وجوی صفحه‌بندی‌شده است. شمارش خوانده‌نشده شامل ردیف‌های ACTIVE با مقصد پوشانده‌شده نیز هست. خوانده‌شدن فقط فراداده را تغییر می‌دهد و به ارجاع نسخه فعلی نیاز دارد (۴۰۹ برای نسخه قدیمی)؛ هیچ تصمیم یا عملیات گردش‌کار انجام نمی‌دهد. ارجاع متعلق به دیگری ۴۰۳ و ارجاع حذف‌شده یا غایب ۴۰۴ است. بدنه null پذیرفته نیست؛ فرمان شیء خالی می‌پذیرد. زمان‌ها UTC و زبان قالب هنگام ایجاد en/fa/ar با بازگشت به en است. پوشش‌های snake_case خصوصی no-store و خطاهای ۴۰۱/۴۰۳/۴۰۴/۴۰۹/۴۲۲ حفظ می‌شوند. ارجاع پاسخ فرمان را تازه‌سازی کنید. ایمیل اختیاری پیش‌فرض خاموش است؛ اعلان اجباری از انصراف اختیاری پیروی نمی‌کند. خواندن باعث ارسال نمی‌شود.",
         "operationId": "search_api_v1_inbox_report_post",
         "parameters": [
           {
@@ -76092,7 +78631,7 @@
     },
     "/api/v1/inbox/search": {
       "post": {
-        "description": "صندوق یکپارچه نسخه 1 فقط برای گیرنده احرازشده است. مقصد case، work_item، ai_approval، report و account در هر خواندن با مجوز مالک به ارجاع فعلی حل می‌شود. calendar، support و operation تا پیاده‌سازی تولیدکننده در دسترس نیستند. مقصد حذف‌شده، لغوشده، منقضی یا سلب‌مجوزشده عنوان، محتوا یا ارجاع خصوصی نشان نمی‌دهد. جستجو محدود و مرتب با filters، sort_orders، page، size و unread است؛ report همان جستجوی صفحه‌بندی‌شده است، نه آرشیو صف‌شده. شمار خوانده‌نشده ردیف‌های زنده ACTIVE و بدون read_at را شامل می‌شود، حتی مقصد پوشانده‌شده. علامت خواندن فقط فراداده را تغییر می‌دهد و ارجاع فعلی می‌خواهد؛ هرگز عمل گردش کار انجام نمی‌دهد. ارجاع قدیمی 409، مال دیگری 403، ناموجود 404 و بدنه نامعتبر 422 است. فرمان {} می‌پذیرد و null رد می‌شود. زمان‌ها UTC و زبان قالب هنگام ایجاد en/fa با پیش‌فرض en است. پاسخ‌ها خصوصی و بدون کش هستند. ارجاع را از پاسخ تغییر تازه کنید. ایمیل اختیاری پیش‌فرض خاموش است و اعلان ضروری از خاموشی اختیاری پیروی نمی‌کند. خواندن هیچ ارسال انجام نمی‌دهد.",
+        "description": "صندوق یکپارچه نسخه ۱ فقط برای گیرنده واردشده است. مقصدهای درخواست، کار، تأیید هوش مصنوعی، گزارش و حساب در هر خواندن، ارجاع مجاز فعلی را می‌دهند. تقویم و پشتیبانی نیز منبع مجاز فعلی را بررسی می‌کنند. اعلان عملیات کنترل‌شده، صفحه فرایند موجود را باز می‌کند: MAP-07 به اختیار فعلی بازیابی مدیرکل و شواهد حل‌نشده نیاز دارد؛ MAP-08 به مالکیت فعلی درخواست، مجوز requests.start و رسید دقیق تأییدشده CREATED نیاز دارد. نتیجه نامعلوم هرگز مجوز اجرای دوباره ارائه‌دهنده نیست. مقصدهای قدیمی پشتیبانی‌نشده در دسترس نیستند. مقصد حذف‌شده، لغوشده، منقضی یا بدون مجوز، عنوان، محتوا و ارجاع خصوصی را نمایش نمی‌دهد. برچسب ذخیره‌شده مجوز نمی‌دهد. جست‌وجو محدود و مرتب با فیلتر، ترتیب، صفحه، اندازه و unread است؛ گزارش همان جست‌وجوی صفحه‌بندی‌شده است. شمارش خوانده‌نشده شامل ردیف‌های ACTIVE با مقصد پوشانده‌شده نیز هست. خوانده‌شدن فقط فراداده را تغییر می‌دهد و به ارجاع نسخه فعلی نیاز دارد (۴۰۹ برای نسخه قدیمی)؛ هیچ تصمیم یا عملیات گردش‌کار انجام نمی‌دهد. ارجاع متعلق به دیگری ۴۰۳ و ارجاع حذف‌شده یا غایب ۴۰۴ است. بدنه null پذیرفته نیست؛ فرمان شیء خالی می‌پذیرد. زمان‌ها UTC و زبان قالب هنگام ایجاد en/fa/ar با بازگشت به en است. پوشش‌های snake_case خصوصی no-store و خطاهای ۴۰۱/۴۰۳/۴۰۴/۴۰۹/۴۲۲ حفظ می‌شوند. ارجاع پاسخ فرمان را تازه‌سازی کنید. ایمیل اختیاری پیش‌فرض خاموش است؛ اعلان اجباری از انصراف اختیاری پیروی نمی‌کند. خواندن باعث ارسال نمی‌شود.",
         "operationId": "search_api_v1_inbox_search_post",
         "parameters": [
           {
@@ -76345,7 +78884,7 @@
     },
     "/api/v1/inbox/unread": {
       "get": {
-        "description": "صندوق یکپارچه نسخه 1 فقط برای گیرنده احرازشده است. مقصد case، work_item، ai_approval، report و account در هر خواندن با مجوز مالک به ارجاع فعلی حل می‌شود. calendar، support و operation تا پیاده‌سازی تولیدکننده در دسترس نیستند. مقصد حذف‌شده، لغوشده، منقضی یا سلب‌مجوزشده عنوان، محتوا یا ارجاع خصوصی نشان نمی‌دهد. جستجو محدود و مرتب با filters، sort_orders، page، size و unread است؛ report همان جستجوی صفحه‌بندی‌شده است، نه آرشیو صف‌شده. شمار خوانده‌نشده ردیف‌های زنده ACTIVE و بدون read_at را شامل می‌شود، حتی مقصد پوشانده‌شده. علامت خواندن فقط فراداده را تغییر می‌دهد و ارجاع فعلی می‌خواهد؛ هرگز عمل گردش کار انجام نمی‌دهد. ارجاع قدیمی 409، مال دیگری 403، ناموجود 404 و بدنه نامعتبر 422 است. فرمان {} می‌پذیرد و null رد می‌شود. زمان‌ها UTC و زبان قالب هنگام ایجاد en/fa با پیش‌فرض en است. پاسخ‌ها خصوصی و بدون کش هستند. ارجاع را از پاسخ تغییر تازه کنید. ایمیل اختیاری پیش‌فرض خاموش است و اعلان ضروری از خاموشی اختیاری پیروی نمی‌کند. خواندن هیچ ارسال انجام نمی‌دهد.",
+        "description": "صندوق یکپارچه نسخه ۱ فقط برای گیرنده واردشده است. مقصدهای درخواست، کار، تأیید هوش مصنوعی، گزارش و حساب در هر خواندن، ارجاع مجاز فعلی را می‌دهند. تقویم و پشتیبانی نیز منبع مجاز فعلی را بررسی می‌کنند. اعلان عملیات کنترل‌شده، صفحه فرایند موجود را باز می‌کند: MAP-07 به اختیار فعلی بازیابی مدیرکل و شواهد حل‌نشده نیاز دارد؛ MAP-08 به مالکیت فعلی درخواست، مجوز requests.start و رسید دقیق تأییدشده CREATED نیاز دارد. نتیجه نامعلوم هرگز مجوز اجرای دوباره ارائه‌دهنده نیست. مقصدهای قدیمی پشتیبانی‌نشده در دسترس نیستند. مقصد حذف‌شده، لغوشده، منقضی یا بدون مجوز، عنوان، محتوا و ارجاع خصوصی را نمایش نمی‌دهد. برچسب ذخیره‌شده مجوز نمی‌دهد. جست‌وجو محدود و مرتب با فیلتر، ترتیب، صفحه، اندازه و unread است؛ گزارش همان جست‌وجوی صفحه‌بندی‌شده است. شمارش خوانده‌نشده شامل ردیف‌های ACTIVE با مقصد پوشانده‌شده نیز هست. خوانده‌شدن فقط فراداده را تغییر می‌دهد و به ارجاع نسخه فعلی نیاز دارد (۴۰۹ برای نسخه قدیمی)؛ هیچ تصمیم یا عملیات گردش‌کار انجام نمی‌دهد. ارجاع متعلق به دیگری ۴۰۳ و ارجاع حذف‌شده یا غایب ۴۰۴ است. بدنه null پذیرفته نیست؛ فرمان شیء خالی می‌پذیرد. زمان‌ها UTC و زبان قالب هنگام ایجاد en/fa/ar با بازگشت به en است. پوشش‌های snake_case خصوصی no-store و خطاهای ۴۰۱/۴۰۳/۴۰۴/۴۰۹/۴۲۲ حفظ می‌شوند. ارجاع پاسخ فرمان را تازه‌سازی کنید. ایمیل اختیاری پیش‌فرض خاموش است؛ اعلان اجباری از انصراف اختیاری پیروی نمی‌کند. خواندن باعث ارسال نمی‌شود.",
         "operationId": "unread_api_v1_inbox_unread_get",
         "parameters": [
           {
@@ -76588,7 +79127,7 @@
     },
     "/api/v1/inbox/{ref_id}": {
       "get": {
-        "description": "صندوق یکپارچه نسخه 1 فقط برای گیرنده احرازشده است. مقصد case، work_item، ai_approval، report و account در هر خواندن با مجوز مالک به ارجاع فعلی حل می‌شود. calendar، support و operation تا پیاده‌سازی تولیدکننده در دسترس نیستند. مقصد حذف‌شده، لغوشده، منقضی یا سلب‌مجوزشده عنوان، محتوا یا ارجاع خصوصی نشان نمی‌دهد. جستجو محدود و مرتب با filters، sort_orders، page، size و unread است؛ report همان جستجوی صفحه‌بندی‌شده است، نه آرشیو صف‌شده. شمار خوانده‌نشده ردیف‌های زنده ACTIVE و بدون read_at را شامل می‌شود، حتی مقصد پوشانده‌شده. علامت خواندن فقط فراداده را تغییر می‌دهد و ارجاع فعلی می‌خواهد؛ هرگز عمل گردش کار انجام نمی‌دهد. ارجاع قدیمی 409، مال دیگری 403، ناموجود 404 و بدنه نامعتبر 422 است. فرمان {} می‌پذیرد و null رد می‌شود. زمان‌ها UTC و زبان قالب هنگام ایجاد en/fa با پیش‌فرض en است. پاسخ‌ها خصوصی و بدون کش هستند. ارجاع را از پاسخ تغییر تازه کنید. ایمیل اختیاری پیش‌فرض خاموش است و اعلان ضروری از خاموشی اختیاری پیروی نمی‌کند. خواندن هیچ ارسال انجام نمی‌دهد.",
+        "description": "صندوق یکپارچه نسخه ۱ فقط برای گیرنده واردشده است. مقصدهای درخواست، کار، تأیید هوش مصنوعی، گزارش و حساب در هر خواندن، ارجاع مجاز فعلی را می‌دهند. تقویم و پشتیبانی نیز منبع مجاز فعلی را بررسی می‌کنند. اعلان عملیات کنترل‌شده، صفحه فرایند موجود را باز می‌کند: MAP-07 به اختیار فعلی بازیابی مدیرکل و شواهد حل‌نشده نیاز دارد؛ MAP-08 به مالکیت فعلی درخواست، مجوز requests.start و رسید دقیق تأییدشده CREATED نیاز دارد. نتیجه نامعلوم هرگز مجوز اجرای دوباره ارائه‌دهنده نیست. مقصدهای قدیمی پشتیبانی‌نشده در دسترس نیستند. مقصد حذف‌شده، لغوشده، منقضی یا بدون مجوز، عنوان، محتوا و ارجاع خصوصی را نمایش نمی‌دهد. برچسب ذخیره‌شده مجوز نمی‌دهد. جست‌وجو محدود و مرتب با فیلتر، ترتیب، صفحه، اندازه و unread است؛ گزارش همان جست‌وجوی صفحه‌بندی‌شده است. شمارش خوانده‌نشده شامل ردیف‌های ACTIVE با مقصد پوشانده‌شده نیز هست. خوانده‌شدن فقط فراداده را تغییر می‌دهد و به ارجاع نسخه فعلی نیاز دارد (۴۰۹ برای نسخه قدیمی)؛ هیچ تصمیم یا عملیات گردش‌کار انجام نمی‌دهد. ارجاع متعلق به دیگری ۴۰۳ و ارجاع حذف‌شده یا غایب ۴۰۴ است. بدنه null پذیرفته نیست؛ فرمان شیء خالی می‌پذیرد. زمان‌ها UTC و زبان قالب هنگام ایجاد en/fa/ar با بازگشت به en است. پوشش‌های snake_case خصوصی no-store و خطاهای ۴۰۱/۴۰۳/۴۰۴/۴۰۹/۴۲۲ حفظ می‌شوند. ارجاع پاسخ فرمان را تازه‌سازی کنید. ایمیل اختیاری پیش‌فرض خاموش است؛ اعلان اجباری از انصراف اختیاری پیروی نمی‌کند. خواندن باعث ارسال نمی‌شود.",
         "operationId": "detail_api_v1_inbox__ref_id__get",
         "parameters": [
           {
@@ -76840,7 +79379,7 @@
     },
     "/api/v1/inbox/{ref_id}/read": {
       "post": {
-        "description": "صندوق یکپارچه نسخه 1 فقط برای گیرنده احرازشده است. مقصد case، work_item، ai_approval، report و account در هر خواندن با مجوز مالک به ارجاع فعلی حل می‌شود. calendar، support و operation تا پیاده‌سازی تولیدکننده در دسترس نیستند. مقصد حذف‌شده، لغوشده، منقضی یا سلب‌مجوزشده عنوان، محتوا یا ارجاع خصوصی نشان نمی‌دهد. جستجو محدود و مرتب با filters، sort_orders، page، size و unread است؛ report همان جستجوی صفحه‌بندی‌شده است، نه آرشیو صف‌شده. شمار خوانده‌نشده ردیف‌های زنده ACTIVE و بدون read_at را شامل می‌شود، حتی مقصد پوشانده‌شده. علامت خواندن فقط فراداده را تغییر می‌دهد و ارجاع فعلی می‌خواهد؛ هرگز عمل گردش کار انجام نمی‌دهد. ارجاع قدیمی 409، مال دیگری 403، ناموجود 404 و بدنه نامعتبر 422 است. فرمان {} می‌پذیرد و null رد می‌شود. زمان‌ها UTC و زبان قالب هنگام ایجاد en/fa با پیش‌فرض en است. پاسخ‌ها خصوصی و بدون کش هستند. ارجاع را از پاسخ تغییر تازه کنید. ایمیل اختیاری پیش‌فرض خاموش است و اعلان ضروری از خاموشی اختیاری پیروی نمی‌کند. خواندن هیچ ارسال انجام نمی‌دهد.",
+        "description": "صندوق یکپارچه نسخه ۱ فقط برای گیرنده واردشده است. مقصدهای درخواست، کار، تأیید هوش مصنوعی، گزارش و حساب در هر خواندن، ارجاع مجاز فعلی را می‌دهند. تقویم و پشتیبانی نیز منبع مجاز فعلی را بررسی می‌کنند. اعلان عملیات کنترل‌شده، صفحه فرایند موجود را باز می‌کند: MAP-07 به اختیار فعلی بازیابی مدیرکل و شواهد حل‌نشده نیاز دارد؛ MAP-08 به مالکیت فعلی درخواست، مجوز requests.start و رسید دقیق تأییدشده CREATED نیاز دارد. نتیجه نامعلوم هرگز مجوز اجرای دوباره ارائه‌دهنده نیست. مقصدهای قدیمی پشتیبانی‌نشده در دسترس نیستند. مقصد حذف‌شده، لغوشده، منقضی یا بدون مجوز، عنوان، محتوا و ارجاع خصوصی را نمایش نمی‌دهد. برچسب ذخیره‌شده مجوز نمی‌دهد. جست‌وجو محدود و مرتب با فیلتر، ترتیب، صفحه، اندازه و unread است؛ گزارش همان جست‌وجوی صفحه‌بندی‌شده است. شمارش خوانده‌نشده شامل ردیف‌های ACTIVE با مقصد پوشانده‌شده نیز هست. خوانده‌شدن فقط فراداده را تغییر می‌دهد و به ارجاع نسخه فعلی نیاز دارد (۴۰۹ برای نسخه قدیمی)؛ هیچ تصمیم یا عملیات گردش‌کار انجام نمی‌دهد. ارجاع متعلق به دیگری ۴۰۳ و ارجاع حذف‌شده یا غایب ۴۰۴ است. بدنه null پذیرفته نیست؛ فرمان شیء خالی می‌پذیرد. زمان‌ها UTC و زبان قالب هنگام ایجاد en/fa/ar با بازگشت به en است. پوشش‌های snake_case خصوصی no-store و خطاهای ۴۰۱/۴۰۳/۴۰۴/۴۰۹/۴۲۲ حفظ می‌شوند. ارجاع پاسخ فرمان را تازه‌سازی کنید. ایمیل اختیاری پیش‌فرض خاموش است؛ اعلان اجباری از انصراف اختیاری پیروی نمی‌کند. خواندن باعث ارسال نمی‌شود.",
         "operationId": "mark_read_api_v1_inbox__ref_id__read_post",
         "parameters": [
           {
@@ -114192,6 +116731,268 @@
           }
         ],
         "summary": "Update Version",
+        "tags": [
+          "workflow-versions"
+        ]
+      }
+    },
+    "/api/v1/workflow-versions/{ref_id}/binding-preview": {
+      "post": {
+        "description": "پیش‌نمایش خالص bpms.binding.object/1 برای مؤلف است. نیازمند workflows.manage، دسترسی فعلی مشاهده به گردش کار فعال و ارجاع نسخه جاری است: نسخه قدیمی ۴۰۹ و منبع غایب، حذف‌شده یا غیرمجاز ۴۰۴. گراف پیشنهادی از مسیر اعتبارسنجی انتشار، نوع و مجوز مبدأ بررسی می‌شود؛ ذخیره، منتشر یا اجرا نمی‌شود. target_step و target_port ورودی شیء SCALAR را انتخاب می‌کنند. ثابت‌ها همان مقدار قابل مشاهده در طرح هستند؛ سایر مبدأها نمونه صریح مؤلف را با ordinal اتصال می‌پذیرند. داده درخواست، خروجی اجرا، اعتبارنامه و زمینه خصوصی به‌عنوان نمونه خوانده نمی‌شود. نمونه غایب با null، صفر، false و آرایه خالی متفاوت است. حداکثر ۶۴ نمونه یکتا و ۳۲ کیبی‌بایت UTF-8 و گراف یک مِبی‌بایتی مجاز است؛ بدنه نامعتبر ۴۲۲ می‌دهد. خطاهای طرح، نوع یا مقدار و نمونه غایب نتیجه INVALID یا MISSING با مسیر و کد محدود می‌دهند؛ هیچ مقدار ارسالی برگردانده نمی‌شود. VALID فقط مسیر فیلد، نوع مبدأ، منشأ نمونه و نوع JSON را گزارش می‌کند و همه مقدارها پوشانده می‌شوند. نمونه نمی‌تواند ثابت را جایگزین کند. candidate_checksum متعلق به طرح پیشنهادی است، نه استقرار. ارائه‌دهنده، ابزار، گرداننده، تأیید انسانی و اثر کسب‌وکار فراخوانی نمی‌شوند و مجوزی ایجاد نمی‌شود. پوشش‌های snake_case، سرآیند خصوصی no-store و خطاهای احراز هویت ۴۰۱/۴۰۳ حفظ می‌شوند. اتصال‌های کل‌ورودی و LIST قرارداد قبلی خود را دارند.",
+        "operationId": "preview_object_fields_api_v1_workflow_versions__ref_id__binding_preview_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref_id",
+            "required": true,
+            "schema": {
+              "title": "Ref Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست.",
+            "in": "header",
+            "name": "User-Agent",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "شناسه اختیاری نرم‌افزار کلاینت برای ممیزی و عیب‌یابی که فرستنده کنترل می‌کند؛ تا ۱۰۲۴ نویسه ثبت می‌شود. مرورگرها مقدار خود را می‌فرستند و ممکن است تغییر دستی در Swagger را نادیده بگیرند. هویت معتبر کلاینت یا مبنای مجوزدهی نیست.",
+              "examples": [
+                "MyNativeClient/2.3",
+                "python-httpx/0.28.1"
+              ],
+              "title": "User-Agent"
+            }
+          },
+          {
+            "description": "تاریخ اختیاری طبق RFC 9110 که کلاینت‌های بومی برای راهنمایی تشخیصی تولید می‌کنند. جاوااسکریپت مرورگر نمی‌تواند Date را تنظیم کند. مقدار ناموجود یا نامعتبر باعث رد درخواست نمی‌شود.",
+            "example": "Mon, 28 Sep 2026 12:00:00 GMT",
+            "in": "header",
+            "name": "Date",
+            "required": false,
+            "schema": {
+              "maxLength": 128,
+              "type": "string"
+            }
+          },
+          {
+            "description": "زبان ترجیحی اختیاری پاسخ. انگلیسی، فارسی و عربی پشتیبانی می‌شوند؛ برچسب‌های منطقه‌ای از زبان پایه استفاده می‌کنند و مقدارهای پشتیبانی‌نشده به انگلیسی برمی‌گردند. پشتیبانی از زبان عربی نیز فعال است.",
+            "example": "fa-IR",
+            "in": "header",
+            "name": "Accept-Language",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "شناسه اختیاری همبستگی UUIDv7. مقدار ناموجود یا نامعتبر با UUIDv7 تازه جایگزین می‌شود و مقدار مؤثر در X-Request-ID پاسخ برمی‌گردد.",
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "دلیل اختیاری ارائه‌شده توسط فرستنده که در تاریخچه ممیزی ثبت می‌شود. این مقدار اعتبارنامه مجوزدهی نیست.",
+            "example": "Correcting a submitted request",
+            "in": "header",
+            "name": "X-Audit-Reason",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BindingPreviewInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse_BindingPreviewDTO_"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Cache-Control": {
+                "description": "Protected actor-specific response; persistent caching is prohibited.",
+                "schema": {
+                  "const": "private, no-store",
+                  "type": "string"
+                }
+              },
+              "X-Client-Date-Advisory": {
+                "description": "فقط وقتی اختلاف ظاهری به آستانه تنظیم‌شده برسد، با مقدار check-device-time ارائه می‌شود.",
+                "schema": {
+                  "enum": [
+                    "check-device-time"
+                  ],
+                  "type": "string"
+                }
+              },
+              "X-Client-Date-Delta-Seconds": {
+                "description": "اختلاف زمان دریافت سرور و تاریخ کلاینت بر حسب ثانیه با علامت؛ شامل تأخیر شبکه و تولید درخواست است و اختلاف دقیق ساعت‌ها نیست.",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Client-Date-Status": {
+                "description": "وضعیت تاریخ اختیاری کلاینت: معتبر، موجود نیست یا نامعتبر. این بررسی باعث رد درخواست نمی‌شود.",
+                "schema": {
+                  "enum": [
+                    "available",
+                    "unavailable",
+                    "invalid"
+                  ],
+                  "type": "string"
+                }
+              },
+              "X-Server-Received-At": {
+                "description": "زمان دریافت سرور به UTC. سرور HTTP یا پراکسی، هدر Date پاسخ را در صورت وجود تولید می‌کند.",
+                "schema": {
+                  "format": "date-time",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Content Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "423": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Locked"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "summary": "پیش‌نمایش نمونه‌های فیلدهای شیء",
         "tags": [
           "workflow-versions"
         ]

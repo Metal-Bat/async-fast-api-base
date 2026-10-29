@@ -44,6 +44,20 @@ Author-controlled values. All references are resolved at publication.
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `AIAgentEvaluationDTO`
+
+Used by: `POST /api/v1/ai-agents/{ref_id}/evaluations`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `agent_ref` | `string` | Yes | — |
+| `request_ref` | `string` | Yes | — |
+| `request_status` | `string` | Yes | — |
+| `process_ref` | `string | null` | Yes | — |
+| `evidence_kind` | `string` | No |  Default: `GOVERNED_REQUEST_SUBMISSION`. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `AIAgentPublishedSpec`
 
 Used by: `GET /api/v1/ai-agents/{ref_id}`, `POST /api/v1/ai-agents`, `POST /api/v1/ai-agents/report`, `POST /api/v1/ai-agents/search`, `POST /api/v1/ai-agents/{ref_id}/publish`, `PUT /api/v1/ai-agents/{ref_id}`
@@ -84,7 +98,7 @@ No reviewed business example is published for this schema. Use the field contrac
 
 ### `AIChoice`
 
-Used by: `GET /api/v1/ai-agents/{ref_id}`, `POST /api/v1/ai-agents`, `POST /api/v1/ai-agents/report`, `POST /api/v1/ai-agents/search`, `POST /api/v1/ai-agents/{ref_id}/publish`, `PUT /api/v1/ai-agents/{ref_id}`
+Used by: `GET /api/v1/ai-agents/{ref_id}`, `POST /api/v1/ai-agents`, `POST /api/v1/ai-agents/report`, `POST /api/v1/ai-agents/search`, `POST /api/v1/ai-agents/{ref_id}/decision-preview`, `POST /api/v1/ai-agents/{ref_id}/publish`, `POST /api/v1/ai-agents/{ref_id}/workflow-context`, `PUT /api/v1/ai-agents/{ref_id}`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -103,6 +117,20 @@ Used by: `GET /api/v1/ai-agents/{ref_id}`, `POST /api/v1/ai-agents`, `POST /api/
 | `question` | `string` | Yes | — |
 | `options` | `array[AIChoice]` | Yes | — |
 | `review_below` | `number` | No |  Default: `0.8`. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `AIDecisionPreviewDTO`
+
+Used by: `POST /api/v1/ai-agents/{ref_id}/decision-preview`, `POST /api/v1/ai-agents/{ref_id}/workflow-context`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `sample_state` | `string` | Yes | — |
+| `options_input_key` | `string | null` | Yes | — |
+| `options` | `array[AIChoice]` | Yes | — |
+| `issue_codes` | `array[string]` | No | — |
+| `provider_called` | `boolean` | No |  Default: `False`. |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
@@ -125,6 +153,7 @@ Used by: `GET /api/v1/ai-agents/connections/{connection_ref}/models/{model_id}/m
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `connection_ref` | `string` | Yes | — |
+| `connection_name` | `string` | Yes | Current display name of this exact use-authorized AI connection; never a credential or an integration-management projection. |
 | `provider` | `string` | Yes | — |
 | `model_id` | `string` | Yes | — |
 | `source` | `string` | Yes | — |
@@ -196,6 +225,39 @@ Used by: `GET /api/v1/ai-agents/providers/{provider_key}/metadata`
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `AIReportLookupDTO`
+
+Used by: `POST /api/v1/ai-agents/{ref_id}/retrieval-preview`, `POST /api/v1/ai-agents/{ref_id}/retrieval-sources/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `report_ref` | `string` | Yes | — |
+| `source_key` | `string` | Yes | — |
+| `definition_version` | `integer` | Yes | — |
+| `created_at` | `string` | Yes | — |
+| `fields` | `array[string]` | Yes | — |
+| `classification` | `string` | Yes | — |
+| `max_rows` | `integer` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `AIReportLookupPreviewDTO`
+
+Used by: `POST /api/v1/ai-agents/{ref_id}/retrieval-preview`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `agent_ref` | `string` | Yes | — |
+| `source` | `AIReportLookupDTO` | Yes | — |
+| `limit` | `integer` | Yes | — |
+| `tool_key` | `string` | No |  Default: `lookup_saved_report`. |
+| `tool_version` | `string` | No |  Default: `1`. |
+| `result_schema` | `object` | Yes | Bounded projected result shape. Empty property schemas do not claim unregistered scalar types. No rows, saved filters, storage paths or credentials are returned. |
+| `requires_human_tool_approval` | `boolean` | No |  Default: `True`. |
+| `tool_called` | `boolean` | No |  Default: `False`. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `AITaskLimits-Output`
 
 Used by: `GET /api/v1/ai-agents/processes/{process_ref}/executions/{execution_ref}/budget`, `GET /api/v1/ai-agents/{ref_id}`, `POST /api/v1/ai-agents`, `POST /api/v1/ai-agents/report`, `POST /api/v1/ai-agents/search`, `POST /api/v1/ai-agents/{ref_id}/publish`, `PUT /api/v1/ai-agents/{ref_id}`
@@ -226,6 +288,22 @@ Used by: `GET /api/v1/ai-agents/work-items/{work_item_ref}/tool-approval`, `POST
 | `arguments` | `object | null` | Yes | Exact validated named tool arguments, available only to the eligible claimant before expiry/consumption. For lookup_saved_report: report_ref is an owned saved report reference and limit is an integer from 1 to 10. Null after payload deletion; contains no message history. |
 | `expires_at` | `string` | Yes | UTC deadline derived from the logical task elapsed-time budget, including human approval time. |
 | `decided_at` | `string | null` | Yes | UTC decision time, or null before a claimant decision. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `AIWorkflowContextDTO`
+
+Used by: `POST /api/v1/ai-agents/{ref_id}/workflow-context`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `agent_ref` | `string` | Yes | — |
+| `workflow_version_ref` | `string` | Yes | — |
+| `workflow_checksum` | `string | null` | Yes | — |
+| `step_key` | `string` | Yes | — |
+| `input_schema` | `object | null` | Yes | Declared JSON Schema for the exact AI data binding, projected through its source path. Null means undeclared, not an inferred runtime schema. |
+| `sample_origin` | `string` | Yes | — |
+| `decision` | `AIDecisionPreviewDTO` | Yes | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
@@ -281,6 +359,12 @@ Used by: `POST /api/v1/ai-agents/{ref_id}/history`
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `JsonValue`
+
+Used by: `POST /api/v1/ai-agents/{ref_id}/retrieval-preview`, `POST /api/v1/ai-agents/{ref_id}/workflow-context`
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `PageResponse_Page_AIAgentDTO__`
 
 Used by: `POST /api/v1/ai-agents/report`, `POST /api/v1/ai-agents/search`
@@ -306,6 +390,20 @@ Used by: `POST /api/v1/ai-agents/models/suggestions`
 | `error` | `null` | No | — |
 | `code` | `integer` | No |  Default: `200`. |
 | `result` | `Page_AIModelSuggestionDTO_` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `PageResponse_Page_AIReportLookupDTO__`
+
+Used by: `POST /api/v1/ai-agents/{ref_id}/retrieval-sources/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `result` | `Page_AIReportLookupDTO_` | Yes | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
@@ -358,6 +456,20 @@ Used by: `POST /api/v1/ai-agents/models/suggestions`
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
 | `items` | `array[AIModelSuggestionDTO]` | No | — |
+| `page` | `integer` | No |  Default: `1`. |
+| `size` | `integer` | No |  Default: `20`. |
+| `total` | `integer` | Yes | — |
+| `total_pages` | `integer` | Yes | Return the number of nonempty pages in the full result set. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `Page_AIReportLookupDTO_`
+
+Used by: `POST /api/v1/ai-agents/{ref_id}/retrieval-sources/search`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `items` | `array[AIReportLookupDTO]` | No | — |
 | `page` | `integer` | No |  Default: `1`. |
 | `size` | `integer` | No |  Default: `20`. |
 | `total` | `integer` | Yes | — |
@@ -418,6 +530,20 @@ Used by: `GET /api/v1/ai-agents/{ref_id}`, `POST /api/v1/ai-agents`, `POST /api/
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `SuccessResponse_AIAgentEvaluationDTO_`
+
+Used by: `POST /api/v1/ai-agents/{ref_id}/evaluations`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `data` | `AIAgentEvaluationDTO` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `SuccessResponse_AIBudgetStatus_`
 
 Used by: `GET /api/v1/ai-agents/processes/{process_ref}/executions/{execution_ref}/budget`
@@ -429,6 +555,20 @@ Used by: `GET /api/v1/ai-agents/processes/{process_ref}/executions/{execution_re
 | `error` | `null` | No | — |
 | `code` | `integer` | No |  Default: `200`. |
 | `data` | `AIBudgetStatus` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `SuccessResponse_AIDecisionPreviewDTO_`
+
+Used by: `POST /api/v1/ai-agents/{ref_id}/decision-preview`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `data` | `AIDecisionPreviewDTO` | Yes | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
@@ -460,6 +600,20 @@ Used by: `GET /api/v1/ai-agents/providers/{provider_key}/metadata`
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `SuccessResponse_AIReportLookupPreviewDTO_`
+
+Used by: `POST /api/v1/ai-agents/{ref_id}/retrieval-preview`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `data` | `AIReportLookupPreviewDTO` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `SuccessResponse_AIToolApprovalDTO_`
 
 Used by: `GET /api/v1/ai-agents/work-items/{work_item_ref}/tool-approval`, `POST /api/v1/ai-agents/work-items/{work_item_ref}/tool-approval`
@@ -471,6 +625,20 @@ Used by: `GET /api/v1/ai-agents/work-items/{work_item_ref}/tool-approval`, `POST
 | `error` | `null` | No | — |
 | `code` | `integer` | No |  Default: `200`. |
 | `data` | `AIToolApprovalDTO` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `SuccessResponse_AIWorkflowContextDTO_`
+
+Used by: `POST /api/v1/ai-agents/{ref_id}/workflow-context`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `data` | `AIWorkflowContextDTO` | Yes | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 

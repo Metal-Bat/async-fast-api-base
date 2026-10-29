@@ -11,6 +11,19 @@ import pytest
 from scripts.demo_seed import validate_seed_environment
 
 
+@pytest.mark.anyio
+async def test_default_seed_only_inserts_the_workflow_library(tmp_path, monkeypatch):
+    from unittest.mock import AsyncMock
+
+    from scripts import demo_seed
+
+    insert = AsyncMock()
+    monkeypatch.setattr(demo_seed, "seed_workflow_library", insert)
+    manifest = object()
+    await demo_seed.seed(manifest, 252, tmp_path)
+    insert.assert_awaited_once_with(manifest, tmp_path)
+
+
 def test_new_seed_accounts_are_exported_without_replacing_existing_credentials(tmp_path):
     from scripts.demo_seed import save_credentials
 
@@ -63,14 +76,9 @@ def test_mise_seed_command_has_no_server_options(task, tmp_path):
     tasks = tomllib.loads((root / ".mise.toml").read_text())["tasks"]
     env = os.environ.copy()
     env.pop("PYTHONPATH", None)
-    docker = tmp_path / "docker"
-    docker.write_text(
-        '#!/bin/sh\n[ "$1 $2 $3 $4" = "compose run --rm demo-seed" ] || exit 90\nshift 4\nexec python -m scripts.demo_seed "$@"\n'
-    )
-    docker.chmod(0o700)
-    env["PATH"] = str(tmp_path) + os.pathsep + env["PATH"]
     env["PYTHONPATH"] = str(root / "src")
     command = tasks[task]["run"]
+    assert "docker" not in command
     result = subprocess.run(
         ["sh", "-c", command + " --help"],
         cwd=root,
@@ -83,5 +91,6 @@ def test_mise_seed_command_has_no_server_options(task, tmp_path):
     assert result.returncode == 0, result.stderr
     assert "--cases-per-type" in result.stdout
     assert "--inspect" in result.stdout
+    assert "--with-demo-cases" in result.stdout
     assert "--run-directory" not in result.stdout
     assert "--profile" not in result.stdout

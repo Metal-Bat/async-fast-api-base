@@ -241,13 +241,25 @@ description = "Restore an owned local database and private objects, then recheck
 run = "FLOW_TEST_PROFILE=restore uv run --env-file .envs/.backend python scripts/run_flow_test.py"
 
 [tasks.demo-prepare]
-description = "Generate developer scenarios inside Compose (alias of demo-seed)"
-run = "LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) docker compose run --rm demo-seed"
+description = "Insert the local workflow library (alias of demo-seed)"
+run = "PYTHONPATH=src:. uv run python -m scripts.demo_seed"
 
 [tasks.demo-seed]
-description = "Generate developer scenarios inside Compose; --inspect reads their current states"
-run = "LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) docker compose run --rm demo-seed"
+description = "Insert the local workflow library; --with-demo-cases also populates business scenarios"
+run = "PYTHONPATH=src:. uv run python -m scripts.demo_seed"
 
 [tasks.demo-seed-test]
 description = "Verify the rich demo seed and rerun preservation in an owned disposable database"
 run = "FLOW_TEST_PROFILE=demo-catalog uv run --env-file .envs/.backend python scripts/run_flow_test.py"
+
+[tasks.workflow-library-test]
+description = "Verify lightweight workflow seed publication, execution and rerun preservation in an owned database"
+run = "FLOW_TEST_PROFILE=workflow-library uv run --env-file .envs/.backend python scripts/run_flow_test.py"
+
+[tasks.real-process-seed]
+description = "Insert versioned executable business processes and real draft/waiting requests without provider calls or reset"
+run = "PYTHONPATH=src:. uv run python -m scripts.demo_seed --with-real-processes"
+
+[tasks.real-process-test]
+description = "Verify real business seed publication, execution and preservation on owned resources"
+run = "FLOW_TEST_PROFILE=real-processes uv run --env-file .envs/.backend python scripts/run_flow_test.py"

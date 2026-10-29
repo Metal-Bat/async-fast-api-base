@@ -3,7 +3,8 @@
   "profiles": {
     "system": "Code-owned missing definitions only",
     "installation": "Explicit optional role templates; no user assignments",
-    "demo": "Deferred to APP-BE-005; not a production bootstrap"
+    "demo": "Deferred to APP-BE-005; not a production bootstrap",
+    "workflow_library": "Local one-shot inserts: five typed handler families, sixteen reusable workflows, eight data types, three input components; PostgreSQL only"
   },
   "permissions": [
     {
@@ -218,6 +219,28 @@
       "handler_fingerprint": "b45b624048dbb53a8486c011539333c4cafbf49e3d8659986ac6f22cb004a174"
     },
     {
+      "key": "arithmetic",
+      "version": "1",
+      "code": "ARITHMETIC",
+      "implemented": true,
+      "ownership": "StepTypeService.reconcile drafts; local workflow seed publishes; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "2efbc9d1a811ee3e0fdadc42c1f6ac227f7ecdb9a3f01475b65c144b51ee708b",
+      "handler_fingerprint": "7a204bbe2aba7eaa1566ccc0624e26f6841d4d5f2f43b479be9a4c78d8d9a1f1"
+    },
+    {
+      "key": "boolean_logic",
+      "version": "1",
+      "code": "BOOLEAN_LOGIC",
+      "implemented": true,
+      "ownership": "StepTypeService.reconcile drafts; local workflow seed publishes; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "cb0077aad22e2ef55d0ec0749eeb8f3fb6fac771f7f12ea7385d1d888dd29123",
+      "handler_fingerprint": "b5727e0eaf1b094ebc16c80bdafd8426cff8c6e1d98b4cb9914a2be8108312ee"
+    },
+    {
       "key": "connection_status",
       "version": "1",
       "code": "CONNECTION_STATUS",
@@ -288,6 +311,17 @@
       "handler_fingerprint": "046c8decb4a1668966bf11be084af056c0a69fe8e40e52ddbab810125dfc9ae4"
     },
     {
+      "key": "if_else",
+      "version": "1",
+      "code": "IF_ELSE",
+      "implemented": true,
+      "ownership": "StepTypeService.reconcile drafts; local workflow seed publishes; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "d3e40741245713f61eb1734771ff2f44a8ab2109b7887d0ee2741dbc906cc274",
+      "handler_fingerprint": "f88fa3b0189f734e72c72cd5df597ac4f52e506ced9fc942049e961e1eb2cfb4"
+    },
+    {
       "key": "notification",
       "version": "1",
       "code": "NOTIFICATION",
@@ -310,6 +344,17 @@
       "handler_fingerprint": "eb49ad17b204cba60b093c09ac2da8941266aba95bf9f80d378b9952a0aa6525"
     },
     {
+      "key": "number_compare",
+      "version": "1",
+      "code": "NUMBER_COMPARE",
+      "implemented": true,
+      "ownership": "StepTypeService.reconcile drafts; local workflow seed publishes; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "a72dfc19331310e6c898dbe60178594377138641961c0a9f585628fddf5454dc",
+      "handler_fingerprint": "b4d0b7d0bf331116c51df6ad5f144d336b1514cbfad57c52dd7d27b6e31585d5"
+    },
+    {
       "key": "permission_check",
       "version": "1",
       "code": "PERMISSION_CHECK",
@@ -330,6 +375,17 @@
       "depends_on": [],
       "content_sha256": "f149ff50adc0ebb5f6ca190b99f5c53c804ab176b1dff23522263c618c5eccfd",
       "handler_fingerprint": "f76c606a60fbe96422f32e8769d66c06c2cead2b0bbeffadc6e5675382507ec7"
+    },
+    {
+      "key": "select_value",
+      "version": "1",
+      "code": "SELECT_VALUE",
+      "implemented": true,
+      "ownership": "StepTypeService.reconcile drafts; local workflow seed publishes; published snapshots immutable",
+      "permission_requirements": [],
+      "depends_on": [],
+      "content_sha256": "853ff9a59c721837b1572444cd088e9c12c39f16295028b2e7dc6d5215dd8106",
+      "handler_fingerprint": "e6518ac4f954f605268b912f94fa709b623b29822a13d5547ddc60f7fec28de9"
     },
     {
       "key": "service_task",

@@ -29,6 +29,22 @@
       "request": "Owner requested Arabic as a supported project language.",
       "implementation": "Preserve the two applied baseline files and add 0003_arabic for the help-locale constraint and notification v3. This feature-specific forward migration preserves existing records and published pins; no reset or stamp.",
       "authority_note": "Forward-migration implementation choice under the new feature request; not a general baseline restructuring."
+    },
+    "binding_schema_followup": {
+      "recorded_on": "2026-10-25",
+      "request": "do 1 and 2",
+      "scope": "The explicitly enumerated dependency remediation and REQUEST-schema/legacy Transform repair.",
+      "implementation": "Add nullable declarations in forward revision 0004_binding_source_schema after 0003_arabic; preserve applied baselines, old rows, published payloads and active pins.",
+      "authority_note": "Engineering implementation under the explicit repair request, not a new business-policy approval or general baseline rewrite.",
+      "database_scope": "Owned disposable upgrade/preservation/rollback verification only; no shared reset, stamp or deployment migration."
+    },
+    "binding_object_fields_followup": {
+      "recorded_on": "2026-10-28",
+      "request": "do the integration gaps and acceptance",
+      "scope": "Existing APP-FE-023/024 cross-source composition and acceptance gap; APP-BE-019.UX03 implementation.",
+      "implementation": "A forward revision after 0004 adds nullable destination path/version/declared-schema facts; no applied revision rewrite, inferred backfill, published payload/pin mutation, shared reset or stamp.",
+      "authority_note": "Engineering implementation under the requested feature repair, not a new business-policy approval or baseline rewrite.",
+      "database_scope": "Guarded owned disposable upgrade/preservation/rollback verification; this record itself performs no in-place rollout."
     }
   },
   "protected_effect_policy": {

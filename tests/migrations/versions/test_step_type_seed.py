@@ -23,19 +23,32 @@ def test_step_type_seed_passes_catalog_as_bound_json(monkeypatch) -> None:
         assert compiled.params["payload"] not in str(compiled)
 
 
-def test_deployed_catalog_seeds_match_current_registered_contracts() -> None:
+def test_frozen_seed_and_reconciled_primitives_cover_registered_contracts() -> None:
     from apps.step_types.application.registry import builtin_registry, get_registry
 
     migration = importlib.import_module("migrations.versions.0002_required_data")
     builtins = {
         (item.handler_key, item.handler_version) for item in builtin_registry().definitions()
     }
+    reconciled = {
+        (key, "1")
+        for key in ("arithmetic", "number_compare", "boolean_logic", "if_else", "select_value")
+    }
+    seeded = migration._deployed_catalog()
+    seeded_keys = {(row["handler_key"], row["handler_version"]) for row in seeded}
+    extensions = {
+        (item.handler_key, item.handler_version)
+        for item in get_registry().definitions()
+        if (item.handler_key, item.handler_version) not in builtins
+    }
+    # New primitives are installed by the local seed, without rewriting applied DDL/data.
+    assert extensions == seeded_keys | reconciled
+    assert seeded_keys.isdisjoint(reconciled)
     expected = [
         item.metadata().model_dump(mode="json")
         for item in get_registry().definitions()
-        if (item.handler_key, item.handler_version) not in builtins
+        if (item.handler_key, item.handler_version) in seeded_keys
     ]
-    seeded = migration._deployed_catalog()
     assert len(seeded) == len(expected)
     for stored, metadata in zip(seeded, expected, strict=True):
         definition = get_registry().resolve(metadata["handler_key"], metadata["handler_version"])

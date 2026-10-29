@@ -2,12 +2,13 @@
 
 import os
 import secrets
+from uuid import uuid7
 
 import pytest
-from anyio import create_task_group, sleep
+from anyio import create_task_group, fail_after, sleep
 from httpx import ASGITransport, AsyncClient, Response
 from pydantic_ai.models.test import TestModel
-from sqlmodel import col, select
+from sqlmodel import col, func, select
 
 from apps.ai.application.process_evidence import AIProcessEvidenceService
 from apps.ai.domain.entity import AITaskBudgetEntity
@@ -379,6 +380,118 @@ async def test_same_case_two_authenticated_eligible_reviewers_cannot_both_claim(
             async with SessionFactory() as session:
                 item = await session.get(WorkItemEntity, item_id)
                 assert item is not None and item.claimed_by_user_id == actors[winner][0]
+    finally:
+        await engine.dispose()
+
+
+@pytest.mark.anyio
+async def test_notice_fanout_and_claim_keep_foreign_key_locks_compatible(scripted_model):
+    from apps.notifications.application.events import stage_notice
+
+    try:
+        with audit_context():
+            async with SessionFactory() as session:
+                item_id, reviewer_id, _ = await waiting_order(
+                    session, receipt_view=True, connected=True
+                )
+                item_id = await _complete_parallel_reviews(
+                    session, item_id, reviewer_id, claim_final=False
+                )
+                item = await session.get(WorkItemEntity, item_id)
+                assert item is not None
+                original_ref = create_ref_id(item.id, item.version)
+                request_id = item.business_request_id
+                execution = await session.get(StepExecutionEntity, item.step_execution_id)
+                assert execution is not None
+                process_id = execution.process_instance_id
+                candidates = (
+                    await session.exec(
+                        select(WorkItemCandidateEntity).where(
+                            WorkItemCandidateEntity.work_item_id == item_id
+                        )
+                    )
+                ).all()
+                assert len(candidates) == 2
+                claimant_id, other_id = [candidate.user_id for candidate in candidates]
+                assert claimant_id is not None and other_id is not None
+                await session.commit()
+
+            claim_pid = None
+            result = []
+
+            async def claim():
+                nonlocal claim_pid
+                async with SessionFactory() as session:
+                    claim_pid = (await session.exec(select(func.pg_backend_pid()))).one()
+                    actor = await session.get(UserEntity, claimant_id)
+                    assert actor is not None
+                    claimed = await WorkItemService(session).claim(
+                        original_ref, "fanout-overlap-claim", actor
+                    )
+                    await session.commit()
+                    result.append(claimed.claimed_by_user_id)
+
+            event_id = uuid7()
+            async with (
+                create_task_group() as tasks,
+                SessionFactory() as notices,
+                notices.begin(),
+            ):
+                notice_pid = (await notices.exec(select(func.pg_backend_pid()))).one()
+                first = await stage_notice(
+                    notices,
+                    map_id="MAP-03",
+                    event_id=event_id,
+                    recipient_id=other_id,
+                    target_kind="work_item",
+                    target_id=item_id,
+                    request_id=request_id,
+                    process_id=process_id,
+                )
+                assert first is not None
+                tasks.start_soon(claim)
+                async with SessionFactory() as observer:
+                    with fail_after(10):
+                        while (
+                            claim_pid is None
+                            or notice_pid
+                            not in (
+                                await observer.exec(select(func.pg_blocking_pids(claim_pid)))
+                            ).one()
+                        ):
+                            await sleep(0.01)
+                # The first notice holds a process FK key-share lock. The claim
+                # now holds its actor FK lock and waits for that process.
+                # Locking that actor exclusively here used to close a deadlock.
+                second = await stage_notice(
+                    notices,
+                    map_id="MAP-03",
+                    event_id=event_id,
+                    recipient_id=claimant_id,
+                    target_kind="work_item",
+                    target_id=item_id,
+                    request_id=request_id,
+                    process_id=process_id,
+                )
+                assert second is not None
+            # Committing fanout releases the process FK lock so the claim wins.
+            assert result == [claimant_id]
+            async with SessionFactory() as session:
+                actor = await session.get(UserEntity, claimant_id)
+                other = await session.get(UserEntity, other_id)
+                assert actor is not None and other is not None
+                notices = (
+                    await session.exec(
+                        select(NotificationEntity).where(NotificationEntity.event_id == event_id)
+                    )
+                ).all()
+                assert {notice.recipient_user_id for notice in notices} == {claimant_id, other_id}
+                assert len(notices) == 2
+                service = WorkItemService(session)
+                replay = await service.claim(original_ref, "fanout-overlap-claim", actor)
+                assert replay.claimed_by_user_id == claimant_id
+                with pytest.raises(VersionConflictException):
+                    await service.claim(original_ref, "fanout-overlap-loser", other)
     finally:
         await engine.dispose()
 

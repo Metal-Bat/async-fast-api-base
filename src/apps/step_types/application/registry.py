@@ -274,10 +274,16 @@ class HandlerRegistry:
         self, key: str, version: str, config: object, value: Any
     ) -> TransformOutcome:
         definition = self.resolve(key, version)
-        if definition.code != "TRANSFORM" or definition.config_model is not TransformConfigV2:
+        if definition.code != "TRANSFORM":
             raise ValueError("Handler does not provide registered transform execution")
-        validated = TransformConfigV2.model_validate(config)
-        return TransformEngine().apply(validated.spec(), value)
+        if definition.config_model is TransformConfig:
+            validated = TransformConfig.model_validate(config)
+            spec = TransformSpec.model_validate({"conversion": validated.conversion_key})
+        elif definition.config_model is TransformConfigV2:
+            spec = TransformConfigV2.model_validate(config).spec()
+        else:
+            raise ValueError("Handler does not provide registered transform execution")
+        return TransformEngine().apply(spec, value)
 
     def transform_contract(
         self, key: str, version: str, config: object

@@ -164,6 +164,16 @@ class WorkflowStepInputBindingEntity(SQLModel, table=True):
             "ORDINAL",
             name="uq_WORKFLOW_BINDING_target_ordinal",
         ),
+        UniqueConstraint(
+            "WORKFLOW_STEP_ID",
+            "TARGET_PORT_ID",
+            "TARGET_PATH",
+            name="uq_WORKFLOW_BINDING_target_path",
+        ),
+        CheckConstraint(
+            '("TARGET_PROJECTION_VERSION" IS NULL AND "TARGET_PATH" IS NULL AND "TARGET_SCHEMA" IS NULL) OR ("TARGET_PROJECTION_VERSION" IS NOT NULL AND "TARGET_PROJECTION_VERSION" = 1 AND "TARGET_PATH" IS NOT NULL AND "TARGET_SCHEMA" IS NOT NULL AND left("TARGET_PATH", 1) = \'/\' AND octet_length("TARGET_PATH") <= 1024 AND jsonb_typeof("TARGET_SCHEMA") = \'object\' AND "TARGET_SCHEMA" ? \'type\' AND "TARGET_SCHEMA" ->> \'type\' = \'object\' AND "TARGET_SCHEMA" ? \'properties\' AND jsonb_typeof("TARGET_SCHEMA" -> \'properties\') = \'object\')',
+            name="ck_WORKFLOW_BINDING_target_projection",
+        ),
         CheckConstraint(
             "\"SOURCE_KIND\" IN ('REQUEST', 'CONTEXT', 'CONSTANT', 'STEP_OUTPUT')",
             name="ck_WORKFLOW_BINDING_kind",
@@ -184,6 +194,10 @@ class WorkflowStepInputBindingEntity(SQLModel, table=True):
         CheckConstraint(
             '"SOURCE_KIND" <> \'CONSTANT\' OR "SOURCE_PATH" IS NULL',
             name="ck_WORKFLOW_BINDING_constant_path",
+        ),
+        CheckConstraint(
+            "\"SOURCE_SCHEMA\" IS NULL OR (\"SOURCE_KIND\" IN ('REQUEST', 'CONTEXT') AND jsonb_typeof(\"SOURCE_SCHEMA\") = 'object')",
+            name="ck_WORKFLOW_BINDING_source_schema",
         ),
         Index("ix_WORKFLOW_BINDING_target_port", "TARGET_PORT_ID"),
         Index("ix_WORKFLOW_BINDING_source_step", "SOURCE_STEP_ID"),
@@ -238,6 +252,33 @@ class WorkflowStepInputBindingEntity(SQLModel, table=True):
             nullable=False,
         ),
     )
+    target_projection_version: int | None = Field(
+        default=None,
+        sa_column=Column(
+            "TARGET_PROJECTION_VERSION",
+            Integer,
+            nullable=True,
+            comment="OBJECT FIELD PROJECTION CONTRACT VERSION; NULL PRESERVES LEGACY WHOLE-PORT/LIST BINDINGS.",
+        ),
+    )
+    target_path: str | None = Field(
+        default=None,
+        sa_column=Column(
+            "TARGET_PATH",
+            String(1024),
+            nullable=True,
+            comment="DECLARED OBJECT FIELD DESTINATION; MAXIMUM 1024 UTF-8 BYTES; NOT A RESOURCE REFERENCE.",
+        ),
+    )
+    target_schema: dict[str, Any] | None = Field(
+        default=None,
+        sa_column=Column(
+            "TARGET_SCHEMA",
+            JSONB(none_as_null=True),
+            nullable=True,
+            comment="PROJECTED SCALAR OBJECT ROOT DECLARATION PINNED WITH THIS BINDING; TYPE INFORMATION NEVER GRANTS AUTHORITY.",
+        ),
+    )
     source_kind: str = Field(
         sa_column=Column(
             "SOURCE_KIND",
@@ -250,6 +291,15 @@ class WorkflowStepInputBindingEntity(SQLModel, table=True):
         sa_column=Column(
             "SOURCE_PATH",
             String(1024),
+        ),
+    )
+    source_schema: dict[str, Any] | None = Field(
+        default=None,
+        sa_column=Column(
+            "SOURCE_SCHEMA",
+            JSONB(none_as_null=True),
+            nullable=True,
+            comment="VALIDATED AUTHOR-DECLARED REQUEST/CONTEXT SCHEMA PINNED WITH THIS EXECUTABLE BINDING; NULL PRESERVES LEGACY ROWS.",
         ),
     )
     source_step_id: UUID | None = Field(

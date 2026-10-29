@@ -21,6 +21,7 @@ from apps.calendar.domain.dto import (
 from apps.calendar.domain.entity import CalendarEventEntity, CalendarEventHistory
 from apps.users.application.authorization import user_permissions
 from apps.users.domain.entity import UserEntity
+from apps.work_groups.domain.dto import WorkGroupQuery
 from apps.work_groups.domain.entity import WorkGroupEntity, WorkGroupMemberEntity
 from apps.work_items.application.service import WorkItemService
 from apps.work_items.domain.dto import CartableQueryDTO
@@ -29,7 +30,8 @@ from core.i18n import _
 from core.ref_id import create_ref_id, open_ref_id
 from utils.date_utils import get_datetime_utc
 from utils.exceptions import NotFoundException, ValidationDetailsException, VersionConflictException
-from utils.pagination import Page, PageRequest, apply_query, paginate_values
+from utils.pagination import Page, PageRequest, apply_query, paginate_entities, paginate_values
+from utils.select import SelectOption, SelectQuery
 
 
 def calendar_groups(actor: UserEntity):
@@ -66,6 +68,30 @@ class CalendarService:
         if current is None or current.deleted_at is not None:
             raise NotFoundException()
         return current
+
+    async def groups(self, actor: UserEntity, query: SelectQuery) -> Page[SelectOption[str]]:
+        """Current memberships only, authorized before name search, count and paging."""
+        actor = await self._actor(actor)
+        criteria = [col(WorkGroupEntity.id).in_(calendar_groups(actor))]
+        if bool(query.search):
+            search = query.search.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+            criteria.append(col(WorkGroupEntity.name).ilike(f"%{search}%", escape="\\"))
+        page = await paginate_entities(
+            self.session,
+            WorkGroupEntity,
+            WorkGroupQuery(page=query.page, size=query.size),
+            criteria=tuple(criteria),
+            default_ordering=("name", "id"),
+        )
+        return Page(
+            items=[
+                SelectOption(key=create_ref_id(row.id, row.version), value=row.name)
+                for row in page.items
+            ],
+            page=page.page,
+            size=page.size,
+            total=page.total,
+        )
 
     async def _group(self, actor: UserEntity, reference: str | None) -> UUID | None:
         if reference is None:

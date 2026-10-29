@@ -56,11 +56,11 @@ The stack uses PostgreSQL, a Redis-compatible cache, an AMQP broker, S3-compatib
 ## Demo data
 
 Run `mise run demo-seed` to populate the current local database configured by
-`.envs/.backend` through Docker Compose and exit. The default adds 3,282 business
-cases and 102 users, with English, Persian and Arabic data across six client
-types, workflow states, personal data and operational examples. Reruns preserve edited
-records. See the [demo seed guide](docs/guides/demo-seed.md) for coverage and login
-credentials. `mise run demo-prepare` runs the same seed.
+`.envs/.backend` using a local one-shot Python script. The default inserts five executable
+control families, sixteen reusable workflow examples, eight data types and three input
+components. No seed container is built or started. Use `--with-demo-cases` to also insert
+the larger business dataset. See the [seed guide](docs/guides/demo-seed.md) for each
+item's purpose, rerun behavior and private login credentials. `demo-prepare` is an alias.
 
 ## Testing
 
@@ -325,7 +325,7 @@ mise run shell
 
 ## 🗄️ Database
 
-The migration history has one linear chain with two preserved baseline revisions and an Arabic follow-up:
+The migration history has one linear chain with two preserved baseline revisions and feature follow-ups:
 
 1. `src/migrations/versions/0001_schema.py` creates all current application tables, history
    tables, indexes, constraints, functions and PostgreSQL guards. It inserts no rows.
@@ -338,6 +338,15 @@ The migration history has one linear chain with two preserved baseline revisions
 
 3. `src/migrations/versions/0003_arabic.py` extends help-state locales to Arabic and publishes
    notification handler version 3. Existing published version 2 remains immutable.
+4. `src/migrations/versions/0004_binding_source_schema.py` retains declared REQUEST/CONTEXT
+   schemas in executable bindings. Existing rows remain null and published pins/checksums
+   remain unchanged. Apply this normal forward upgrade before deploying the repaired code.
+   Partial downgrade refuses to discard declarations; see [APP-BE-019.UX02](docs/changes/APP-BE-019.UX02.md).
+
+5. `src/migrations/versions/0005_binding_object_fields.py` adds optional versioned object-field
+   binding facts through a normal forward migration. Existing bindings, published pins and
+   checksums remain unchanged; partial downgrade refuses loss of in-use projections. See
+   [APP-BE-019.UX03](docs/changes/APP-BE-019.UX03.md) for the actual private-backup/rehearsal/local-rollout evidence.
 
 Fresh databases use `alembic upgrade head`. To install only tables, use
 `alembic upgrade 0001_schema`. Data-only downgrade is refused because published handlers can

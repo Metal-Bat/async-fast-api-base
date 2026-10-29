@@ -14,10 +14,14 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import ProgrammingError
 from sqlmodel import col, delete, select, update
 
+from apps.forms.domain import entity as form_entities  # noqa: F401
+from apps.media.domain import entity as media_entities  # noqa: F401
 from apps.processes.application.operations import collect_operational_snapshot
 from apps.processes.application.waits import claim_due_actions
 from apps.processes.domain.entity import StepExecutionAttemptEntity
 from apps.reporting.domain.entity import ReportEntity, ReportStatus
+from apps.requests.domain import entity as request_entities  # noqa: F401
+from apps.step_types.domain import entity as step_type_entities  # noqa: F401
 from apps.tasks.application.outbox import dispatch_outbox, enqueue_task
 from apps.tasks.domain.entity import (
     PeriodicTaskEntity,
@@ -25,6 +29,8 @@ from apps.tasks.domain.entity import (
     TaskExecutionEntity,
     TaskIdempotencyEntity,
 )
+from apps.work_groups.domain import entity as work_group_entities  # noqa: F401
+from apps.workflows.domain import entity as workflow_entities  # noqa: F401
 from core.bpms_observability import bpms_telemetry
 from core.deps import SessionFactory, engine
 from core.settings import settings

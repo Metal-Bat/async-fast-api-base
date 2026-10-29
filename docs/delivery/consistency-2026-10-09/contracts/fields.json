@@ -474,6 +474,763 @@
     ],
     "source": "src/apps/ai/domain/agent.py"
   },
+  "apps.ai.domain.authoring.AIAgentEvaluationDTO": {
+    "definition_owner": "apps.ai.domain.authoring",
+    "extra_policy": "ignore",
+    "fields": {
+      "agent_ref": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Agent Ref",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "evidence_kind": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": "GOVERNED_REQUEST_SUBMISSION",
+          "default": "GOVERNED_REQUEST_SUBMISSION",
+          "title": "Evidence Kind",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "process_ref": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Process Ref"
+        },
+        "validation_alias": null
+      },
+      "request_ref": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Request Ref",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "request_status": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Request Status",
+          "type": "string"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/evaluations"
+    ],
+    "source": "src/apps/ai/domain/authoring.py"
+  },
+  "apps.ai.domain.authoring.AIAgentEvaluationInput": {
+    "definition_owner": "apps.ai.domain.authoring",
+    "extra_policy": "forbid",
+    "fields": {
+      "request_ref": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "description": "Exact owned eligible draft request whose pinned published workflow uses this published agent. Inputs remain in the normal saved request; this command cannot inject arbitrary model inputs.",
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Request Ref",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "submit_key": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "description": "Normal request submission replay key. Reuse only for the identical saved request payload; uncertain model execution is never retried through a new key.",
+          "examples": [
+            "reviewed-agent-evaluation-1"
+          ],
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Submit Key",
+          "type": "string"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/evaluations"
+    ],
+    "source": "src/apps/ai/domain/authoring.py"
+  },
+  "apps.ai.domain.authoring.AIDecisionPreviewDTO": {
+    "definition_owner": "apps.ai.domain.authoring",
+    "extra_policy": "ignore",
+    "fields": {
+      "issue_codes": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Issue Codes",
+          "type": "array"
+        },
+        "validation_alias": null
+      },
+      "options": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "items": {
+            "$ref": "#/$defs/AIChoice"
+          },
+          "maxItems": 254,
+          "title": "Options",
+          "type": "array"
+        },
+        "validation_alias": null
+      },
+      "options_input_key": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Options Input Key"
+        },
+        "validation_alias": null
+      },
+      "provider_called": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": false,
+          "default": false,
+          "title": "Provider Called",
+          "type": "boolean"
+        },
+        "validation_alias": null
+      },
+      "sample_state": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "enum": [
+            "STATIC",
+            "MISSING",
+            "EMPTY",
+            "INVALID",
+            "VALID"
+          ],
+          "title": "Sample State",
+          "type": "string"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/decision-preview",
+      "POST /api/v1/ai-agents/{ref_id}/workflow-context"
+    ],
+    "source": "src/apps/ai/domain/authoring.py"
+  },
+  "apps.ai.domain.authoring.AIDecisionPreviewInput": {
+    "definition_owner": "apps.ai.domain.authoring",
+    "extra_policy": "forbid",
+    "fields": {
+      "sample_inputs": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "$ref": "#/$defs/JsonValue"
+              },
+              "maxProperties": 64,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional author-provided permitted inputs, at most 32 KiB JSON. Never reads runtime snapshots or calls a provider.",
+          "examples": [
+            {
+              "options": [
+                {
+                  "description": "Invoice handling",
+                  "key": "finance",
+                  "labels": {
+                    "en": "Finance"
+                  }
+                },
+                {
+                  "description": "Service issues",
+                  "key": "support",
+                  "labels": {
+                    "en": "Support"
+                  }
+                }
+              ],
+              "ticket": "Example invoice"
+            }
+          ],
+          "title": "Sample Inputs"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/decision-preview"
+    ],
+    "source": "src/apps/ai/domain/authoring.py"
+  },
+  "apps.ai.domain.authoring.AIReportLookupDTO": {
+    "definition_owner": "apps.ai.domain.authoring",
+    "extra_policy": "ignore",
+    "fields": {
+      "classification": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "enum": [
+            "PUBLIC",
+            "INTERNAL",
+            "CONFIDENTIAL"
+          ],
+          "title": "Classification",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "created_at": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "definition_version": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Definition Version",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "fields": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 256,
+          "title": "Fields",
+          "type": "array"
+        },
+        "validation_alias": null
+      },
+      "max_rows": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Max Rows",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "report_ref": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Report Ref",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "source_key": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Source Key",
+          "type": "string"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/retrieval-preview",
+      "POST /api/v1/ai-agents/{ref_id}/retrieval-sources/search"
+    ],
+    "source": "src/apps/ai/domain/authoring.py"
+  },
+  "apps.ai.domain.authoring.AIReportLookupPreviewDTO": {
+    "definition_owner": "apps.ai.domain.authoring",
+    "extra_policy": "ignore",
+    "fields": {
+      "agent_ref": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Agent Ref",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "limit": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "requires_human_tool_approval": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": true,
+          "default": true,
+          "title": "Requires Human Tool Approval",
+          "type": "boolean"
+        },
+        "validation_alias": null
+      },
+      "result_schema": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": true,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "description": "Bounded projected result shape. Empty property schemas do not claim unregistered scalar types. No rows, saved filters, storage paths or credentials are returned.",
+          "title": "Result Schema",
+          "type": "object"
+        },
+        "validation_alias": null
+      },
+      "source": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "$ref": "#/$defs/AIReportLookupDTO"
+        },
+        "validation_alias": null
+      },
+      "tool_called": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": false,
+          "default": false,
+          "title": "Tool Called",
+          "type": "boolean"
+        },
+        "validation_alias": null
+      },
+      "tool_key": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": "lookup_saved_report",
+          "default": "lookup_saved_report",
+          "title": "Tool Key",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "tool_version": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": "1",
+          "default": "1",
+          "title": "Tool Version",
+          "type": "string"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/retrieval-preview"
+    ],
+    "source": "src/apps/ai/domain/authoring.py"
+  },
+  "apps.ai.domain.authoring.AIReportLookupPreviewInput": {
+    "definition_owner": "apps.ai.domain.authoring",
+    "extra_policy": "forbid",
+    "fields": {
+      "limit": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": 10,
+          "description": "Reviewed maximum rows; must also fit the registered source and saved report limits.",
+          "examples": [
+            5
+          ],
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "report_ref": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "description": "Current opaque reference of the author's unexpired saved report query, never a file URL or a definition chosen by arbitrary import path.",
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Report Ref",
+          "type": "string"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/retrieval-preview"
+    ],
+    "source": "src/apps/ai/domain/authoring.py"
+  },
+  "apps.ai.domain.authoring.AIWorkflowContextDTO": {
+    "definition_owner": "apps.ai.domain.authoring",
+    "extra_policy": "ignore",
+    "fields": {
+      "agent_ref": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Agent Ref",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "decision": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "$ref": "#/$defs/AIDecisionPreviewDTO"
+        },
+        "validation_alias": null
+      },
+      "input_schema": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "$ref": "#/$defs/JsonValue"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Declared JSON Schema for the exact AI data binding, projected through its source path. Null means undeclared, not an inferred runtime schema.",
+          "title": "Input Schema"
+        },
+        "validation_alias": null
+      },
+      "sample_origin": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "enum": [
+            "AUTHOR",
+            "CONSTANT_BINDING",
+            "NONE"
+          ],
+          "title": "Sample Origin",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "step_key": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Step Key",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "workflow_checksum": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Workflow Checksum"
+        },
+        "validation_alias": null
+      },
+      "workflow_version_ref": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Workflow Version Ref",
+          "type": "string"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/workflow-context"
+    ],
+    "source": "src/apps/ai/domain/authoring.py"
+  },
+  "apps.ai.domain.authoring.AIWorkflowContextInput": {
+    "definition_owner": "apps.ai.domain.authoring",
+    "extra_policy": "forbid",
+    "fields": {
+      "sample_inputs": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "$ref": "#/$defs/JsonValue"
+              },
+              "maxProperties": 64,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional author-provided permitted inputs, at most 32 KiB JSON. Never reads runtime snapshots or calls a provider.",
+          "examples": [
+            {
+              "options": [
+                {
+                  "description": "Invoice handling",
+                  "key": "finance",
+                  "labels": {
+                    "en": "Finance"
+                  }
+                },
+                {
+                  "description": "Service issues",
+                  "key": "support",
+                  "labels": {
+                    "en": "Support"
+                  }
+                }
+              ],
+              "ticket": "Example invoice"
+            }
+          ],
+          "title": "Sample Inputs"
+        },
+        "validation_alias": null
+      },
+      "step_key": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "description": "Existing AI_DECISION step key in that exact saved executable graph.",
+          "examples": [
+            "classify_invoice"
+          ],
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Step Key",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "workflow_version_ref": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.authoring",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "description": "Current revision-bearing reference of an active workflow version the author may view. Stale references conflict; published pins are not replaced.",
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Workflow Version Ref",
+          "type": "string"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/workflow-context"
+    ],
+    "source": "src/apps/ai/domain/authoring.py"
+  },
   "apps.ai.domain.budget.AIBudgetStatus": {
     "definition_owner": "apps.ai.domain.budget",
     "extra_policy": "ignore",
@@ -811,7 +1568,9 @@
       "POST /api/v1/ai-agents",
       "POST /api/v1/ai-agents/report",
       "POST /api/v1/ai-agents/search",
+      "POST /api/v1/ai-agents/{ref_id}/decision-preview",
       "POST /api/v1/ai-agents/{ref_id}/publish",
+      "POST /api/v1/ai-agents/{ref_id}/workflow-context",
       "PUT /api/v1/ai-agents/{ref_id}"
     ],
     "source": "src/apps/ai/domain/contracts.py"
@@ -1486,6 +2245,21 @@
         "schema": {
           "title": "Can Execute",
           "type": "boolean"
+        },
+        "validation_alias": null
+      },
+      "connection_name": {
+        "computed": false,
+        "definition_owner": "apps.ai.domain.dto",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "description": "Current display name of this exact use-authorized AI connection; never a credential or an integration-management projection.",
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Connection Name",
+          "type": "string"
         },
         "validation_alias": null
       },
@@ -2226,6 +3000,68 @@
       "POST /api/v1/calendar/events/report",
       "POST /api/v1/calendar/events/search",
       "PUT /api/v1/calendar/events/{ref_id}"
+    ],
+    "source": "src/apps/calendar/domain/dto.py"
+  },
+  "apps.calendar.domain.dto.CalendarGroupQuery": {
+    "definition_owner": "apps.calendar.domain.dto",
+    "extra_policy": "forbid",
+    "fields": {
+      "page": {
+        "computed": false,
+        "definition_owner": "apps.calendar.domain.dto",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "search": {
+        "computed": false,
+        "definition_owner": "apps.calendar.domain.dto",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Search"
+        },
+        "validation_alias": null
+      },
+      "size": {
+        "computed": false,
+        "definition_owner": "apps.calendar.domain.dto",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": 20,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Size",
+          "type": "integer"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/calendar/work-groups/select"
     ],
     "source": "src/apps/calendar/domain/dto.py"
   },
@@ -15679,9 +16515,18 @@
         "required_input": false,
         "required_output": false,
         "schema": {
+          "anyOf": [
+            {
+              "const": "processes",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
           "default": null,
-          "title": "Route Key",
-          "type": "null"
+          "description": "Current authorized protected-operation evidence opens the existing process screen. Null retains unavailable legacy operation targets; never an external URL or execution authority.",
+          "title": "Route Key"
         },
         "validation_alias": null
       }
@@ -29094,6 +29939,7 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -29165,6 +30011,7 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -29300,6 +30147,7 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -29372,6 +30220,7 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -30640,7 +31489,7 @@
             }
           ],
           "default": null,
-          "description": "For STEP_OUTPUT, the exact pinned output-port schema, including generic service metadata. Registered sandbox receipt guarantees refine server-side compatibility without changing persisted port metadata or graph checksums. Caller-supplied schema assertions cannot replace the trusted operation contract.",
+          "description": "For REQUEST/CONTEXT, the declared source JSON Schema is persisted with the executable binding across save, promotion, publication and reload; null retains legacy undeclared behavior. This schema is an authoring type contract, not data or authorization. For STEP_OUTPUT, use the exact pinned output-port schema, including generic service metadata. Trusted registered output guarantees refine validation without changing persisted port metadata or graph checksums. Caller assertions cannot replace trusted operation contracts.",
           "title": "Source Schema"
         },
         "validation_alias": null
@@ -30689,6 +31538,26 @@
         },
         "validation_alias": null
       },
+      "target_projection": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.dtos.graph",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ObjectFieldProjection"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional bpms.binding.object/1 destination field for a scalar object input. Absent/null retains whole-port semantics and is omitted from canonical output to preserve existing published payloads/checksums. Field bindings cannot overlap or mix with whole-port bindings. No array containers or implicit defaults; explicit null must satisfy the target leaf schema."
+        },
+        "validation_alias": null
+      },
       "target_schema": {
         "computed": false,
         "definition_owner": "apps.workflows.domain.dtos.graph",
@@ -30706,6 +31575,7 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -30851,6 +31721,7 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -30969,6 +31840,7 @@
     },
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflow-versions/{ref_id}/default-preview",
       "POST /api/v1/workflows/validate"
     ],
@@ -31066,6 +31938,7 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -31297,6 +32170,7 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -31398,6 +32272,7 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -31503,6 +32378,7 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -31566,6 +32442,401 @@
     ],
     "source": "src/apps/workflows/domain/dtos/graph.py"
   },
+  "apps.workflows.domain.object_preview.BindingPreviewDTO": {
+    "definition_owner": "apps.workflows.domain.object_preview",
+    "extra_policy": "ignore",
+    "fields": {
+      "candidate_checksum": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Candidate Checksum"
+        },
+        "validation_alias": null
+      },
+      "fields": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "items": {
+            "$ref": "#/$defs/BindingPreviewField"
+          },
+          "maxItems": 64,
+          "title": "Fields",
+          "type": "array"
+        },
+        "validation_alias": null
+      },
+      "handler_called": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": false,
+          "default": false,
+          "title": "Handler Called",
+          "type": "boolean"
+        },
+        "validation_alias": null
+      },
+      "issues": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "items": {
+            "$ref": "#/$defs/GraphIssue"
+          },
+          "maxItems": 64,
+          "title": "Issues",
+          "type": "array"
+        },
+        "validation_alias": null
+      },
+      "provider_called": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": false,
+          "default": false,
+          "title": "Provider Called",
+          "type": "boolean"
+        },
+        "validation_alias": null
+      },
+      "sample_state": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "enum": [
+            "VALID",
+            "MISSING",
+            "INVALID"
+          ],
+          "title": "Sample State",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "target_port": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Target Port",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "target_step": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Target Step",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "tool_called": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": false,
+          "default": false,
+          "title": "Tool Called",
+          "type": "boolean"
+        },
+        "validation_alias": null
+      },
+      "values_redacted": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": true,
+          "default": true,
+          "title": "Values Redacted",
+          "type": "boolean"
+        },
+        "validation_alias": null
+      },
+      "workflow_version_ref": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Workflow Version Ref",
+          "type": "string"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview"
+    ],
+    "source": "src/apps/workflows/domain/object_preview.py"
+  },
+  "apps.workflows.domain.object_preview.BindingPreviewField": {
+    "definition_owner": "apps.workflows.domain.object_preview",
+    "extra_policy": "ignore",
+    "fields": {
+      "path": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Path",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "sample_origin": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "enum": [
+            "AUTHOR",
+            "VISIBLE_CONSTANT"
+          ],
+          "title": "Sample Origin",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "source_kind": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "enum": [
+            "REQUEST",
+            "CONTEXT",
+            "CONSTANT",
+            "STEP_OUTPUT"
+          ],
+          "title": "Source Kind",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "value_type": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "enum": [
+            "null",
+            "boolean",
+            "integer",
+            "number",
+            "string",
+            "array",
+            "object"
+          ],
+          "title": "Value Type",
+          "type": "string"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview"
+    ],
+    "source": "src/apps/workflows/domain/object_preview.py"
+  },
+  "apps.workflows.domain.object_preview.BindingPreviewInput": {
+    "definition_owner": "apps.workflows.domain.object_preview",
+    "extra_policy": "forbid",
+    "fields": {
+      "graph": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "$ref": "#/$defs/GraphSnapshot"
+        },
+        "validation_alias": null
+      },
+      "samples": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "items": {
+            "$ref": "#/$defs/BindingSourceSample"
+          },
+          "maxItems": 64,
+          "title": "Samples",
+          "type": "array"
+        },
+        "validation_alias": null
+      },
+      "target_port": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Target Port",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "target_step": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Target Step",
+          "type": "string"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview"
+    ],
+    "source": "src/apps/workflows/domain/object_preview.py"
+  },
+  "apps.workflows.domain.object_preview.BindingSourceSample": {
+    "definition_owner": "apps.workflows.domain.object_preview",
+    "extra_policy": "forbid",
+    "fields": {
+      "ordinal": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "description": "Existing source binding ordinal within the selected input port. Constants cannot be overridden here.",
+          "maximum": 1023,
+          "minimum": 0,
+          "title": "Ordinal",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "value": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_preview",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "$ref": "#/$defs/JsonValue",
+          "description": "Explicit author sample for the already-projected source value. Null, false, zero and empty collections are present values, distinct from an omitted sample."
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview"
+    ],
+    "source": "src/apps/workflows/domain/object_preview.py"
+  },
+  "apps.workflows.domain.object_projection.ObjectFieldProjection": {
+    "definition_owner": "apps.workflows.domain.object_projection",
+    "extra_policy": "forbid",
+    "fields": {
+      "dialect": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_projection",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "const": "bpms.binding.object/1",
+          "title": "Dialect",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "path": {
+        "computed": false,
+        "definition_owner": "apps.workflows.domain.object_projection",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "description": "RFC 6901 destination within declared object properties; no array containers, overlap or prototype keys. Explicit null is preserved and validated.",
+          "maxLength": 1024,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "GET /api/v1/workflow-versions/{ref_id}/graph",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
+      "POST /api/v1/workflows/validate",
+      "PUT /api/v1/workflow-versions/{ref_id}/graph"
+    ],
+    "source": "src/apps/workflows/domain/object_projection.py"
+  },
   "apps.workflows.domain.subprocess.SubprocessCall": {
     "definition_owner": "apps.workflows.domain.subprocess",
     "extra_policy": "forbid",
@@ -31604,6 +32875,7 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -31734,6 +33006,7 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -31861,6 +33134,7 @@
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
       "POST /api/v1/designer/catalog",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -31930,6 +33204,7 @@
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
       "POST /api/v1/designer/catalog",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -32012,6 +33287,7 @@
     "operations": [
       "GET /api/v1/workflow-versions/{ref_id}/graph",
       "POST /api/v1/designer/catalog",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflows/validate",
       "PUT /api/v1/workflow-versions/{ref_id}/graph"
     ],
@@ -33396,6 +34672,87 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "POST /api/v1/processes/{ref_id}/ai-evidence/search"
+    ],
+    "source": "src/utils/pagination.py"
+  },
+  "utils.pagination.Page[AIReportLookupDTO]": {
+    "definition_owner": "utils.pagination",
+    "extra_policy": "ignore",
+    "fields": {
+      "items": {
+        "computed": false,
+        "definition_owner": "utils.pagination",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "items": {
+            "$ref": "#/$defs/AIReportLookupDTO"
+          },
+          "title": "Items",
+          "type": "array"
+        },
+        "validation_alias": null
+      },
+      "page": {
+        "computed": false,
+        "definition_owner": "utils.pagination",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "size": {
+        "computed": false,
+        "definition_owner": "utils.pagination",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": 20,
+          "minimum": 1,
+          "title": "Size",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "total": {
+        "computed": false,
+        "definition_owner": "utils.pagination",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "minimum": 0,
+          "title": "Total",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "total_pages": {
+        "computed": true,
+        "definition_owner": "utils.pagination",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": true,
+        "schema": {
+          "description": "Return the number of nonempty pages in the full result set.",
+          "readOnly": true,
+          "title": "Total Pages",
+          "type": "integer"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/retrieval-sources/search"
     ],
     "source": "src/utils/pagination.py"
   },
@@ -36282,6 +37639,7 @@
       "POST /api/v1/ai-agents/providers/select",
       "POST /api/v1/ai-agents/select",
       "POST /api/v1/ai-agents/{ref_id}/choices/select",
+      "POST /api/v1/calendar/work-groups/select",
       "POST /api/v1/client-releases/select",
       "POST /api/v1/clients/select",
       "POST /api/v1/designer/library/select",
@@ -37713,8 +39071,13 @@
       "POST /api/v1/ai-agents/select",
       "POST /api/v1/ai-agents/work-items/{work_item_ref}/tool-approval",
       "POST /api/v1/ai-agents/{ref_id}/choices/select",
+      "POST /api/v1/ai-agents/{ref_id}/decision-preview",
+      "POST /api/v1/ai-agents/{ref_id}/evaluations",
       "POST /api/v1/ai-agents/{ref_id}/history",
       "POST /api/v1/ai-agents/{ref_id}/publish",
+      "POST /api/v1/ai-agents/{ref_id}/retrieval-preview",
+      "POST /api/v1/ai-agents/{ref_id}/retrieval-sources/search",
+      "POST /api/v1/ai-agents/{ref_id}/workflow-context",
       "POST /api/v1/analytics/query",
       "POST /api/v1/auth/change-password",
       "POST /api/v1/auth/forgot-password",
@@ -37743,6 +39106,7 @@
       "POST /api/v1/calendar/events/report",
       "POST /api/v1/calendar/events/search",
       "POST /api/v1/calendar/events/{ref_id}/history",
+      "POST /api/v1/calendar/work-groups/select",
       "POST /api/v1/client-releases",
       "POST /api/v1/client-releases/report",
       "POST /api/v1/client-releases/search",
@@ -37915,6 +39279,7 @@
       "POST /api/v1/workflow-versions",
       "POST /api/v1/workflow-versions/report",
       "POST /api/v1/workflow-versions/search",
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview",
       "POST /api/v1/workflow-versions/{ref_id}/default-apply",
       "POST /api/v1/workflow-versions/{ref_id}/default-preview",
       "POST /api/v1/workflow-versions/{ref_id}/history",
@@ -38256,6 +39621,80 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "POST /api/v1/processes/{ref_id}/ai-evidence/search"
+    ],
+    "source": "src/utils/presenter.py"
+  },
+  "utils.presenter.PageResponse[Page[AIReportLookupDTO]]": {
+    "definition_owner": "utils.presenter",
+    "extra_policy": "ignore",
+    "fields": {
+      "code": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": 200,
+          "title": "Code",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "error": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": null,
+          "title": "Error",
+          "type": "null"
+        },
+        "validation_alias": null
+      },
+      "request_id": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "result": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "$ref": "#/$defs/Page_AIReportLookupDTO_"
+        },
+        "validation_alias": null
+      },
+      "success": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": true,
+          "default": true,
+          "title": "Success",
+          "type": "boolean"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/retrieval-sources/search"
     ],
     "source": "src/utils/presenter.py"
   },
@@ -40749,6 +42188,7 @@
       "POST /api/v1/ai-agents/providers/select",
       "POST /api/v1/ai-agents/select",
       "POST /api/v1/ai-agents/{ref_id}/choices/select",
+      "POST /api/v1/calendar/work-groups/select",
       "POST /api/v1/client-releases/select",
       "POST /api/v1/clients/select",
       "POST /api/v1/designer/library/select",
@@ -41732,6 +43172,80 @@
     ],
     "source": "src/utils/presenter.py"
   },
+  "utils.presenter.SuccessResponse[AIAgentEvaluationDTO]": {
+    "definition_owner": "utils.presenter",
+    "extra_policy": "ignore",
+    "fields": {
+      "code": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": 200,
+          "title": "Code",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "data": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "$ref": "#/$defs/AIAgentEvaluationDTO"
+        },
+        "validation_alias": null
+      },
+      "error": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": null,
+          "title": "Error",
+          "type": "null"
+        },
+        "validation_alias": null
+      },
+      "request_id": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "success": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": true,
+          "default": true,
+          "title": "Success",
+          "type": "boolean"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/evaluations"
+    ],
+    "source": "src/utils/presenter.py"
+  },
   "utils.presenter.SuccessResponse[AIBudgetStatus]": {
     "definition_owner": "utils.presenter",
     "extra_policy": "ignore",
@@ -41803,6 +43317,80 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "GET /api/v1/ai-agents/processes/{process_ref}/executions/{execution_ref}/budget"
+    ],
+    "source": "src/utils/presenter.py"
+  },
+  "utils.presenter.SuccessResponse[AIDecisionPreviewDTO]": {
+    "definition_owner": "utils.presenter",
+    "extra_policy": "ignore",
+    "fields": {
+      "code": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": 200,
+          "title": "Code",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "data": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "$ref": "#/$defs/AIDecisionPreviewDTO"
+        },
+        "validation_alias": null
+      },
+      "error": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": null,
+          "title": "Error",
+          "type": "null"
+        },
+        "validation_alias": null
+      },
+      "request_id": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "success": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": true,
+          "default": true,
+          "title": "Success",
+          "type": "boolean"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/decision-preview"
     ],
     "source": "src/utils/presenter.py"
   },
@@ -41954,6 +43542,80 @@
     ],
     "source": "src/utils/presenter.py"
   },
+  "utils.presenter.SuccessResponse[AIReportLookupPreviewDTO]": {
+    "definition_owner": "utils.presenter",
+    "extra_policy": "ignore",
+    "fields": {
+      "code": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": 200,
+          "title": "Code",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "data": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "$ref": "#/$defs/AIReportLookupPreviewDTO"
+        },
+        "validation_alias": null
+      },
+      "error": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": null,
+          "title": "Error",
+          "type": "null"
+        },
+        "validation_alias": null
+      },
+      "request_id": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "success": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": true,
+          "default": true,
+          "title": "Success",
+          "type": "boolean"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/retrieval-preview"
+    ],
+    "source": "src/utils/presenter.py"
+  },
   "utils.presenter.SuccessResponse[AIToolApprovalDTO]": {
     "definition_owner": "utils.presenter",
     "extra_policy": "ignore",
@@ -42026,6 +43688,80 @@
     "operations": [
       "GET /api/v1/ai-agents/work-items/{work_item_ref}/tool-approval",
       "POST /api/v1/ai-agents/work-items/{work_item_ref}/tool-approval"
+    ],
+    "source": "src/utils/presenter.py"
+  },
+  "utils.presenter.SuccessResponse[AIWorkflowContextDTO]": {
+    "definition_owner": "utils.presenter",
+    "extra_policy": "ignore",
+    "fields": {
+      "code": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": 200,
+          "title": "Code",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "data": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "$ref": "#/$defs/AIWorkflowContextDTO"
+        },
+        "validation_alias": null
+      },
+      "error": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": null,
+          "title": "Error",
+          "type": "null"
+        },
+        "validation_alias": null
+      },
+      "request_id": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "success": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": true,
+          "default": true,
+          "title": "Success",
+          "type": "boolean"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/ai-agents/{ref_id}/workflow-context"
     ],
     "source": "src/utils/presenter.py"
   },
@@ -42323,6 +44059,80 @@
     "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
     "operations": [
       "POST /api/v1/forms/behavior-preview"
+    ],
+    "source": "src/utils/presenter.py"
+  },
+  "utils.presenter.SuccessResponse[BindingPreviewDTO]": {
+    "definition_owner": "utils.presenter",
+    "extra_policy": "ignore",
+    "fields": {
+      "code": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": 200,
+          "title": "Code",
+          "type": "integer"
+        },
+        "validation_alias": null
+      },
+      "data": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "$ref": "#/$defs/BindingPreviewDTO"
+        },
+        "validation_alias": null
+      },
+      "error": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "default": null,
+          "title": "Error",
+          "type": "null"
+        },
+        "validation_alias": null
+      },
+      "request_id": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": true,
+        "required_output": true,
+        "schema": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "validation_alias": null
+      },
+      "success": {
+        "computed": false,
+        "definition_owner": "utils.presenter",
+        "flexible_document": false,
+        "required_input": false,
+        "required_output": false,
+        "schema": {
+          "const": true,
+          "default": true,
+          "title": "Success",
+          "type": "boolean"
+        },
+        "validation_alias": null
+      }
+    },
+    "mapping_policy": "Purpose-specific application projection; from_attributes is not authorization.",
+    "operations": [
+      "POST /api/v1/workflow-versions/{ref_id}/binding-preview"
     ],
     "source": "src/utils/presenter.py"
   },
@@ -48918,6 +50728,7 @@
       "POST /api/v1/ai-agents/select",
       "POST /api/v1/ai-agents/{ref_id}/choices/select",
       "POST /api/v1/business-requests/{ref_id}/options",
+      "POST /api/v1/calendar/work-groups/select",
       "POST /api/v1/client-releases/select",
       "POST /api/v1/clients/select",
       "POST /api/v1/designer/library/select",
@@ -48993,6 +50804,7 @@
       "POST /api/v1/ai-agents/providers/select",
       "POST /api/v1/ai-agents/select",
       "POST /api/v1/ai-agents/{ref_id}/choices/select",
+      "POST /api/v1/ai-agents/{ref_id}/retrieval-sources/search",
       "POST /api/v1/client-releases/select",
       "POST /api/v1/clients/select",
       "POST /api/v1/integration-connections/select",

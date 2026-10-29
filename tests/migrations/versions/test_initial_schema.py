@@ -84,9 +84,9 @@ def test_initial_schema_is_the_root_revision_and_creates_uuid_idempotency_keys(
     scripts = ScriptDirectory.from_config(Config(toml_file="pyproject.toml"))
     revisions = list(scripts.walk_revisions())
     assert len(scripts.get_heads()) == 1
-    assert len(revisions) == 3
+    assert len(revisions) == 5
     assert revisions[-1].revision == "0001_schema"
-    assert revisions[0].revision == "0003_arabic"
+    assert revisions[0].revision == "0005_binding_object_fields"
     assert len(revisions) == len(list(versions.glob("*.py")))
     assert all(
         revision.down_revision == parent.revision for revision, parent in pairwise(revisions)

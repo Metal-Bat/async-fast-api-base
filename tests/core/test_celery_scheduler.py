@@ -1,6 +1,9 @@
 """Tests for scheduler leadership and transactional outbox dispatch."""
 
 import asyncio
+import os
+import subprocess
+import sys
 from unittest.mock import AsyncMock, Mock
 from uuid import uuid7
 
@@ -12,6 +15,30 @@ from apps.tasks.application import outbox
 from apps.tasks.domain.entity import TaskOutboxEntity
 from core.celery_app import celery_app
 from utils.date_utils import get_datetime_utc
+
+
+def test_scheduler_resolves_foreign_keys_in_a_fresh_process() -> None:
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            """
+from core.celery_app import celery_app
+from core.celery_scheduler import DatabaseScheduler
+from sqlmodel import SQLModel
+
+for table in list(SQLModel.metadata.tables.values()):
+    for foreign_key in table.foreign_keys:
+        assert foreign_key.column is not None
+""",
+        ],
+        capture_output=True,
+        env={**os.environ, "PYTHONPATH": os.pathsep.join(sys.path)},
+        text=True,
+        timeout=30,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
 
 
 @pytest.mark.parametrize("sqlstate", ["42P01", "42703", "42601"])

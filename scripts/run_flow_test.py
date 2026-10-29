@@ -19,6 +19,8 @@ FLOW_TESTS = (
     "tests/integration/test_platform_foundation.py",
 )
 PROFILES = {
+    "real-processes": ("tests/integration/test_real_processes.py",),
+    "workflow-library": ("tests/integration/test_workflow_library_seed.py",),
     "demo-catalog": ("tests/integration/test_demo_catalog.py",),
     "restore": ("tests/integration/test_bpms_restore.py",),
     "runtime-image": ("tests/integration/test_runtime_image.py",),
@@ -33,6 +35,10 @@ PROFILES = {
         "tests/integration/test_ai_budget.py",
     ),
     "delivery-completion": (
+        "tests/integration/test_ai_agents.py",
+        "tests/integration/test_ai_query_lookup.py",
+        "tests/integration/test_ai_connections.py",
+        "tests/integration/test_binding_schema_persistence.py",
         "tests/integration/test_workflow_defaults.py",
         "tests/integration/test_studio_workspace.py",
         "tests/integration/test_definition_library.py",
@@ -45,6 +51,8 @@ PROFILES = {
     ),
     "flow": FLOW_TESTS,
     "delivery-transfers": (
+        "tests/integration/test_real_processes.py",
+        "tests/integration/test_processes.py::test_event_append_refreshes_a_cached_process_after_another_writer_commits",
         "tests/integration/test_connected_workflow.py",
         "tests/integration/test_consistency_live.py",
         "tests/integration/test_notification_push.py",
@@ -229,6 +237,7 @@ def main() -> int:
         status = migration.returncode
         if status == 0:
             if profile in {
+                "real-processes",
                 "demo-catalog",
                 "delivery-transfers",
                 "notification-push",

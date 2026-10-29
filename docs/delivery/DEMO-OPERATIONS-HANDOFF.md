@@ -3,12 +3,14 @@
 ## Populate the current database
 
 Run `mise run demo-seed` (also available as `mise run demo-prepare`) to populate
-`.envs/.backend`'s current development database inside the Compose `demo-seed` service
-and exit. Build it with `docker compose build demo-seed` after dependency changes.
-The default adds 3,282 requests and 102 users on a fresh installation, covering six
-client kinds and en/fa/ar. Use `mise run demo-seed -- --inspect` for current references. See the
-[seed guide](../guides/demo-seed.md) for data coverage, private credentials and
-rerun behavior. `mise run demo-seed-test` verifies the seed with disposable services.
+`.envs/.backend`'s current development database from a local one-shot script. There is
+no Compose seed service or development image target. The default inserts the reusable
+workflow control/type/component library and three ordinary installation accounts;
+`--with-demo-cases` additionally generates the larger multilingual business dataset.
+`--inspect` reads current business cases when that optional dataset has been inserted.
+See the [seed guide](../guides/demo-seed.md) for purposes, credentials and rerun behavior.
+`mise run workflow-library-test` verifies the lightweight library; `demo-seed-test`
+verifies the optional rich dataset with disposable services.
 
 Shared application tests still own disposable database/storage/worker fixtures for
 real workflow, private transfer, recovery and browser acceptance. They remain in the
@@ -63,3 +65,7 @@ tenancy, compliance, deployment, named-vendor certification or live-model qualit
 claimed. The local HTTPS sandbox and scripted no-network AI remain explicitly labeled.
 Owner acceptance is separate from test results. See the [capability ledger](BACKEND-CAPABILITY-LEDGER.md) and
 [current developer seed verification](developer-seed-verification.json).
+
+## Integration continuation — 2026-10-28
+
+Current local schema head is `0005_binding_object_fields`. Calendar member-only selection, evidence-bound protected-operation notices, object-field bindings/redacted preview and the existing Agent authoring consumers are locally integrated. Internal event append now refreshes its locked current process row after concurrent commits, preserving client optimistic refs and exact replay. The local upgrade preserved all 103 tables / 191,225 rows after a private backup and restored-clone rehearsal; services were resumed, the event writer code fingerprint matched the local container, and health/readiness succeeded. The post-upgrade seeded leave draft was checked without submission or approval. Current complete gates/source identities and the 63 actual paired scenarios are in the peer `artifacts/integration-2026-10-28/completion.json`. Missing/stale/partial receipt evidence remains incomplete; hosted immutable-pair, deployed, live-provider, manual and product-owner gates remain separate. D07 is VERIFIED_WITH_EXCEPTION, never strict exception-free/demo readiness.

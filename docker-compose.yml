@@ -6,29 +6,6 @@ volumes:
   sample_broker_data: {}
 
 services:
-  demo-seed:
-    profiles: ["development"]
-    build:
-      context: .
-      dockerfile: ./compose/backend/Dockerfile
-      target: development
-    image: sample_development
-    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
-    working_dir: /app
-    volumes:
-      - .:/app:z
-    env_file:
-      - ./.envs/.backend
-    depends_on:
-      postgres:
-        condition: service_started
-      cache:
-        condition: service_healthy
-      s3:
-        condition: service_started
-    entrypoint: ["python", "-m", "scripts.demo_seed"]
-    command: []
-
   backend:
     build:
       context: .
@@ -88,6 +65,7 @@ services:
       - ./.envs/.backend
     environment:
       - OTEL_SERVICE_NAME=sample-worker
+    tty: true
 
   reporting-worker:
     build:
@@ -116,6 +94,7 @@ services:
       - ./.envs/.backend
     environment:
       - OTEL_SERVICE_NAME=sample-reporting-worker
+    tty: true
 
   scheduler:
     build:

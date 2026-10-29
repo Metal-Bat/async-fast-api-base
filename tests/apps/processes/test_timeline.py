@@ -69,7 +69,8 @@ async def test_terminal_event_records_duration_without_business_payload(monkeypa
         ended_at=now,
     )
     session = AsyncMock()
-    session.get.side_effect = [process, execution]
+    session.exec.return_value = Mock(one_or_none=Mock(return_value=process))
+    session.get.return_value = execution
     session.add = Mock()
     telemetry = Mock()
     monkeypatch.setattr(events, "bpms_telemetry", telemetry)

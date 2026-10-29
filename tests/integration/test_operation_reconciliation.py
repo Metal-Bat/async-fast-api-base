@@ -61,6 +61,7 @@ async def test_crash_before_http_has_unknown_lookup_and_cannot_claim_compensated
                     "dispatched_at": (get_datetime_utc() - timedelta(seconds=30)).isoformat(),
                 }
                 attempt.automation_snapshot = snapshot
+                assert attempt is not None
                 execution = await session.get(StepExecutionEntity, attempt.step_execution_id)
                 assert execution is not None
                 process = await session.get(ProcessInstanceEntity, execution.process_instance_id)
@@ -143,7 +144,12 @@ async def test_acknowledgment_loss_reconciles_same_receipt_without_replaying_ord
                 attempt.error_code,
             )
             assert (await execute_background(identity)).disposition == "operation_unknown"
+            await assert_operation_notice(
+                identity, "operation.outcome_unknown", "application.map_07", operator_id
+            )
+
             async with SessionFactory() as session:
+                assert attempt is not None
                 execution = await session.get(StepExecutionEntity, attempt.step_execution_id)
                 assert execution is not None
                 process = await session.get(ProcessInstanceEntity, execution.process_instance_id)
@@ -163,6 +169,13 @@ async def test_acknowledgment_loss_reconciles_same_receipt_without_replaying_ord
             result = await OrderRecoveryService().reconcile(process_ref, command, operator_id)
             assert result.receipt is not None and result.receipt.state == "CREATED"
             assert result.state == "CONFIRMED"
+            await assert_operation_notice(
+                identity, "operation.confirmed", "application.map_08", expected=connected
+            )
+            await assert_operation_notice(
+                identity, "operation.reconciled", "application.map_08", expected=connected
+            )
+
             replay = await OrderRecoveryService().reconcile(process_ref, command, operator_id)
             assert replay == result
             with pytest.raises(VersionConflictException):
@@ -178,6 +191,7 @@ async def test_acknowledgment_loss_reconciles_same_receipt_without_replaying_ord
                 assert attempt.automation_snapshot["order_dispatch"][
                     "receipt"
                 ] == result.receipt.model_dump(mode="json")
+                assert execution is not None
                 process = await session.get(ProcessInstanceEntity, execution.process_instance_id)
                 assert process is not None
                 if connected:
@@ -244,6 +258,7 @@ async def test_explicit_compensation_records_actual_separate_cancellation_receip
                 await sleep(0.2)
             assert attempt.status == "SUCCEEDED"
             async with SessionFactory() as session, session.begin():
+                assert attempt is not None
                 execution = await session.get(StepExecutionEntity, attempt.step_execution_id)
                 assert execution is not None
                 process = await session.get(ProcessInstanceEntity, execution.process_instance_id)
@@ -345,3 +360,122 @@ async def test_explicit_compensation_records_actual_separate_cancellation_receip
                 )
     finally:
         await engine.dispose()
+
+
+async def assert_operation_notice(
+    attempt_id, event_type, template, recipient_id=None, *, expected=True
+):
+    from apps.notifications.application.events import fanout_event
+    from apps.notifications.application.inbox import InboxService
+    from apps.notifications.domain.entity import NotificationEntity
+    from apps.requests.domain.entity import BusinessRequestEntity
+
+    async with SessionFactory() as session:
+        attempt = await session.get(StepExecutionAttemptEntity, attempt_id)
+        assert attempt is not None
+        execution = await session.get(StepExecutionEntity, attempt.step_execution_id)
+        assert execution is not None
+        process = await session.get(ProcessInstanceEntity, execution.process_instance_id)
+        assert process is not None
+        request = await session.get(BusinessRequestEntity, process.business_request_id)
+        assert request is not None
+        recipient_id = recipient_id or request.requester_user_id
+        event = (
+            await session.exec(
+                select(ProcessEventEntity).where(
+                    ProcessEventEntity.step_execution_id == execution.id,
+                    ProcessEventEntity.event_type == event_type,
+                )
+            )
+        ).one()
+        event_id, execution_id, process_id = event.id, execution.id, process.id
+    await fanout_event(event_id)
+    await fanout_event(event_id)
+    async with SessionFactory() as session:
+        rows = (
+            await session.exec(
+                select(NotificationEntity).where(
+                    NotificationEntity.target_id == execution_id,
+                    NotificationEntity.template_key == template,
+                    NotificationEntity.recipient_user_id == recipient_id,
+                )
+            )
+        ).all()
+        assert len(rows) == int(expected)
+        if not expected:
+            return
+        recipient = await session.get(UserEntity, recipient_id)
+        assert recipient is not None
+        target = await InboxService(session).target(rows[0], recipient)
+        assert target.available and target.route_key == "processes"
+        process = await session.get(ProcessInstanceEntity, process_id)
+        assert process is not None
+        assert target.ref_id == create_ref_id(process.id, process.version)
+        # Revocation redacts a previously staged private projection without replaying an effect.
+        from utils.date_utils import get_datetime_utc
+
+        recipient.deleted_at = get_datetime_utc()
+        await session.flush()
+        redacted = await InboxService(session).dto(rows[0], recipient)
+        assert not redacted.target.available
+        assert redacted.target.ref_id is None and redacted.content is None
+        recipient.deleted_at = None
+        await session.flush()
+
+    await assert_operation_inbox_http(recipient_id, template, process_id)
+
+
+async def assert_operation_inbox_http(recipient_id, template, process_id):
+    from httpx import ASGITransport, AsyncClient
+
+    from main import app
+    from utils.security import hash_password
+
+    password = str(uuid7())
+    async with SessionFactory() as session:
+        recipient = await session.get(UserEntity, recipient_id)
+        assert recipient is not None
+        recipient.hashed_password = await hash_password(password)
+        outsider = UserEntity(
+            username="inbox-outsider-" + uuid7().hex, hashed_password=recipient.hashed_password
+        )
+        session.add(outsider)
+        await session.commit()
+        username, outsider_name = recipient.username, outsider.username
+        process = await session.get(ProcessInstanceEntity, process_id)
+        assert process is not None
+        expected_ref = create_ref_id(process.id, process.version)
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+
+        async def login(name):
+            result = await client.post(
+                "/api/v1/auth/login", json={"username": name, "password": password}
+            )
+            assert result.status_code == 200
+            return {"Authorization": "Bearer " + result.json()["data"]["access_token"]}
+
+        headers = await login(username)
+        result = await client.post(
+            "/api/v1/inbox/search", headers=headers, json={"page": 1, "size": 100}
+        )
+        assert result.status_code == 200
+        assert result.headers["cache-control"] == "private, no-store"
+        rows = [
+            row
+            for row in result.json()["result"]["items"]
+            if row["template_key"] == template and row["target"]["ref_id"] == expected_ref
+        ]
+        assert len(rows) == 1
+        target = rows[0]["target"]
+        assert target["kind"] == "operation" and target["available"]
+        assert target["route_key"] == "processes" and target["ref_id"] == expected_ref
+        detail = await client.get("/api/v1/inbox/" + rows[0]["ref_id"], headers=headers)
+        assert detail.status_code == 200 and detail.json()["data"]["target"] == target
+        denied = await login(outsider_name)
+        assert (
+            await client.get("/api/v1/inbox/" + rows[0]["ref_id"], headers=denied)
+        ).status_code == 403
+        hidden = await client.post(
+            "/api/v1/inbox/search", headers=denied, json={"page": 1, "size": 100}
+        )
+        assert hidden.status_code == 200 and hidden.json()["result"]["items"] == []

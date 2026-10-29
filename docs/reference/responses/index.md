@@ -6,12 +6,12 @@ tags: [api, dto, index]
 
 Generated from the application's successful OpenAPI responses. Each topic lists all directly and transitively referenced response schemas, their fields and reviewed examples where available. Unreviewed schemas have no fabricated example. See the [frontend journey](../../guides/frontend-journey.md) and [response scenarios](../../api/response-scenarios.md); live OpenAPI remains the current wire contract.
 
-- [ai-agents](ai-agents.md) — 32 schemas
+- [ai-agents](ai-agents.md) — 44 schemas
 - [analytics](analytics.md) — 15 schemas
 - [audit-events](audit-events.md) — 4 schemas
 - [auth](auth.md) — 6 schemas
 - [business-requests](business-requests.md) — 21 schemas
-- [calendar-events](calendar-events.md) — 13 schemas
+- [calendar-events](calendar-events.md) — 16 schemas
 - [client-releases](client-releases.md) — 10 schemas
 - [clients](clients.md) — 13 schemas
 - [definition-library](definition-library.md) — 23 schemas
@@ -49,5 +49,5 @@ Generated from the application's successful OpenAPI responses. Each topic lists 
 - [users](users.md) — 13 schemas
 - [work-groups](work-groups.md) — 11 schemas
 - [work-items](work-items.md) — 23 schemas
-- [workflow-versions](workflow-versions.md) — 34 schemas
+- [workflow-versions](workflow-versions.md) — 38 schemas
 - [workflows](workflows.md) — 15 schemas

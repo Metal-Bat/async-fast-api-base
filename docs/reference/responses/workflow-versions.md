@@ -6,6 +6,39 @@ tags: [api, dto, workflow-versions]
 
 These schemas are emitted by successful API responses in this topic. Reviewed examples are included only when a curated fixture exists. Required nullable fields must be present and may be null; optional fields may be omitted as allowed by the schema. See the [frontend journey](../../guides/frontend-journey.md) for lifecycle and call order. The live Swagger/OpenAPI document is authoritative.
 
+### `BindingPreviewDTO`
+
+Used by: `POST /api/v1/workflow-versions/{ref_id}/binding-preview`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `workflow_version_ref` | `string` | Yes | — |
+| `candidate_checksum` | `string | null` | Yes | — |
+| `target_step` | `string` | Yes | — |
+| `target_port` | `string` | Yes | — |
+| `sample_state` | `string` | Yes | — |
+| `fields` | `array[BindingPreviewField]` | No | — |
+| `issues` | `array[GraphIssue]` | No | — |
+| `values_redacted` | `boolean` | No |  Default: `True`. |
+| `provider_called` | `boolean` | No |  Default: `False`. |
+| `tool_called` | `boolean` | No |  Default: `False`. |
+| `handler_called` | `boolean` | No |  Default: `False`. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `BindingPreviewField`
+
+Used by: `POST /api/v1/workflow-versions/{ref_id}/binding-preview`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `path` | `string` | Yes | — |
+| `source_kind` | `string` | Yes | — |
+| `sample_origin` | `string` | Yes | — |
+| `value_type` | `string` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `GraphBinding`
 
 Used by: `GET /api/v1/workflow-versions/{ref_id}/graph`
@@ -16,11 +49,12 @@ Used by: `GET /api/v1/workflow-versions/{ref_id}/graph`
 | `target_port` | `string` | Yes | — |
 | `target_schema` | `object` | Yes | — |
 | `ordinal` | `integer` | No |  Default: `0`. |
+| `target_projection` | `ObjectFieldProjection | null` | No | Optional bpms.binding.object/1 destination field for a scalar object input. Absent/null retains whole-port semantics and is omitted from canonical output to preserve existing published payloads/checksums. Field bindings cannot overlap or mix with whole-port bindings. No array containers or implicit defaults; explicit null must satisfy the target leaf schema. |
 | `source_kind` | `string` | Yes | — |
 | `source_path` | `string | null` | No | — |
 | `source_step` | `string | null` | No | — |
 | `source_port` | `string | null` | No | — |
-| `source_schema` | `object | null` | No | For STEP_OUTPUT, the exact pinned output-port schema, including generic service metadata. Registered sandbox receipt guarantees refine server-side compatibility without changing persisted port metadata or graph checksums. Caller-supplied schema assertions cannot replace the trusted operation contract. |
+| `source_schema` | `object | null` | No | For REQUEST/CONTEXT, the declared source JSON Schema is persisted with the executable binding across save, promotion, publication and reload; null retains legacy undeclared behavior. This schema is an authoring type contract, not data or authorization. For STEP_OUTPUT, use the exact pinned output-port schema, including generic service metadata. Trusted registered output guarantees refine validation without changing persisted port metadata or graph checksums. Caller assertions cannot replace trusted operation contracts. |
 | `constant_value` | `object` | No | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
@@ -45,7 +79,7 @@ No reviewed business example is published for this schema. Use the field contrac
 
 ### `GraphIssue`
 
-Used by: `POST /api/v1/workflow-versions/{ref_id}/default-preview`
+Used by: `POST /api/v1/workflow-versions/{ref_id}/binding-preview`, `POST /api/v1/workflow-versions/{ref_id}/default-preview`
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -167,6 +201,17 @@ Used by: `GET /api/v1/workflow-versions/{ref_id}/graph`
 | `en` | `string` | Yes | — |
 | `fa` | `string | null` | No | — |
 | `ar` | `string | null` | No | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `ObjectFieldProjection`
+
+Used by: `GET /api/v1/workflow-versions/{ref_id}/graph`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `dialect` | `string` | Yes | — |
+| `path` | `string` | Yes | RFC 6901 destination within declared object properties; no array containers, overlap or prototype keys. Explicit null is preserved and validated. |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
@@ -322,6 +367,20 @@ Used by: `GET /api/v1/workflow-versions/{ref_id}/graph`
 | `value_schema` | `object` | Yes | JSON Schema Draft 2020-12 type expected in the isolated child context. |
 | `required` | `boolean` | No | A call must map this input when true. Default: `True`. |
 | `assignment` | `string | null` | No | Actor or group assignment reference carried as a string. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `SuccessResponse_BindingPreviewDTO_`
+
+Used by: `POST /api/v1/workflow-versions/{ref_id}/binding-preview`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `data` | `BindingPreviewDTO` | Yes | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 

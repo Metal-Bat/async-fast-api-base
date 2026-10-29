@@ -40,8 +40,11 @@ PROCESS_MAP = {
     "work_item.rejected": "MAP-05",
     "process.completed": "MAP-06",
     "process.failed": "MAP-06",
+    "operation.outcome_unknown": "MAP-07",
+    "automation.failed": "MAP-07",
+    "operation.confirmed": "MAP-08",
+    "operation.reconciled": "MAP-08",
 }
-BLOCKED_MAPS = frozenset({"MAP-07", "MAP-08"})
 
 
 def stage_process_intent(session: AsyncSession, event: ProcessEventEntity) -> None:
@@ -70,10 +73,11 @@ async def stage_notice(
     process_id: UUID | None = None,
 ) -> NotificationEntity | None:
     """Stage one deduped in-app row and optional email through the existing delivery task."""
-    if map_id in BLOCKED_MAPS:
-        raise ValueError("Producer is not implemented")
+    # Serialize recipient state and notice deduplication without blocking the
+    # FK key-share locks held by concurrent human/process commands. An exclusive
+    # key lock here can deadlock with their later process event-sequence lock.
     recipient = await session.get(
-        UserEntity, recipient_id, with_for_update=True, populate_existing=True
+        UserEntity, recipient_id, with_for_update={"key_share": True}, populate_existing=True
     )
     if recipient is None or recipient.deleted_at is not None:
         return None
@@ -127,7 +131,7 @@ async def stage_notice(
     from apps.notifications.application.live import stage_push
 
     stage_push(session, row)
-    mandatory = map_id in {"MAP-12", "MAP-14"}
+    mandatory = map_id in {"MAP-07", "MAP-12", "MAP-14"}
     if (
         recipient.email is None
         or (not mandatory and not preferences.notifications.email_enabled)
@@ -178,74 +182,96 @@ async def fanout_event(event_id: UUID, after_user_id: UUID | None = None) -> int
         if process is None or request is None or request.deleted_at is not None:
             return 0
         map_id = PROCESS_MAP[event.event_type]
-        item = await session.get(WorkItemEntity, event.work_item_id) if event.work_item_id else None
-        if map_id == "MAP-02" and item is not None:
-            from apps.ai.domain.entity import AIToolApprovalEntity
+        occurrence_id = event.id
+        if map_id in {"MAP-07", "MAP-08"}:
+            from apps.notifications.application.operation_notices import event_notice
 
-            approval = (
-                await session.exec(
-                    select(AIToolApprovalEntity).where(AIToolApprovalEntity.work_item_id == item.id)
-                )
-            ).first()
-            if approval is not None:
-                return 0  # Dedicated mandatory MAP-12 already owns this occurrence.
-        if map_id == "MAP-04":
-            # The engine owns the correction recipient. Resolve its newly created work item,
-            # not the reviewer whose old item emitted RETURN.
-            item = (
-                await session.exec(
-                    select(WorkItemEntity)
-                    .where(
-                        WorkItemEntity.business_request_id == request.id,
-                        WorkItemEntity.created_at >= event.occurred_at,
-                        col(WorkItemEntity.deleted_at).is_(None),
-                    )
-                    .order_by(col(WorkItemEntity.created_at), col(WorkItemEntity.id))
-                    .limit(1)
-                )
-            ).first()
-        target_kind, target_id = (
-            ("work_item", item.id)
-            if map_id in {"MAP-02", "MAP-03", "MAP-04"} and item is not None
-            else ("case", request.id)
-        )
-        if map_id in {"MAP-02", "MAP-04"} and (item is None or item.status != "OPEN"):
-            return 0
-        statement = select(UserEntity).where(col(UserEntity.deleted_at).is_(None))
-        if target_kind == "work_item" and item is not None:
-            groups = (
-                select(WorkGroupMemberEntity.work_group_id)
-                .join(
-                    WorkGroupEntity,
-                    col(WorkGroupEntity.id) == col(WorkGroupMemberEntity.work_group_id),
-                )
-                .where(
-                    WorkGroupMemberEntity.user_id == UserEntity.id,
-                    col(WorkGroupMemberEntity.is_active).is_(True),
-                    col(WorkGroupEntity.deleted_at).is_(None),
-                    col(WorkGroupEntity.is_active).is_(True),
-                )
-            )
-            eligible = exists(
-                select(WorkItemCandidateEntity.id).where(
-                    WorkItemCandidateEntity.work_item_id == item.id,
-                    or_(
-                        col(WorkItemCandidateEntity.user_id) == col(UserEntity.id),
-                        col(WorkItemCandidateEntity.work_group_id).in_(groups),
-                    ),
-                )
-            )
-            statement = statement.where(
-                or_(
-                    eligible,
-                    col(UserEntity.id) == item.claimed_by_user_id,
-                    col(UserEntity.id) == event.actor_user_id,
-                )
-                if map_id == "MAP-03"
-                else eligible
+            notice = await event_notice(session, event)
+            if notice is None:
+                return 0
+            occurrence_id = notice.occurrence_id
+            target_kind, target_id = "operation", notice.execution_id
+            statement = select(UserEntity).where(col(UserEntity.deleted_at).is_(None))
+            statement = (
+                statement.where(col(UserEntity.is_superuser).is_(True))
+                if map_id == "MAP-07"
+                else statement.where(UserEntity.id == request.requester_user_id)
             )
         else:
-            statement = statement.where(UserEntity.id == request.requester_user_id)
+            item = (
+                await session.get(WorkItemEntity, event.work_item_id)
+                if event.work_item_id
+                else None
+            )
+            if map_id == "MAP-02" and item is not None:
+                from apps.ai.domain.entity import AIToolApprovalEntity
+
+                approval = (
+                    await session.exec(
+                        select(AIToolApprovalEntity).where(
+                            AIToolApprovalEntity.work_item_id == item.id
+                        )
+                    )
+                ).first()
+                if approval is not None:
+                    return 0  # Dedicated mandatory MAP-12 already owns this occurrence.
+            if map_id == "MAP-04":
+                # The engine owns the correction recipient. Resolve its newly created work item,
+                # not the reviewer whose old item emitted RETURN.
+                item = (
+                    await session.exec(
+                        select(WorkItemEntity)
+                        .where(
+                            WorkItemEntity.business_request_id == request.id,
+                            WorkItemEntity.created_at >= event.occurred_at,
+                            col(WorkItemEntity.deleted_at).is_(None),
+                        )
+                        .order_by(col(WorkItemEntity.created_at), col(WorkItemEntity.id))
+                        .limit(1)
+                    )
+                ).first()
+            target_kind, target_id = (
+                ("work_item", item.id)
+                if map_id in {"MAP-02", "MAP-03", "MAP-04"} and item is not None
+                else ("case", request.id)
+            )
+            if map_id in {"MAP-02", "MAP-04"} and (item is None or item.status != "OPEN"):
+                return 0
+            statement = select(UserEntity).where(col(UserEntity.deleted_at).is_(None))
+            if target_kind == "work_item" and item is not None:
+                groups = (
+                    select(WorkGroupMemberEntity.work_group_id)
+                    .join(
+                        WorkGroupEntity,
+                        col(WorkGroupEntity.id) == col(WorkGroupMemberEntity.work_group_id),
+                    )
+                    .where(
+                        WorkGroupMemberEntity.user_id == UserEntity.id,
+                        col(WorkGroupMemberEntity.is_active).is_(True),
+                        col(WorkGroupEntity.deleted_at).is_(None),
+                        col(WorkGroupEntity.is_active).is_(True),
+                    )
+                )
+                eligible = exists(
+                    select(WorkItemCandidateEntity.id).where(
+                        WorkItemCandidateEntity.work_item_id == item.id,
+                        or_(
+                            col(WorkItemCandidateEntity.user_id) == col(UserEntity.id),
+                            col(WorkItemCandidateEntity.work_group_id).in_(groups),
+                        ),
+                    )
+                )
+                statement = statement.where(
+                    or_(
+                        eligible,
+                        col(UserEntity.id) == item.claimed_by_user_id,
+                        col(UserEntity.id) == event.actor_user_id,
+                    )
+                    if map_id == "MAP-03"
+                    else eligible
+                )
+            else:
+                statement = statement.where(UserEntity.id == request.requester_user_id)
         if after_user_id is not None:
             statement = statement.where(col(UserEntity.id) > after_user_id)
         recipients = list(
@@ -257,7 +283,7 @@ async def fanout_event(event_id: UUID, after_user_id: UUID | None = None) -> int
                 await stage_notice(
                     session,
                     map_id=map_id,
-                    event_id=event.id,
+                    event_id=occurrence_id,
                     recipient_id=recipient.id,
                     target_kind=target_kind,
                     target_id=target_id,

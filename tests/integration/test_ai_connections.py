@@ -6,9 +6,15 @@ from uuid import uuid7
 import pytest
 from pydantic import SecretStr
 
+from apps.ai.application.catalog import AISelectionService
 from apps.integrations.application.providers import StatusProvider
 from apps.integrations.application.service import ConnectionService
-from apps.integrations.domain.dto import AIConnectionConfig, ConnectionCreateDTO, SecretRotationDTO
+from apps.integrations.domain.dto import (
+    AIConnectionConfig,
+    ConnectionCreateDTO,
+    GrantDTO,
+    SecretRotationDTO,
+)
 from apps.users.domain.entity import UserEntity
 from core.deps import SessionFactory, engine
 from core.ref_id import create_ref_id
@@ -58,15 +64,48 @@ async def test_ai_connection_model_allowlist_and_rotation_are_rechecked() -> Non
         await service.verify(ref, owner)
         pin, policy = await service.pin_ai(create_ref_id(row.id, row.version), owner, "jev-1.13.0")
         assert policy.models == ["jev-1.13.0"]
+        catalog = AISelectionService(session, service)
+        metadata = await catalog.model_metadata(
+            create_ref_id(row.id, row.version), owner, "jev-1.13.0"
+        )
+        assert metadata.connection_name == "AI models"
+        assert metadata.model_dump()["connection_name"] == row.name
+        with pytest.raises(NotAllowedException):
+            await catalog.model_metadata(create_ref_id(row.id, row.version), outsider, "jev-1.13.0")
         with pytest.raises(NotAllowedException):
             await service.pin_ai(create_ref_id(row.id, row.version), owner, "unlisted")
         await service.recheck_ai(pin, "jev-1.13.0", owner)
+        grant = await service.grant(
+            create_ref_id(row.id, row.version),
+            GrantDTO(
+                user_ref_id=create_ref_id(outsider.id, outsider.version),
+                can_use=True,
+                can_manage=False,
+            ),
+            owner,
+        )
+        granted = await catalog.model_metadata(
+            create_ref_id(row.id, row.version), outsider, "jev-1.13.0"
+        )
+        assert granted.connection_name == "AI models"
+        with pytest.raises(NotAllowedException):
+            await service.get(create_ref_id(row.id, row.version), outsider, manage=True)
+        await service.remove_grant(
+            create_ref_id(row.id, row.version), create_ref_id(grant.id, grant.version), owner
+        )
+        with pytest.raises(NotAllowedException):
+            await catalog.model_metadata(create_ref_id(row.id, row.version), outsider, "jev-1.13.0")
         await service.rotate(
             create_ref_id(row.id, row.version),
             SecretRotationDTO(secret_ref="credential", secret_version="2"),
             owner,
         )
         with pytest.raises(VersionConflictException):
+            await catalog.model_metadata(pin.connection_ref, owner, "jev-1.13.0")
+        with pytest.raises(VersionConflictException):
             await service.recheck_ai(pin, "jev-1.13.0", owner)
+        await service.revoke(create_ref_id(row.id, row.version), owner)
+        with pytest.raises(VersionConflictException):
+            await catalog.model_metadata(create_ref_id(row.id, row.version), owner, "jev-1.13.0")
         await session.rollback()
     await engine.dispose()

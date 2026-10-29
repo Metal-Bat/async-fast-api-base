@@ -20,8 +20,15 @@ from apps.step_types.domain.entity import StepTypeEntity, StepTypePortEntity, St
 from apps.users.domain.auth_entity import AuthAuditEventEntity
 from apps.users.domain.entity import UserEntity
 from apps.work_groups.domain.entity import WorkGroupEntity, WorkGroupMemberEntity
+from apps.workflows.application.object_projection import (
+    InputField,
+    compose_input_fields,
+    valid_binding_target,
+    validate_projected_constant,
+)
 from apps.workflows.application.validation import GraphValidator
 from apps.workflows.domain.dto import (
+    GraphBinding,
     GraphSnapshot,
     GraphValidationResult,
     WorkflowCreateDTO,
@@ -40,6 +47,7 @@ from apps.workflows.domain.entity import (
     WorkflowTransitionEntity,
     WorkflowVersionEntity,
 )
+from apps.workflows.domain.object_projection import projection_from_facts
 from core.ref_id import create_ref_id, open_ref_id
 from utils.date_utils import get_datetime_utc
 from utils.exceptions import (
@@ -202,8 +210,18 @@ class WorkflowService:
                     workflow_step_id=steps[item.step].id,
                     target_port_id=ports[(item.step, "INPUT", item.target_port)].id,
                     ordinal=item.ordinal,
+                    target_projection_version=1 if item.target_projection is not None else None,
+                    target_path=item.target_projection.path
+                    if item.target_projection is not None
+                    else None,
+                    target_schema=item.target_schema
+                    if item.target_projection is not None
+                    else None,
                     source_kind=item.source_kind,
                     source_path=item.source_path,
+                    source_schema=item.source_schema
+                    if item.source_kind in {"REQUEST", "CONTEXT"}
+                    else None,
                     source_step_id=steps[item.source_step].id if bool(item.source_step) else None,
                     source_port_id=ports[(item.source_step, "OUTPUT", item.source_port)].id
                     if bool(item.source_step) and bool(item.source_port)
@@ -248,11 +266,26 @@ class WorkflowService:
         *,
         parent_version_id: UUID | None = None,
     ) -> GraphValidationResult:
-        output_schemas = await self._validate_dependencies(graph, actor_id)
+        result, _ = await self.analyze_graph(graph, actor_id, parent_version_id=parent_version_id)
+        return result
+
+    async def analyze_graph(
+        self,
+        graph: GraphSnapshot,
+        actor_id: UUID | None = None,
+        *,
+        parent_version_id: UUID | None = None,
+    ) -> tuple[GraphValidationResult, dict[str, dict[str, dict[str, Any]]]]:
+        """One validation path and its trusted source types for pure authoring previews."""
+        output_schemas, legacy_transforms = await self._validate_dependencies(graph, actor_id)
         from apps.workflows.application.subprocess import SubprocessValidator
 
         await SubprocessValidator(self.session, self).validate(graph, actor_id, parent_version_id)
-        return self.validator.validate(graph, step_output_schemas=output_schemas)
+        return self.validator.validate(
+            graph,
+            step_output_schemas=output_schemas,
+            legacy_transform_steps=legacy_transforms,
+        ), output_schemas
 
     async def publish(self, ref_id: str, actor_id: UUID) -> WorkflowVersionEntity:
         version = await self._draft(ref_id)
@@ -529,16 +562,25 @@ class WorkflowService:
             source = ports.get(row.source_port_id)
             step_key = key_by_id[row.workflow_step_id]
             source_step_key = key_by_id.get(row.source_step_id)
+            projection = projection_from_facts(
+                row.target_projection_version, row.target_path, row.target_schema
+            )
+            declared_target = (
+                transform_contracts[step_key][0]
+                if step_key in transform_contracts and target.port_key == "value"
+                else target.value_schema
+            )
+            if projection is not None:
+                if row.target_schema is None:
+                    raise ValueError("Stored target projection schema is unavailable")
+                declared_target = row.target_schema
             bindings.append(
                 GraphBinding(
                     step=step_key,
                     target_port=target.port_key,
-                    target_schema=(
-                        transform_contracts[step_key][0]
-                        if step_key in transform_contracts and target.port_key == "value"
-                        else target.value_schema
-                    ),
+                    target_schema=declared_target,
                     ordinal=row.ordinal,
+                    target_projection=projection,
                     source_kind=cast(Any, row.source_kind),
                     source_path=row.source_path,
                     source_step=source_step_key,
@@ -550,7 +592,7 @@ class WorkflowService:
                         and source.port_key == "result"
                         else source.value_schema
                         if source
-                        else None
+                        else row.source_schema
                     ),
                     constant_value=row.constant_value,
                 )
@@ -659,7 +701,7 @@ class WorkflowService:
 
     async def _validate_dependencies(
         self, graph: GraphSnapshot, actor_id: UUID | None = None
-    ) -> dict[str, dict[str, dict[str, Any]]]:
+    ) -> tuple[dict[str, dict[str, dict[str, Any]]], frozenset[str]]:
         issues: list[dict[str, str]] = []
         from apps.integrations.domain.orders import PROTECTED_ORDER_OPERATION
 
@@ -904,11 +946,14 @@ class WorkflowService:
                         "code": "binding.target_port.unknown",
                     }
                 )
-            elif (
-                transform_contracts[binding.step][0]
-                if binding.step in transform_contracts and binding.target_port == "value"
-                else target.value_schema
-            ) != binding.target_schema:
+            elif not valid_binding_target(
+                binding,
+                (
+                    transform_contracts[binding.step][0]
+                    if binding.step in transform_contracts and binding.target_port == "value"
+                    else target.value_schema
+                ),
+            ):
                 issues.append(
                     {
                         "pointer": f"/bindings/{index}/target_schema",
@@ -919,11 +964,41 @@ class WorkflowService:
                 bindings_by_port.setdefault((binding.step, binding.target_port), []).append(
                     binding.ordinal
                 )
-                if target.cardinality == "SCALAR" and binding.ordinal != 0:
+                if (
+                    target.cardinality == "SCALAR"
+                    and binding.target_projection is None
+                    and binding.ordinal != 0
+                ):
                     issues.append(
                         {
                             "pointer": f"/bindings/{index}/ordinal",
                             "code": "binding.scalar.ordinal",
+                        }
+                    )
+            if binding.target_projection is not None and target is not None:
+                if target.cardinality != "SCALAR":
+                    issues.append(
+                        {
+                            "pointer": f"/bindings/{index}/target_projection",
+                            "code": "binding.projection.scalar.required",
+                        }
+                    )
+                graph_step = next(step for step in graph.steps if step.key == binding.step)
+                from apps.step_types.application.automation import operation_catalog
+
+                operation = next(
+                    (
+                        item
+                        for item in operation_catalog()
+                        if item.operation_key == graph_step.config.get("operation_key")
+                    ),
+                    None,
+                )
+                if operation is not None and operation.has_business_effect:
+                    issues.append(
+                        {
+                            "pointer": f"/bindings/{index}/target_projection",
+                            "code": "binding.projection.protected_payload.forbidden",
                         }
                     )
             if binding.source_kind == "STEP_OUTPUT":
@@ -962,9 +1037,16 @@ class WorkflowService:
                         for port in definition.ports
                         if port.direction == "INPUT" and port.port_key == binding.target_port
                     )
-                    port.adapter().validate_python(binding.constant_value, strict=True)
+                    if binding.target_projection is None:
+                        port.adapter().validate_python(binding.constant_value, strict=True)
+                    else:
+                        validate_projected_constant(binding)
                     graph_step = next(step for step in graph.steps if step.key == binding.step)
-                    if graph_step.type_code == "NOTIFICATION" and binding.target_port == "data":
+                    if (
+                        graph_step.type_code == "NOTIFICATION"
+                        and binding.target_port == "data"
+                        and binding.target_projection is None
+                    ):
                         from apps.notifications.application.templates import (
                             NotificationTemplateRegistry,
                         )
@@ -983,6 +1065,41 @@ class WorkflowService:
                             "code": "binding.constant.invalid",
                         }
                     )
+        projected_groups: dict[tuple[str, str], list[GraphBinding]] = defaultdict(list)
+        for binding in graph.bindings:
+            if binding.target_projection is not None:
+                projected_groups[(binding.step, binding.target_port)].append(binding)
+        for (key, port_key), members in projected_groups.items():
+            graph_step = next(step for step in graph.steps if step.key == key)
+            if (
+                graph_step.type_code == "NOTIFICATION"
+                and port_key == "data"
+                and all(item.source_kind == "CONSTANT" for item in members)
+            ):
+                try:
+                    from apps.notifications.application.templates import (
+                        NotificationTemplateRegistry,
+                    )
+                    from apps.step_types.application.registry import NotificationConfigV2
+
+                    fields = [
+                        InputField(
+                            item.target_projection,
+                            item.target_schema,
+                            item.ordinal,
+                            item.constant_value,
+                        )
+                        for item in members
+                        if item.target_projection is not None
+                    ]
+                    configuration = NotificationConfigV2.model_validate(graph_step.config)
+                    NotificationTemplateRegistry().validate_data(
+                        configuration.template_key,
+                        configuration.template_version,
+                        compose_input_fields(fields),
+                    )
+                except ValueError:
+                    issues.append({"pointer": "/bindings", "code": "binding.constant.invalid"})
         for step_index, step in enumerate(graph.steps):
             for (key, direction, port_key), port in ports.items():
                 if key != step.key or direction != "INPUT":
@@ -1042,7 +1159,14 @@ class WorkflowService:
                 # Refine compatibility from code-owned output guarantees. Persisted port
                 # metadata stays unchanged, preserving existing graph checksums and pins.
                 output_schemas[step.key]["result"] = operation.output_schema
-        return dict(output_schemas)
+        legacy_transforms = frozenset(
+            key
+            for key, version in versions_by_step.items()
+            if version is not None
+            and version.handler_key == "transform"
+            and version.handler_version == "1"
+        )
+        return dict(output_schemas), legacy_transforms
 
     async def _can_use_connection(
         self, connection: IntegrationConnectionEntity, actor_id: UUID

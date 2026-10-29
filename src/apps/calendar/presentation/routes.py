@@ -10,6 +10,7 @@ from apps.calendar.application.reminders import (
 )
 from apps.calendar.application.service import CalendarService
 from apps.calendar.domain.dto import (
+    CalendarGroupQuery,
     CalendarHistoryDTO,
     CalendarInput,
     CalendarItemDTO,
@@ -26,8 +27,10 @@ from utils.presenter import (
     SuccessResponse,
     page_response,
     private_no_store,
+    select_response,
     success_response,
 )
+from utils.select import SelectOption, SelectResponseFormat
 
 DESCRIPTION = _(
     "Authenticated Gregorian calendar. Personal events belong to their creator; a team event is "
@@ -50,6 +53,40 @@ DESCRIPTION = _(
     "Existing envelopes, snake_case, en/fa/ar localization, and private no-store apply."
 )
 router = APIRouter(prefix="/calendar", tags=["calendar-events"], responses=response_schema())
+
+
+@router.post(
+    "/work-groups/select",
+    response_model=PageResponse[Page[SelectOption[str]]] | list[SelectOption[str]],
+    summary=_("Select my active Calendar groups"),
+    description=_(
+        "Read-only private selector for any authenticated current actor, without administrative "
+        "group permission. Only the actor's current active memberships in live active groups "
+        "are eligible; superusers have no membership bypass. Literal case-insensitive name search "
+        "(1–100 characters when supplied) runs before counts and pagination. Omitted/null search "
+        "matches all eligible groups. Page defaults to 1, size to 20 (1–100); stable name/id order. "
+        "response_format=page returns the usual result envelope; items returns the same bounded "
+        "page as a plain key/value array. No owner or lifecycle overrides. Keys are current opaque "
+        "revision refs, values preserve user-entered names in every locale. Selection grants no "
+        "write authority: Calendar commands recheck live membership and current group revision. "
+        "Revoked/deleted groups disappear immediately on the next read, including counts; "
+        "unauthenticated access is 401, malformed input 422. No business mutation or provider call. "
+        "Private no-store headers apply to both formats."
+    ),
+    responses=PRIVATE_NO_STORE_RESPONSES,
+)
+async def select_calendar_groups(
+    request: Request,
+    query: CalendarGroupQuery,
+    response: Response,
+    actor: CurrentUser,
+    session: SessionDep,
+    response_format: SelectResponseFormat = "page",
+):
+    private_no_store(response)
+    return select_response(
+        request, await CalendarService(session).groups(actor, query), response_format
+    )
 
 
 @router.post(

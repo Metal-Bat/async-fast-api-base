@@ -145,6 +145,12 @@ def _compile(root: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
+def compile_data_schema(root: dict[str, Any]) -> dict[str, Any]:
+    """Public bounded schema-profile seam for form and workflow authoring declarations."""
+    _bounded(root, "/data_schema")
+    return _compile(root)
+
+
 class FormValidator:
     def validate(
         self,
@@ -161,7 +167,7 @@ class FormValidator:
                 raise _Invalid("/data_dialect", "schema.dialect")
             if documents.render_dialect != RENDER_DIALECT:
                 raise _Invalid("/render_dialect", "render.dialect")
-            schema = _compile(documents.data_schema)
+            schema = compile_data_schema(documents.data_schema)
             if render_nodes * _bounded(schema, "/data_schema") > 100000:
                 raise _Invalid("/render_schema", "validation.limit")
             if schema.get("type") != "object":

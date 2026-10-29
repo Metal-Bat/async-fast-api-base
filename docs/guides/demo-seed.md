@@ -1,21 +1,131 @@
-# Rich demo data in the current database
+# Local workflow seeds and optional business demonstrations
 
-Run from the project root, after configuring `.envs/.backend` for the Compose services
-and applying `alembic upgrade head` (currently `0003_arabic`):
+Run from the project root after configuring `.envs/.backend` and applying the current
+migrations (`0005_binding_object_fields`). The database must already be reachable from the host:
 
 ```sh
-docker compose build demo-seed
 mise run demo-seed
 ```
 
-`mise run demo-prepare` is an alias. The command runs the `demo-seed` development
-container, adds records to the configured database and exits. Compose supplies
-PostgreSQL, cache and S3 dependencies. The seed creates the configured bucket if
-absent. It does not migrate or reset the database. Rebuild the development image
-after dependency changes; source is bind-mounted, so editing a scenario needs no rebuild.
-Faker stays in the existing dev dependency group; the production image omits it.
+`demo-prepare` is an alias. This runs `uv run python -m scripts.demo_seed` locally,
+inserts records and exits. There is no Compose seed service or seed image. The script
+loads `.envs/.backend`; the Compose hostname `postgres` maps to `127.0.0.1` using the
+configured PostgreSQL port. Explicit host environment variables take precedence.
+The default insert uses PostgreSQL only: it does not upload files, start workers,
+create reports or generate thousands of business cases. It never migrates or resets data.
 
-The default creates **252 cases for each of thirteen business workflows**, plus five
+## What the default inserts and why
+
+Five deployed handlers provide typed executable ports: `ARITHMETIC`, `NUMBER_COMPARE`,
+`BOOLEAN_LOGIC`, `IF_ELSE`, `SELECT_VALUE`. The local insert reconciles and publishes
+their version-one contracts; API startup reconciliation alone leaves new extensions as
+drafts. Existing START, FINISH, TRANSFORM, TIMER, EVENT_WAIT, HUMAN_TASK, DECISION,
+SUBPROCESS and parallel/join policies retain their existing runtime contracts.
+
+The following sixteen examples are ordinary published reusable subprocesses. Each has
+named input ports, a `result` output, sample inputs and English/Persian purpose text.
+Use them through the authorized definition library or the designer subprocess catalog.
+Each has one useful published version; the lightweight insert creates no artificial
+draft/retired copies. For if/else, connect both `true` and `false` outcomes in the caller,
+as well as the normal subprocess `failure` path.
+
+| Seed key | Why it exists |
+| --- | --- |
+| `math.add` | Combine quantities or scores. |
+| `math.subtract` | Calculate a remaining quantity or difference. |
+| `math.multiply` | Apply a rate or weight to a quantity. |
+| `math.divide` | Calculate a ratio; reject a zero divisor. |
+| `math.remainder` | Group batches or assign cyclic positions. |
+| `compare.eq` | Check numeric equality. |
+| `compare.ne` | Detect mismatched numeric values. |
+| `compare.lt` | Enforce a strict upper limit. |
+| `compare.lte` | Enforce an inclusive upper limit. |
+| `compare.gt` | Detect a value exceeding a threshold. |
+| `compare.gte` | Enforce a minimum quantity or score. |
+| `logic.and` | Require both conditions. |
+| `logic.or` | Accept either condition. |
+| `logic.not` | Invert a condition for an exclusion rule. |
+| `control.if_else` | Choose the execution path from a boolean, with both branches connected. |
+| `data.select` | Choose a supplied value without branching execution. |
+
+Arithmetic uses finite JSON numbers and ordinary floating-point operations. It rejects
+booleans, numeric strings, NaN, infinity and zero divisors. It is for quantities and
+scores, not exact currency accounting. `NUMBER_COMPARE` produces a boolean;
+`IF_ELSE` consumes that boolean and routes execution. `SELECT_VALUE` instead selects
+one of two supplied JSON values; both are required and either may be null. AND/OR
+require two boolean inputs; NOT uses only the left input.
+
+| Reusable data type | Why it exists |
+| --- | --- |
+| `text` | Carry labels, identifiers and text between steps. |
+| `integer` | Whole item counts and batch counters. |
+| `number` | Fractional quantities, ratios and numeric results. |
+| `boolean` | Input/output conditions for logic and branching. |
+| `date` | Calendar dates without a time or timezone. |
+| `date_time` | Timestamp values for deadlines and events. |
+| `number_list` | Bounded collections of numeric measurements or scores. |
+| `record` | Keep a label and numeric result together. |
+
+| Reusable input component | Why it exists |
+| --- | --- |
+| `numeric_operands` | Enter left/right numbers for calculations and comparisons. |
+| `boolean_conditions` | Enter left/right conditions for boolean logic. |
+| `conditional_labels` | Enter a condition and two alternative text labels. |
+
+All new types and components include schema-valid samples and English/Persian help.
+Definitions use the installation namespace `wf.<installation>.`; existing business
+examples and published pins remain intact. Three ordinary accounts (designer,
+requester, reviewer) are inserted once when absent. Log in as the printed designer
+account to use owned types/components; sharing with another actor uses existing grants.
+Reruns add missing entries without duplicating them. Changed/deleted/retired seed
+definitions are refused rather than overwritten. Do not delete data before rerunning.
+Keep `.demo-seed` when rerunning: its private manifest retains installation ownership
+and the original credentials. Deleting it does not authorize taking over existing users.
+
+`scripts/demo/workflow_library.py` is the editable source for example inputs, expected
+results, schemas and purposes. Execution classes are in
+`src/apps/step_types/extensions/primitives.py`. There is no arbitrary code or function
+name execution through seed data.
+
+## Executable business review examples
+
+```sh
+mise run real-process-seed
+mise run demo-seed -- --inspect --with-real-processes
+```
+
+This additive v3 profile publishes thirteen domain workflows and a Legal review
+child. By default each receives one draft and one genuinely submitted waiting
+request. Reviewers must perform their own tasks; installation never manufactures
+approval, inspection findings, receipt files or provider outcomes. Finance inputs use
+decimal strings and explicit currency; seven nonfinancial processes require no budget.
+Invoice arrival correlates by invoice number. Equipment is a reservation request
+review, not an automatic booking system. Contract amendment after Legal review uses
+a new request under the current supported subprocess lifecycle.
+
+Reuse the existing private installation directory and credentials. `--process-cases-per-type`
+accepts 1–10. Client key/version appear in inspection output, without credentials or
+submitted payloads. Reruns preserve existing cases, published pins and editable work;
+conflicting seed definitions are refused. Legacy v2 lifecycle cases remain unchanged.
+The audit and scenario responsibilities are in `docs/changes/APP-BE-005.3.md`.
+Run `mise run real-process-test` for actual disposable database/worker acceptance.
+
+Requests retain their originating client release. For the frontend development
+boundary, use the public client key and version printed by inspection:
+
+```sh
+BOUNDARY_CLIENT_MODE=public BOUNDARY_CLIENT_KEY=<inspected-client-key> BOUNDARY_CLIENT_RELEASE=1.0.0 pnpm start
+```
+
+Run that command in the frontend checkout after stopping its previous development
+server/boundary. Public clients have no client secret. Log in again so the session
+uses that registered release. Do not remove origin-client checks to open old cases;
+legacy v2 cases retain their own originating release. Production keeps its existing
+confidential boundary requirements.
+
+## Optional larger business dataset
+
+With `--with-demo-cases`, the default case count creates **252 cases for each of thirteen business workflows**, plus five
 baseline cases and an administrative cancellation: **3,282 requests and 102 ordinary
 users** on a fresh installation. The main catalog has fourteen scenario slots × six
 client kinds × three languages. All twenty supported form controls remain represented,
@@ -23,13 +133,16 @@ with reusable components, rich authoring versions, calendars, notices, attachmen
 reports, support incidents and disabled integration/AI/schedule configurations.
 
 ```sh
-mise run demo-seed -- --cases-per-type 504
+mise run demo-seed -- --with-demo-cases --cases-per-type 504
 mise run demo-seed -- --inspect
 ```
 
 The allowed range is 14–2000 per workflow. Counts below 252 omit later client/language
 combinations. Increasing the count adds cases; reducing it preserves existing cases.
-The full seed performs real workflow transitions and can take several minutes.
+The full seed performs real workflow transitions and can take several minutes. It needs
+the application's existing cache, broker and S3 endpoints configured with host-reachable
+addresses and credentials; the script does not start those services. Faker remains a
+development dependency and is omitted from the production runtime image.
 
 The command prints the path to `.demo-seed/<target>/credentials.json`. This ignored
 private file contains randomly generated initial passwords and all usernames. Newly added accounts append to the file without changing earlier entries. Its
@@ -143,6 +256,7 @@ UI, and frontend language-picker/translation rollout remains a separate consumer
 ## Verification
 
 ```sh
+mise run workflow-library-test
 mise run demo-seed-test
 mise run check
 ```

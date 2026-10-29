@@ -115,9 +115,14 @@ async def test_schema_revision_has_no_rows_and_data_revision_installs_required_c
             ("event_wait", "1"),
             ("timer", "1"),
         } <= handlers
+        locally_published = {
+            (key, "1")
+            for key in ("arithmetic", "number_compare", "boolean_logic", "if_else", "select_value")
+        }
+        assert handlers.isdisjoint(locally_published)
         assert {
             (item.handler_key, item.handler_version) for item in get_registry().definitions()
-        } <= handlers
+        } <= handlers | locally_published
         schedule_count = (
             await connection.execute(text('SELECT count(*) FROM "PERIODIC_TASK"'))
         ).scalar_one()
@@ -129,8 +134,15 @@ async def test_schema_revision_has_no_rows_and_data_revision_installs_required_c
             await connection.execute(text('SELECT count(*) FROM "PERIODIC_TASK"'))
         ).scalar_one() == schedule_count
     await engine.dispose()
-    async with SessionFactory() as session:
-        catalog = await StepTypeService(session, get_registry()).catalog()
+    async with SessionFactory() as session, session.begin():
+        service = StepTypeService(session, get_registry())
+        drafts = await service.reconcile()
+        primitives = [
+            row for row in drafts if (row.handler_key, row.handler_version) in locally_published
+        ]
+        assert {(row.handler_key, row.handler_version) for row in primitives} == locally_published
+        assert all(row.status == "DRAFT" for row in primitives)
+        catalog = await service.catalog()
         deployed_codes = {
             "AI_DECISION",
             "CONNECTION_STATUS",
@@ -147,7 +159,7 @@ async def test_schema_revision_has_no_rows_and_data_revision_installs_required_c
     async with engine.connect() as connection:
         assert (
             await connection.execute(text("SELECT version_num FROM alembic_version"))
-        ).scalar_one() == "0003_arabic"
+        ).scalar_one() == "0005_binding_object_fields"
         assert (
             await connection.execute(text('SELECT count(*) FROM "PERIODIC_TASK"'))
         ).scalar_one() == schedule_count
@@ -338,3 +350,122 @@ async def test_populated_initial_head_upgrade_preserves_pins_media_and_history()
         assert drift.returncode == 0, (drift.stdout + drift.stderr).decode()
     finally:
         await engine.dispose()
+
+
+@pytest.mark.anyio
+async def test_binding_schema_upgrade_preserves_legacy_pins_and_refuses_schema_loss():
+    """Upgrade retained rows unchanged and refuse dropping a declared type contract."""
+    from alembic.config import Config
+    from alembic.script import ScriptDirectory
+    from sqlalchemy import text
+
+    from apps.step_types.application.registry import builtin_registry
+    from apps.workflows.application.service import WorkflowService
+    from apps.workflows.domain.entity import WorkflowVersionEntity
+    from core.deps import SessionFactory, engine
+    from core.ref_id import create_ref_id
+    from tests.integration.test_binding_schema_persistence import prepare_graph
+
+    require_disposable_database()
+    try:
+        async with SessionFactory() as session:
+            service, owner, version, graph = await prepare_graph(session, legacy=True)
+            version = await service.replace_graph(create_ref_id(version.id, version.version), graph)
+            published = await service.publish(create_ref_id(version.id, version.version), owner.id)
+            version_id, checksum = published.id, published.graph_checksum
+            await session.commit()
+        await engine.dispose()
+        await anyio.run_process(["alembic", "downgrade", "0003_arabic"])
+        async with engine.connect() as connection:
+            assert (
+                await connection.execute(
+                    text(
+                        "SELECT count(*) FROM information_schema.columns WHERE table_name = 'WORKFLOW_STEP_INPUT_BINDING' AND column_name = 'SOURCE_SCHEMA'"
+                    )
+                )
+            ).scalar_one() == 0
+        await engine.dispose()
+        await anyio.run_process(["alembic", "upgrade", "head"])
+        await anyio.run_process(["alembic", "upgrade", "head"])
+        async with SessionFactory() as session:
+            retained = await session.get(WorkflowVersionEntity, version_id)
+            assert retained is not None and retained.status == "PUBLISHED"
+            assert retained.graph_checksum == checksum
+            restored = await WorkflowService(session, builtin_registry()).snapshot(version_id)
+            assert restored.bindings[0].source_schema is None
+            assert (
+                await WorkflowService(session, builtin_registry()).validate_graph(restored)
+            ).checksum == checksum
+            service, _, version, graph = await prepare_graph(session)
+            await service.replace_graph(create_ref_id(version.id, version.version), graph)
+            declared_id = version.id
+            await session.commit()
+        await engine.dispose()
+        refused = await anyio.run_process(["alembic", "downgrade", "0003_arabic"], check=False)
+        assert refused.returncode != 0
+        assert b"Declared binding schemas cannot be discarded" in refused.stderr
+        async with engine.connect() as connection:
+            head = (
+                await connection.execute(text("SELECT version_num FROM alembic_version"))
+            ).scalar_one()
+            assert (
+                head
+                == ScriptDirectory.from_config(
+                    Config(toml_file="pyproject.toml")
+                ).get_current_head()
+            )
+        async with SessionFactory() as session:
+            restored = await WorkflowService(session, builtin_registry()).snapshot(declared_id)
+            assert restored.bindings[0].source_schema == graph.bindings[0].source_schema
+    finally:
+        await engine.dispose()
+
+
+@pytest.mark.anyio
+async def test_object_projection_upgrade_preserves_published_wire_and_refuses_populated_rollback():
+    from sqlalchemy import text
+
+    from apps.step_types.application.registry import builtin_registry
+    from apps.workflows.application.service import WorkflowService
+    from core.deps import SessionFactory, engine
+    from core.ref_id import create_ref_id
+    from tests.integration.test_binding_schema_persistence import object_graph, prepare_graph
+
+    require_disposable_database()
+    async with SessionFactory() as session:
+        service, owner, version, graph = await prepare_graph(session, legacy=True)
+        version = await service.replace_graph(create_ref_id(version.id, version.version), graph)
+        published = await service.publish(create_ref_id(version.id, version.version), owner.id)
+        legacy_id, checksum = published.id, published.graph_checksum
+        wire = (await service.snapshot(legacy_id)).model_dump(mode="json")
+        await session.commit()
+    await engine.dispose()
+    await anyio.run_process(["alembic", "downgrade", "0004_binding_source_schema"])
+    await anyio.run_process(["alembic", "upgrade", "head"])
+    await anyio.run_process(["alembic", "upgrade", "head"])
+    async with SessionFactory() as session:
+        service = WorkflowService(session, builtin_registry())
+        restored = await service.snapshot(legacy_id)
+        assert restored.model_dump(mode="json") == wire
+        assert (await service.validate_graph(restored)).checksum == checksum
+        service, _, version, graph = await object_graph(session)
+        version = await service.replace_graph(create_ref_id(version.id, version.version), graph)
+        projected_id = version.id
+        await session.commit()
+    await engine.dispose()
+    refusal = await anyio.run_process(
+        ["alembic", "downgrade", "0004_binding_source_schema"], check=False
+    )
+    assert refusal.returncode != 0
+    assert b"Object field projections cannot be discarded" in refusal.stderr
+    async with SessionFactory() as session:
+        restored = await WorkflowService(session, builtin_registry()).snapshot(projected_id)
+        assert restored.bindings[-1].target_projection is not None
+        assert (await WorkflowService(session, builtin_registry()).snapshot(legacy_id)).model_dump(
+            mode="json"
+        ) == wire
+    async with engine.connect() as connection:
+        assert (
+            await connection.execute(text("SELECT version_num FROM alembic_version"))
+        ).scalar_one() == "0005_binding_object_fields"
+    await engine.dispose()

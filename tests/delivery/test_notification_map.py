@@ -44,6 +44,22 @@ def test_notification_row_has_safe_bilingual_contract_and_producer(map_id: str) 
             for node in ast.walk(tree)
             if isinstance(node, ast.Constant) and isinstance(node.value, str)
         }
+        for producer in row.get("additional_producers", []):
+            additional = ROOT / producer["source_file"]
+            assert additional.is_file()
+            parsed = ast.parse(additional.read_text())
+            assert producer["source_symbol"] in {
+                node.name
+                for node in ast.walk(parsed)
+                if isinstance(node, ast.AsyncFunctionDef | ast.FunctionDef)
+            }
+            declared = {
+                node.value
+                for node in ast.walk(parsed)
+                if isinstance(node, ast.Constant) and isinstance(node.value, str)
+            }
+            assert set(producer["source_events"]) <= declared
+            strings |= declared
         assert set(row["source_events"]) <= strings
     elif row["producer_status"] == "EXISTING_COMMAND_HOOK":
         strings = {

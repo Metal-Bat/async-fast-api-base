@@ -54,7 +54,7 @@ Used by: `GET /api/v1/inbox/{ref_id}`, `POST /api/v1/inbox/report`, `POST /api/v
 | `available` | `boolean` | Yes | — |
 | `ref_id` | `string | null` | No | Opaque reference; use the value returned by the API. |
 | `kind` | `string` | Yes | — |
-| `route_key` | `null` | No | — |
+| `route_key` | `string | null` | No | Current authorized protected-operation evidence opens the existing process screen. Null retains unavailable legacy operation targets; never an external URL or execution authority. |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 

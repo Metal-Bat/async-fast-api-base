@@ -18,6 +18,11 @@ def test_ai_authoring_and_catalog_routes_are_protected_and_typed() -> None:
         "/api/v1/ai-agents/models/suggestions": "post",
         "/api/v1/ai-agents/processes/{process_ref}/executions/{execution_ref}/budget": "get",
         "/api/v1/ai-agents/connections/{connection_ref}/models/select": "post",
+        "/api/v1/ai-agents/{ref_id}/decision-preview": "post",
+        "/api/v1/ai-agents/{ref_id}/workflow-context": "post",
+        "/api/v1/ai-agents/{ref_id}/retrieval-sources/search": "post",
+        "/api/v1/ai-agents/{ref_id}/retrieval-preview": "post",
+        "/api/v1/ai-agents/{ref_id}/evaluations": "post",
     }
     for path, method in expected.items():
         operation = paths[path][method]
@@ -55,3 +60,36 @@ def test_tool_approval_api_has_protected_bounded_contracts() -> None:
     result = schema["components"]["schemas"]["AIToolApprovalDTO"]
     assert "messages" not in result["properties"]
     assert "payload_ciphertext" not in result["properties"]
+
+
+def test_authoring_routes_reject_unauthenticated_requests_and_evaluation_requires_both_permissions():
+    from fastapi import FastAPI
+    from fastapi.routing import APIRoute
+    from fastapi.testclient import TestClient
+
+    from apps.ai.presentation.routes import router
+    from apps.users.application.authorization import RequirePermission
+
+    app = FastAPI()
+    app.include_router(router, prefix="/api/v1")
+    client = TestClient(app)
+    for suffix, body in [
+        ("decision-preview", {}),
+        ("workflow-context", {"workflow_version_ref": "current", "step_key": "classify"}),
+        ("retrieval-sources/search", {}),
+        ("retrieval-preview", {"report_ref": "current", "limit": 1}),
+        ("evaluations", {"request_ref": "current", "submit_key": "reviewed"}),
+    ]:
+        response = client.post("/api/v1/ai-agents/current/" + suffix, json=body)
+        assert response.status_code in (401, 403)
+    route = next(
+        route
+        for route in router.routes
+        if isinstance(route, APIRoute) and route.path == "/ai-agents/{ref_id}/evaluations"
+    )
+    permissions = {
+        dep.call.permission
+        for dep in route.dependant.dependencies
+        if isinstance(dep.call, RequirePermission)
+    }
+    assert permissions == {"workflows.manage", "requests.start"}

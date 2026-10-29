@@ -86,6 +86,20 @@ Used by: `POST /api/v1/calendar/events/report`, `POST /api/v1/calendar/events/se
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `PageResponse_Page_SelectOption_str___`
+
+Used by: `POST /api/v1/calendar/work-groups/select`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `success` | `boolean` | No |  Default: `True`. |
+| `request_id` | `string` | Yes | — |
+| `error` | `null` | No | — |
+| `code` | `integer` | No |  Default: `200`. |
+| `result` | `Page_SelectOption_str__` | Yes | — |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `Page_CalendarHistoryDTO_`
 
 Used by: `POST /api/v1/calendar/events/{ref_id}/history`
@@ -114,6 +128,20 @@ Used by: `POST /api/v1/calendar/events/report`, `POST /api/v1/calendar/events/se
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 
+### `Page_SelectOption_str__`
+
+Used by: `POST /api/v1/calendar/work-groups/select`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `items` | `array[SelectOption_str_]` | No | — |
+| `page` | `integer` | No |  Default: `1`. |
+| `size` | `integer` | No |  Default: `20`. |
+| `total` | `integer` | Yes | — |
+| `total_pages` | `integer` | Yes | Return the number of nonempty pages in the full result set. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
 ### `ReminderDTO`
 
 Used by: `GET /api/v1/calendar/events/{ref_id}/reminders`, `GET /api/v1/calendar/work-reminders/{ref_id}`, `PUT /api/v1/calendar/work-reminders/{ref_id}`
@@ -123,6 +151,17 @@ Used by: `GET /api/v1/calendar/events/{ref_id}/reminders`, `GET /api/v1/calendar
 | `ref_id` | `string` | Yes | Opaque reference; use the value returned by the API. |
 | `due_at` | `string` | Yes | — |
 | `status` | `string` | Yes | Lifecycle state; consult the owning resource guide. |
+
+No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
+
+### `SelectOption_str_`
+
+Used by: `POST /api/v1/calendar/work-groups/select`
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `key` | `string` | Yes | — |
+| `value` | `string` | Yes | — |
 
 No reviewed business example is published for this schema. Use the field contract above and the [response scenarios](../../api/response-scenarios.md); do not infer valid lifecycle values from field types alone.
 

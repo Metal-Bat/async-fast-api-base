@@ -286,6 +286,8 @@ async def install_workflow(
     graph: GraphSnapshot,
     owner: UserEntity,
     provenance: dict[str, Any],
+    *,
+    lifecycle_examples: bool = True,
 ) -> tuple[WorkflowDefinitionEntity, WorkflowVersionEntity]:
     service = WorkflowService(session, get_registry())
     root = (
@@ -309,7 +311,7 @@ async def install_workflow(
         version.template_source = provenance
         await session.flush()
         version = await service.publish(create_ref_id(version.id, version.version), owner.id)
-        for number in (2, 3):
+        for number in (2, 3) if lifecycle_examples else ():
             extra = await service.create_version(
                 WorkflowVersionCreateDTO(
                     workflow_ref_id=create_ref_id(root.id, root.version),

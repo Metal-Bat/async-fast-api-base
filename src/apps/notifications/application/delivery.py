@@ -52,7 +52,11 @@ async def deliver_notification(
                 if recipient.deleted_at is None
                 else None
             )
-            mandatory = notification.template_key in {"application.map_12", "application.map_14"}
+            mandatory = notification.template_key in {
+                "application.map_07",
+                "application.map_12",
+                "application.map_14",
+            }
             if not target.available or (
                 not mandatory
                 and (preferences is None or not preferences.notifications.email_enabled)

@@ -54,6 +54,89 @@ async def test_saved_lookup_is_bounded_projected_and_authorized() -> None:
         rows = await execute_saved_lookup(session, owner.id, policy, ref, limit=1)
         assert len(rows) == 1
         assert set(rows[0]) == {"username", "is_active"}
+        from apps.ai.application.agent_service import AIAgentService
+        from apps.ai.application.authoring import AIAgentAuthoringService
+        from apps.ai.domain.agent import AIAgentDraftSpec
+        from apps.ai.domain.authoring import AIReportLookupPreviewInput
+        from utils.select import SelectQuery
+
+        agent = await AIAgentService(session).create(
+            "lookup-preview-" + uuid7().hex,
+            "Owned report preview",
+            AIAgentDraftSpec.model_validate(
+                {
+                    "connection_ref": "declared-only",
+                    "provider_key": "typesafe",
+                    "model_id": "model",
+                    "prompt_version": "1",
+                    "instructions": "Classify this owned report.",
+                    "decision": {"question": "Which queue?", "options_input_key": "report_ref"},
+                    "data_policy": policy.model_dump(),
+                    "field_classifications": {"report_ref": "INTERNAL"},
+                    "user_limits": {
+                        "requests": 1,
+                        "tool_calls": 1,
+                        "input_tokens": 1000,
+                        "output_tokens": 500,
+                        "total_tokens": 1500,
+                        "elapsed_seconds": 30,
+                        "spend_usd": "0.50",
+                        "strict_spend": False,
+                    },
+                }
+            ),
+            owner,
+        )
+        extra = []
+        for kind in ("live", "foreign", "expired", "deleted", "wrong_version"):
+            candidate = ReportEntity(
+                owner_id=outsider.id if kind == "foreign" else owner.id,
+                definition_key=USER_REPORT.key,
+                definition_version=USER_REPORT.version + (kind == "wrong_version"),
+                max_rows=1,
+                chunk_size=1,
+                parallelism=1,
+                priority=5,
+                task_id=str(uuid7()),
+                zip_password=uuid7().hex,
+                expires_at=get_datetime_utc() + timedelta(hours=-1 if kind == "expired" else 1),
+                deleted_at=get_datetime_utc() if kind == "deleted" else None,
+            )
+            session.add(candidate)
+            extra.append(candidate)
+        await session.flush()
+        authoring = AIAgentAuthoringService(session)
+        agent_ref = create_ref_id(agent.id, agent.version)
+        first = await authoring.report_sources(agent_ref, SelectQuery(page=1, size=1), owner)
+        second = await authoring.report_sources(agent_ref, SelectQuery(page=2, size=1), owner)
+        assert first.total == second.total == 2
+        assert first.items[0].report_ref != second.items[0].report_ref
+        plan = await authoring.lookup_preview(
+            agent_ref, AIReportLookupPreviewInput(report_ref=ref, limit=1), owner
+        )
+        assert plan.tool_called is False and plan.requires_human_tool_approval is True
+        item_schema = plan.result_schema["items"]
+        assert isinstance(item_schema, dict)
+        properties = item_schema["properties"]
+        assert isinstance(properties, dict)
+        assert set(properties) == {"username", "is_active"}
+        assert "private-preview-secret" not in plan.model_dump_json()
+        with pytest.raises(NotFoundException):
+            await authoring.lookup_preview(
+                agent_ref,
+                AIReportLookupPreviewInput(
+                    report_ref=create_ref_id(extra[1].id, extra[1].version), limit=1
+                ),
+                owner,
+            )
+        with pytest.raises(VersionConflictException):
+            await authoring.lookup_preview(
+                agent_ref,
+                AIReportLookupPreviewInput(
+                    report_ref=create_ref_id(extra[2].id, extra[2].version), limit=1
+                ),
+                owner,
+            )
         redacted = policy.model_copy(update={"redacted_fields": {"username"}})
         sanitized = await execute_saved_lookup(session, owner.id, redacted, ref, limit=1)
         assert sanitized[0]["username"] == "[REDACTED]"
@@ -70,6 +153,7 @@ async def test_saved_lookup_is_bounded_projected_and_authorized() -> None:
                 await execute_saved_lookup(session, owner.id, rejected, ref, limit=1)
         owner.is_superuser = False
         await session.flush()
+        assert (await authoring.report_sources(agent_ref, SelectQuery(), owner)).total == 0
         with pytest.raises(NotAllowedException):
             await execute_saved_lookup(session, owner.id, policy, ref, limit=1)
         owner.is_superuser = True

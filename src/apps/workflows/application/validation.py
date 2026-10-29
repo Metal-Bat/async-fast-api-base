@@ -12,9 +12,20 @@ from apps.expressions.application.language import (
     uses_client_context,
 )
 from apps.expressions.application.transforms import TransformSpec, transform_schemas
+from apps.workflows.application.object_projection import (
+    accepts_object_declaration,
+    compiled_object_schema,
+    projected_binding_issues,
+)
 from apps.workflows.domain.dto import GraphIssue, GraphSnapshot, GraphValidationResult
+from apps.workflows.domain.object_projection import ProjectionError, projection_schema
 from core.ref_id import open_ref_id
 from utils.exceptions import InvalidReferenceException
+
+
+def project_binding_schema(schema: dict[str, Any], path: str) -> dict[str, Any] | None:
+    """Public authoring seam using the validator's canonical JSON Pointer projection."""
+    return GraphValidator._schema_at(schema, path)
 
 
 class GraphValidator:
@@ -26,6 +37,7 @@ class GraphValidator:
         graph: GraphSnapshot,
         *,
         step_output_schemas: dict[str, dict[str, dict[str, Any]]] | None = None,
+        legacy_transform_steps: frozenset[str] = frozenset(),
     ) -> GraphValidationResult:
         issues: list[GraphIssue] = []
 
@@ -69,6 +81,14 @@ class GraphValidator:
                     transforms[step.key] = transform_schemas(spec)
                 except KeyError, TypeError, ValueError:
                     add(f"/steps/{index}/config", "transform.config.invalid")
+        if legacy_transform_steps:
+            # Registry-verified v1 ports remain generic in the canonical graph. Only
+            # validation uses the bounded conversion's effective output contract.
+            step_output_schemas = {
+                key: dict(schemas) for key, schemas in (step_output_schemas or {}).items()
+            }
+            for key in legacy_transform_steps & transforms.keys():
+                step_output_schemas.setdefault(key, {})["result"] = transforms[key][1]
         if list(types.values()).count("START") != 1:
             add("/steps", "graph.start.count")
         if list(types.values()).count("FINISH") < 1:
@@ -221,6 +241,9 @@ class GraphValidator:
                 for key in sorted(component):
                     add(f"/steps/{positions[key]}/flow/max_visits", "graph.loop.unbounded")
 
+        for issue in projected_binding_issues(graph.bindings):
+            add(issue.pointer, issue.code)
+
         for index, binding in enumerate(graph.bindings):
             if binding.step not in types:
                 add(f"/bindings/{index}/step", "graph.step.unknown")
@@ -246,14 +269,37 @@ class GraphValidator:
             target_schema = binding.target_schema
             if binding.step in transforms and binding.target_port == "value":
                 expected_input = transforms[binding.step][0]
-                if not self._compatible(target_schema, expected_input):
+                if (
+                    binding.target_projection is None
+                    and binding.step not in legacy_transform_steps
+                    and not self._compatible(target_schema, expected_input)
+                ):
                     add(
                         f"/bindings/{index}/target_schema",
                         "transform.input_schema.mismatch",
                         expected_schema=expected_input,
                         actual_schema=target_schema,
                     )
-                target_schema = expected_input
+                if binding.target_projection is None:
+                    target_schema = expected_input
+                else:
+                    try:
+                        if not accepts_object_declaration(target_schema, expected_input):
+                            add(
+                                f"/bindings/{index}/target_schema", "binding.target_schema.mismatch"
+                            )
+                    except ProjectionError:
+                        add(f"/bindings/{index}/target_schema", "binding.projection.schema.invalid")
+            if binding.target_projection is not None:
+                try:
+                    target_schema = (
+                        projection_schema(
+                            compiled_object_schema(binding.target_schema), binding.target_projection
+                        )
+                        or {}
+                    )
+                except ProjectionError:
+                    target_schema = {}
             if (
                 binding.source_step in transforms
                 and binding.source_port == "result"
@@ -501,7 +547,11 @@ class GraphValidator:
                 and binding.source_step in accessible_steps
                 and bool(binding.source_port)
             ):
-                outputs[binding.source_step][binding.source_port] = source
+                outputs[binding.source_step][binding.source_port] = (
+                    (step_output_schemas or {})
+                    .get(binding.source_step, {})
+                    .get(binding.source_port, source)
+                )
         step_properties = {
             key: cls._object_schema({"outputs": cls._object_schema(properties)})
             for key, properties in outputs.items()

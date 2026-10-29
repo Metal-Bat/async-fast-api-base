@@ -10,9 +10,11 @@ demo seed guide (`docs/guides/demo-seed.md`), operational handoff (`docs/deliver
 and [approved decisions](docs/delivery/approved-decisions.json). Current contract artifacts
 remain in `docs/delivery/consistency-2026-10-09/contracts/`.
 
-The eight tasks below remain blocked by their recorded dependencies or external acceptance;
+The tasks below retain their recorded dependencies and external acceptance requirements;
 this cleanup does not mark them complete. Assistant C15–C17/A27–A46 contracts are in
 the workflow and assistant specification (`docs/delivery/follow-up-2026-10-09/WORKFLOW-SCENARIOS-AND-CONTRACTS.md`).
+
+
 
 ## APP-BE-031 — Automate paired contracts, hosted checks and rebuilt image verification
 

@@ -31,6 +31,7 @@ from apps.workflows.domain.dto import (
     WorkflowVersionUpdateDTO,
 )
 from apps.workflows.domain.entity import WorkflowDefinitionEntity, WorkflowVersionEntity
+from apps.workflows.domain.object_preview import BindingPreviewDTO, BindingPreviewInput
 from core.deps import SessionDep
 from core.history_dto import HistoryQuery, HistoryRecordDTO
 from core.history_service import HistoryService
@@ -292,6 +293,46 @@ async def get_graph(request: Request, ref_id: str, _: WorkflowAdmin, session: Se
     service = WorkflowService(session, get_registry())
     row = await service.get_version(ref_id)
     return success_response(request, await service.snapshot(row.id))
+
+
+@versions_router.post(
+    "/{ref_id}/binding-preview",
+    response_model=SuccessResponse[BindingPreviewDTO],
+    summary=_("Preview object field samples"),
+    description=_(
+        "Pure bpms.binding.object/1 authoring preview. Requires workflows.manage and current "
+        "view access to an active workflow; ref_id must identify the current version revision "
+        "(409 stale; 404 missing, deleted or unauthorized workflow). The candidate graph is "
+        "validated through the existing publication/type/source authorization path but is never "
+        "saved, published or executed. target_step and target_port select a projected scalar "
+        "object input. Existing constants are visible candidate values; other sources require "
+        "explicit author samples of the selected source value, keyed by binding ordinal. No "
+        "request submission, execution output, credential or runtime context is fetched as a "
+        "sample. Omitted samples differ from explicit null, zero, false and empty collections. "
+        "At most 64 unique samples / 32 KiB UTF-8 and a 1 MiB candidate are accepted (422 invalid "
+        "body). Invalid candidates/types/values and missing samples return an INVALID or MISSING "
+        "data result with bounded pointer/code issues, never submitted values. VALID returns "
+        "only mapped paths, source kinds/origins and JSON value types; every value stays "
+        "redacted. Constants cannot be overridden by samples. candidate_checksum identifies the "
+        "validated candidate, not a deployed workflow. No provider, tool, handler, approval or "
+        "business effect is invoked; no authorization is granted. Private no-store and existing "
+        "snake_case success/error envelopes apply; authentication/permission errors remain "
+        "401/403. Existing whole-port and LIST bindings retain their original contracts."
+    ),
+    responses=PRIVATE_NO_STORE_RESPONSES,
+)
+async def preview_object_fields(
+    request: Request,
+    ref_id: str,
+    data: BindingPreviewInput,
+    response: Response,
+    actor: WorkflowAdmin,
+    session: SessionDep,
+):
+    from apps.workflows.application.object_preview import preview_object_fields as preview
+
+    private_no_store(response)
+    return success_response(request, await preview(session, ref_id, data, actor))
 
 
 @versions_router.put(

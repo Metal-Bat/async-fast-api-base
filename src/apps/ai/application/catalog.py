@@ -14,7 +14,7 @@ from utils.exceptions import (
 if TYPE_CHECKING:
     from sqlmodel.ext.asyncio.session import AsyncSession
 
-    from apps.ai.domain.dto import AIModelSuggestionDTO
+    from apps.ai.domain.dto import AIModelMetadataDTO, AIModelSuggestionDTO
     from apps.integrations.application.service import ConnectionService
     from apps.users.domain.entity import UserEntity
     from utils.pagination import Page
@@ -47,6 +47,31 @@ class AISelectionService:
     def __init__(self, session: AsyncSession, connections: ConnectionService) -> None:
         self.session = session
         self.connections = connections
+
+    async def model_metadata(
+        self, connection_ref: str, actor: UserEntity, model_id: str
+    ) -> AIModelMetadataDTO:
+        """Name an exact usable connection without widening its management authority."""
+        from apps.ai.application.providers import provider_spec
+        from apps.ai.domain.dto import AIModelMetadataDTO
+
+        pin, policy = await self.connections.pin_ai(connection_ref, actor, model_id)
+        row = await self.connections.get(connection_ref, actor)
+        spec = provider_spec(pin.provider)
+        if spec is None:
+            raise VersionConflictException("AI provider unavailable")
+        return AIModelMetadataDTO(
+            connection_ref=connection_ref,
+            connection_name=row.name,
+            provider=pin.provider,
+            model_id=model_id,
+            source="configured",
+            can_execute=spec.governed_execution,
+            supports_structured_output=spec.supports_structured_output,
+            supports_tools=spec.supports_tools,
+            region=policy.region,
+            provider_retention=policy.provider_retention,
+        )
 
     async def agents(self, actor: UserEntity, query: SelectQuery) -> Page[SelectOption[str]]:
         from apps.ai.application.agent_service import AIAgentService

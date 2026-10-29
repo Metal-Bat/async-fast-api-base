@@ -2084,6 +2084,7 @@ async def test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_huma
             actor,
         )
         published = await agents.publish(create_ref_id(draft.id, draft.version), actor)
+        agent_ref = create_ref_id(published.id, published.version)
         workflows = WorkflowService(session, get_registry())
         root = await workflows.create(
             WorkflowCreateDTO(code=f"AIW{uuid7().hex}", name="AI review process"), actor.id
@@ -2172,6 +2173,35 @@ async def test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_huma
         )
         await workflows.replace_graph(create_ref_id(version.id, version.version), graph, actor.id)
         await workflows.publish(create_ref_id(version.id, version.version), actor.id)
+        if approval_mode == "none":
+            from apps.ai.application.authoring import AIAgentAuthoringService
+            from apps.ai.domain.authoring import AIWorkflowContextInput
+
+            authoring = AIAgentAuthoringService(session)
+            context_input = AIWorkflowContextInput(
+                workflow_version_ref=create_ref_id(version.id, version.version),
+                step_key="classify",
+            )
+            context = await authoring.workflow_context(agent_ref, context_input, actor)
+            assert context.sample_origin == "CONSTANT_BINDING"
+            assert context.decision.sample_state == "STATIC"
+            assert context.decision.provider_called is False
+            assert "password" not in context.model_dump_json()
+            assert context.workflow_version_ref == context_input.workflow_version_ref
+            with pytest.raises(VersionConflictException):
+                await authoring.workflow_context(
+                    agent_ref, context_input.model_copy(update={"step_key": "review"}), actor
+                )
+            with pytest.raises(VersionConflictException):
+                await authoring.workflow_context(
+                    agent_ref,
+                    context_input.model_copy(
+                        update={
+                            "workflow_version_ref": create_ref_id(version.id, version.version - 1)
+                        }
+                    ),
+                    actor,
+                )
         requests = RequestService(session)
         request_type = await requests.create_type(
             RequestTypeCreateDTO(
@@ -2190,11 +2220,33 @@ async def test_ai_decision_reserves_budget_and_routes_unknown_confidence_to_huma
         )
         await session.commit()
     async with SessionFactory() as session:
-        submitted, _ = await RequestService(session).submit(
-            create_ref_id(draft_request.id, draft_request.version),
-            BusinessRequestSubmitDTO(submit_key=f"ai-{uuid7()}"),
-            actor,
-        )
+        if approval_mode == "none":
+            from apps.ai.application.authoring import AIAgentAuthoringService
+            from apps.ai.domain.authoring import AIAgentEvaluationInput
+
+            authoring = AIAgentAuthoringService(session)
+            evaluation_input = AIAgentEvaluationInput(
+                request_ref=create_ref_id(draft_request.id, draft_request.version),
+                submit_key=f"ai-{uuid7()}",
+            )
+            evaluated = await authoring.start_evaluation(agent_ref, evaluation_input, actor, None)
+            replayed = await authoring.start_evaluation(agent_ref, evaluation_input, actor, None)
+            assert evaluated.process_ref == replayed.process_ref
+            assert evaluated.evidence_kind == "GOVERNED_REQUEST_SUBMISSION"
+            submitted = await RequestService(session).get_request(evaluated.request_ref, actor)
+            with pytest.raises(VersionConflictException):
+                await authoring.start_evaluation(
+                    agent_ref,
+                    evaluation_input.model_copy(update={"submit_key": "altered"}),
+                    actor,
+                    None,
+                )
+        else:
+            submitted, _ = await RequestService(session).submit(
+                create_ref_id(draft_request.id, draft_request.version),
+                BusinessRequestSubmitDTO(submit_key=f"ai-{uuid7()}"),
+                actor,
+            )
         process = (
             await session.exec(
                 select(ProcessInstanceEntity).where(
@@ -2895,5 +2947,37 @@ async def test_subprocess_timer_wait_uses_existing_scheduler_and_resumes_parent(
             )
         ).all()
         assert transitions[-1].outcome_key == "failure"
+        await session.commit()
+    await engine.dispose()
+
+
+@pytest.mark.anyio
+async def test_event_append_refreshes_a_cached_process_after_another_writer_commits():
+    """An internal ID-based event lock reads the current row, retaining command version checks."""
+    from apps.processes.application.events import ProcessEventService
+
+    async with SessionFactory() as session:
+        actor = UserEntity(username="event-cache-" + uuid7().hex, hashed_password=uuid7().hex)
+        session.add(actor)
+        await session.flush()
+        process, _ = await _start_waiting_process(session, actor, "EVENT_WAIT")
+        process_id = process.id
+        await session.commit()
+    async with SessionFactory() as session:
+        cached = await session.get(ProcessInstanceEntity, process_id)
+        assert cached is not None
+        old_version, old_sequence = cached.version, cached.event_sequence
+        async with SessionFactory() as writer:
+            first = await ProcessEventService(writer).append(
+                process_id, "step.waiting", payload={"status": "WAITING"}
+            )
+            first_sequence = first.sequence
+            await writer.commit()
+        assert cached.version == old_version and cached.event_sequence == old_sequence
+        second = await ProcessEventService(session).append(
+            process_id, "step.waiting", payload={"status": "WAITING"}
+        )
+        assert second.sequence == first_sequence + 1 == old_sequence + 2
+        assert cached.event_sequence == second.sequence and cached.version > old_version
         await session.commit()
     await engine.dispose()

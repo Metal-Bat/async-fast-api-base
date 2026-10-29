@@ -39,6 +39,7 @@ from apps.step_types.domain.entity import (
     StepTypePortEntity,
     StepTypeVersionEntity,
 )
+from apps.workflows.application.object_projection import InputField, compose_input_fields
 from apps.workflows.domain.entity import (
     WorkflowStepEntity,
     WorkflowStepInputBindingEntity,
@@ -46,6 +47,7 @@ from apps.workflows.domain.entity import (
     WorkflowTransitionEntity,
     WorkflowVersionEntity,
 )
+from apps.workflows.domain.object_projection import ProjectionError, projection_from_facts
 from core.ref_id import open_ref_id
 from utils.date_utils import get_datetime_utc
 from utils.exceptions import NotFoundException, VersionConflictException
@@ -1477,6 +1479,8 @@ class ProcessService:
         ).all()
         result: dict[str, Any] = {}
         lists: dict[str, list[Any]] = {}
+        projected: dict[str, list[InputField]] = {}
+        registered: dict[str, dict[str, Any]] = {}
         for binding, port in rows:
             if binding.source_kind == "CONSTANT":
                 value = binding.constant_value
@@ -1496,7 +1500,17 @@ class ProcessService:
                 )
             else:
                 value = await self._step_output(token.id, binding)
-            if port.cardinality == "LIST":
+            projection = projection_from_facts(
+                binding.target_projection_version, binding.target_path, binding.target_schema
+            )
+            if projection is not None:
+                if port.cardinality != "SCALAR" or binding.target_schema is None:
+                    raise ProjectionError("binding.projection.scalar.required")
+                projected.setdefault(port.port_key, []).append(
+                    InputField(projection, binding.target_schema, binding.ordinal, value)
+                )
+                registered[port.port_key] = port.value_schema
+            elif port.cardinality == "LIST":
                 bucket = lists.setdefault(port.port_key, [])
                 if isinstance(value, list):
                     bucket.extend(value)
@@ -1505,6 +1519,10 @@ class ProcessService:
             else:
                 result[port.port_key] = value
         result.update(lists)
+        for key, fields in projected.items():
+            if key in result:
+                raise ProjectionError("binding.projection.whole_port.mixed")
+            result[key] = compose_input_fields(fields, registered[key])
         return result
 
     async def _step_output(self, token_id: UUID, binding: WorkflowStepInputBindingEntity) -> Any:
@@ -1525,7 +1543,8 @@ class ProcessService:
         ).one_or_none()
         if port is None or execution is None or execution.output_snapshot is None:
             raise ValueError("Prior step output is unavailable")
-        return execution.output_snapshot[port.port_key]
+        value = execution.output_snapshot[port.port_key]
+        return self._pointer(value, binding.source_path) if bool(binding.source_path) else value
 
     async def _definition(self, step_id: UUID) -> tuple[WorkflowStepEntity, str, HandlerDefinition]:
         row = (

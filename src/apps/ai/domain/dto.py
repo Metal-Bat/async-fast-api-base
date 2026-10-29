@@ -59,6 +59,11 @@ class AIProviderMetadataDTO(BaseDTO):
 
 class AIModelMetadataDTO(BaseDTO):
     connection_ref: str
+    connection_name: str = Field(
+        min_length=1,
+        max_length=255,
+        description="Current display name of this exact use-authorized AI connection; never a credential or an integration-management projection.",
+    )
     provider: str
     model_id: str
     source: Literal["configured"]

@@ -36,7 +36,10 @@ class AccountTarget(TargetBase):
 
 class FutureTarget(TargetBase):
     kind: Literal["operation"]
-    route_key: None = None
+    route_key: Literal["processes"] | None = Field(
+        default=None,
+        description="Current authorized protected-operation evidence opens the existing process screen. Null retains unavailable legacy operation targets; never an external URL or execution authority.",
+    )
 
 
 class CalendarTarget(TargetBase):
